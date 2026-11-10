@@ -25018,10 +25018,10 @@ void CvPlayerAI::AI_humanFindJobs(const CvUnit& kUnit, std::vector<HumanJob>& aJ
 	std::map<std::pair<int, int>, HumanJob> mapJobs;
 	// WTP (user 2026-10-24): the best job of the expert's own trade is always offered, even where food or happiness would
 	// keep it from the list, and even if better paid jobs fill the list
-	HumanJob kBestExpertJob;
+	HumanJob kBestExpertJob = HumanJob(); // WTP: value-initialized (compiler warning C4701)
 	kBestExpertJob.iScore = 0;
 	// WTP (user 2026-10-31): the same in a colony that does not produce the raw material of the job
-	HumanJob kBestUnsuppliedExpertJob;
+	HumanJob kBestUnsuppliedExpertJob = HumanJob();
 	kBestUnsuppliedExpertJob.iScore = 0;
 	// colonies short of food, and whether this worker is offered food jobs there
 	std::set<int> aFoodShortCities;
