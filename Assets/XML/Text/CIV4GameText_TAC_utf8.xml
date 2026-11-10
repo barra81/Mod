@@ -1700,39 +1700,39 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_EXPERT</Tag>
-		<English>A free colonist who has worked in his profession for many years now has enough knowledge to be considered an [COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT].</English>
-		<Portuguese>Um colono livre que atua em sua profissão há muitos anos agora possui conhecimento suficiente para ser considerado um [COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT].</Portuguese>
-		<French>Un colon libre avec de l'expérience dans sa profession a acquis assez de compétences pour être tenu pour [COLOR_UNIT_TEXT]%s1_expert.[COLOR_REVERT].</French>
-		<German>Ein Freier Kolonist, der lange in seinem Beruf gearbeitet hat, hat nun genug Wissen erlangt, um als [COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT] zu gelten.</German>
-		<Russian>Свободный колонист, который долгое время работал по своей профессии, теперь получил достаточно знаний, чтобы считаться [COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT].</Russian>
-		<Hungarian>Egy szabad telepes, aki sokáig dolgozott a szakmájában, már elég tudásra tett szert ahhoz, hogy [COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT] legyen.</Hungarian>
+		<English>[COLOR_POSITIVE_TEXT]A free colonist who has worked in his profession for many years now has enough knowledge to be considered an %s1_expert.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_POSITIVE_TEXT]Um colono livre que atua em sua profissão há muitos anos agora possui conhecimento suficiente para ser considerado um %s1_expert.[COLOR_REVERT]</Portuguese>
+		<French>[COLOR_POSITIVE_TEXT]Un colon libre avec de l'expérience dans sa profession a acquis assez de compétences pour être tenu pour %s1_expert.[COLOR_REVERT]</French>
+		<German>[COLOR_POSITIVE_TEXT]Ein Freier Kolonist, der lange in seinem Beruf gearbeitet hat, hat nun genug Wissen erlangt, um als %s1_expert zu gelten.[COLOR_REVERT]</German>
+		<Russian>[COLOR_POSITIVE_TEXT]Свободный колонист, который долгое время работал по своей профессии, теперь получил достаточно знаний, чтобы считаться %s1_expert.[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_POSITIVE_TEXT]Egy szabad telepes, aki sokáig dolgozott a szakmájában, már elég tudásra tett szert ahhoz, hogy %s1_expert legyen.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_EXPERT_IN_CITY</Tag>
-		<English>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]A free colonist who has worked in his profession for many years now knows enough to be considered an [COLOR_UNIT_TEXT]%s2_expert[COLOR_REVERT].</English>
-		<Portuguese>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Um colono livre que trabalhou em sua profissão por muitos anos agora sabe o suficiente para ser considerado um [COLOR_UNIT_TEXT]%s2_expert[COLOR_REVERT].</Portuguese>
-		<French>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT] Un colon libre avec de l'expérience dans sa profession a acquis assez de compétences pour être tenu pour [COLOR_UNIT_TEXT]%s2_expert[COLOR_REVERT].</French>
-		<German>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Ein Freier Kolonist, der lange in seinem Beruf gearbeitet hat, hat nun genug Wissen erlangt, um als [COLOR_UNIT_TEXT]%s2_expert[COLOR_REVERT] zu gelten.</German>
-		<Russian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Свободный колонист, долго трудившийся по своей профессии, теперь получил достаточно знаний, чтобы стать [COLOR_UNIT_TEXT]%s2_expert[COLOR_REVERT].</Russian>
-		<Hungarian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Egy szabad telepes, aki sokáig dolgozott a szakmájában, már elég tudásra tett szert ahhoz, hogy [COLOR_UNIT_TEXT]%s2_expert[COLOR_REVERT] legyen.</Hungarian>
+		<English>[COLOR_POSITIVE_TEXT]%s1_city : A free colonist who has worked in his profession for many years now knows enough to be considered an %s2_expert.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_POSITIVE_TEXT]%s1_city : Um colono livre que trabalhou em sua profissão por muitos anos agora sabe o suficiente para ser considerado um %s2_expert.[COLOR_REVERT]</Portuguese>
+		<French>[COLOR_POSITIVE_TEXT]%s1_city :  Un colon libre avec de l'expérience dans sa profession a acquis assez de compétences pour être tenu pour %s2_expert.[COLOR_REVERT]</French>
+		<German>[COLOR_POSITIVE_TEXT]%s1_city : Ein Freier Kolonist, der lange in seinem Beruf gearbeitet hat, hat nun genug Wissen erlangt, um als %s2_expert zu gelten.[COLOR_REVERT]</German>
+		<Russian>[COLOR_POSITIVE_TEXT]%s1_city : Свободный колонист, долго трудившийся по своей профессии, теперь получил достаточно знаний, чтобы стать %s2_expert.[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_POSITIVE_TEXT]%s1_city : Egy szabad telepes, aki sokáig dolgozott a szakmájában, már elég tudásra tett szert ahhoz, hogy %s2_expert legyen.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_FREE</Tag>
-		<English>An unfree colonist has earned his [COLOR_POSITIVE_TEXT]freedom[COLOR_REVERT] through hard work.</English>
-		<Portuguese>Um colono não-livre conquistou sua [COLOR_POSITIVE_TEXT]liberdade[COLOR_REVERT] através de trabalho duro.</Portuguese>
-		<French>Un colon sous servitude a gagné sa [COLOR_POSITIVE_TEXT]liberté[COLOR_REVERT] en travaillant dur.</French>
-		<German>Ein Unfreier hat sich durch harte Arbeit seine [COLOR_POSITIVE_TEXT]Freiheit[COLOR_REVERT] verdient.</German>
-		<Russian>Несвободный колонист тяжелым трудом заработал себе [COLOR_POSITIVE_TEXT]свободу[COLOR_REVERT].</Russian>
-		<Hungarian>Egy nem szabad lakos kemény munkával kiérdemelte a [COLOR_POSITIVE_TEXT]szabadságát[COLOR_REVERT].</Hungarian>
+		<English>[COLOR_POSITIVE_TEXT]An unfree colonist has earned his freedom through hard work.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_POSITIVE_TEXT]Um colono não-livre conquistou sua liberdade através de trabalho duro.[COLOR_REVERT]</Portuguese>
+		<French>[COLOR_POSITIVE_TEXT]Un colon sous servitude a gagné sa liberté en travaillant dur.[COLOR_REVERT]</French>
+		<German>[COLOR_POSITIVE_TEXT]Ein Unfreier hat sich durch harte Arbeit seine Freiheit verdient.[COLOR_REVERT]</German>
+		<Russian>[COLOR_POSITIVE_TEXT]Несвободный колонист тяжелым трудом заработал себе свободу.[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_POSITIVE_TEXT]Egy nem szabad lakos kemény munkával kiérdemelte a szabadságát.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_FREE_IN_CITY</Tag>
-		<English>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]An unfree colonist has earned his freedom through hard work.</English>
-		<Portuguese>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Um colono não-livre conquistou sua liberdade através do trabalho duro.</Portuguese>
-		<French>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT] Un colon sous servitude a gagné sa liberté en travaiilant dur.</French>
-		<German>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Ein Unfreier hat sich durch harte Arbeit seine Freiheit verdient.</German>
-		<Russian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Несвободный колонист добился освобождения своим упорным трудом.</Russian>
-		<Hungarian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]A nem szabad lakos kemény munkával kiérdemelte a szabadságát.</Hungarian>
+		<English>[COLOR_POSITIVE_TEXT]%s1_city : An unfree colonist has earned his freedom through hard work.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_POSITIVE_TEXT]%s1_city : Um colono não-livre conquistou sua liberdade através do trabalho duro.[COLOR_REVERT]</Portuguese>
+		<French>[COLOR_POSITIVE_TEXT]%s1_city :  Un colon sous servitude a gagné sa liberté en travaiilant dur.[COLOR_REVERT]</French>
+		<German>[COLOR_POSITIVE_TEXT]%s1_city : Ein Unfreier hat sich durch harte Arbeit seine Freiheit verdient.[COLOR_REVERT]</German>
+		<Russian>[COLOR_POSITIVE_TEXT]%s1_city : Несвободный колонист добился освобождения своим упорным трудом.[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_POSITIVE_TEXT]%s1_city : A nem szabad lakos kemény munkával kiérdemelte a szabadságát.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_ESCAPE</Tag>
@@ -1764,12 +1764,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_VETERAN_BY_MILITARY_SERVICE</Tag>
-		<English>[COLOR_POSITIVE_TEXT]A free colonist has survived enough combat to now be a [COLOR_REVERT][COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT]</English>
-		<Portuguese>[COLOR_POSITIVE_TEXT]Um colono livre sobreviveu a combates suficientes para agora ser um [COLOR_REVERT][COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT]</Portuguese>
-		<French>[COLOR_POSITIVE_TEXT]Un colon libre a gagné suffisamment d'expérience pour devenir [COLOR_REVERT][COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT]</French>
-		<German>[COLOR_POSITIVE_TEXT]Ein Freier Kolonist hat im Kampf genug Erfahrung gesammelt, um jetzt als [COLOR_REVERT][COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT][COLOR_POSITIVE_TEXT] zu gelten.[COLOR_REVERT]</German>
-		<Russian>[COLOR_POSITIVE_TEXT]Свободный колонист набрал в боях достаточно опыта, чтобы стать [COLOR_REVERT][COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT]</Russian>
-		<Hungarian>[COLOR_POSITIVE_TEXT]Egy szabad telepes elég tapasztalatot szerzett a harcok során ahhoz, hogy [COLOR_REVERT][COLOR_UNIT_TEXT]%s1_expert[COLOR_REVERT] legyen.</Hungarian>
+		<English>[COLOR_POSITIVE_TEXT]A free colonist has survived enough combat to now be a %s1_expert[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_POSITIVE_TEXT]Um colono livre sobreviveu a combates suficientes para agora ser um %s1_expert[COLOR_REVERT]</Portuguese>
+		<French>[COLOR_POSITIVE_TEXT]Un colon libre a gagné suffisamment d'expérience pour devenir %s1_expert[COLOR_REVERT]</French>
+		<German>[COLOR_POSITIVE_TEXT]Ein Freier Kolonist hat im Kampf genug Erfahrung gesammelt, um jetzt als %s1_expert zu gelten.[COLOR_REVERT]</German>
+		<Russian>[COLOR_POSITIVE_TEXT]Свободный колонист набрал в боях достаточно опыта, чтобы стать %s1_expert[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_POSITIVE_TEXT]Egy szabad telepes elég tapasztalatot szerzett a harcok során ahhoz, hogy %s1_expert legyen.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_FREE_BY_MILITARY_SERVICE</Tag>
