@@ -1736,21 +1736,21 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_ESCAPE</Tag>
-		<English>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]An unfree colonist has disappeared. We suspect he's fled into the wilderness.</English>
-		<Portuguese>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Um colono não-livre desapareceu. Suspeitamos que ele fugiu para o deserto.</Portuguese>
-		<French>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT] Un captif a disparu. On soupçonne qu'il a fui dans la nature.</French>
-		<German>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Ein Unfreier ist verschwunden. Man vermutet, dass er in die Wildnis geflohen ist.</German>
-		<Russian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Несвободный колонист сбежал из колонии! Срочно собрать поисковую партию, он не мог далеко уйти!</Russian>
-		<Hungarian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Eltűnt egy nem szabad telepes. A gyanú szerint a vadonba menekült.</Hungarian>
+		<English>[COLOR_RED]%s1_city : An unfree colonist has disappeared. We suspect he's fled into the wilderness.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_RED]%s1_city : Um colono não-livre desapareceu. Suspeitamos que ele fugiu para o deserto.[COLOR_REVERT]</Portuguese>
+		<French>[COLOR_RED]%s1_city :  Un captif a disparu. On soupçonne qu'il a fui dans la nature.[COLOR_REVERT]</French>
+		<German>[COLOR_RED]%s1_city : Ein Unfreier ist verschwunden. Man vermutet, dass er in die Wildnis geflohen ist.[COLOR_REVERT]</German>
+		<Russian>[COLOR_RED]%s1_city : Несвободный колонист сбежал из колонии! Срочно собрать поисковую партию, он не мог далеко уйти![COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_RED]%s1_city : Eltűnt egy nem szabad telepes. A gyanú szerint a vadonba menekült.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_REVOLT</Tag>
-		<English>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]An unfree colonist has revolted. We believe he's fled into the wilderness.</English>
-		<Portuguese>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Um colono não-livre se revoltou. Acreditamos que ele fugiu para o deserto.</Portuguese>
-		<French>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT] Un captif s'est soulevé. On soupçonne qu'il a fui dans la nature.</French>
-		<German>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Ein Unfreier hat revoltiert. Man vermutet, dass er in die Wildnis geflohen ist.</German>
-		<Russian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Несвободный колонист взбунтовался, где-то раздобыл оружие и сбежал из колонии! Все, кто свободен от работ, к оружию! Убьем негодяя!</Russian>
-		<Hungarian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Egy nem szabad telepes fellázadt. Úgy vélik, hogy a vadonba menekült.</Hungarian>
+		<English>[COLOR_RED]%s1_city : An unfree colonist has revolted. We believe he's fled into the wilderness.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_RED]%s1_city : Um colono não-livre se revoltou. Acreditamos que ele fugiu para o deserto.[COLOR_REVERT]</Portuguese>
+		<French>[COLOR_RED]%s1_city :  Un captif s'est soulevé. On soupçonne qu'il a fui dans la nature.[COLOR_REVERT]</French>
+		<German>[COLOR_RED]%s1_city : Ein Unfreier hat revoltiert. Man vermutet, dass er in die Wildnis geflohen ist.[COLOR_REVERT]</German>
+		<Russian>[COLOR_RED]%s1_city : Несвободный колонист взбунтовался, где-то раздобыл оружие и сбежал из колонии! Все, кто свободен от работ, к оружию! Убьем негодяя![COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_RED]%s1_city : Egy nem szabad telepes fellázadt. Úgy vélik, hogy a vadonba menekült.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_LBD_VETERAN_BY_MILITARY_SERVICE</Tag>
