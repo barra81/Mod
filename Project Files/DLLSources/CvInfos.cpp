@@ -5372,6 +5372,26 @@ int CvBuildingInfo::getPowerValue() const
 }
 int CvBuildingInfo::getYieldStorage() const
 {
+	// WTP: the storage of the warehouse line and the custom houses is scaled by WAREHOUSE_STORAGE_PERCENT (GlobalDefinesAlt.xml),
+	// on top of the game speed (iStoragePercent). All users of the storage (city capacity, tooltip, AI, Python) get the scaled value.
+	if (m_iYieldStorage > 0)
+	{
+		static const BuildingTypes aeWarehouses[] =
+		{
+			(BuildingTypes)GC.getInfoTypeForString("BUILDING_WAREHOUSE"),
+			(BuildingTypes)GC.getInfoTypeForString("BUILDING_WAREHOUSE_EXPANSION"),
+			(BuildingTypes)GC.getInfoTypeForString("BUILDING_WAREHOUSE_EXPANSION_2"),
+			(BuildingTypes)GC.getInfoTypeForString("BUILDING_CUSTOM_HOUSE"),
+			(BuildingTypes)GC.getInfoTypeForString("BUILDING_CUSTOM_OFFICE")
+		};
+		for (int i = 0; i < 5; ++i)
+		{
+			if (aeWarehouses[i] != NO_BUILDING && this == &GC.getBuildingInfo(aeWarehouses[i]))
+			{
+				return m_iYieldStorage * GC.getDefineINT("WAREHOUSE_STORAGE_PERCENT") / 100;
+			}
+		}
+	}
 	return m_iYieldStorage;
 }
 // WTP, ray, new Harbour System - START

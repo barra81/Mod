@@ -2105,4 +2105,10 @@
 		<DefineName>MILITARY_UPKEEP_SPEED_BUILDUP</DefineName>
 		<iDefineIntVal>100</iDefineIntVal>
 	</Define>
+	<Define>
+		<!-- WTP: storage of Warehouse, Warehouse Expansion 1+2, Custom House and Custom Office in percent (100 = unchanged, 130 = +30%).
+		     Comes on top of the game speed factor (iStoragePercent in CIV4GameSpeedInfo.xml). Needs the capacity of the cities to be recalculated, i.e. a new turn. -->
+		<DefineName>WAREHOUSE_STORAGE_PERCENT</DefineName>
+		<iDefineIntVal>130</iDefineIntVal>
+	</Define>
 </Civ4Defines>
