@@ -711,6 +711,44 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				szString.append(NEWLINE);
 				szString.append(gDLL->getText("TXT_KEY_UNIT_ONLY_DEFENSIVE"));
 			}
+
+			// WTP: the current orders of an automated transport (cyan): what it brings or fetches, from colony to colony
+			if (pUnit->getTeam() == GC.getGameINLINE().getActiveTeam() && pUnit->getGroup() != NULL && pUnit->getGroup()->getAutomateType() != NO_AUTOMATE)
+			{
+				const CvSelectionGroupAI* pGroupAI = static_cast<const CvSelectionGroupAI*>(pUnit->getGroup());
+				const std::vector<CvSelectionGroupAI::WtpTradeOrder>& aOrders = pGroupAI->getTradeOrders();
+				for (uint i = 0; i < aOrders.size(); ++i)
+				{
+					const CvSelectionGroupAI::WtpTradeOrder& kOrder = aOrders[i];
+					const CvCity* pSource = ::getCity(kOrder.kSource);
+					const CvCity* pDestination = ::getCity(kOrder.kDestination);
+					if (pSource == NULL || pDestination == NULL)
+					{
+						continue;
+					}
+					// a yield to bring must be on board, yields to fetch are shown while the transport is empty
+					bool bOnBoard = false;
+					bool bAnyCargo = false;
+					CLinkList<IDInfo> aCargoUnits;
+					pUnit->getGroup()->buildCargoUnitList(aCargoUnits);
+					for (CLLNode<IDInfo>* pNode = aCargoUnits.head(); pNode != NULL; pNode = aCargoUnits.next(pNode))
+					{
+						const CvUnit* pCargo = ::getUnit(pNode->m_data);
+						if (pCargo != NULL && pCargo->getYield() != NO_YIELD && pCargo->getYieldStored() > 0)
+						{
+							bAnyCargo = true;
+							bOnBoard = bOnBoard || pCargo->getYield() == kOrder.eYield;
+						}
+					}
+					if (kOrder.bLoaded ? !bOnBoard : bAnyCargo)
+					{
+						continue;
+					}
+					szString.append(NEWLINE);
+					szString.append(gDLL->getText(kOrder.bLoaded ? "TXT_KEY_WTP_TRADE_ORDER_BRING" : "TXT_KEY_WTP_TRADE_ORDER_FETCH",
+						GC.getYieldInfo(kOrder.eYield).getChar(), GC.getYieldInfo(kOrder.eYield).getDescription(), pSource->getName().GetCString(), pDestination->getName().GetCString()));
+				}
+			}
 		}
 
 		

@@ -944,6 +944,106 @@ static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSo
 	return bOk;
 }
 
+// WTP: rebuilds the orders of the transport after it has decided where to go (and loaded here): every yield on board is brought from
+// its source to its destination colony; an empty transport on its way to a source colony will fetch the yields of the best route from there
+void CvSelectionGroupAI::updateTradeOrders(const std::vector<CvTradeRoute*>& routes, const std::vector<int>& routeValues, const IDInfo& kBestDestination)
+{
+	std::vector<WtpTradeOrder> aNewOrders;
+	const CvCity* pPlotCity = plot()->getPlotCity();
+
+	short aiLoaded[NUM_YIELD_TYPES];
+	std::fill(aiLoaded, aiLoaded + NUM_YIELD_TYPES, 0);
+	AI_getYieldsLoaded(aiLoaded);
+
+	bool bAnyLoaded = false;
+	for (int iYield = 0; iYield < NUM_YIELD_TYPES; ++iYield)
+	{
+		if (aiLoaded[iYield] <= 0)
+		{
+			continue;
+		}
+		bAnyLoaded = true;
+		const YieldTypes eYield = (YieldTypes)iYield;
+
+		// an order that is still valid is kept (the yield was loaded earlier)
+		bool bKept = false;
+		for (uint i = 0; i < m_aTradeOrders.size(); ++i)
+		{
+			const WtpTradeOrder& kOld = m_aTradeOrders[i];
+			if (kOld.eYield == eYield && ::getCity(kOld.kDestination) != pPlotCity && ::getCity(kOld.kDestination) != NULL)
+			{
+				WtpTradeOrder kOrder = kOld;
+				kOrder.bLoaded = true;
+				aNewOrders.push_back(kOrder);
+				bKept = true;
+				break;
+			}
+		}
+		if (bKept)
+		{
+			continue;
+		}
+
+		// new cargo: the route of this yield from here (the best destination first), else any route to the best destination
+		int iBestRoute = -1;
+		int iBestPriority = 0;
+		for (uint i = 0; i < routes.size(); ++i)
+		{
+			if (routes[i]->getYield() != eYield || ::getCity(routes[i]->getDestinationCity()) == NULL || ::getCity(routes[i]->getDestinationCity()) == pPlotCity)
+			{
+				continue;
+			}
+			const bool bFromHere = (::getCity(routes[i]->getSourceCity()) == pPlotCity);
+			const bool bToBest = (routes[i]->getDestinationCity() == kBestDestination);
+			const int iPriority = (bFromHere ? 2 : 0) + (bToBest ? 4 : 0) + (bFromHere || bToBest ? 1 : 0);
+			if (iPriority > iBestPriority || (iPriority == iBestPriority && iBestRoute >= 0 && routeValues[i] > routeValues[iBestRoute]))
+			{
+				iBestPriority = iPriority;
+				iBestRoute = i;
+			}
+		}
+		if (iBestRoute >= 0)
+		{
+			WtpTradeOrder kOrder;
+			kOrder.eYield = eYield;
+			kOrder.kSource = routes[iBestRoute]->getSourceCity();
+			kOrder.kDestination = routes[iBestRoute]->getDestinationCity();
+			kOrder.bLoaded = true;
+			aNewOrders.push_back(kOrder);
+		}
+	}
+
+	if (!bAnyLoaded && kBestDestination.eOwner != NO_PLAYER)
+	{
+		// empty: on its way to fetch the yields of the best route that starts in the destination colony
+		int iBestRoute = -1;
+		for (uint i = 0; i < routes.size(); ++i)
+		{
+			if (routes[i]->getSourceCity() == kBestDestination && routeValues[i] > 0 && (iBestRoute < 0 || routeValues[i] > routeValues[iBestRoute]))
+			{
+				iBestRoute = i;
+			}
+		}
+		if (iBestRoute >= 0)
+		{
+			for (uint i = 0; i < routes.size(); ++i)
+			{
+				if (routes[i]->getSourceCity() == kBestDestination && routes[i]->getDestinationCity() == routes[iBestRoute]->getDestinationCity() && routeValues[i] > 0)
+				{
+					WtpTradeOrder kOrder;
+					kOrder.eYield = routes[i]->getYield();
+					kOrder.kSource = routes[i]->getSourceCity();
+					kOrder.kDestination = routes[i]->getDestinationCity();
+					kOrder.bLoaded = false;
+					aNewOrders.push_back(kOrder);
+				}
+			}
+		}
+	}
+
+	m_aTradeOrders = aNewOrders;
+}
+
 bool CvSelectionGroupAI::AI_tradeRoutes()
 {
 	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_TRADE_ROUTES);
@@ -1306,7 +1406,10 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	// We bail if there's not a single viable destination
 	// Transports with cargo should carry on because they might need to drop it off somewhere before they can start on normal traderoutes
 	if (bNoRoute && bNoCargo)
+	{
+		m_aTradeOrders.clear();
 		return false;
+	}
 
 	// TAC - Trade Routes Advisor - koma13 - START
 	// R&R mod, vetiarvind, max yield import limit - start
@@ -1592,6 +1695,12 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 			kBestDestination = pCity->getIDInfo();
 		}
+	}
+
+	// WTP: the orders shown in the tooltip of the transport (human player only)
+	if (isHuman())
+	{
+		updateTradeOrders(routes, routeValues, kBestDestination);
 	}
 
 	//As a final step, we could consider loading yields which would be useful as parts of delivery runs...

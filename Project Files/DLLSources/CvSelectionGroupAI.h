@@ -107,12 +107,25 @@ protected:
 	bool getIgnoreDangerStatus() const;
 	// R&R mod, vetiarvind, max yield import limit - end
 
+	// WTP: the current orders of a human player's automated transport for the unit tooltip (not saved, rebuilt by AI_tradeRoutes):
+	// a yield on board is brought from a source colony to a destination colony, or (bLoaded false) it is to be fetched there
+	struct WtpTradeOrder
+	{
+		YieldTypes eYield;
+		IDInfo kSource;
+		IDInfo kDestination;
+		bool bLoaded;
+	};
+	const std::vector<WtpTradeOrder>& getTradeOrders() const { return m_aTradeOrders; }
+	std::vector<WtpTradeOrder> m_aTradeOrders;
+
 private:
 	// R&R mod, vetiarvind, max yield import limit - start
 	int estimateYieldsToLoad(const CvCity* pDestinationCity, int maxYieldsToLoad, YieldTypes eYield, int turnsToReach, int alreadyLoaded) const;
 	void unloadToCity(CvCity* pCity, CvUnit* unit, UnloadMode um = NoForce);
 	// R&R mod, vetiarvind, max yield import limit - end
 
+	void updateTradeOrders(const std::vector<CvTradeRoute*>& routes, const std::vector<int>& routeValues, const IDInfo& kBestDestination);
 	void processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo, int>& cityValues, std::vector<CvTradeRoute*>& routes, std::vector<int>& routeValues, std::vector<bool>& yieldsDelivered, std::vector<bool>& yieldsToUnload);
 };
 
