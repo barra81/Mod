@@ -11763,6 +11763,35 @@ void CvPlayer::doGold()
 	changeGold(iGoldChange);
 }
 
+// WTP: a gold value of the military upkeep (define) scaled with the game speed in percent (MILITARY_UPKEEP_SPEED_*), 100 = unchanged
+static int WTP_getMilitaryUpkeepValue(const char* szDefine)
+{
+	const int iBase = GC.getDefineINT(szDefine);
+	const GameSpeedTypes eSpeed = GC.getGameINLINE().getGameSpeedType();
+	if (eSpeed == NO_GAMESPEED)
+	{
+		return iBase;
+	}
+	const char* szType = GC.getGameSpeedInfo(eSpeed).getType();
+	const char* szSpeedDefine = NULL;
+	if (strcmp(szType, "GAMESPEED_TAC_QUICK") == 0) szSpeedDefine = "MILITARY_UPKEEP_SPEED_QUICK";
+	else if (strcmp(szType, "GAMESPEED_TAC_EPIC") == 0) szSpeedDefine = "MILITARY_UPKEEP_SPEED_EPIC";
+	else if (strcmp(szType, "GAMESPEED_TAC_MARATHON") == 0) szSpeedDefine = "MILITARY_UPKEEP_SPEED_MARATHON";
+	else if (strcmp(szType, "GAMESPEED_TAC_NORMAL") == 0) szSpeedDefine = "MILITARY_UPKEEP_SPEED_NORMAL";
+	else if (strcmp(szType, "GAMESPEED_TAC_BUILDUP_MODE") == 0) szSpeedDefine = "MILITARY_UPKEEP_SPEED_BUILDUP";
+	if (szSpeedDefine == NULL)
+	{
+		return iBase;
+	}
+	const int iPercent = GC.getDefineINT(szSpeedDefine);
+	if (iBase <= 0)
+	{
+		return iBase;
+	}
+	// a paying unit never becomes free by the multiplier
+	return std::max(1, (iBase * iPercent + 50) / 100);
+}
+
 // WTP: the upkeep of a military unit per turn; iFreePool: the free units it may be one of (0: none, 1: land units, 2: warships)
 int CvPlayer::getMilitaryUpkeepCost(const CvUnit& kUnit, int& iFreePool) const
 {
@@ -11781,7 +11810,7 @@ int CvPlayer::getMilitaryUpkeepCost(const CvUnit& kUnit, int& iFreePool) const
 			return 0;
 		}
 		iFreePool = 2;
-		return kInfo.getTerrainImpassable(TERRAIN_SHALLOW_COAST) ? GC.getDefineINT("MILITARY_UPKEEP_BIG_SHIP") : GC.getDefineINT("MILITARY_UPKEEP_SMALL_SHIP");
+		return kInfo.getTerrainImpassable(TERRAIN_SHALLOW_COAST) ? WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_BIG_SHIP") : WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_SMALL_SHIP");
 	}
 	if (kUnit.getDomainType() != DOMAIN_LAND)
 	{
@@ -11795,28 +11824,28 @@ int CvPlayer::getMilitaryUpkeepCost(const CvUnit& kUnit, int& iFreePool) const
 	if (eClass == UNITCLASS_RANGER || eClass == UNITCLASS_MILITIA)
 	{
 		iFreePool = 1;
-		return GC.getDefineINT("MILITARY_UPKEEP_LIGHT");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_LIGHT");
 	}
 	if (eClass == UNITCLASS_CONQUISTADOR || eClass == UNITCLASS_MOUNTED_CONQUISTADOR)
 	{
 		iFreePool = 1;
-		return GC.getDefineINT("MILITARY_UPKEEP_MEDIUM");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_MEDIUM");
 	}
 	if (eClass == eSlaveHunter || eClass == eSlaveMaster)
 	{
-		return GC.getDefineINT("MILITARY_UPKEEP_LIGHT");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_LIGHT");
 	}
 	if (eClass == UNITCLASS_NATIVE_MERC || eClass == eBuccanneer)
 	{
-		return GC.getDefineINT("MILITARY_UPKEEP_MEDIUM");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_MEDIUM");
 	}
 	if (eClass == UNITCLASS_CONTINENTAL_GUARD)
 	{
-		return GC.getDefineINT("MILITARY_UPKEEP_HEAVY");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_HEAVY");
 	}
 	if (eClass == eHessian || eClass == UNITCLASS_MORTAR)
 	{
-		return GC.getDefineINT("MILITARY_UPKEEP_ELITE");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_ELITE");
 	}
 	return 0;
 }
@@ -11836,20 +11865,20 @@ int CvPlayer::getMilitaryProfessionUpkeep(ProfessionTypes eProfession, int& iFre
 	if (eProfession == eTownGuard || eProfession == eColonialMilitia)
 	{
 		iFreePool = 1;
-		return GC.getDefineINT("MILITARY_UPKEEP_LIGHT");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_LIGHT");
 	}
 	if (eProfession == eDragoon)
 	{
 		iFreePool = 1;
-		return GC.getDefineINT("MILITARY_UPKEEP_HEAVY");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_HEAVY");
 	}
 	if (eProfession == eLineInfantry || eProfession == eHeavyCavalry || eProfession == eLightArtillery)
 	{
-		return GC.getDefineINT("MILITARY_UPKEEP_HEAVY");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_HEAVY");
 	}
 	if (eProfession == eHeavyArtillery)
 	{
-		return GC.getDefineINT("MILITARY_UPKEEP_ELITE");
+		return WTP_getMilitaryUpkeepValue("MILITARY_UPKEEP_ELITE");
 	}
 	return 0;
 }

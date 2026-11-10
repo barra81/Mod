@@ -2079,4 +2079,30 @@
 		<DefineName>MILITARY_UPKEEP_MAX_DISMISSALS</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
 	</Define>
+	<!-- WTP: military upkeep multiplier per game speed in percent (100 = unchanged, 50 = half, 135 = x1.35). Applies to the six gold values above, not to the free units -->
+	<Define>
+		<!-- Fast -->
+		<DefineName>MILITARY_UPKEEP_SPEED_QUICK</DefineName>
+		<iDefineIntVal>135</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- Normal (unchanged) -->
+		<DefineName>MILITARY_UPKEEP_SPEED_NORMAL</DefineName>
+		<iDefineIntVal>100</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- Epic -->
+		<DefineName>MILITARY_UPKEEP_SPEED_EPIC</DefineName>
+		<iDefineIntVal>50</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- Marathon -->
+		<DefineName>MILITARY_UPKEEP_SPEED_MARATHON</DefineName>
+		<iDefineIntVal>35</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- Buildup mode -->
+		<DefineName>MILITARY_UPKEEP_SPEED_BUILDUP</DefineName>
+		<iDefineIntVal>100</iDefineIntVal>
+	</Define>
 </Civ4Defines>
