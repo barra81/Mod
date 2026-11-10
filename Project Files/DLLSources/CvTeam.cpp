@@ -481,6 +481,7 @@ void CvTeam::processFather(FatherTypes eFather, int iChange)
 
 void CvTeam::doTurn()
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_TEAM_DOTURN);
 	PROFILE_FUNC();
 	FAssertMsg(isAlive(), "isAlive is expected to be true");
 	AI_doTurnPre();

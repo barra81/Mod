@@ -184,6 +184,7 @@ std::string GetDLLPath(bool bLoadDLLPath = true);
 #include "CvCityAI.h"
 #include "CvSelectionGroupAI.h"
 #include "CvUnitAI.h"
+#include "WtpTiming.h" // WTP: turn timing and runtime settings
 
 // ScaledNum port from AdvCiv
 #include "IntegerConversion.h" // advc

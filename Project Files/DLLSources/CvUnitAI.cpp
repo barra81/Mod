@@ -81,6 +81,7 @@ void CvUnitAI::AI_reset()
 // Note that the PF is not reset here anymore since K-Mod PF will do that as needed in KmodPathFinder::SetSettings
 bool CvUnitAI::AI_update()
 {
+	WtpTiming::UnitScope wtpTimer((int)AI_getUnitAIType(), isNative());
 #ifdef PROFILING_ENABLED
 	// WTP: one sample per unit AI type, natives separately
 	static std::string aszProfileNames[2][NUM_UNITAI_TYPES + 1];

@@ -96,6 +96,7 @@ bool KmodPathFinder::ValidateNodeMap()
 
 bool KmodPathFinder::GeneratePath(int x1, int y1, int x2, int y2)
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_PATH_GENERATE);
 	PROFILE_FUNC();
 
 	FAssertBounds(0, map_width , x1);
@@ -170,6 +171,7 @@ bool KmodPathFinder::GeneratePath(int x1, int y1, int x2, int y2)
 
 bool KmodPathFinder::GeneratePath(const CvPlot* pToPlot)
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_PATH_GENERATE);
 	if (!settings.pGroup || !pToPlot)
 		return false;
 
@@ -538,7 +540,8 @@ bool KmodPathFinder::ProcessNode()
 	// WTP: MOVE_ATTACK_STACK computes the battle cost per plot in pathCost, and AI_localDefenceStrength writes the team's strength
 	// memory there (its first write resizes the vector): not from several threads (reproducible runtime error, a Swedish stack
 	// on its way to a native village)
-	if (settings.iFlags & MOVE_ATTACK_STACK)
+	// WTP: PathfinderParallel / PathfinderMinChildren in WTP_Settings.txt switch the threading off for comparison
+	if ((settings.iFlags & MOVE_ATTACK_STACK) || !WtpTiming::pathfinderParallel(child_nodes.size()))
 	{
 		pni(range);
 	}

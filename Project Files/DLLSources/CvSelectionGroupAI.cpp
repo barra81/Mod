@@ -946,6 +946,7 @@ static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSo
 
 bool CvSelectionGroupAI::AI_tradeRoutes()
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_TRADE_ROUTES);
 	PROFILE_FUNC();
 
 	const IDInfo kEurope(getOwnerINLINE(), CvTradeRoute::EUROPE_CITY_ID);

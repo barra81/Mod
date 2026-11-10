@@ -98,6 +98,7 @@ void CvCityAI::AI_reset()
 
 void CvCityAI::AI_doTurn()
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_CITYAI_DOTURN);
 #ifdef PROFILING_ENABLED
 	Profiler profileSession(isNative() ? "CvCityAI::AI_doTurn (native)" : "CvCityAI::AI_doTurn");
 #endif
