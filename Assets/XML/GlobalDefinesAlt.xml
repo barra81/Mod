@@ -2023,4 +2023,60 @@
 		<DefineName>PIRATE_BARBARIAN_MOVES</DefineName>
 		<iDefineIntVal>7</iDefineIntVal>
 	</Define>
+	<!-- WTP: military upkeep of the human player, gold per unit and turn (the Civilopedia text still shows the default numbers) -->
+	<Define>
+		<!-- Town Guard, Colonial Militia, Ranger, Slave Hunter, Slave Master -->
+		<DefineName>MILITARY_UPKEEP_LIGHT</DefineName>
+		<iDefineIntVal>40</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- small warships that can sail coastal waters (War Caravel, Sloop, Privateer, Corvette, Naval Brig) -->
+		<DefineName>MILITARY_UPKEEP_SMALL_SHIP</DefineName>
+		<iDefineIntVal>50</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- Native Mercenaries, Conquistadors, Buccaneers -->
+		<DefineName>MILITARY_UPKEEP_MEDIUM</DefineName>
+		<iDefineIntVal>60</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- Line Infantry, Dragoons, Heavy Cavalry, Continental Guard, Light Artillery -->
+		<DefineName>MILITARY_UPKEEP_HEAVY</DefineName>
+		<iDefineIntVal>80</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- big warships (War Galleon, Frigate, Ship of the Line, Man-o-War) -->
+		<DefineName>MILITARY_UPKEEP_BIG_SHIP</DefineName>
+		<iDefineIntVal>100</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- Hessians, Heavy Artillery, Mortars -->
+		<DefineName>MILITARY_UPKEEP_ELITE</DefineName>
+		<iDefineIntVal>120</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- number of free land units (only Town Guards, Colonial Militia, Rangers, Dragoons, Conquistadors can be free) -->
+		<DefineName>MILITARY_UPKEEP_FREE_UNITS</DefineName>
+		<iDefineIntVal>5</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- one more free unit for each colony of at least this size -->
+		<DefineName>MILITARY_UPKEEP_FREE_COLONY_SIZE</DefineName>
+		<iDefineIntVal>5</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- and another one for each colony of at least this size -->
+		<DefineName>MILITARY_UPKEEP_FREE_COLONY_SIZE_BIG</DefineName>
+		<iDefineIntVal>20</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- a second shortfall within this many turns after the first warning dismisses units -->
+		<DefineName>MILITARY_UPKEEP_GRACE_TURNS</DefineName>
+		<iDefineIntVal>30</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- at most this many paid units are dismissed per turn -->
+		<DefineName>MILITARY_UPKEEP_MAX_DISMISSALS</DefineName>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
 </Civ4Defines>

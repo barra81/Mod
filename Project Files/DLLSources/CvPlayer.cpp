@@ -11672,7 +11672,9 @@ void CvPlayer::doGold()
 	// After a dismissal no unit may be armed as a soldier in the coming turn.
 	// WTP (user 2026-10-27): only when the gold falls short a second time within MILITARY_UPKEEP_GRACE_TURNS turns; the first time
 	// the player is warned and pays what he has
-	static const int MILITARY_UPKEEP_GRACE_TURNS = 30;
+	// (all values of the military upkeep are defines in GlobalDefinesAlt.xml, MILITARY_UPKEEP_*)
+	const int MILITARY_UPKEEP_GRACE_TURNS = GC.getDefineINT("MILITARY_UPKEEP_GRACE_TURNS");
+	const int iMaxDismissals = GC.getDefineINT("MILITARY_UPKEEP_MAX_DISMISSALS");
 	if (isHuman())
 	{
 		std::vector<std::pair<int, int> > aPaid;
@@ -11696,7 +11698,7 @@ void CvPlayer::doGold()
 					MESSAGE_TYPE_MAJOR_EVENT, NULL, COLOR_RED);
 			}
 		}
-		for (int iDismissed = 0; bDismiss && iDismissed < 2 && iUpkeep > getGold(); ++iDismissed)
+		for (int iDismissed = 0; bDismiss && iDismissed < iMaxDismissals && iUpkeep > getGold(); ++iDismissed)
 		{
 			// candidates: 0 non-veteran soldiers, 1 veteran soldiers, 2 units that leave
 			std::vector<int> aiCandidates[3];
@@ -11779,7 +11781,7 @@ int CvPlayer::getMilitaryUpkeepCost(const CvUnit& kUnit, int& iFreePool) const
 			return 0;
 		}
 		iFreePool = 2;
-		return kInfo.getTerrainImpassable(TERRAIN_SHALLOW_COAST) ? 100 : 50;
+		return kInfo.getTerrainImpassable(TERRAIN_SHALLOW_COAST) ? GC.getDefineINT("MILITARY_UPKEEP_BIG_SHIP") : GC.getDefineINT("MILITARY_UPKEEP_SMALL_SHIP");
 	}
 	if (kUnit.getDomainType() != DOMAIN_LAND)
 	{
@@ -11793,28 +11795,28 @@ int CvPlayer::getMilitaryUpkeepCost(const CvUnit& kUnit, int& iFreePool) const
 	if (eClass == UNITCLASS_RANGER || eClass == UNITCLASS_MILITIA)
 	{
 		iFreePool = 1;
-		return 40;
+		return GC.getDefineINT("MILITARY_UPKEEP_LIGHT");
 	}
 	if (eClass == UNITCLASS_CONQUISTADOR || eClass == UNITCLASS_MOUNTED_CONQUISTADOR)
 	{
 		iFreePool = 1;
-		return 60;
+		return GC.getDefineINT("MILITARY_UPKEEP_MEDIUM");
 	}
 	if (eClass == eSlaveHunter || eClass == eSlaveMaster)
 	{
-		return 40;
+		return GC.getDefineINT("MILITARY_UPKEEP_LIGHT");
 	}
 	if (eClass == UNITCLASS_NATIVE_MERC || eClass == eBuccanneer)
 	{
-		return 60;
+		return GC.getDefineINT("MILITARY_UPKEEP_MEDIUM");
 	}
 	if (eClass == UNITCLASS_CONTINENTAL_GUARD)
 	{
-		return 80;
+		return GC.getDefineINT("MILITARY_UPKEEP_HEAVY");
 	}
 	if (eClass == eHessian || eClass == UNITCLASS_MORTAR)
 	{
-		return 120;
+		return GC.getDefineINT("MILITARY_UPKEEP_ELITE");
 	}
 	return 0;
 }
@@ -11834,20 +11836,20 @@ int CvPlayer::getMilitaryProfessionUpkeep(ProfessionTypes eProfession, int& iFre
 	if (eProfession == eTownGuard || eProfession == eColonialMilitia)
 	{
 		iFreePool = 1;
-		return 40;
+		return GC.getDefineINT("MILITARY_UPKEEP_LIGHT");
 	}
 	if (eProfession == eDragoon)
 	{
 		iFreePool = 1;
-		return 80;
+		return GC.getDefineINT("MILITARY_UPKEEP_HEAVY");
 	}
 	if (eProfession == eLineInfantry || eProfession == eHeavyCavalry || eProfession == eLightArtillery)
 	{
-		return 80;
+		return GC.getDefineINT("MILITARY_UPKEEP_HEAVY");
 	}
 	if (eProfession == eHeavyArtillery)
 	{
-		return 120;
+		return GC.getDefineINT("MILITARY_UPKEEP_ELITE");
 	}
 	return 0;
 }
@@ -11861,15 +11863,17 @@ bool CvPlayer::isMilitaryEquipBlocked() const
 // WTP: 5 units are free, one more for each colony of size 5 and another one at size 20
 int CvPlayer::getMilitaryUpkeepFreeUnits() const
 {
-	int iFree = 5;
+	int iFree = GC.getDefineINT("MILITARY_UPKEEP_FREE_UNITS");
+	const int iSizeFirst = GC.getDefineINT("MILITARY_UPKEEP_FREE_COLONY_SIZE");
+	const int iSizeSecond = GC.getDefineINT("MILITARY_UPKEEP_FREE_COLONY_SIZE_BIG");
 	int iLoop;
 	for (const CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 	{
-		if (pLoopCity->getPopulation() >= 5)
+		if (pLoopCity->getPopulation() >= iSizeFirst)
 		{
 			++iFree;
 		}
-		if (pLoopCity->getPopulation() >= 20)
+		if (pLoopCity->getPopulation() >= iSizeSecond)
 		{
 			++iFree;
 		}
