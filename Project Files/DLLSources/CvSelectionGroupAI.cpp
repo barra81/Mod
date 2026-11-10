@@ -1292,8 +1292,56 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	//Basically this looks at the entire NEXT trade run (source-city to dest-city), with some bias given towards
 	//starting it from pPlotCity as sourceCity.
 	//If we are carrying cargo, only count cities where we can unload.
+
+	// WTP: an AI player has many routes, and every route with something to carry cost path searches (the AI's transports took up to half
+	// of the waiting time between turns). The routes are ranked by their value without any path (the paths can only lower it), and only the
+	// best WTP_AI_ROUTE_BATCH routes are evaluated with paths. The rest follows only if not a single one of the best routes is viable.
+	static const uint WTP_AI_ROUTE_BATCH = 12;
+	std::vector<bool> aRouteDeferred(routes.size(), false);
+	bool bAnyDeferred = false;
+	if (!isHuman() && routes.size() > WTP_AI_ROUTE_BATCH)
+	{
+		std::vector<std::pair<std::pair<int, int>, int> > aRank; // ((value, -distance), route index)
+		for (uint i = 0; i < routes.size(); ++i)
+		{
+			CvCity* pRankSource = ::getCity(routes[i]->getSourceCity());
+			if (pRankSource == NULL || !(bNoCargo || (cityValues[routes[i]->getSourceCity()] > 0)))
+			{
+				continue;
+			}
+			const int iRankAmount = pRankSource->getYieldStored(routes[i]->getYield()) - pRankSource->getAutoMaintainThreshold(routes[i]->getYield());
+			if (iRankAmount <= 0)
+			{
+				continue;
+			}
+			const int iRankExport = kOwner.AI_transferYieldValue(routes[i]->getSourceCity(), routes[i]->getYield(), -iRankAmount);
+			const int iRankImport = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), iRankAmount);
+			const int iRankValue = (iRankExport + iRankImport + 2 * std::min(iRankExport, iRankImport)) / 4;
+			aRank.push_back(std::make_pair(std::make_pair(iRankValue, -plotDistance(plot()->getX_INLINE(), plot()->getY_INLINE(), pRankSource->getX_INLINE(), pRankSource->getY_INLINE())), (int)i));
+		}
+		if (aRank.size() > WTP_AI_ROUTE_BATCH)
+		{
+			std::sort(aRank.begin(), aRank.end(), std::greater<std::pair<std::pair<int, int>, int> >());
+			for (uint k = WTP_AI_ROUTE_BATCH; k < aRank.size(); ++k)
+			{
+				aRouteDeferred[aRank[k].second] = true;
+			}
+			bAnyDeferred = true;
+		}
+	}
+
+	for (int iBatch = 0; iBatch < 2; ++iBatch)
+	{
+	if (iBatch == 1 && !(bAnyDeferred && bNoRoute && bNoCargo))
+	{
+		break;
+	}
 	for (uint i = 0; i < routes.size(); ++i)
 	{
+		if (aRouteDeferred[i] != (iBatch == 1))
+		{
+			continue;
+		}
 		CvCity* pSourceCity = ::getCity(routes[i]->getSourceCity());
 
 		if ((pSourceCity != NULL) && (bNoCargo || (cityValues[routes[i]->getSourceCity()] > 0)))
@@ -1402,6 +1450,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 		}
 	}
+	} // iBatch
 
 	// We bail if there's not a single viable destination
 	// Transports with cargo should carry on because they might need to drop it off somewhere before they can start on normal traderoutes
@@ -1420,8 +1469,41 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	IDInfo kBestDestination(NO_PLAYER, -1);
 	int iBestDestinationValue = 0;
 	//select best destination
-	for (std::map<IDInfo, int>::iterator it = cityValues.begin(); it != cityValues.end(); ++it)
+	// WTP: an AI player's transport tries the destinations in the order of their value without a path (the path can only lower it, except
+	// for the coastal transport, which tries the 8 best). Before every colony with a value got its own path search.
+	static const int WTP_AI_MAX_DESTINATION_PATHS = 8;
+	int iDestinationPaths = 0;
+	std::vector<std::pair<IDInfo, int> > aDestinations(cityValues.begin(), cityValues.end());
+	if (!isHuman() && aDestinations.size() > 1)
 	{
+		std::vector<std::pair<int, int> > aKeys; // (-value, index): ascending order is the best first
+		for (uint k = 0; k < aDestinations.size(); ++k)
+		{
+			int iKey = 0;
+			if (aDestinations[k].second > 0)
+			{
+				CvCity* pKeyCity = ::getCity(aDestinations[k].first);
+				if (pKeyCity != NULL)
+				{
+					iKey = aDestinations[k].second / (1 + kOwner.AI_plotTargetMissionAIs(pKeyCity->plot(), MISSIONAI_TRANSPORT, this, 0));
+				}
+			}
+			aKeys.push_back(std::make_pair(-iKey, (int)k));
+		}
+		std::sort(aKeys.begin(), aKeys.end());
+		std::vector<std::pair<IDInfo, int> > aSorted;
+		for (uint k = 0; k < aKeys.size(); ++k)
+		{
+			aSorted.push_back(aDestinations[aKeys[k].second]);
+		}
+		aDestinations.swap(aSorted);
+	}
+	for (std::vector<std::pair<IDInfo, int> >::iterator it = aDestinations.begin(); it != aDestinations.end(); ++it)
+	{
+		if (!isHuman() && iBestDestinationValue > 0 && (!bCoastalTransport || iDestinationPaths >= WTP_AI_MAX_DESTINATION_PATHS))
+		{
+			break;
+		}
 		int iValue = it->second;
 
 		if (iValue > 0)
@@ -1429,6 +1511,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			CvCity* pCity = ::getCity(it->first);
 			if (pCity != NULL)
 			{
+				++iDestinationPaths;
 				FAssert(!atPlot(pCity->plot()));
 				// TAC - Trade Routes Advisor - koma13 - START
 				//if (generatePath(plot(), pCity->plot(), MOVE_NO_ENEMY_TERRITORY, true))
