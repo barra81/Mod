@@ -913,6 +913,12 @@ void CvSelectionGroupAI::processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo
 	cityValues[pRoute->getDestinationCity()] = 0;
 }
 
+// WTP: a human player's fully automated transport (Automate Transport) fills free cargo slots with yields for colonies that lie on
+// its way, and with mixed cargo it serves the nearest colony first. Set to false to get the old behavior (one destination per trip).
+static const bool WTP_TRADE_ROUTE_FILL_HOLD = true;
+// a colony counts as on the way if the trip over it takes at most this many turns more than the direct trip
+static const int WTP_FILL_HOLD_MAX_DETOUR_TURNS = 2;
+
 // WTP: the path of a transport of this unit type from a source city to a destination city, kept for the turn.
 // Every transport of every yield of every route asked for the same long coastal paths again and again.
 static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSourceCity, const CvCity* pDestinationCity, int iFlags, bool bIgnoreDanger, int* piTurns)
@@ -966,6 +972,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	// colony, from there to the destination, to its next destination)
 	static const int LAND_TRANSPORT_MAX_TRIP_TURNS = 10;
 	const bool bMaxTrip = isHuman() && getAutomateType() == AUTOMATE_TRANSPORT_FULL && getDomainType() == DOMAIN_LAND;
+	const bool bFillHold = WTP_TRADE_ROUTE_FILL_HOLD && isHuman() && getAutomateType() == AUTOMATE_TRANSPORT_FULL;
 
 	// Erik: We need to determine if we're dealing with a coastal transport
 	bool bCoastalTransport = false;
@@ -1343,6 +1350,12 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				{
 					iValue /= 1 + kOwner.AI_plotTargetMissionAIs(pDestinationCityPlot, MISSIONAI_TRANSPORT, this, 0);
 
+					// WTP: with cargo on board a human player's automated transport serves the nearest colony first (value per turn)
+					if (bFillHold && !bNoCargo && iValue > 0)
+					{
+						iValue = std::max(1, iValue / std::max(1, iTurns));
+					}
+
 					if (bCoastalTransport)
 					{
 						// Erik: Eventually these tuning factors should not be hard-coded!
@@ -1394,6 +1407,78 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 		//For example a city might have "101" of an item, we want to move the first 100 but not the 1.
 		//But it could also have 200, in which case we might want 2 loads of 100...
 		//But it could also have 200 of two resources, and we'd want to move 100 of each...
+		// WTP: pass 0 loads for the best destination. Pass 1 (human player's automated transport only) fills the free slots
+		// with yields for other colonies that lie on the way to it
+		std::set<IDInfo> aFillDestinations;
+		for (int iPass = 0; iPass < 2; ++iPass)
+		{
+		if (iPass == 1)
+		{
+			if (!bFillHold || isFull())
+			{
+				break;
+			}
+			CvCity* const pBestCity = ::getCity(kBestDestination);
+			if (pBestCity == NULL)
+			{
+				break;
+			}
+			const int iFillFlags = (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY);
+			int iToBest = 0;
+			bool bBestOk;
+			std::map<IDInfo, std::pair<bool, int> >::const_iterator itBestPath = aGroupToDestPaths.find(kBestDestination);
+			if (itBestPath != aGroupToDestPaths.end())
+			{
+				bBestOk = itBestPath->second.first;
+				iToBest = itBestPath->second.second;
+			}
+			else
+			{
+				bBestOk = generatePath(plot(), pBestCity->plot(), iFillFlags, true, &iToBest);
+				aGroupToDestPaths[kBestDestination] = std::make_pair(bBestOk, iToBest);
+			}
+			if (!bBestOk)
+			{
+				break;
+			}
+			for (uint i = 0; i < routes.size(); ++i)
+			{
+				const IDInfo kFillDestination = routes[i]->getDestinationCity();
+				if (kFillDestination == kBestDestination || ::getCity(routes[i]->getSourceCity()) != pPlotCity || routes[i]->isPrivate()
+					|| aFillDestinations.find(kFillDestination) != aFillDestinations.end())
+				{
+					continue;
+				}
+				CvCity* const pFillCity = ::getCity(kFillDestination);
+				if (pFillCity == NULL || pFillCity == pPlotCity)
+				{
+					continue;
+				}
+				int iToFill = 0;
+				bool bFillOk;
+				std::map<IDInfo, std::pair<bool, int> >::const_iterator itFillPath = aGroupToDestPaths.find(kFillDestination);
+				if (itFillPath != aGroupToDestPaths.end())
+				{
+					bFillOk = itFillPath->second.first;
+					iToFill = itFillPath->second.second;
+				}
+				else
+				{
+					bFillOk = generatePath(plot(), pFillCity->plot(), iFillFlags, true, &iToFill);
+					aGroupToDestPaths[kFillDestination] = std::make_pair(bFillOk, iToFill);
+				}
+				int iFillToBest = 0;
+				if (bFillOk && WTP_getRoutePathCached(this, pFillCity, pBestCity, iFillFlags, bIgnoreDanger, &iFillToBest)
+					&& iToFill + iFillToBest <= iToBest + WTP_FILL_HOLD_MAX_DETOUR_TURNS)
+				{
+					aFillDestinations.insert(kFillDestination);
+				}
+			}
+			if (aFillDestinations.empty())
+			{
+				break;
+			}
+		}
 		while (!isFull())
 		{
 			int iBestRoute = -1;
@@ -1410,7 +1495,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 
 				const CvCity* pSourceCity = ::getCity(routes[i]->getSourceCity());
 				if ((pSourceCity != NULL && pSourceCity == pPlotCity) // R&R mod, vetiarvind, max yield import limit (move plot==srcCity check outside as optmztn)
-					&& (routes[i]->getDestinationCity() == kBestDestination))
+					&& (iPass == 0 ? (routes[i]->getDestinationCity() == kBestDestination) : (aFillDestinations.find(routes[i]->getDestinationCity()) != aFillDestinations.end())))
 				{
 					const CvCity* pDestinationCity = ::getCity(routes[i]->getDestinationCity());
 					const YieldTypes eYield = routes[i]->getYield();
@@ -1486,7 +1571,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				break;
 			}
 		}
-		//XXX fill hold.
+		} // iPass
 	}
 
 	if ((kBestDestination.eOwner == NO_PLAYER) && hasCargo())
