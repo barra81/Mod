@@ -913,6 +913,31 @@ void CvSelectionGroupAI::processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo
 	cityValues[pRoute->getDestinationCity()] = 0;
 }
 
+// WTP: the path of a transport of this unit type from a source city to a destination city, kept for the turn.
+// Every transport of every yield of every route asked for the same long coastal paths again and again.
+static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSourceCity, const CvCity* pDestinationCity, int iFlags, bool bIgnoreDanger, int* piTurns)
+{
+	static int iCacheTurn = -1;
+	static std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<bool, int> > aRoutePaths;
+	if (iCacheTurn != GC.getGameINLINE().getGameTurn())
+	{
+		iCacheTurn = GC.getGameINLINE().getGameTurn();
+		aRoutePaths.clear();
+	}
+	const std::pair<std::pair<int, int>, std::pair<int, int> > kRouteKey(
+		std::make_pair(((int)pGroup->getHeadUnit()->getUnitType() * 2 + (bIgnoreDanger ? 1 : 0)) * MAX_PLAYERS + pDestinationCity->getOwnerINLINE(), (int)pSourceCity->getOwnerINLINE()),
+		std::make_pair(pSourceCity->getID(), pDestinationCity->getID()));
+	std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<bool, int> >::const_iterator itRoute = aRoutePaths.find(kRouteKey);
+	if (itRoute != aRoutePaths.end())
+	{
+		*piTurns = itRoute->second.second;
+		return itRoute->second.first;
+	}
+	const bool bOk = pGroup->generatePath(pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, piTurns);
+	aRoutePaths[kRouteKey] = std::make_pair(bOk, *piTurns);
+	return bOk;
+}
+
 bool CvSelectionGroupAI::AI_tradeRoutes()
 {
 	PROFILE_FUNC();
@@ -924,6 +949,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	std::set<int>::iterator it;
 
 	std::map<IDInfo, int> cityValues;
+	std::map<IDInfo, std::pair<bool, int> > aGroupToDestPaths; // WTP: destination city -> (path from this group, turns)
 
 	std::vector<CvTradeRoute*> routes;
 	std::vector<int> routeValues;
@@ -1124,7 +1150,17 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				if(pDestinationCity != NULL && pDestinationCity->getMaxImportAmount(eYield) > 0 && !routes[i]->isPrivate())
 				{
 					int turnsToReach = 0;
-					generatePath(plot(), pDestinationCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &turnsToReach);
+					// WTP: the path to a destination city is searched once per call (several yields go to the same city)
+					std::map<IDInfo, std::pair<bool, int> >::const_iterator itToDest = aGroupToDestPaths.find(routes[i]->getDestinationCity());
+					if (itToDest != aGroupToDestPaths.end())
+					{
+						turnsToReach = itToDest->second.second;
+					}
+					else
+					{
+						const bool bToDestOk = generatePath(plot(), pDestinationCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &turnsToReach);
+						aGroupToDestPaths[routes[i]->getDestinationCity()] = std::make_pair(bToDestOk, turnsToReach);
+					}
 					yieldsToUnload = std::min(yieldsToUnload, estimateYieldsToLoad(pDestinationCity, 9999, eYield, turnsToReach, 0));
 				}
 				//int iRouteValue = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), aiYieldsLoaded[routes[i]->getYield()]);
@@ -1162,7 +1198,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			int iAmount = pSourceCity->getYieldStored(eYield) - pSourceCity->getAutoMaintainThreshold(eYield);
 			// transport feeder - end - Nightinggale
 			// WTP: land transport with Automate Transport: no trip of more than 10 turns
-			if (bMaxTrip && pDestinationCity != NULL)
+			// WTP: a route with nothing to carry gets no path search: it could not add any value (most routes have nothing to move in a given turn)
+			if (bMaxTrip && pDestinationCity != NULL && iAmount > 0)
 			{
 				const int iFlags = (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY);
 				int iToSource = 0;
@@ -1175,7 +1212,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 			// R&R mod, vetiarvind, max yield import limit - start
 			// WTP: a private route loads without import limit (see below)
-			if(pDestinationCity != NULL && pDestinationCity->getMaxImportAmount(eYield) > 0 && !routes[i]->isPrivate())
+			if(pDestinationCity != NULL && iAmount > 0 && pDestinationCity->getMaxImportAmount(eYield) > 0 && !routes[i]->isPrivate())
 			{
 				int turnsToReachToSource = 0, turnsToReachFromSourceToDest = 0;
 				// WTP: the paths are kept: source to this group once per source city of this call, source to destination
@@ -1194,28 +1231,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					bSourceOk = generatePath(pSourceCity->plot(), plot(), iFlags, true, &turnsToReachToSource);
 					aSourcePaths[pSourceCity->getID()] = std::make_pair(bSourceOk, turnsToReachToSource);
 				}
-				static int iCacheTurn = -1;
-				static std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<bool, int> > aRoutePaths;
-				if (iCacheTurn != GC.getGameINLINE().getGameTurn())
-				{
-					iCacheTurn = GC.getGameINLINE().getGameTurn();
-					aRoutePaths.clear();
-				}
-				const std::pair<std::pair<int, int>, std::pair<int, int> > kRouteKey(
-					std::make_pair(((int)getHeadUnit()->getUnitType() * 2 + (bIgnoreDanger ? 1 : 0)) * MAX_PLAYERS + pDestinationCity->getOwnerINLINE(), (int)pSourceCity->getOwnerINLINE()),
-					std::make_pair(pSourceCity->getID(), pDestinationCity->getID()));
-				bool bDestOk;
-				std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<bool, int> >::const_iterator itRoute = aRoutePaths.find(kRouteKey);
-				if (itRoute != aRoutePaths.end())
-				{
-					bDestOk = itRoute->second.first;
-					turnsToReachFromSourceToDest = itRoute->second.second;
-				}
-				else
-				{
-					bDestOk = generatePath(pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, &turnsToReachFromSourceToDest);
-					aRoutePaths[kRouteKey] = std::make_pair(bDestOk, turnsToReachFromSourceToDest);
-				}
+				const bool bDestOk = WTP_getRoutePathCached(this, pSourceCity, pDestinationCity, iFlags, bIgnoreDanger, &turnsToReachFromSourceToDest);
 
 				if (!(bSourceOk && bDestOk))
 					// We require both of these paths to be valid. If not, we skip this route
@@ -1308,8 +1324,20 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 
 				CvPlot* pDestinationCityPlot = pCity->plot();
 
-				int iTurns;
-				if (generatePath(plot(), pDestinationCityPlot, (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iTurns)
+				int iTurns = 0;
+				bool bDestinationReachable;
+				std::map<IDInfo, std::pair<bool, int> >::const_iterator itToDest = aGroupToDestPaths.find(it->first);
+				if (itToDest != aGroupToDestPaths.end())
+				{
+					bDestinationReachable = itToDest->second.first;
+					iTurns = itToDest->second.second;
+				}
+				else
+				{
+					bDestinationReachable = generatePath(plot(), pDestinationCityPlot, (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iTurns);
+					aGroupToDestPaths[it->first] = std::make_pair(bDestinationReachable, iTurns);
+				}
+				if (bDestinationReachable
 					&& (!bMaxTrip || iTurns <= LAND_TRANSPORT_MAX_TRIP_TURNS)) // WTP: land transport: no trip of more than 10 turns
 				// TAC - Trade Routes Advisor - koma13 - END
 				{
@@ -1400,7 +1428,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					{
 						int turnsToReach = 0;
 						iOriginalAmount = iAmount = std::min(GC.getGameINLINE().getCargoYieldCapacity(), iAmount);
-						const bool r1 = generatePath(pSourceCity->plot(), pDestinationCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &turnsToReach);
+						const bool r1 = WTP_getRoutePathCached(this, pSourceCity, pDestinationCity, (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), bIgnoreDanger, &turnsToReach);
 						FAssertMsg(r1, "Path must be valid!");
 						// Erik: If the destination can be reached in the same turn, subtract a turn
 						turnsToReach = std::max(0, turnsToReach - 1);
