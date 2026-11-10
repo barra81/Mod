@@ -107,6 +107,7 @@ protected:
 	bool getIgnoreDangerStatus() const;
 	// R&R mod, vetiarvind, max yield import limit - end
 
+public:
 	// WTP: the current orders of a human player's automated transport for the unit tooltip (not saved, rebuilt by AI_tradeRoutes):
 	// a yield on board is brought from a source colony to a destination colony, or (bLoaded false) it is to be fetched there
 	struct WtpTradeOrder
