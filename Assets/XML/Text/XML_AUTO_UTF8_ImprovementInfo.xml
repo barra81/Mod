@@ -2,7 +2,7 @@
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_CITY_RUINS</Tag>
-		<English>Ruins</English>
+		<English>[COLOR_CAT_TERRAIN]Ruins[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Ruínas</Text>
@@ -15,7 +15,7 @@
 			<Plural>1</Plural>
 		</French>
 		<German>
-			<Text>Ruine:Ruinen</Text>
+			<Text>[COLOR_CAT_TERRAIN]Ruine:Ruinen[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0:1</Plural>
 		</German>
@@ -40,7 +40,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_FRUIT_PLANTATION</Tag>
-		<English>Fruit Plantation</English>
+		<English>[COLOR_CAT_FOOD]Fruit Plantation[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Plantação de Frutas</Text>
@@ -53,7 +53,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Obstplantage</Text>
+			<Text>[COLOR_CAT_FOOD]Obstplantage[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -71,14 +71,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_FRUIT_PLANTATION_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Fruit plantations[COLOR_REVERT] can be built only in [LINK=FEATURE_JUNGLE]jungles[\LINK] or on Bonus Resources for Fruits. They increase the production of [LINK=YIELD_COCOA_FRUITS]cocoa pods[\LINK], [LINK=YIELD_FRUITS]fruits[\LINK] and [LINK=YIELD_FOOD]food[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Fruit plantations are usually a mixture of many different kinds of trees and not a monoculture. This ensures a healthy environment for the precious fruits.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Fruit plantations[COLOR_REVERT] can be built only in [COLOR:190:130:70:255][LINK=FEATURE_JUNGLE]jungles[\LINK][COLOR_REVERT] or on Bonus Resources for Fruits. They increase the production of [COLOR:255:205:40:255][LINK=YIELD_COCOA_FRUITS]cocoa pods[\LINK][COLOR_REVERT], [COLOR:110:220:80:255][LINK=YIELD_FRUITS]fruits[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Fruit plantations are usually a mixture of many different kinds of trees and not a monoculture. This ensures a healthy environment for the precious fruits.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Plantações de frutas[COLOR_REVERT] podem ser construídas apenas em [LINK=FEATURE_JUNGLE]selvas[\LINK] ou em recursos bônus para frutas. Eles aumentam a produção de [LINK=YIELD_COCOA_FRUITS]vagens de cacau[\LINK], [LINK=YIELD_FRUITS]frutas[\LINK] e [LINK=YIELD_FOOD]alimentos[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]As plantações de frutas geralmente são uma mistura de muitos tipos diferentes de árvores e não uma monocultura. Isso garante um ambiente saudável para as preciosas frutas.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Les [COLOR_HIGHLIGHT_TEXT]plantations de fruits[COLOR_REVERT] sont généralement un mélange de plusieurs types d'arbres et non pas une monoculture. C'est ce qui assure un environnement sain pour les fruits précieux.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Obstplantagen[COLOR_REVERT] können nur im [LINK=FEATURE_JUNGLE]Dschungel[\LINK] oder auf Bonusresourcen für Früchte angelegt werden. Sie steigern die Produktion von [LINK=YIELD_COCOA_FRUITS]Kakaofrüchten[\LINK], [LINK=YIELD_FRUITS]Früchten[\LINK] und [LINK=YIELD_FOOD]Nahrung[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Im Gegensatz zu den Monokulturen anderen Plantagen sind Obstplantagen normalerweise eine Mischung verschiedenster Bäume und Sträucher. Dies ermöglicht ein gesundes Umfeld für die wertvollen Früchte.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Obstplantagen[COLOR_REVERT] können nur im [COLOR:190:130:70:255][LINK=FEATURE_JUNGLE]Dschungel[\LINK][COLOR_REVERT] oder auf Bonusresourcen für Früchte angelegt werden. Sie steigern die Produktion von [COLOR:255:205:40:255][LINK=YIELD_COCOA_FRUITS]Kakaofrüchten[\LINK][COLOR_REVERT], [COLOR:110:220:80:255][LINK=YIELD_FRUITS]Früchten[\LINK][COLOR_REVERT] und [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Im Gegensatz zu den Monokulturen anderen Plantagen sind Obstplantagen normalerweise eine Mischung verschiedenster Bäume und Sträucher. Dies ermöglicht ein gesundes Umfeld für die wertvollen Früchte.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_FRUIT_PLANTATION</Tag>
-		<English>Large Fruit Plantation</English>
+		<English>[COLOR_CAT_FOOD]Large Fruit Plantation[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Grande Plantação de Frutas</Text>
@@ -91,7 +91,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Große Obstplantage</Text>
+			<Text>[COLOR_CAT_FOOD]Große Obstplantage[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -109,14 +109,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_FRUIT_PLANTATION_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large fruit plantations[COLOR_REVERT] are upgrades of [LINK=IMPROVEMENT_FRUIT_PLANTATION]fruit plantations[\LINK]. They increase the production of [LINK=YIELD_COCOA_FRUITS]cocoa pods[\LINK], [LINK=YIELD_FRUITS]fruits[\LINK] and [LINK=YIELD_FOOD]food[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Fruit plantations are usually a mixture of many different kinds of trees and not a monoculture. This ensures a healthy environment for the precious fruits.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large fruit plantations[COLOR_REVERT] are upgrades of [COLOR:110:220:80:255][LINK=IMPROVEMENT_FRUIT_PLANTATION]fruit plantations[\LINK][COLOR_REVERT]. They increase the production of [COLOR:255:205:40:255][LINK=YIELD_COCOA_FRUITS]cocoa pods[\LINK][COLOR_REVERT], [COLOR:110:220:80:255][LINK=YIELD_FRUITS]fruits[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Fruit plantations are usually a mixture of many different kinds of trees and not a monoculture. This ensures a healthy environment for the precious fruits.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Grandes plantações de frutas[COLOR_REVERT] são atualizações de [LINK=IMPROVEMENT_FRUIT_PLANTATION]plantações de frutas[\LINK]. Eles aumentam a produção de [LINK=YIELD_COCOA_FRUITS]vagens de cacau[\LINK], [LINK=YIELD_FRUITS]frutas[\LINK] e [LINK=YIELD_FOOD]alimentos[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]As plantações de frutas geralmente são uma mistura de muitos tipos diferentes de árvores e não uma monocultura. Isso garante um ambiente saudável para as preciosas frutas.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Les [COLOR_HIGHLIGHT_TEXT]plantations de fruits[COLOR_REVERT] sont généralement un mélange de plusieurs types d'arbres et non pas une monoculture. C'est ce qui assure un environnement sain pour les fruits précieux.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Große Obstplantagen[COLOR_REVERT] sind eine Erweiterung von [LINK=IMPROVEMENT_FRUIT_PLANTATION]Obstplantagen[\LINK]. Sie verbessern die Produktion von [LINK=YIELD_COCOA_FRUITS]Kakaofrüchten[\LINK], [LINK=YIELD_FRUITS]Früchten[\LINK] und [LINK=YIELD_FOOD]Nahrung[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Im Gegensatz zu den Monokulturen anderen Plantagen sind Obstplantagen normalerweise eine Mischung verschiedenster Bäume und Sträucher. Dies ermöglicht ein gesundes Umfeld für die wertvollen Früchte.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Große Obstplantagen[COLOR_REVERT] sind eine Erweiterung von [COLOR:110:220:80:255][LINK=IMPROVEMENT_FRUIT_PLANTATION]Obstplantagen[\LINK][COLOR_REVERT]. Sie verbessern die Produktion von [COLOR:255:205:40:255][LINK=YIELD_COCOA_FRUITS]Kakaofrüchten[\LINK][COLOR_REVERT], [COLOR:110:220:80:255][LINK=YIELD_FRUITS]Früchten[\LINK][COLOR_REVERT] und [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Im Gegensatz zu den Monokulturen anderen Plantagen sind Obstplantagen normalerweise eine Mischung verschiedenster Bäume und Sträucher. Dies ermöglicht ein gesundes Umfeld für die wertvollen Früchte.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_COLLECTORS_POST</Tag>
-		<English>Collector's Post</English>
+		<English>[COLOR_CAT_GOLD]Collector's Post[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Posto de Coletor</Text>
@@ -129,7 +129,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Sammelstelle</Text>
+			<Text>[COLOR_CAT_GOLD]Sammelstelle[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -147,14 +147,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_COLLECTORS_POST_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Collector's posts[COLOR_REVERT] can be built only on hilly [LINK=TERRAIN_PLAINS]prairie[\LINK] terrain. The [LINK=YIELD_FOOD]Food[\LINK] and [LINK=YIELD_RED_PEPPER]Red Pepper[\LINK] production on such tiles is increased.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Collector's posts[COLOR_REVERT] can be built only on hilly [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS]prairie[\LINK][COLOR_REVERT] terrain. The [COLOR:110:220:80:255][LINK=YIELD_FOOD]Food[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_RED_PEPPER]Red Pepper[\LINK][COLOR_REVERT] production on such tiles is increased.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Postos de coletor[COLOR_REVERT] só podem ser construídos em terreno montanhoso de [LINK=TERRAIN_PLAINS]planície[\LINK]. A produção de [LINK=YIELD_FOOD]Comida[\LINK] e [LINK=YIELD_RED_PEPPER]Pimentão Vermelho[\LINK] nesses lotes é aumentada.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Les piments font partie de l'alimentation des Amériques depuis au moins 9 500 ans. Des traces archéologiques de domestication ont été trouvées dans le sud-ouest de l'équateur il y a plus de 6 000 ans. Le piment semble avoir été une des premières plantes cultivées autogames en Amérique centrale et du Sud.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Sammelstellen[COLOR_REVERT] können nur in hügeliger [LINK=TERRAIN_PLAINS]Prärie[\LINK] errichtet werden. Die Ausbeute an [LINK=YIELD_FOOD]Nahrung[\LINK] und [LINK=YIELD_RED_PEPPER]Rotem Pfeffer[\LINK] läßt sich damit steigern.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Sammelstelle ist ein Gebäude, dass der Zwischenlagerung von Gütern für ihren Weitertransport dient.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Sammelstellen[COLOR_REVERT] können nur in hügeliger [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS]Prärie[\LINK][COLOR_REVERT] errichtet werden. Die Ausbeute an [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=YIELD_RED_PEPPER]Rotem Pfeffer[\LINK][COLOR_REVERT] läßt sich damit steigern.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Sammelstelle ist ein Gebäude, dass der Zwischenlagerung von Gütern für ihren Weitertransport dient.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_COLLECTORS_DEPOT</Tag>
-		<English>Collector's Depot</English>
+		<English>[COLOR_CAT_GOLD]Collector's Depot[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Depósito de Coletor</Text>
@@ -167,7 +167,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Sammeldepot</Text>
+			<Text>[COLOR_CAT_GOLD]Sammeldepot[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -185,14 +185,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_COLLECTORS_DEPOT_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Collector's depots[COLOR_REVERT] are upgrades of [LINK=IMPROVEMENT_COLLECTORS_POST]collector's posts[\LINK]. The [LINK=YIELD_FOOD]food[\LINK] and [LINK=YIELD_RED_PEPPER]red pepper[\LINK] production on such tiles is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Posts start small, just a location indicated by a post, then a shed and, in time, as big as business justifies.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Collector's depots[COLOR_REVERT] are upgrades of [COLOR:255:205:40:255][LINK=IMPROVEMENT_COLLECTORS_POST]collector's posts[\LINK][COLOR_REVERT]. The [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_RED_PEPPER]red pepper[\LINK][COLOR_REVERT] production on such tiles is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Posts start small, just a location indicated by a post, then a shed and, in time, as big as business justifies.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Depósitos de coletor[COLOR_REVERT] são atualizações de [LINK=IMPROVEMENT_COLLECTORS_POST]postos de coletor[\LINK]. A produção de [LINK=YIELD_FOOD]comida[\LINK] e de [LINK=YIELD_RED_PEPPER]pimenta vermelha[\LINK] nesses lotes aumenta.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Os postos começam pequenos, apenas um local indicado por um poste, depois um galpão e, com o tempo, tão grandes quanto o negócio justificar.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Les piments font partie de l'alimentation des Amériques depuis au moins 9 500 ans. Des traces archéologiques de domestication ont été trouvées dans le sud-ouest de l'équateur il y a plus de 6 000 ans. Le piment semble avoir été une des premières plantes cultivées autogames en Amérique centrale et du Sud.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Sammeldepots[COLOR_REVERT] sind eine Erweiterung der [LINK=IMPROVEMENT_COLLECTORS_POST]Sammelstelle[\LINK]. Die Ausbeute an [LINK=YIELD_FOOD]Nahrung[\LINK] und [LINK=YIELD_RED_PEPPER]Rotem Pfeffer[\LINK] läßt sich damit steigern.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Sammeldepot ist ein Gebäude, dass der Zwischenlagerung von Gütern für ihren Weitertransport dient.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Sammeldepots[COLOR_REVERT] sind eine Erweiterung der [COLOR:255:205:40:255][LINK=IMPROVEMENT_COLLECTORS_POST]Sammelstelle[\LINK][COLOR_REVERT]. Die Ausbeute an [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=YIELD_RED_PEPPER]Rotem Pfeffer[\LINK][COLOR_REVERT] läßt sich damit steigern.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Sammeldepot ist ein Gebäude, dass der Zwischenlagerung von Gütern für ihren Weitertransport dient.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_COLLECTORS_POST2</Tag>
-		<English>Planter's Post</English>
+		<English>[COLOR_CAT_GOLD]Planter's Post[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Posto de Plantador</Text>
@@ -205,7 +205,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Pflanzerlager</Text>
+			<Text>[COLOR_CAT_GOLD]Pflanzerlager[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -223,14 +223,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_COLLECTORS_POST2_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]The [COLOR_HIGHLIGHT_TEXT]Planter's Post[COLOR_REVERT] can be built only on hilly [LINK=TERRAIN_SAVANNAH]savannah[\LINK] terrain. It gives a production bonus to [LINK=YIELD_COCA_LEAVES]coca leaves[\LINK] and [LINK=YIELD_FOOD]food[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Coca Leaves can refer to leaves of all four cultivated plants of the Coca family (Erythoxylaceae), native to western South America. In times both ancient and modern, these plants have been highly valued for their psychoactive properties, which can be experienced by chewing the leaves, making coca tea ("Mate de coca") out of it and, in modern times, chemically extracting the psychoactive agents to produce the drug cocaine.[PARAGRAPH:1]Coca leaves are an effective remedy against altitude sickness, and give its consumer a greater tolerance for hunger, thirst and fatigue. Apart from that, coca can be used as an anaesthetic and, due to its religious significance in Indigenous cultures, many other properties are ascribed to it, some of which are supported by modern science.[PARAGRAPH:1]Coca leaves have been used for medicinal, nutritional and religious purposes in the Andean region since prehistoric times, possibly as long as 8,000 years ago. It was during this long period that the ancestral coca plant was domesticated, after which it diversified into the four modern species.[PARAGRAPH:1]In the Incan empire the plant was thought to have a divine origin, and its leaves were used as offerings, as a method of divination similar to the reading of tea leaves in the Old World, and also as preparation for prayers or religious ceremonies. It eventually spread over a large area, from Colombia in the north to Chile in the south.[PARAGRAPH:1]After their conquest of the Incan Empire, the use of the leaf was tolerated by the Spanish because it enhanced the performance of forced labourers, but its religious use was prohibited, and the Spanish themselves were discouraged from using it. Though it was introduced in Europe in the 16th century, it never became popular until the 19th century when the first cocaine was produced.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]The [COLOR_HIGHLIGHT_TEXT]Planter's Post[COLOR_REVERT] can be built only on hilly [COLOR:215:200:150:255][LINK=TERRAIN_SAVANNAH]savannah[\LINK][COLOR_REVERT] terrain. It gives a production bonus to [COLOR:255:205:40:255][LINK=YIELD_COCA_LEAVES]coca leaves[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Coca Leaves can refer to leaves of all four cultivated plants of the Coca family (Erythoxylaceae), native to western South America. In times both ancient and modern, these plants have been highly valued for their psychoactive properties, which can be experienced by chewing the leaves, making coca tea ("Mate de coca") out of it and, in modern times, chemically extracting the psychoactive agents to produce the drug cocaine.[PARAGRAPH:1]Coca leaves are an effective remedy against altitude sickness, and give its consumer a greater tolerance for hunger, thirst and fatigue. Apart from that, coca can be used as an anaesthetic and, due to its religious significance in Indigenous cultures, many other properties are ascribed to it, some of which are supported by modern science.[PARAGRAPH:1]Coca leaves have been used for medicinal, nutritional and religious purposes in the Andean region since prehistoric times, possibly as long as 8,000 years ago. It was during this long period that the ancestral coca plant was domesticated, after which it diversified into the four modern species.[PARAGRAPH:1]In the Incan empire the plant was thought to have a divine origin, and its leaves were used as offerings, as a method of divination similar to the reading of tea leaves in the Old World, and also as preparation for prayers or religious ceremonies. It eventually spread over a large area, from Colombia in the north to Chile in the south.[PARAGRAPH:1]After their conquest of the Incan Empire, the use of the leaf was tolerated by the Spanish because it enhanced the performance of forced labourers, but its religious use was prohibited, and the Spanish themselves were discouraged from using it. Though it was introduced in Europe in the 16th century, it never became popular until the 19th century when the first cocaine was produced.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1]O [COLOR_HIGHLIGHT_TEXT]Posto do Plantador[COLOR_REVERT] só pode ser construído em terreno montanhoso de [LINK=TERRAIN_SAVANNAH]savana[\LINK]. Dá um bônus de produção para [LINK=YIELD_COCA_LEAVES]folhas de coca[\LINK] e [LINK=YIELD_FOOD]alimentos[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Folhas de coca podem se referir às folhas de todas as quatro plantas cultivadas da família Coca (Erythoxylaceae), nativas do oeste da América do Sul. Nos tempos antigos e modernos, essas plantas foram muito valorizadas por suas propriedades psicoativas, que podem ser experimentadas mastigando as folhas, fazendo chá de coca ("Mate de coca") e, nos tempos modernos, extraindo quimicamente os agentes psicoativos para produzir a droga cocaína.[PARAGRAPH:1]As folhas de coca são um remédio eficaz contra o mal da altitude e dão ao seu consumidor uma maior tolerância à fome, sede e fadiga. Além disso, a coca pode ser usada como anestésico e, devido ao seu significado religioso nas culturas indígenas, muitas outras propriedades lhe são atribuídas, algumas das quais são apoiadas pela ciência moderna.[PARAGRAPH:1]As folhas de coca têm sido utilizadas para fins medicinais, nutricionais e religiosos na região andina desde os tempos pré-históricos, possivelmente desde há 8.000 anos. Foi durante este longo período que a planta ancestral da coca foi domesticada, após o que se diversificou nas quatro espécies modernas.[PARAGRAPH:1]No império Inca, pensava-se que a planta tinha origem divina e as suas folhas eram utilizadas como oferendas, como método de adivinhação semelhante à leitura das folhas de chá no Velho Mundo, e também como preparação para orações ou cerimónias religiosas. Acabou por se espalhar por uma grande área, desde a Colômbia, no norte, até ao Chile, no sul.[PARAGRAPH:1]Após a conquista do Império Inca, o uso da folha foi tolerado pelos espanhóis porque melhorava o desempenho dos trabalhadores forçados, mas o seu uso religioso foi proibido, e os próprios espanhóis foram desencorajados de usá-la. Embora tenha sido introduzida na Europa no século XVI, nunca se tornou popular até o século XIX, quando a primeira cocaína foi produzida.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]La coca est une plante d'Amérique du Sud de la famille des Érythroxylacées. Elle joue un rôle important dans la culture andine, à travers ses utilisations rituelles ou médicinales des [LINK=YIELD_COCA_LEAVES]feuilles de coca[\LINK].[PARAGRAPH:1]Elle pousse à l'état sauvage dans la cordillère des Andes à des altitudes variant de 300 à 2 000 m. Comme toutes les espèces du genre Erythroxylum, elle apprécie particulièrement les sols acides.[PARAGRAPH:1]C'est un fondement culturel pour l'Amérique latine - notamment les hauts plateaux andins - où son usage remonte à près de 5 000 ans. Du fait de ses différentes vertus, c'est une plante sacrée pour certains peuples amérindiens. Pour ces derniers, Mama Coca est la fille de Pachamama. Elle est ainsi utilisée traditionnellement de la Colombie jusqu'au Chili aussi bien pour ses vertus stimulantes que dans le cadre de cérémonies religieuses, elle aurait même servi de taxe d'imposition. Dans l'Empire inca, la coca issue de l'actuel Pérou (tupa coca) servait aux cérémonies religieuses et aux dignitaires alors que la coca issue de l'actuelle Bolivie (muma coca) servait aux fonctionnaires voire au peuple. Son usage est signalé par les conquérants espagnols dès le XVIe siècle qui en condamnent d'abord l'usage la qualifiant de « satanique » avant de l'encourager en constatant l'efficacité en termes de rentabilité sur les travailleurs. C'est Nicolas Monardés de Séville, un naturaliste espagnol qui en donne la première description dans les années 1580 même si la plante ne sera vraiment connue sur le plan scientifique qu'au XVIIIe siècle.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Das [COLOR_HIGHLIGHT_TEXT]Pflanzerlager[COLOR_REVERT] kann nur in hügeliger [LINK=TERRAIN_SAVANNAH]Savanne[\LINK] angelegt werden. Es gibt einen Bonus auf die Produktion von [LINK=YIELD_COCA_LEAVES]Cocablättern[\LINK] und [LINK=YIELD_FOOD]Nahrung[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff [LINK=YIELD_COCA_LEAVES]Cocablätter[\LINK] bezieht sich meist auf Blätter der kultivierten Planzen aus der Familie der Cocapflanzen (Erythoxylaceae), welche im westlichen Teil Südamerikas beheimatet sind. Sowohl in der Antike als auch in der Moderne wurden diese Pflanzen sehr hoch geschätzt, da sie psychoaktive Substanzen beinhalten, die man durch das Kauen der Blätter oder durch den Konsum des daraus aufgebrühten Tees aufnehmen kann. Heutzutage wird aus diesen Blättern auch die Droge Kokain gewonnen.[PARAGRAPH:1]Weniger bedenkliche Anwirkungen der Cocablätter sind aber beispielsweise die Anwendung in geringeren Mengen als Mittel gegen Höhenkrankheit oder gegen Hungergefühle, Durstgefühle oder Müdigkeit. Ausserdem kann Coca auch zur Betäubung von Schmerzen verwendet werden.[PARAGRAPH:1]Cocablätter wurden jeher in den Regionen der Anden zu relgiösen, medizinischen und nahrungsergänzenden Zwecken eingesetzt. Wahrscheinlich sogar schon seit mehr als 8000 Jahren.[PARAGRAPH:1]In dieser langen Zeitperiode wurde die Cocapflanze irgendwann domestiziert. Heutzutage wird sie in vier unterschiedlichen Gattungen bzw. Unterarten gezüchtet. Die Inkas glaubten an einen göttlichen Ursprung der Planze und verwendete die Blätter als Opfergabe, aber auch als Mittel um die Zukunft vorherzusagen oder einfach nur um Gebete und Zeremonien vorzubereiten. Die Pflanze breitete sich schliesslich über ein sehr grosses Gebiet von Kolumbien im Norden bis nach Chile im Süden aus.[PARAGRAPH:1]Nach der Eroberung des Inkareiches wurde die Einnahme der Pflanze weiterhin von den Spaniern toleriert, da sie die Leistung der Zwangsarbeiter steigerte. Die religiöse Verwendung der Pflanze wurde aber verboten. Den Spaniern selbst wurde vom Konsum der Blätter abgeraten. Obwohl bereits im 16. Jahrhundert Cocablätter in Europa bekannt waren, erlangten diese dort zu dieser Zeit nie Beliebtheit. Dies änderte sich erst, als im 19. Jahrhundert Kokain entdeckt wurde.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Das [COLOR_HIGHLIGHT_TEXT]Pflanzerlager[COLOR_REVERT] kann nur in hügeliger [COLOR:215:200:150:255][LINK=TERRAIN_SAVANNAH]Savanne[\LINK][COLOR_REVERT] angelegt werden. Es gibt einen Bonus auf die Produktion von [COLOR:255:205:40:255][LINK=YIELD_COCA_LEAVES]Cocablättern[\LINK][COLOR_REVERT] und [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff [COLOR:255:205:40:255][LINK=YIELD_COCA_LEAVES]Cocablätter[\LINK][COLOR_REVERT] bezieht sich meist auf Blätter der kultivierten Planzen aus der Familie der Cocapflanzen (Erythoxylaceae), welche im westlichen Teil Südamerikas beheimatet sind. Sowohl in der Antike als auch in der Moderne wurden diese Pflanzen sehr hoch geschätzt, da sie psychoaktive Substanzen beinhalten, die man durch das Kauen der Blätter oder durch den Konsum des daraus aufgebrühten Tees aufnehmen kann. Heutzutage wird aus diesen Blättern auch die Droge Kokain gewonnen.[PARAGRAPH:1]Weniger bedenkliche Anwirkungen der Cocablätter sind aber beispielsweise die Anwendung in geringeren Mengen als Mittel gegen Höhenkrankheit oder gegen Hungergefühle, Durstgefühle oder Müdigkeit. Ausserdem kann Coca auch zur Betäubung von Schmerzen verwendet werden.[PARAGRAPH:1]Cocablätter wurden jeher in den Regionen der Anden zu relgiösen, medizinischen und nahrungsergänzenden Zwecken eingesetzt. Wahrscheinlich sogar schon seit mehr als 8000 Jahren.[PARAGRAPH:1]In dieser langen Zeitperiode wurde die Cocapflanze irgendwann domestiziert. Heutzutage wird sie in vier unterschiedlichen Gattungen bzw. Unterarten gezüchtet. Die Inkas glaubten an einen göttlichen Ursprung der Planze und verwendete die Blätter als Opfergabe, aber auch als Mittel um die Zukunft vorherzusagen oder einfach nur um Gebete und Zeremonien vorzubereiten. Die Pflanze breitete sich schliesslich über ein sehr grosses Gebiet von Kolumbien im Norden bis nach Chile im Süden aus.[PARAGRAPH:1]Nach der Eroberung des Inkareiches wurde die Einnahme der Pflanze weiterhin von den Spaniern toleriert, da sie die Leistung der Zwangsarbeiter steigerte. Die religiöse Verwendung der Pflanze wurde aber verboten. Den Spaniern selbst wurde vom Konsum der Blätter abgeraten. Obwohl bereits im 16. Jahrhundert Cocablätter in Europa bekannt waren, erlangten diese dort zu dieser Zeit nie Beliebtheit. Dies änderte sich erst, als im 19. Jahrhundert Kokain entdeckt wurde.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_COLLECTORS_DEPOT2</Tag>
-		<English>Planter's Depot:Planter's Depots</English>
+		<English>[COLOR_CAT_GOLD]Planter's Depot:Planter's Depots[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Depósito de Plantadores:Depósitos de Plantadores</Text>
@@ -243,7 +243,7 @@
 			<Plural>0:1</Plural>
 		</French>
 		<German>
-			<Text>Pflanzerdepot:Pflanzerdepots</Text>
+			<Text>[COLOR_CAT_GOLD]Pflanzerdepot:Pflanzerdepots[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0:1</Plural>
 		</German>
@@ -261,14 +261,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_COLLECTORS_DEPOT2_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]The [COLOR_HIGHLIGHT_TEXT]Planter's Depot[COLOR_REVERT] is the upgrade of the [LINK=IMPROVEMENT_COLLECTORS_POST2]Planter Post[\LINK]. It gives a production bonus to [LINK=YIELD_COCA_LEAVES]coca leaves[\LINK] and [LINK=YIELD_FOOD]food[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Coca leaves can refer to leaves of all four cultivated plants of the Coca family (Erythoxylaceae) native to western South America. In times both ancient and modern, these plants have been valued for their psychoactive properties, which can be experienced by chewing the leaves, making coca tea ("Mate de coca") out of it and, in modern times, chemically extracting the psychoactive agents to produce the drug cocaine.[PARAGRAPH:1]Coca Leaves are an effective remedy against altitude sickness, giving the consumer a greater tolerance for hunger, thirst and fatigue. Apart from that, coca is an anaesthetic and, due to its religious significance in Indigenous cultures, many other properties are ascribed to it, some of which are supported by modern science.[PARAGRAPH:1]Coca leaves have been used for medicinal, nutritional and religious purposes in the Andean region since prehistoric times, possibly as long as 8,000 years ago.[PARAGRAPH:1]Over this long period the ancestral coca plant was domesticated and diversified into the four modern species. In the Incan empire the plant was thought to have a divine origin, and its leaves were used as offerings, as a method of divination, similar to the reading of tea leaves in the Old World, and also as preparation for prayers or religious ceremonies. It eventually spread over a large area, from Colombia in the north to Chile in the south.[PARAGRAPH:1]After the conquest of the Incan empire the use of the leaf was tolerated by the Spanish because it enhanced the performance of forced labourers, but its religious use was prohibited, and the Spanish themselves were discouraged from using it. Though it was introduced in Europe in the 16th century it never became popular until the 19th century when the first cocaine was produced.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]The [COLOR_HIGHLIGHT_TEXT]Planter's Depot[COLOR_REVERT] is the upgrade of the [COLOR:255:205:40:255][LINK=IMPROVEMENT_COLLECTORS_POST2]Planter Post[\LINK][COLOR_REVERT]. It gives a production bonus to [COLOR:255:205:40:255][LINK=YIELD_COCA_LEAVES]coca leaves[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Coca leaves can refer to leaves of all four cultivated plants of the Coca family (Erythoxylaceae) native to western South America. In times both ancient and modern, these plants have been valued for their psychoactive properties, which can be experienced by chewing the leaves, making coca tea ("Mate de coca") out of it and, in modern times, chemically extracting the psychoactive agents to produce the drug cocaine.[PARAGRAPH:1]Coca Leaves are an effective remedy against altitude sickness, giving the consumer a greater tolerance for hunger, thirst and fatigue. Apart from that, coca is an anaesthetic and, due to its religious significance in Indigenous cultures, many other properties are ascribed to it, some of which are supported by modern science.[PARAGRAPH:1]Coca leaves have been used for medicinal, nutritional and religious purposes in the Andean region since prehistoric times, possibly as long as 8,000 years ago.[PARAGRAPH:1]Over this long period the ancestral coca plant was domesticated and diversified into the four modern species. In the Incan empire the plant was thought to have a divine origin, and its leaves were used as offerings, as a method of divination, similar to the reading of tea leaves in the Old World, and also as preparation for prayers or religious ceremonies. It eventually spread over a large area, from Colombia in the north to Chile in the south.[PARAGRAPH:1]After the conquest of the Incan empire the use of the leaf was tolerated by the Spanish because it enhanced the performance of forced labourers, but its religious use was prohibited, and the Spanish themselves were discouraged from using it. Though it was introduced in Europe in the 16th century it never became popular until the 19th century when the first cocaine was produced.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1]O [COLOR_HIGHLIGHT_TEXT]Planter's Depot[COLOR_REVERT] é a atualização do [LINK=IMPROVEMENT_COLLECTORS_POST2]Planter Post[\LINK]. Dá um bônus de produção para [LINK=YIELD_COCA_LEAVES]folhas de coca[\LINK] e [LINK=YIELD_FOOD]alimentos[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]As folhas de coca podem se referir às folhas de todas as quatro plantas cultivadas da família Coca (Erythoxylaceae) nativas do oeste da América do Sul. Nos tempos antigos e modernos, essas plantas foram valorizadas por suas propriedades psicoativas, que podem ser experimentadas mastigando as folhas, fazendo chá de coca ("Mate de coca") e, nos tempos modernos, extraindo quimicamente os agentes psicoativos para produzir a droga cocaína.[PARAGRAPH:1]As folhas de coca são um remédio eficaz contra o mal da altitude, dando ao consumidor uma maior tolerância à fome, sede e fadiga. Além disso, a coca é um anestésico e, devido ao seu significado religioso nas culturas indígenas, muitas outras propriedades são atribuídas a ela, algumas das quais são apoiadas pela ciência moderna.[PARAGRAPH:1]As folhas de coca têm sido usadas para fins medicinais, nutricionais e religiosos na região andina desde os tempos pré-históricos, possivelmente já há 8.000 anos.[PARAGRAPH:1]Durante este longo período, a planta ancestral da coca foi domesticada e diversificada nas quatro espécies modernas. No império Inca pensava-se que a planta tinha origem divina, e as suas folhas eram utilizadas como oferendas, como método de adivinhação, semelhante à leitura das folhas de chá no Velho Mundo, e também como preparação para orações ou cerimónias religiosas. Acabou por se espalhar por uma grande área, desde a Colômbia, no norte, até ao Chile, no sul.[PARAGRAPH:1]Após a conquista do império Inca, o uso da folha foi tolerado pelos espanhóis porque melhorava o desempenho dos trabalhadores forçados, mas o seu uso religioso foi proibido, e os próprios espanhóis foram desencorajados de usá-la. Embora tenha sido introduzida na Europa no século XVI, nunca se tornou popular até o século XIX, quando a primeira cocaína foi produzida.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]La coca est une plante d'Amérique du Sud de la famille des Érythroxylacées. Elle joue un rôle important dans la culture andine, à travers ses utilisations rituelles ou médicinales des [LINK=YIELD_COCA_LEAVES]feuilles de coca[\LINK].[PARAGRAPH:1]Elle pousse à l'état sauvage dans la cordillère des Andes à des altitudes variant de 300 à 2 000 m. Comme toutes les espèces du genre Erythroxylum, elle apprécie particulièrement les sols acides.[PARAGRAPH:1]C'est un fondement culturel pour l'Amérique latine - notamment les hauts plateaux andins - où son usage remonte à près de 5 000 ans. Du fait de ses différentes vertus, c'est une plante sacrée pour certains peuples amérindiens. Pour ces derniers, Mama Coca est la fille de Pachamama. Elle est ainsi utilisée traditionnellement de la Colombie jusqu'au Chili aussi bien pour ses vertus stimulantes que dans le cadre de cérémonies religieuses, elle aurait même servi de taxe d'imposition. Dans l'Empire inca, la coca issue de l'actuel Pérou (tupa coca) servait aux cérémonies religieuses et aux dignitaires alors que la coca issue de l'actuelle Bolivie (muma coca) servait aux fonctionnaires voire au peuple. Son usage est signalé par les conquérants espagnols dès le XVIe siècle qui en condamnent d'abord l'usage la qualifiant de « satanique » avant de l'encourager en constatant l'efficacité en termes de rentabilité sur les travailleurs. C'est Nicolas Monardés de Séville, un naturaliste espagnol qui en donne la première description dans les années 1580 même si la plante ne sera vraiment connue sur le plan scientifique qu'au XVIIIe siècle.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Das [COLOR_HIGHLIGHT_TEXT]Pflanzerdepot[COLOR_REVERT] ist die Erweiterung des [LINK=IMPROVEMENT_COLLECTORS_POST2]Pflanzerlagers[\LINK]. Es gibt einen Bonus auf die Produktion von [LINK=YIELD_COCA_LEAVES]Cocablättern[\LINK] und [LINK=YIELD_FOOD]Nahrung[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff [LINK=YIELD_COCA_LEAVES]Cocablätter[\LINK] bezieht sich meist auf Blätter der kultivierten Planzen aus der Familie der Cocapflanzen (Erythoxylaceae), welche im westlichen Teil Südamerikas beheimatet sind. Sowohl in der Antike als auch in der Moderne wurden diese Pflanzen sehr hoch geschätzt, da sie psychoaktive Substanzen beinhalten, die man durch das Kauen der Blätter oder durch den Konsum des daraus aufgebrühten Tees aufnehmen kann. Heutzutage wird aus diesen Blättern auch die Droge Kokain gewonnen.[PARAGRAPH:1]Weniger bedenkliche Anwirkungen der Cocablätter sind aber beispielsweise die Anwendung in geringeren Mengen als Mittel gegen Höhenkrankheit oder gegen Hungergefühle, Durstgefühle oder Müdigkeit. Ausserdem kann Coca auch zur Betäubung von Schmerzen verwendet werden.[PARAGRAPH:1]Cocablätter wurden jeher in den Regionen der Anden zu relgiösen, medizinischen und nahrungsergänzenden Zwecken eingesetzt. Wahrscheinlich sogar schon seit mehr als 8000 Jahren.[PARAGRAPH:1]In dieser langen Zeitperiode wurde die Cocapflanze irgendwann domestiziert. Heutzutage wird sie in vier unterschiedlichen Gattungen bzw. Unterarten gezüchtet. Die Inkas glaubten an einen göttlichen Ursprung der Planze und verwendete die Blätter als Opfergabe, aber auch als Mittel um die Zukunft vorherzusagen oder einfach nur um Gebete und Zeremonien vorzubereiten. Die Pflanze breitete sich schliesslich über ein sehr grosses Gebiet von Kolumbien im Norden bis nach Chile im Süden aus.[PARAGRAPH:1]Nach der Eroberung des Inkareiches wurde die Einnahme der Pflanze weiterhin von den Spaniern toleriert, da sie die Leistung der Zwangsarbeiter steigerte. Die religiöse Verwendung der Pflanze wurde aber verboten. Den Spaniern selbst wurde vom Konsum der Blätter abgeraten. Obwohl bereits im 16. Jahrhundert Cocablätter in Europa bekannt waren, erlangten diese dort zu dieser Zeit nie Beliebtheit. Dies änderte sich erst, als im 19. Jahrhundert Kokain entdeckt wurde.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Das [COLOR_HIGHLIGHT_TEXT]Pflanzerdepot[COLOR_REVERT] ist die Erweiterung des [COLOR:255:205:40:255][LINK=IMPROVEMENT_COLLECTORS_POST2]Pflanzerlagers[\LINK][COLOR_REVERT]. Es gibt einen Bonus auf die Produktion von [COLOR:255:205:40:255][LINK=YIELD_COCA_LEAVES]Cocablättern[\LINK][COLOR_REVERT] und [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff [COLOR:255:205:40:255][LINK=YIELD_COCA_LEAVES]Cocablätter[\LINK][COLOR_REVERT] bezieht sich meist auf Blätter der kultivierten Planzen aus der Familie der Cocapflanzen (Erythoxylaceae), welche im westlichen Teil Südamerikas beheimatet sind. Sowohl in der Antike als auch in der Moderne wurden diese Pflanzen sehr hoch geschätzt, da sie psychoaktive Substanzen beinhalten, die man durch das Kauen der Blätter oder durch den Konsum des daraus aufgebrühten Tees aufnehmen kann. Heutzutage wird aus diesen Blättern auch die Droge Kokain gewonnen.[PARAGRAPH:1]Weniger bedenkliche Anwirkungen der Cocablätter sind aber beispielsweise die Anwendung in geringeren Mengen als Mittel gegen Höhenkrankheit oder gegen Hungergefühle, Durstgefühle oder Müdigkeit. Ausserdem kann Coca auch zur Betäubung von Schmerzen verwendet werden.[PARAGRAPH:1]Cocablätter wurden jeher in den Regionen der Anden zu relgiösen, medizinischen und nahrungsergänzenden Zwecken eingesetzt. Wahrscheinlich sogar schon seit mehr als 8000 Jahren.[PARAGRAPH:1]In dieser langen Zeitperiode wurde die Cocapflanze irgendwann domestiziert. Heutzutage wird sie in vier unterschiedlichen Gattungen bzw. Unterarten gezüchtet. Die Inkas glaubten an einen göttlichen Ursprung der Planze und verwendete die Blätter als Opfergabe, aber auch als Mittel um die Zukunft vorherzusagen oder einfach nur um Gebete und Zeremonien vorzubereiten. Die Pflanze breitete sich schliesslich über ein sehr grosses Gebiet von Kolumbien im Norden bis nach Chile im Süden aus.[PARAGRAPH:1]Nach der Eroberung des Inkareiches wurde die Einnahme der Pflanze weiterhin von den Spaniern toleriert, da sie die Leistung der Zwangsarbeiter steigerte. Die religiöse Verwendung der Pflanze wurde aber verboten. Den Spaniern selbst wurde vom Konsum der Blätter abgeraten. Obwohl bereits im 16. Jahrhundert Cocablätter in Europa bekannt waren, erlangten diese dort zu dieser Zeit nie Beliebtheit. Dies änderte sich erst, als im 19. Jahrhundert Kokain entdeckt wurde.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_FARM</Tag>
-		<English>Farm</English>
+		<English>[COLOR_CAT_FOOD]Farm[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Fazenda</Text>
@@ -281,7 +281,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Bauernhof</Text>
+			<Text>[COLOR_CAT_FOOD]Bauernhof[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -299,14 +299,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_FARM_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Farms[COLOR_REVERT] can be built on all flat, unvegetated [LINK=TERRAIN_GRASS]grassland[\LINK], [LINK=TERRAIN_PLAINS]prairie[\LINK], [LINK=TERRAIN_SAVANNAH]savannah[\LINK] and [LINK=TERRAIN_MARSH]marsh[\LINK] terrain. The production of [LINK=YIELD_FOOD]food[\LINK] and [LINK=YIELD_BARLEY]barley[\LINK] there is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A farm is an area of land, including structures, devoted to producing food (vegetables, grains, or livestock), fibres and, increasingly, fuel. It is the basic facility for food production. Farms may be owned and operated by a single individual, family, community, corporation or a company. A farm can be a holding of any size from a fraction of a hectare to several thousand hectares.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Farms[COLOR_REVERT] can be built on all flat, unvegetated [COLOR:215:200:150:255][LINK=TERRAIN_GRASS]grassland[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS]prairie[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_SAVANNAH]savannah[\LINK][COLOR_REVERT] and [COLOR:215:200:150:255][LINK=TERRAIN_MARSH]marsh[\LINK][COLOR_REVERT] terrain. The production of [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_BARLEY]barley[\LINK][COLOR_REVERT] there is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A farm is an area of land, including structures, devoted to producing food (vegetables, grains, or livestock), fibres and, increasingly, fuel. It is the basic facility for food production. Farms may be owned and operated by a single individual, family, community, corporation or a company. A farm can be a holding of any size from a fraction of a hectare to several thousand hectares.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Fazendas[COLOR_REVERT] podem ser construídas em todos os terrenos planos e sem vegetação de [LINK=TERRAIN_GRASS]pradarias[\LINK], [LINK=TERRAIN_PLAINS]planícies[\LINK], [LINK=TERRAIN_SAVANNAH]savanas[\LINK] e [LINK=TERRAIN_MARSH]pântanos[\LINK]. A produção de [LINK=YIELD_FOOD]alimentos[\LINK] e [LINK=YIELD_BARLEY]cevada[\LINK] aumentou.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma fazenda é uma área de terra, incluindo estruturas, dedicada à produção de alimentos (vegetais, grãos ou gado), fibras e, cada vez mais, combustível. É a instalação básica para a produção de alimentos. As fazendas podem pertencer e ser operadas por um único indivíduo, família, comunidade, corporação ou empresa. Uma exploração agrícola pode ser uma exploração de qualquer dimensão, desde uma fração de hectare até vários milhares de hectares.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une ferme, ou exploitation agricole, est une entreprise (ou partie d'une entreprise) constituée en vue de la production agricole et caractérisée par une gestion unique et des moyens de production propres.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Bauernhöfe[COLOR_REVERT] können auf flachem und unbewaldetem Terrain, wie z.B. [LINK=TERRAIN_GRASS]Grasland[\LINK], [LINK=TERRAIN_PLAINS]Prärie[\LINK], [LINK=TERRAIN_SAVANNAH]Savanne[\LINK] oder auch [LINK=TERRAIN_MARSH]Sumpf[\LINK], angelegt werden. Die Produktion von [LINK=YIELD_FOOD]Nahrung[\LINK] and [LINK=YIELD_BARLEY]Gerste[\LINK] ist dort erhöht.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Bauernhof ist ein mit verschiedensten Gebäuden bebautes Stück Land, das von Anbauflächen umgeben ist und primär der Produktion von Nahrung dient. Oft in Form von Getreideanbau oder Viehzucht. Der Begriff 'Bauernhof' sagt allerdings noch nichts über die Grösse aus, die von mehreren Morgen bis hin zu mehreren Tausend Hektar variieren kann.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Bauernhöfe[COLOR_REVERT] können auf flachem und unbewaldetem Terrain, wie z.B. [COLOR:215:200:150:255][LINK=TERRAIN_GRASS]Grasland[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS]Prärie[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_SAVANNAH]Savanne[\LINK][COLOR_REVERT] oder auch [COLOR:215:200:150:255][LINK=TERRAIN_MARSH]Sumpf[\LINK][COLOR_REVERT], angelegt werden. Die Produktion von [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_BARLEY]Gerste[\LINK][COLOR_REVERT] ist dort erhöht.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Bauernhof ist ein mit verschiedensten Gebäuden bebautes Stück Land, das von Anbauflächen umgeben ist und primär der Produktion von Nahrung dient. Oft in Form von Getreideanbau oder Viehzucht. Der Begriff 'Bauernhof' sagt allerdings noch nichts über die Grösse aus, die von mehreren Morgen bis hin zu mehreren Tausend Hektar variieren kann.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_FARM</Tag>
-		<English>Large Farm</English>
+		<English>[COLOR_CAT_FOOD]Large Farm[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Fazenda Grande</Text>
@@ -319,7 +319,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Große Farm</Text>
+			<Text>[COLOR_CAT_FOOD]Große Farm[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -337,14 +337,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_FARM_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large farms[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_FARM]farms[\LINK]. The production of [LINK=YIELD_FOOD]food[\LINK] and [LINK=YIELD_BARLEY]barley[\LINK] there is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A farm is an area of land, including structures, devoted to producing food (vegetables, grains, or livestock), fibres and, increasingly, fuel. It is the basic facility for food production. Farms may be owned and operated by a single individual, family, community, corporation or a company. A farm can be a holding of any size from a fraction of a hectare to several thousand hectares.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large farms[COLOR_REVERT] are the upgrades of [COLOR:110:220:80:255][LINK=IMPROVEMENT_FARM]farms[\LINK][COLOR_REVERT]. The production of [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_BARLEY]barley[\LINK][COLOR_REVERT] there is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A farm is an area of land, including structures, devoted to producing food (vegetables, grains, or livestock), fibres and, increasingly, fuel. It is the basic facility for food production. Farms may be owned and operated by a single individual, family, community, corporation or a company. A farm can be a holding of any size from a fraction of a hectare to several thousand hectares.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Grandes fazendas[COLOR_REVERT] são atualizações de [LINK=IMPROVEMENT_FARM]fazendas[\LINK]. A produção de [LINK=YIELD_FOOD]alimentos[\LINK] e [LINK=YIELD_BARLEY]cevada[\LINK] aumentou.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma fazenda é uma área de terra, incluindo estruturas, dedicada à produção de alimentos (vegetais, grãos ou gado), fibras e, cada vez mais, combustível. É a instalação básica para a produção de alimentos. As fazendas podem pertencer e ser operadas por um único indivíduo, família, comunidade, corporação ou empresa. Uma exploração agrícola pode ser uma exploração de qualquer dimensão, desde uma fração de hectare até vários milhares de hectares.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une ferme, ou exploitation agricole, est une entreprise (ou partie d'une entreprise) constituée en vue de la production agricole et caractérisée par une gestion unique et des moyens de production propres.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Große Bauernhöfe[COLOR_REVERT] sind die Erweiterung des [LINK=IMPROVEMENT_FARM]Bauernhofes[\LINK]. Die Produktion von [LINK=YIELD_FOOD]Nahrung[\LINK] und [LINK=YIELD_BARLEY]Gerste[\LINK] ist dort erhöht.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Bauernhof ist ein mit verschiedensten Gebäuden bebautes Stück Land, das von Anbauflächen umgeben ist und primär der Produktion von Nahrung dient. Oft in Form von Getreideanbau oder Viehzucht. Der Begriff 'Bauernhof' sagt allerdings noch nichts über die Grösse aus, die von mehreren Morgen bis hin zu mehreren Tausend Hektar variieren kann.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Große Bauernhöfe[COLOR_REVERT] sind die Erweiterung des [COLOR:110:220:80:255][LINK=IMPROVEMENT_FARM]Bauernhofes[\LINK][COLOR_REVERT]. Die Produktion von [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT] und [COLOR:110:220:80:255][LINK=YIELD_BARLEY]Gerste[\LINK][COLOR_REVERT] ist dort erhöht.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Bauernhof ist ein mit verschiedensten Gebäuden bebautes Stück Land, das von Anbauflächen umgeben ist und primär der Produktion von Nahrung dient. Oft in Form von Getreideanbau oder Viehzucht. Der Begriff 'Bauernhof' sagt allerdings noch nichts über die Grösse aus, die von mehreren Morgen bis hin zu mehreren Tausend Hektar variieren kann.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_WIND_MILL</Tag>
-		<English>Windmill</English>
+		<English>[COLOR_CAT_FOOD]Windmill[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Moinho de Vento</Text>
@@ -352,7 +352,7 @@
 			<Plural>0</Plural>
 		</Portuguese>
 		<German>
-			<Text>Windmühle</Text>
+			<Text>[COLOR_CAT_FOOD]Windmühle[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -361,14 +361,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_WIND_MILL_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Windmills[COLOR_REVERT] on the map give a percentage bonus on the total production of [LINK=YIELD_FOOD]food[\LINK] in their city when worked by a citizen.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Historians debate whether Middle Eastern windmills triggered the first European windmills. In northwestern Europe the horizontal axis or vertical windmill (so called due to the plane of the movement of its sails) dates from the last quarter of the 12th century in the triangle of northern France, eastern England and Flanders. The earliest certain reference to a windmill in Europe (assumed to have been of the vertical type) dates from 1185 in Weedley, Yorkshire, although a number of earlier but less certainly dated twelfth century European sources referring to windmills have also been found. These earliest mills were used to grind cereals.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Windmills[COLOR_REVERT] on the map give a percentage bonus on the total production of [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT] in their city when worked by a citizen.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Historians debate whether Middle Eastern windmills triggered the first European windmills. In northwestern Europe the horizontal axis or vertical windmill (so called due to the plane of the movement of its sails) dates from the last quarter of the 12th century in the triangle of northern France, eastern England and Flanders. The earliest certain reference to a windmill in Europe (assumed to have been of the vertical type) dates from 1185 in Weedley, Yorkshire, although a number of earlier but less certainly dated twelfth century European sources referring to windmills have also been found. These earliest mills were used to grind cereals.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Moinhos de vento[COLOR_REVERT] no mapa dão um bônus percentual sobre a produção total de [LINK=YIELD_FOOD]alimentos[\LINK] em sua cidade quando trabalhados por um cidadão.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Os historiadores debatem se os moinhos de vento do Oriente Médio acionaram os primeiros moinhos de vento europeus. No noroeste da Europa o eixo horizontal ou moinho vertical (assim chamado devido ao plano do movimento das suas velas) data do último quartel do século XII no triângulo do norte da França, leste da Inglaterra e Flandres. A referência mais antiga e certa a um moinho de vento na Europa (supostamente do tipo vertical) data de 1185 em Weedley, Yorkshire, embora também tenham sido encontradas várias fontes europeias anteriores, mas menos certamente datadas, do século XII, referentes a moinhos de vento. Esses primeiros moinhos eram usados para moer cereais.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Les moulins à vent[COLOR_REVERT] sur la carte donnent un pourcentage de bonus sur la production totale de [LINK=YIELD_FOOD]nourriture[\LINK] dans leur ville lorsqu'ils sont travaillés par un citoyen.[PARAGRAPH:2][BOLD]Contexte :[\BOLD][PARAGRAPH:1]Les historiens débattent pour savoir si les moulins à vent du Moyen-Orient ont déclenché les premiers moulins à vent européens. En Europe du Nord-Ouest, le moulin à vent à axe horizontal ou vertical (appelé ainsi en raison du plan du mouvement de ses voiles) date du dernier quart du XIIe siècle dans le triangle du nord de la France, de l'est de l'Angleterre et des Flandres. La plus ancienne référence certaine à un moulin à vent en Europe (que l'on suppose avoir été de type vertical) date de 1185 à Weedley, dans le Yorkshire, bien qu'un certain nombre de sources européennes du XIIe siècle, plus anciennes mais dont la datation est moins certaine, fassent également référence à des moulins à vent. Ces premiers moulins étaient utilisés pour moudre des céréales.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Windmühlen[COLOR_REVERT] auf der Karte geben einen prozentualen Bonus auf die gesamte Herstellung von [LINK=YIELD_FOOD]Nahrung[\LINK] der Stadt, wenn sie von einem Bürger in der Stadt bearbeitet werden.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Aufgrund des Fehlens von Beweisen, existiert eine Debatte unter Historikern, ob die Windmühlen des Mittleren Ostens die Entwicklung der europäischen Windmühlen ausgelöst haben. Im nordwestlichen Europa datieren horizontale oder vertikale Windmühlen vom Ende des 12. Jahrhunderts. Die ersten Windmühlen dienten ausschliesslich zum Mahlen von Getreide.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Windmühlen[COLOR_REVERT] auf der Karte geben einen prozentualen Bonus auf die gesamte Herstellung von [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT] der Stadt, wenn sie von einem Bürger in der Stadt bearbeitet werden.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Aufgrund des Fehlens von Beweisen, existiert eine Debatte unter Historikern, ob die Windmühlen des Mittleren Ostens die Entwicklung der europäischen Windmühlen ausgelöst haben. Im nordwestlichen Europa datieren horizontale oder vertikale Windmühlen vom Ende des 12. Jahrhunderts. Die ersten Windmühlen dienten ausschliesslich zum Mahlen von Getreide.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_IRON_MILL</Tag>
-		<English>Iron Mill</English>
+		<English>[COLOR_CAT_PROD]Iron Mill[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Moinho de Ferro</Text>
@@ -376,7 +376,7 @@
 			<Plural>0</Plural>
 		</Portuguese>
 		<German>
-			<Text>Eisenmühle</Text>
+			<Text>[COLOR_CAT_PROD]Eisenmühle[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -385,14 +385,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_IRON_MILL_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Iron mills[COLOR_REVERT] on the map add a bonus percentage to the total production of [LINK=YIELD_TOOLS]tools[\LINK] in their city when they are worked by a citizen of the city.[NEWLINE]The iron mill can be built only on terrains that already have [LINK=YIELD_ORE]iron ore[\LINK]. It's like the situation for windmills on terrains where there's no food.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]An iron mill relies on a power source and gearing. It can increase the volume of forced air for smelting, or drive a mechanical process for grinding, rolling, or hammering. Such processes accelerate the production of many metal products.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Iron mills[COLOR_REVERT] on the map add a bonus percentage to the total production of [COLOR:190:130:70:255][LINK=YIELD_TOOLS]tools[\LINK][COLOR_REVERT] in their city when they are worked by a citizen of the city.[NEWLINE]The iron mill can be built only on terrains that already have [COLOR:190:130:70:255][LINK=YIELD_ORE]iron ore[\LINK][COLOR_REVERT]. It's like the situation for windmills on terrains where there's no food.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]An iron mill relies on a power source and gearing. It can increase the volume of forced air for smelting, or drive a mechanical process for grinding, rolling, or hammering. Such processes accelerate the production of many metal products.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Os moinhos de ferro[COLOR_REVERT] no mapa adicionam uma porcentagem de bônus à produção total de [LINK=YIELD_TOOLS]ferramentas[\LINK] em sua cidade quando são trabalhados por um cidadão da cidade.[NEWLINE]O moinho de ferro pode ser construído apenas em terrenos que já possuem [LINK=YIELD_ORE]minério de ferro[\LINK]. É como a situação dos moinhos de vento em terrenos onde não há comida.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Um moinho de ferro depende de uma fonte de energia e engrenagens. Ele pode aumentar o volume de ar forçado para fundição ou conduzir um processo mecânico para moagem, laminação ou martelamento. Tais processos aceleram a produção de muitos produtos metálicos.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Les [COLOR_HIGHLIGHT_TEXT]bas-fourneaux[COLOR_REVERT] sur la carte ajoutent un pourcentage de bonus à la production totale de [LINK=YIELD_TOOLS]outils[\LINK] dans leur ville quand ils sont travaillés par un citoyen de la ville. [Ils ne peuvent être construits que sur les terrains qui possèdent déjà du [LINK=YIELD_ORE]minerai de fer[\LINK].[PARAGRAPH:2][BOLD]Contexte :[\BOLD][PARAGRAPH:1]Un moulin à fer repose sur une source d'énergie et un engrenage. Il peut augmenter le volume d'air forcé pour la fusion, ou entraîner un processus mécanique pour le broyage, le laminage ou le martelage. Ces processus accélèrent la production de nombreux produits métalliques.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Eisenmühlen[COLOR_REVERT] auf der Karte geben, wenn sie von einem Bürger in der Stadt bearbeitet werden, einen prozentualen Bonus auf die gesamte Herstellung von [LINK=YIELD_TOOLS]Eisenwaren[\LINK] in der Stadt.[NEWLINE]Sie können nur auf Gelände errichtet werden, auf welchem bereits [LINK=YIELD_ORE]Eisenerz[\LINK] abgebaut werden kann.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Wassermühle ist eine meist historische technische Anlage, die mittels einer Wasserkraftmaschine durch Wasserkraft angetrieben wird und die kinetische Energie des Wassers nutzt. Bei der Anlage kann es sich um eine Mühle im engeren Sinne handeln, in der etwas gemahlen bzw. zerkleinert wird (Mahlmühle), oder um eine Mühle, in der sonstige Maschinen angetrieben werden (z. B. Hammerwerk, Sägemühle, Schleifmühle, Papiermühle, Pumpwerk, Pochmühle). Für die Umsetzung der Wasserenergie in mechanische Arbeit kommen bei historischen Mühlen fast ausschließlich Wasserräder zum Einsatz; diese wurden in neuerer Zeit oft durch Wasserturbinen ersetzt. Das zum Antrieb nötige Wasser (Aufschlagwasser) wird normalerweise einem Fließgewässer entnommen. Je nach örtlichen Gegebenheiten sind zur Erhöhung der Fallhöhe und zur Speicherung von Wasser Teiche, Stauwehre, Kanäle oder andere Wasserbauwerke erforderlich, siehe dazu auch Schlacht (Wasserbauwerk).</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Eisenmühlen[COLOR_REVERT] auf der Karte geben, wenn sie von einem Bürger in der Stadt bearbeitet werden, einen prozentualen Bonus auf die gesamte Herstellung von [COLOR:190:130:70:255][LINK=YIELD_TOOLS]Eisenwaren[\LINK][COLOR_REVERT] in der Stadt.[NEWLINE]Sie können nur auf Gelände errichtet werden, auf welchem bereits [COLOR:190:130:70:255][LINK=YIELD_ORE]Eisenerz[\LINK][COLOR_REVERT] abgebaut werden kann.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Wassermühle ist eine meist historische technische Anlage, die mittels einer Wasserkraftmaschine durch Wasserkraft angetrieben wird und die kinetische Energie des Wassers nutzt. Bei der Anlage kann es sich um eine Mühle im engeren Sinne handeln, in der etwas gemahlen bzw. zerkleinert wird (Mahlmühle), oder um eine Mühle, in der sonstige Maschinen angetrieben werden (z. B. Hammerwerk, Sägemühle, Schleifmühle, Papiermühle, Pumpwerk, Pochmühle). Für die Umsetzung der Wasserenergie in mechanische Arbeit kommen bei historischen Mühlen fast ausschließlich Wasserräder zum Einsatz; diese wurden in neuerer Zeit oft durch Wasserturbinen ersetzt. Das zum Antrieb nötige Wasser (Aufschlagwasser) wird normalerweise einem Fließgewässer entnommen. Je nach örtlichen Gegebenheiten sind zur Erhöhung der Fallhöhe und zur Speicherung von Wasser Teiche, Stauwehre, Kanäle oder andere Wasserbauwerke erforderlich, siehe dazu auch Schlacht (Wasserbauwerk).</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_SUPPLY_DEPOT</Tag>
-		<English>Supply Depot</English>
+		<English>[COLOR_CAT_MILITARY]Supply Depot[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Depósito de Suprimentos</Text>
@@ -400,7 +400,7 @@
 			<Plural>0</Plural>
 		</Portuguese>
 		<German>
-			<Text>Versorgungslager</Text>
+			<Text>[COLOR_CAT_MILITARY]Versorgungslager[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -416,7 +416,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_SUPPLY_DEPOT</Tag>
-		<English>Large Supply Depot</English>
+		<English>[COLOR_CAT_MILITARY]Large Supply Depot[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Grande Depósito de Suprimentos</Text>
@@ -424,7 +424,7 @@
 			<Plural>0</Plural>
 		</Portuguese>
 		<German>
-			<Text>Großes Versorgungslager</Text>
+			<Text>[COLOR_CAT_MILITARY]Großes Versorgungslager[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -440,7 +440,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_CANAL</Tag>
-		<English>Canal</English>
+		<English>[COLOR_CAT_GOLD]Canal[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Canal</Text>
@@ -448,7 +448,7 @@
 			<Plural>0</Plural>
 		</Portuguese>
 		<German>
-			<Text>Kanal</Text>
+			<Text>[COLOR_CAT_GOLD]Kanal[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -464,7 +464,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_FORT</Tag>
-		<English>Fort</English>
+		<English>[COLOR_CAT_MILITARY]Fort[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Forte</Text>
@@ -477,7 +477,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Fort</Text>
+			<Text>[COLOR_CAT_MILITARY]Fort[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -502,7 +502,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_FORT</Tag>
-		<English>Large Fort</English>
+		<English>[COLOR_CAT_MILITARY]Large Fort[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Grande Forte</Text>
@@ -515,7 +515,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Großes Fort</Text>
+			<Text>[COLOR_CAT_MILITARY]Großes Fort[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -533,10 +533,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_FORT_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large Forts[COLOR_REVERT], the upgrades of [LINK=IMPROVEMENT_FORT]forts[\LINK], only function only as long as a [LINK=CONCEPT_MILITARY_UNITS]military unit[\LINK] is stationed inside. To manage this, [COLOR_HIGHLIGHT_TEXT]fortify[COLOR_REVERT] a military unit on the plot with the large fort.[PARAGRAPH:2]For more information on using large forts, see [LINK=CONCEPT_FORTS]Forts[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Fortifications are military constructions for defence in warfare. People have made defensive works for many thousands of years, in increasingly complex designs. The term is derived from the Latin fortis (strong) and facere (to make).</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large Forts[COLOR_REVERT], the upgrades of [COLOR:110:150:255:255][LINK=IMPROVEMENT_FORT]forts[\LINK][COLOR_REVERT], only function only as long as a [LINK=CONCEPT_MILITARY_UNITS]military unit[\LINK] is stationed inside. To manage this, [COLOR_HIGHLIGHT_TEXT]fortify[COLOR_REVERT] a military unit on the plot with the large fort.[PARAGRAPH:2]For more information on using large forts, see [LINK=CONCEPT_FORTS]Forts[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Fortifications are military constructions for defence in warfare. People have made defensive works for many thousands of years, in increasingly complex designs. The term is derived from the Latin fortis (strong) and facere (to make).</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Grandes Fortes[COLOR_REVERT], as atualizações de [LINK=IMPROVEMENT_FORT]fortes[\LINK], só funcionam enquanto uma [LINK=CONCEPT_MILITARY_UNITS]unidade militar[\LINK] estiver estacionada dentro deles. Para gerenciar isso, [COLOR_HIGHLIGHT_TEXT]fortifique[COLOR_REVERT] uma unidade militar no terreno com o grande forte.[PARAGRAPH:2]Para obter mais informações sobre o uso de grandes fortes, consulte [LINK=CONCEPT_FORTS]Fortes[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Fortificações são construções militares para defesa na guerra. As pessoas têm feito obras defensivas há milhares de anos, em projetos cada vez mais complexos. O termo é derivado do latim fortis (forte) e facere (fazer).</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]La fortification (du latin fortificatio « action de fortifier ») est l'art militaire de renforcer une position ou un lieu par des ouvrages de défense en prévision de leur éventuelle attaque par un ennemi hostile. Par extension, la fortification désigne ces ouvrages de défense eux-mêmes.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Grosse Forts[COLOR_REVERT], die Ausbaustufe der [LINK=IMPROVEMENT_FORT]Forts[\LINK], sind nur aktiv, wenn eine [LINK=CONCEPT_MILITARY_UNITS]Militäreinheit[\LINK] darin stationiert ist. Dafür muss diese Einheit in dem Fort [COLOR_HIGHLIGHT_TEXT]befestigt[COLOR_REVERT] werden.[PARAGRAPH:2]Für weitere Informationen siehe [LINK=CONCEPT_FORTS]Forts[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Befestigungen sind Konstruktionen mit militärischen Zweck und dienen der Verteidigung gegen Feinde. Defensive Anlagen wurden von der Menschheit schon seit Jahrtausenden genutzt. Der Begriff 'Fort' leitet sich vom Lateinischen Wort 'fortis' ab, welches übersetzt 'stark' bedeutet.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Grosse Forts[COLOR_REVERT], die Ausbaustufe der [COLOR:110:150:255:255][LINK=IMPROVEMENT_FORT]Forts[\LINK][COLOR_REVERT], sind nur aktiv, wenn eine [LINK=CONCEPT_MILITARY_UNITS]Militäreinheit[\LINK] darin stationiert ist. Dafür muss diese Einheit in dem Fort [COLOR_HIGHLIGHT_TEXT]befestigt[COLOR_REVERT] werden.[PARAGRAPH:2]Für weitere Informationen siehe [LINK=CONCEPT_FORTS]Forts[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Befestigungen sind Konstruktionen mit militärischen Zweck und dienen der Verteidigung gegen Feinde. Defensive Anlagen wurden von der Menschheit schon seit Jahrtausenden genutzt. Der Begriff 'Fort' leitet sich vom Lateinischen Wort 'fortis' ab, welches übersetzt 'stark' bedeutet.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT</Tag>
@@ -544,14 +544,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]In [COLOR_HIGHLIGHT_TEXT]burial grounds[COLOR_REVERT] you can often find treasures, useful information or even units. Beware though: Natives regard them as sacred. Like Europeans they are offended and disgusted by grave robbers. Only [LINK=UNIT_SCOUT]seasoned scouts[\LINK] are furtive enough to evade their ire.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]After funeral rites native dead may be put to rest on raised platforms on a burial ground, often with their possessions to accompany them into the hereafter, thus the attraction to scouts. A cemetery is more commonly where European people are interred.[PARAGRAPH:1]In the colonies settlers rarely buried their wealth so those graves would be looted mainly for medical training, as described by Charles Dickens in "A Tale of Two Cities".</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]In [COLOR_HIGHLIGHT_TEXT]burial grounds[COLOR_REVERT] you can often find treasures, useful information or even units. Beware though: Natives regard them as sacred. Like Europeans they are offended and disgusted by grave robbers. Only [COLOR_UNIT_TEXT][LINK=UNIT_SCOUT]seasoned scouts[\LINK][COLOR_REVERT] are furtive enough to evade their ire.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]After funeral rites native dead may be put to rest on raised platforms on a burial ground, often with their possessions to accompany them into the hereafter, thus the attraction to scouts. A cemetery is more commonly where European people are interred.[PARAGRAPH:1]In the colonies settlers rarely buried their wealth so those graves would be looted mainly for medical training, as described by Charles Dickens in "A Tale of Two Cities".</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1]Em [COLOR_HIGHLIGHT_TEXT]cemitérios[COLOR_REVERT] muitas vezes você pode encontrar tesouros, informações úteis ou até mesmo unidades. Porém, tenha cuidado: os nativos os consideram sagrados. Tal como os europeus, eles ficam ofendidos e enojados com os ladrões de túmulos. Apenas [LINK=UNIT_SCOUT]batedores veteranos[\LINK] são furtivos o suficiente para escapar de sua ira.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Após os ritos fúnebres, os mortos nativos podem ser colocados para descansar em plataformas elevadas em um cemitério, muitas vezes com seus pertences para acompanhá-los na outra vida, daí a atração por batedores. Um cemitério é mais comumente onde os europeus são enterrados.[PARAGRAPH:1]Nas colônias, os colonos raramente enterravam suas riquezas, então esses túmulos seriam saqueados principalmente para treinamento médico, conforme descrito por Charles Dickens em "A Tale of Two Cities".</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Un cimetière est un endroit spécifiquement dédié au repos des personnes décédés. Ces dernières sont généralement enterrées ou incinérées.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]In [COLOR_HIGHLIGHT_TEXT]Begräbnisstätte[COLOR_REVERT] lassen sich Schätze, nützliche Informationen oder sogar Einheiten finden. Vorsicht ist geboten, denn die Eingeborenen betrachten diese oftmals als heilig. Wie Europäer auch verachten sie Grabräuber und sind schnell beleidigt durch deren Tun. Lediglich [LINK=UNIT_SCOUT]Routinierte Späher[\LINK] sind erfahren - und heimlich - genug, um ihrem Zorn zu entgehen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine [COLOR_HIGHLIGHT_TEXT]Begräbnisstätte[COLOR_REVERT] oder ein Friedhof sind Orte, an denen Verstorbene begraben werden. In manchen Kulturen war und ist es üblich, den Toten reiche Grabbeigaben mitzugeben. Sie gelten in den meisten Kulturen als geheiligte Orte.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]In [COLOR_HIGHLIGHT_TEXT]Begräbnisstätte[COLOR_REVERT] lassen sich Schätze, nützliche Informationen oder sogar Einheiten finden. Vorsicht ist geboten, denn die Eingeborenen betrachten diese oftmals als heilig. Wie Europäer auch verachten sie Grabräuber und sind schnell beleidigt durch deren Tun. Lediglich [COLOR_UNIT_TEXT][LINK=UNIT_SCOUT]Routinierte Späher[\LINK][COLOR_REVERT] sind erfahren - und heimlich - genug, um ihrem Zorn zu entgehen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine [COLOR_HIGHLIGHT_TEXT]Begräbnisstätte[COLOR_REVERT] oder ein Friedhof sind Orte, an denen Verstorbene begraben werden. In manchen Kulturen war und ist es üblich, den Toten reiche Grabbeigaben mitzugeben. Sie gelten in den meisten Kulturen als geheiligte Orte.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT2</Tag>
-		<English>Ancient Ruins</English>
+		<English>[COLOR_CAT_RESEARCH]Ancient Ruins[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Ruínas Antigas</Text>
@@ -563,7 +563,7 @@
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</French>
-		<German>Antike Ruinen</German>
+		<German>[COLOR_CAT_RESEARCH]Antike Ruinen[COLOR_REVERT]</German>
 		<Italian>
 			<Text>Antiche rovine</Text>
 			<Gender>Female</Gender>
@@ -578,14 +578,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT2_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]In [COLOR_HIGHLIGHT_TEXT]Ancient ruins[COLOR_REVERT] you may find treasures, useful information or even units. Beware though: Natives regard them as sacred. Like Europeans they are offended and disgusted by plunderers. Only [LINK=UNIT_SCOUT]seasoned scouts[\LINK] are furtive enough to evade their ire.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Ruins are the remains of human architecture: structures once complete that have fallen into a state of disrepair. Natural disaster, war and depopulation are the most common causes, with many structures deteriorating over time from weather and scavenging.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]In [COLOR_HIGHLIGHT_TEXT]Ancient ruins[COLOR_REVERT] you may find treasures, useful information or even units. Beware though: Natives regard them as sacred. Like Europeans they are offended and disgusted by plunderers. Only [COLOR_UNIT_TEXT][LINK=UNIT_SCOUT]seasoned scouts[\LINK][COLOR_REVERT] are furtive enough to evade their ire.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Ruins are the remains of human architecture: structures once complete that have fallen into a state of disrepair. Natural disaster, war and depopulation are the most common causes, with many structures deteriorating over time from weather and scavenging.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1]Em [COLOR_HIGHLIGHT_TEXT]Ruínas Antigas[COLOR_REVERT] você pode encontrar tesouros, informações úteis ou até unidades. Porém, tenha cuidado: os nativos os consideram sagrados. Tal como os europeus, eles ficam ofendidos e enojados com os saqueadores. Apenas [LINK=UNIT_SCOUT]batedores veteranos[\LINK] são furtivos o suficiente para escapar de sua ira.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Ruínas são restos da arquitetura humana: estruturas, uma vez concluídas, caíram em estado de abandono. Desastres naturais, guerra e despovoamento são as causas mais comuns, com muitas estruturas a deteriorarem-se ao longo do tempo devido às intempéries e à eliminação de resíduos.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Les ruines sont les restes d'architecture humaine passée : des structures autrefois complètes qui, par abandon, se sont désagrégés pour atteindre un état difficilement réparable. Les désastres naturels, la guerre ou le dépeuplement sont les causes principales de tels abandons. Les conditions climatiques et le pillage sont les principales causes de délabrement de ces structures.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]In [COLOR_HIGHLIGHT_TEXT]Antiken Ruinen[COLOR_REVERT] lassen sich Schätze, nützliche Informationen oder sogar Einheiten finden. Vorsicht ist geboten, denn die Eingeborenen betrachten diese oftmals als heilig. Wie Europäer auch verachten sie Plünderer und sind schnell beleidigt durch deren Tun. Lediglich [LINK=UNIT_SCOUT]Routinierte Späher[\LINK] sind erfahren - und heimlich - genug, um ihrem Zorn zu entgehen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ruinen sind die Reste menschlicher Architektur: Strukturen, die einst vollständig waren, dann aber durch den Einfluss der Umwelt, wie Pflanzen, Regen oder Wind, über die Zeit zerfielen. Gründe für die Verwahrlosung können Kriege, Katastrophen, Krankheiten und vieles mehr gewesen sein. In diesen Ruinen können sich manchmal noch wertvolle Dinge befinden.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]In [COLOR_HIGHLIGHT_TEXT]Antiken Ruinen[COLOR_REVERT] lassen sich Schätze, nützliche Informationen oder sogar Einheiten finden. Vorsicht ist geboten, denn die Eingeborenen betrachten diese oftmals als heilig. Wie Europäer auch verachten sie Plünderer und sind schnell beleidigt durch deren Tun. Lediglich [COLOR_UNIT_TEXT][LINK=UNIT_SCOUT]Routinierte Späher[\LINK][COLOR_REVERT] sind erfahren - und heimlich - genug, um ihrem Zorn zu entgehen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ruinen sind die Reste menschlicher Architektur: Strukturen, die einst vollständig waren, dann aber durch den Einfluss der Umwelt, wie Pflanzen, Regen oder Wind, über die Zeit zerfielen. Gründe für die Verwahrlosung können Kriege, Katastrophen, Krankheiten und vieles mehr gewesen sein. In diesen Ruinen können sich manchmal noch wertvolle Dinge befinden.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT3</Tag>
-		<English>Ship Wreckage</English>
+		<English>[COLOR_CAT_RESEARCH]Ship Wreckage[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Destroços do Navio</Text>
@@ -598,7 +598,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Treibgut</Text>
+			<Text>[COLOR_CAT_RESEARCH]Treibgut[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -623,7 +623,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT4</Tag>
-		<English>Ship Wreck</English>
+		<English>[COLOR_CAT_RESEARCH]Ship Wreck[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Naufrágio de Navio</Text>
@@ -636,7 +636,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Schiffswrack</Text>
+			<Text>[COLOR_CAT_RESEARCH]Schiffswrack[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -661,7 +661,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT5</Tag>
-		<English>Campfire</English>
+		<English>[COLOR_CAT_RESEARCH]Campfire[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Fogueira</Text>
@@ -674,7 +674,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Lagerfeuer</Text>
+			<Text>[COLOR_CAT_RESEARCH]Lagerfeuer[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -699,7 +699,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT6</Tag>
-		<English>Raiders' Camp</English>
+		<English>[COLOR_WARNING_TEXT]Raiders' Camp[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Acampamento dos Invasores</Text>
@@ -707,7 +707,7 @@
 			<Plural>0</Plural>
 		</Portuguese>
 		<German>
-			<Text>Verbrecherversteck</Text>
+			<Text>[COLOR_WARNING_TEXT]Verbrecherversteck[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -723,7 +723,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT7</Tag>
-		<English>Animal Lair</English>
+		<English>[COLOR_WARNING_TEXT]Animal Lair[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Covil de Animais</Text>
@@ -732,7 +732,7 @@
 		</Portuguese>
 		<French>Antre d'animaux</French>
 		<German>
-			<Text>Tierversteck</Text>
+			<Text>[COLOR_WARNING_TEXT]Tierversteck[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -747,7 +747,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_GOODY_HUT8</Tag>
-		<English>Hostile Native Village</English>
+		<English>[COLOR_WARNING_TEXT]Hostile Native Village[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Aldeia Nativa Hostil</Text>
@@ -756,7 +756,7 @@
 		</Portuguese>
 		<French>Village indigène hostile</French>
 		<German>
-			<Text>Feindliches Ureinwohnerdorf</Text>
+			<Text>[COLOR_WARNING_TEXT]Feindliches Ureinwohnerdorf[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -771,7 +771,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LAND_WORKED</Tag>
-		<English>Land worked</English>
+		<English>[COLOR_CAT_TERRAIN]Land worked[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Terra Trabalhada</Text>
@@ -784,7 +784,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Bearbeitetes Land</Text>
+			<Text>[COLOR_CAT_TERRAIN]Bearbeitetes Land[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -808,7 +808,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LODGE</Tag>
-		<English>Lodge</English>
+		<English>[COLOR_CAT_PROD]Lodge[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Cabana</Text>
@@ -820,7 +820,7 @@
 			<Gender>Male</Gender>
 			<Plural>0:1</Plural>
 		</French>
-		<German>Holzfällerhütte</German>
+		<German>[COLOR_CAT_PROD]Holzfällerhütte[COLOR_REVERT]</German>
 		<Italian>
 			<Text>Capanno</Text>
 			<Gender>Male</Gender>
@@ -835,14 +835,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LODGE_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Lodges[COLOR_REVERT] can be built in [LINK=FEATURE_FOREST]forests[\LINK], [LINK=FEATURE_LIGHT_FOREST]light forests[\LINK], [LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK] and [LINK=FEATURE_JUNGLE]Jungle[\LINK]. The production of [LINK=YIELD_LUMBER]lumber[\LINK] and [LINK=YIELD_VALUABLE_WOOD]valuable wood[\LINK] there is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]At first a lodge will be a small, makeshift shelter of boughs, poles, skins, earth or rough boards; but over time it can become permanent, even luxurious.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Lodges[COLOR_REVERT] can be built in [COLOR:190:130:70:255][LINK=FEATURE_FOREST]forests[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=FEATURE_LIGHT_FOREST]light forests[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=FEATURE_JUNGLE]Jungle[\LINK][COLOR_REVERT]. The production of [COLOR:190:130:70:255][LINK=YIELD_LUMBER]lumber[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=YIELD_VALUABLE_WOOD]valuable wood[\LINK][COLOR_REVERT] there is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]At first a lodge will be a small, makeshift shelter of boughs, poles, skins, earth or rough boards; but over time it can become permanent, even luxurious.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Alojamentos[COLOR_REVERT] podem ser construídos em [LINK=FEATURE_FOREST]florestas[\LINK], [LINK=FEATURE_LIGHT_FOREST]florestas leves[\LINK], [LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK] e [LINK=FEATURE_JUNGLE]selva[\LINK]. A produção de [LINK=YIELD_LUMBER]madeira[\LINK] e [LINK=YIELD_VALUABLE_WOOD]madeira valiosa[\LINK] aumentou.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]No início, um alojamento será um pequeno abrigo improvisado de galhos, postes, peles, terra ou tábuas ásperas; mas com o tempo pode tornar-se permanente e até luxuoso.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Un abri est un logement temporaire dont a besoin pour répondre aux besoins naturels de sécurité, d'hygiène et de confort. Il peut prendre la forme d'une cabine ou d'une hutte.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Holzfällerhütten[COLOR_REVERT] können im [LINK=FEATURE_FOREST]Wald[\LINK], [LINK=FEATURE_LIGHT_FOREST]Buschland[\LINK], in der [LINK=FEATURE_FOREST_TUNDRA]Taiga[\LINK] und im [LINK=FEATURE_JUNGLE]Dschungel[\LINK] gebaut werden. Die Produktion von [LINK=YIELD_LUMBER]Holz[\LINK] und [LINK=YIELD_VALUABLE_WOOD]Edelholz[\LINK] ist dort erhöht.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Am Anfang wird eine Holzfällerhütte ein kleiner, behelfsmäßiger Unterschlupf aus Ästen, Stangen, Fellen, Erde oder groben Brettern sein; aber mit der Zeit kann sie dauerhaft, sogar luxuriös werden.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Holzfällerhütten[COLOR_REVERT] können im [COLOR:190:130:70:255][LINK=FEATURE_FOREST]Wald[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=FEATURE_LIGHT_FOREST]Buschland[\LINK][COLOR_REVERT], in der [COLOR:190:130:70:255][LINK=FEATURE_FOREST_TUNDRA]Taiga[\LINK][COLOR_REVERT] und im [COLOR:190:130:70:255][LINK=FEATURE_JUNGLE]Dschungel[\LINK][COLOR_REVERT] gebaut werden. Die Produktion von [COLOR:190:130:70:255][LINK=YIELD_LUMBER]Holz[\LINK][COLOR_REVERT] und [COLOR:190:130:70:255][LINK=YIELD_VALUABLE_WOOD]Edelholz[\LINK][COLOR_REVERT] ist dort erhöht.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Am Anfang wird eine Holzfällerhütte ein kleiner, behelfsmäßiger Unterschlupf aus Ästen, Stangen, Fellen, Erde oder groben Brettern sein; aber mit der Zeit kann sie dauerhaft, sogar luxuriös werden.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LUMBERJACK_CAMP</Tag>
-		<English>Lumberjack Camp</English>
+		<English>[COLOR_CAT_PROD]Lumberjack Camp[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Acampamento de Lenhadores</Text>
@@ -855,7 +855,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Holzfällercamp</Text>
+			<Text>[COLOR_CAT_PROD]Holzfällercamp[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -873,14 +873,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LUMBERJACK_CAMP_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Lumberjack camps[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_LODGE]lodges[\LINK], that can be built in [LINK=FEATURE_FOREST]forests[\LINK], [LINK=FEATURE_LIGHT_FOREST]light forests[\LINK], [LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK] and [LINK=FEATURE_JUNGLE]jungle[\LINK]. The production of [LINK=YIELD_LUMBER]lumber[\LINK] and [LINK=YIELD_VALUABLE_WOOD]valuable wood[\LINK] there is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]At first a lodge will be a small, makeshift shelter of boughs, poles, skins, earth or rough boards. Over time it evolves into a lumberjack camp.[PARAGRAPH:1]Lumberjacks are known for their music and cameraderie at the end of a hard day's work.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Lumberjack camps[COLOR_REVERT] are the upgrades of [COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]lodges[\LINK][COLOR_REVERT], that can be built in [COLOR:190:130:70:255][LINK=FEATURE_FOREST]forests[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=FEATURE_LIGHT_FOREST]light forests[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=FEATURE_JUNGLE]jungle[\LINK][COLOR_REVERT]. The production of [COLOR:190:130:70:255][LINK=YIELD_LUMBER]lumber[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=YIELD_VALUABLE_WOOD]valuable wood[\LINK][COLOR_REVERT] there is increased.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]At first a lodge will be a small, makeshift shelter of boughs, poles, skins, earth or rough boards. Over time it evolves into a lumberjack camp.[PARAGRAPH:1]Lumberjacks are known for their music and cameraderie at the end of a hard day's work.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Acampamentos de lenhadores[COLOR_REVERT] são atualizações de [LINK=IMPROVEMENT_LODGE]alojamentos[\LINK], que podem ser construídos em [LINK=FEATURE_FOREST]florestas[\LINK], [LINK=FEATURE_LIGHT_FOREST]florestas leves[\LINK], [LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK] e [LINK=FEATURE_JUNGLE]selva[\LINK]. A produção de [LINK=YIELD_LUMBER]madeira[\LINK] e [LINK=YIELD_VALUABLE_WOOD]madeira valiosa[\LINK] aumentou.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]No início, um alojamento será um pequeno abrigo improvisado de galhos, postes, peles, terra ou tábuas ásperas. Com o tempo, ele evolui para um acampamento de lenhadores.[PARAGRAPH:1]Os lenhadores são conhecidos por sua música e câmera no final de um árduo dia de trabalho.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Un abri est un logement temporaire dont a besoin pour répondre aux besoins naturels de sécurité, d'hygiène et de confort. Il peut prendre la forme d'une cabine ou d'une hutte.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Holzfällercamps[COLOR_REVERT] sind die höhere Stufe einer [LINK=IMPROVEMENT_LODGE]Holzfällerhütte[\LINK]. Diese können in [LINK=FEATURE_FOREST]Wäldern[\LINK], [LINK=FEATURE_LIGHT_FOREST]Buschland[\LINK], [LINK=FEATURE_FOREST_TUNDRA]Taiga[\LINK] und [LINK=FEATURE_JUNGLE]Dschungel[\LINK] errichtet werden. Die Produktion von [LINK=YIELD_LUMBER]Holz[\LINK] und [LINK=YIELD_VALUABLE_WOOD]Edelholz[\LINK] erhöht sich deutlich.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Zunächst wird eine Holzfällerhütte ein kleiner, behelfsmäßiger Unterstand aus Ästen, Stangen, Fellen, Erde oder groben Brettern sein. Im Lauf der Zeit entwickelt es sich zu einem Holzfällerlager.[PARAGRAPH:1]Holzfäller sind bekannt für ihre Kameradschaft und Musik am Ende eines harten Arbeitstages.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Holzfällercamps[COLOR_REVERT] sind die höhere Stufe einer [COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Holzfällerhütte[\LINK][COLOR_REVERT]. Diese können in [COLOR:190:130:70:255][LINK=FEATURE_FOREST]Wäldern[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=FEATURE_LIGHT_FOREST]Buschland[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=FEATURE_FOREST_TUNDRA]Taiga[\LINK][COLOR_REVERT] und [COLOR:190:130:70:255][LINK=FEATURE_JUNGLE]Dschungel[\LINK][COLOR_REVERT] errichtet werden. Die Produktion von [COLOR:190:130:70:255][LINK=YIELD_LUMBER]Holz[\LINK][COLOR_REVERT] und [COLOR:190:130:70:255][LINK=YIELD_VALUABLE_WOOD]Edelholz[\LINK][COLOR_REVERT] erhöht sich deutlich.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Zunächst wird eine Holzfällerhütte ein kleiner, behelfsmäßiger Unterstand aus Ästen, Stangen, Fellen, Erde oder groben Brettern sein. Im Lauf der Zeit entwickelt es sich zu einem Holzfällerlager.[PARAGRAPH:1]Holzfäller sind bekannt für ihre Kameradschaft und Musik am Ende eines harten Arbeitstages.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LUMBERMILL</Tag>
-		<English>Sawmill</English>
+		<English>[COLOR_CAT_PROD]Sawmill[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Serraria</Text>
@@ -893,7 +893,7 @@
 			<Plural>1</Plural>
 		</French>
 		<German>
-			<Text>Sägewerk</Text>
+			<Text>[COLOR_CAT_PROD]Sägewerk[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>1</Plural>
 		</German>
@@ -911,14 +911,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LUMBERMILL_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Sawmills[COLOR_REVERT] give a percentage bonus on [LINK=YIELD_HAMMERS]hammer[\LINK] production in their city when worked by a citizen.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Lumberjacks are known for their music and cameraderie at the end of a hard day's work.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Sawmills[COLOR_REVERT] give a percentage bonus on [COLOR:190:130:70:255][LINK=YIELD_HAMMERS]hammer[\LINK][COLOR_REVERT] production in their city when worked by a citizen.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Lumberjacks are known for their music and cameraderie at the end of a hard day's work.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Serrarias[COLOR_REVERT] dão um bônus percentual na produção de [LINK=YIELD_HAMMERS]martelos[\LINK] em sua cidade quando trabalhados por um cidadão.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Os lenhadores são conhecidos por sua música e câmera no final de um dia duro de trabalho.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Les scieries[COLOR_REVERT] donnent un pourcentage de bonus sur la production de [LINK=YIELD_HAMMERS]marteaux[\LINK] dans leur ville lorsqu'ils sont travaillés par un citoyen. [PARAGRAPH:2][BOLD]Contexte :[\BOLD][PARAGRAPH:1]Les bûcherons sont connus pour leur musique et leur camaraderie à la fin d'une dure journée de travail.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Sägewerk[COLOR_REVERT] auf der Karte geben einen prozentualen Bonus auf die gesamte [LINK=YIELD_HAMMERS]Bauproduktion[\LINK] der Stadt, wenn sie von einem Bürger in der Stadt bearbeitet werden.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Holzfäller sind bekannt für ihre Kameradschaft und Musik am Ende eines harten Arbeitstages</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Sägewerk[COLOR_REVERT] auf der Karte geben einen prozentualen Bonus auf die gesamte [COLOR:190:130:70:255][LINK=YIELD_HAMMERS]Bauproduktion[\LINK][COLOR_REVERT] der Stadt, wenn sie von einem Bürger in der Stadt bearbeitet werden.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Holzfäller sind bekannt für ihre Kameradschaft und Musik am Ende eines harten Arbeitstages</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_MINE</Tag>
-		<English>Mine</English>
+		<English>[COLOR_CAT_PROD]Mine[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Mina</Text>
@@ -931,7 +931,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Mine</Text>
+			<Text>[COLOR_CAT_PROD]Mine[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -949,14 +949,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_MINE_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Mines[COLOR_REVERT] can be built on all unvegetated hills and peaks, as well as on [LINK=TERRAIN_DESERT]desert[\LINK] terrain. Mines increase the production of [LINK=YIELD_ORE]ore[\LINK], [LINK=YIELD_RAW_SALT]rock salt[\LINK], [LINK=YIELD_SILVER]silver[\LINK], [LINK=YIELD_GEMS]gems[\LINK] and [LINK=YIELD_GOLD]gold[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A pick and shovel can start a mine. If the site is right and the wealth is there, that's good news for the owners. However the engineering challenges can become complex. Workers' safety will be balanced against the need for minerals.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Mines[COLOR_REVERT] can be built on all unvegetated hills and peaks, as well as on [COLOR:215:200:150:255][LINK=TERRAIN_DESERT]desert[\LINK][COLOR_REVERT] terrain. Mines increase the production of [COLOR:190:130:70:255][LINK=YIELD_ORE]ore[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_RAW_SALT]rock salt[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_SILVER]silver[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_GEMS]gems[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_GOLD]gold[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A pick and shovel can start a mine. If the site is right and the wealth is there, that's good news for the owners. However the engineering challenges can become complex. Workers' safety will be balanced against the need for minerals.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Minas[COLOR_REVERT] podem ser construídas em todas as colinas e picos sem vegetação, bem como em terrenos [LINK=TERRAIN_DESERT]desérticos[\LINK]. As minas aumentam a produção de [LINK=YIELD_ORE]minério[\LINK], [LINK=YIELD_RAW_SALT]sal-gema[\LINK], [LINK=YIELD_SILVER]prata[\LINK], [LINK=YIELD_GEMS]gemas[\LINK] e [LINK=YIELD_GOLD]ouro[\LINK].[PARAGRAPH:2][BOLD]Antecedentes :[\BOLD][PARAGRAPH:1]Uma picareta e uma pá podem iniciar uma mina. Se o local estiver correto e a riqueza estiver presente, isso é uma boa notícia para os proprietários. No entanto, os desafios de engenharia podem tornar-se complexos. A segurança dos trabalhadores será equilibrada com a necessidade de minerais.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une mine est un gisement exploité de matériaux (par exemple d'or, d'argent, de diamants, de fer, de sel, etc.). Elle peut être à ciel ouvert ou souterraine.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Minen[COLOR_REVERT] können auf allen unbewaldeten Hügeln und Bergen, sowie in der [LINK=TERRAIN_DESERT]Wüste[\LINK] angelegt werden. Minen steigern die Förderung von [LINK=YIELD_ORE]Eisenerz[\LINK], [LINK=YIELD_RAW_SALT]Steinsalz[\LINK], [LINK=YIELD_SILVER]Silber[\LINK], [LINK=YIELD_GEMS]Edelsteinen[\LINK] und [LINK=YIELD_GOLD]Gold[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff 'Miene' bezieht sich auf eine Abbaufläche für Metalle, Edelsteine oder Mineralien. Eine Miene kann sowohl oberirdisch, wie auch unterirdisch angelegt sein.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Minen[COLOR_REVERT] können auf allen unbewaldeten Hügeln und Bergen, sowie in der [COLOR:215:200:150:255][LINK=TERRAIN_DESERT]Wüste[\LINK][COLOR_REVERT] angelegt werden. Minen steigern die Förderung von [COLOR:190:130:70:255][LINK=YIELD_ORE]Eisenerz[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_RAW_SALT]Steinsalz[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_SILVER]Silber[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_GEMS]Edelsteinen[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=YIELD_GOLD]Gold[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff 'Miene' bezieht sich auf eine Abbaufläche für Metalle, Edelsteine oder Mineralien. Eine Miene kann sowohl oberirdisch, wie auch unterirdisch angelegt sein.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_DEEP_MINE</Tag>
-		<English>Large Mine</English>
+		<English>[COLOR_CAT_PROD]Large Mine[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Mina Grande</Text>
@@ -969,7 +969,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Große Mine</Text>
+			<Text>[COLOR_CAT_PROD]Große Mine[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -987,14 +987,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_DEEP_MINE_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large mines[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_MINE]mines[\LINK]. They increase the production of [LINK=YIELD_ORE]ore[\LINK], [LINK=YIELD_RAW_SALT]rock salt[\LINK], [LINK=YIELD_SILVER]silver[\LINK], [LINK=YIELD_GEMS]gems[\LINK] and [LINK=YIELD_GOLD]gold[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A pick and shovel can start a mine. If the site is right and the wealth is there, that's good news for the owners. However engineering challenges often become complex. Workers' lives can be be balanced against the need for minerals.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large mines[COLOR_REVERT] are the upgrades of [COLOR:190:130:70:255][LINK=IMPROVEMENT_MINE]mines[\LINK][COLOR_REVERT]. They increase the production of [COLOR:190:130:70:255][LINK=YIELD_ORE]ore[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_RAW_SALT]rock salt[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_SILVER]silver[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_GEMS]gems[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_GOLD]gold[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A pick and shovel can start a mine. If the site is right and the wealth is there, that's good news for the owners. However engineering challenges often become complex. Workers' lives can be be balanced against the need for minerals.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]minas grandes[COLOR_REVERT] são atualizações de [LINK=IMPROVEMENT_MINE]minas[\LINK]. Eles aumentam a produção de [LINK=YIELD_ORE]minério[\LINK], [LINK=YIELD_RAW_SALT]sal-gema[\LINK], [LINK=YIELD_SILVER]prata[\LINK], [LINK=YIELD_GEMS]gemas[\LINK] e [LINK=YIELD_GOLD]ouro[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]A picareta e pá podem iniciar uma mina. Se o local estiver correto e a riqueza estiver presente, isso é uma boa notícia para os proprietários. No entanto, os desafios de engenharia muitas vezes tornam-se complexos. A vida dos trabalhadores pode ser equilibrada em função da necessidade de minerais.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une mine est un gisement exploité de matériaux (par exemple d'or, d'argent, de diamants, de fer, de sel, etc.). Elle peut être à ciel ouvert ou souterraine.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Die [COLOR_HIGHLIGHT_TEXT]Große Mine[COLOR_REVERT] ist eine Erweiterung der [LINK=IMPROVEMENT_MINE]Mine[\LINK]. Sie steigert die Förderung von [LINK=YIELD_ORE]Eisenerz[\LINK], [LINK=YIELD_RAW_SALT]Steinsalz[\LINK], [LINK=YIELD_SILVER]Silber[\LINK], [LINK=YIELD_GEMS]Edelsteinen[\LINK] und [LINK=YIELD_GOLD]Gold[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff 'Miene' bezieht sich auf eine Abbaufläche für Metalle, Edelsteine oder Mineralien. Eine Miene kann sowohl oberirdisch, wie auch unterirdisch angelegt sein.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Die [COLOR_HIGHLIGHT_TEXT]Große Mine[COLOR_REVERT] ist eine Erweiterung der [COLOR:190:130:70:255][LINK=IMPROVEMENT_MINE]Mine[\LINK][COLOR_REVERT]. Sie steigert die Förderung von [COLOR:190:130:70:255][LINK=YIELD_ORE]Eisenerz[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_RAW_SALT]Steinsalz[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_SILVER]Silber[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_GEMS]Edelsteinen[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=YIELD_GOLD]Gold[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff 'Miene' bezieht sich auf eine Abbaufläche für Metalle, Edelsteine oder Mineralien. Eine Miene kann sowohl oberirdisch, wie auch unterirdisch angelegt sein.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_MONASTERY</Tag>
-		<English>Monastery</English>
+		<English>[COLOR_CAT_RESEARCH]Monastery[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Mosteiro</Text>
@@ -1007,7 +1007,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Kloster</Text>
+			<Text>[COLOR_CAT_RESEARCH]Kloster[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1025,14 +1025,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_MONASTERY_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Monasteries[COLOR_REVERT] only function as long as they are inhabited by monks. A colonist with the [LINK=PROFESSION_MISSIONARY]missionary[\LINK] profession needs to be fortified in the monastery. Employing [LINK=UNIT_CHRISTIAN_MISSIONARY]Jesuit missionaries[\LINK] or [LINK=UNIT_PREACHER]firebrand preachers[\LINK] increases the effectiveness of the monastery.[PARAGRAPH:2]For more information on managing monasteries, see [LINK=CONCEPT_MONASTERIES]Monasteries[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]"Monastery" denotes the building, or complex of buildings, comprising the domestic quarters and workplace(s) of monastics, whether monks or nuns, and whether living in community or alone (hermits).[PARAGRAPH:1]The monastery includes a place reserved for prayer which may be a chapel, church or temple, and may also serve as an oratory. A monastery complex can include a church, dormitory, cloister, refectory, library, balneary and infirmary.[PARAGRAPH:1]Depending on the location, the monastic order and the occupation of its inhabitants, the complex may also have buildings to aid self-sufficiency and community service. These may include a hospice, a school, and agricultural and manufacturing buildings such as a barn, a forge or a brewery.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Monasteries[COLOR_REVERT] only function as long as they are inhabited by monks. A colonist with the [COLOR_UNIT_TEXT][LINK=PROFESSION_MISSIONARY]missionary[\LINK][COLOR_REVERT] profession needs to be fortified in the monastery. Employing [COLOR_UNIT_TEXT][LINK=UNIT_CHRISTIAN_MISSIONARY]Jesuit missionaries[\LINK][COLOR_REVERT] or [COLOR_UNIT_TEXT][LINK=UNIT_PREACHER]firebrand preachers[\LINK][COLOR_REVERT] increases the effectiveness of the monastery.[PARAGRAPH:2]For more information on managing monasteries, see [LINK=CONCEPT_MONASTERIES]Monasteries[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]"Monastery" denotes the building, or complex of buildings, comprising the domestic quarters and workplace(s) of monastics, whether monks or nuns, and whether living in community or alone (hermits).[PARAGRAPH:1]The monastery includes a place reserved for prayer which may be a chapel, church or temple, and may also serve as an oratory. A monastery complex can include a church, dormitory, cloister, refectory, library, balneary and infirmary.[PARAGRAPH:1]Depending on the location, the monastic order and the occupation of its inhabitants, the complex may also have buildings to aid self-sufficiency and community service. These may include a hospice, a school, and agricultural and manufacturing buildings such as a barn, a forge or a brewery.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Mosteiros[COLOR_REVERT] só funcionam enquanto forem habitados por monges. Um colono com a profissão [LINK=PROFESSION_MISSIONARY]missionário[\LINK] precisa ser fortificado no mosteiro. Empregar [LINK=UNIT_CHRISTIAN_MISSIONARY]missionários jesuítas[\LINK] ou [LINK=UNIT_PREACHER]Pregadores Fervorosos[\LINK] aumenta a eficácia do mosteiro.[PARAGRAPH:2]Para obter mais informações sobre o gerenciamento de mosteiros, consulte [LINK=CONCEPT_MONASTERIES]Mosteiros[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]"Mosteiro" denota o edifício, ou conjunto de edifícios, constituído pelos alojamentos domésticos e locais de trabalho dos monásticos, sejam monges ou freiras, e que vivam em comunidade ou sozinhos (eremitas).[PARAGRAPH:1]O mosteiro inclui um local reservado à oração que pode ser capela, igreja ou templo, podendo também servir de oratório. Um complexo monástico pode incluir igreja, dormitório, claustro, refeitório, biblioteca, balneário e enfermaria.[PARAGRAPH:1]Dependendo da localização, da ordem monástica e da ocupação dos seus habitantes, o complexo também pode ter edifícios para auxiliar a auto-suficiência e o serviço comunitário. Estes podem incluir um hospício, uma escola e edifícios agrícolas e industriais, como um celeiro, uma forja ou uma cervejaria.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Un monastère (du grec monos, « seul ») est un ensemble de bâtiments où habite une communauté religieuse de moines ou de moniales. On parle également d'abbaye s'il est dirigé par un abbé ou de prieuré s'il est dépendant ou de moindre importance. Souvent, le prieuré est dépendant d'une abbaye ou monastère. Les monastères des ordres militaires du Moyen âge sont appelés commanderies. On parle de couvent pour les résidences de Franciscains et Dominicains, ainsi que d'autres ordres, tandis que les Bénédictins ou Prémontrés habitent des abbayes ou prieurés.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Ein [COLOR_HIGHLIGHT_TEXT]Kloster[COLOR_REVERT] ist nur aktiv, wenn Mönche darin leben. Dafür muss ein Kolonist im Beruf [LINK=PROFESSION_MISSIONARY]Missionar[\LINK] im Kloster befestigt werden. Wird ein [LINK=UNIT_CHRISTIAN_MISSIONARY]Jesuitenmissionar[\LINK] oder ein [LINK=UNIT_CHRISTIAN_MISSIONARY]Evangelist[\LINK] eingesetzt, erhöht sich die Effektivität des Klosters.[PARAGRAPH:2]Für weitere Informationen siehe [LINK=CONCEPT_MONASTERIES]Klöster[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff 'Kloster' steht für ein Gebäude oder einen Komplex mehrerer Gebäude, welches üblicherweise von Mönchen oder Nonnen bewohnt wird. Ein Kloster beinhaltet üblicherweise Gebetsstellen, wie eine Kapelle, eine Kirche oder einen Tempel, aber auch Räume oder Gebäude für den Alltag und die Selbstversorgung, wie einen Schlafsaal, Speisesaal, Werkstellen, Scheunen, Schmieden und manchmal Brauereien. In manchen größeren Klöstern findet man auch Büchereien, Schulen oder Krankenhäuser, die dann auch oft den umliegenden Gemeinden Dienste anbieten.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Ein [COLOR_HIGHLIGHT_TEXT]Kloster[COLOR_REVERT] ist nur aktiv, wenn Mönche darin leben. Dafür muss ein Kolonist im Beruf [COLOR_UNIT_TEXT][LINK=PROFESSION_MISSIONARY]Missionar[\LINK][COLOR_REVERT] im Kloster befestigt werden. Wird ein [COLOR_UNIT_TEXT][LINK=UNIT_CHRISTIAN_MISSIONARY]Jesuitenmissionar[\LINK][COLOR_REVERT] oder ein [COLOR_UNIT_TEXT][LINK=UNIT_CHRISTIAN_MISSIONARY]Evangelist[\LINK][COLOR_REVERT] eingesetzt, erhöht sich die Effektivität des Klosters.[PARAGRAPH:2]Für weitere Informationen siehe [LINK=CONCEPT_MONASTERIES]Klöster[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff 'Kloster' steht für ein Gebäude oder einen Komplex mehrerer Gebäude, welches üblicherweise von Mönchen oder Nonnen bewohnt wird. Ein Kloster beinhaltet üblicherweise Gebetsstellen, wie eine Kapelle, eine Kirche oder einen Tempel, aber auch Räume oder Gebäude für den Alltag und die Selbstversorgung, wie einen Schlafsaal, Speisesaal, Werkstellen, Scheunen, Schmieden und manchmal Brauereien. In manchen größeren Klöstern findet man auch Büchereien, Schulen oder Krankenhäuser, die dann auch oft den umliegenden Gemeinden Dienste anbieten.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_MONASTERY</Tag>
-		<English>Large Monastery</English>
+		<English>[COLOR_CAT_RESEARCH]Large Monastery[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Grande Mosteiro</Text>
@@ -1045,7 +1045,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Großes Kloster</Text>
+			<Text>[COLOR_CAT_RESEARCH]Großes Kloster[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1063,14 +1063,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_MONASTERY_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]The [COLOR_HIGHLIGHT_TEXT]large monastery[COLOR_REVERT] is the upgrade of the [LINK=IMPROVEMENT_MONASTERY]monastery[\LINK].[PARAGRAPH:1]Monasteries work only while they're inhabited by monks. A colonist with the [LINK=PROFESSION_MISSIONARY]missionary[\LINK] profession needs to be fortified on the plot with the monastery. Employing [LINK=UNIT_CHRISTIAN_MISSIONARY]Jesuit missionaries[\LINK] or [LINK=UNIT_PREACHER]firebrand preachers[\LINK] increases the effectiveness of the monastery.[PARAGRAPH:2]For more information on monasteries, see [LINK=CONCEPT_MONASTERIES]Monasteries[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]"Monastery" denotes the building, or complex of buildings, comprising the domestic quarters of monastics, whether monks or nuns, and whether living in community or alone (hermits). The monastery generally includes a place reserved for prayer which may be a chapel, church or temple, and may also serve as an oratory.[PARAGRAPH:1]A monastery complex typically has buildings which include a church, dormitory, cloister, refectory, library, balneary and infirmary. Depending on the location, the monastic order and the occupation of its inhabitants, the complex may also include buildings to aid self-sufficiency and service to the community. These could include a hospice, a school, and agricultural and manufacturing buildings such as a barn, forge or brewery.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]The [COLOR_HIGHLIGHT_TEXT]large monastery[COLOR_REVERT] is the upgrade of the [COLOR:40:225:235:255][LINK=IMPROVEMENT_MONASTERY]monastery[\LINK][COLOR_REVERT].[PARAGRAPH:1]Monasteries work only while they're inhabited by monks. A colonist with the [COLOR_UNIT_TEXT][LINK=PROFESSION_MISSIONARY]missionary[\LINK][COLOR_REVERT] profession needs to be fortified on the plot with the monastery. Employing [COLOR_UNIT_TEXT][LINK=UNIT_CHRISTIAN_MISSIONARY]Jesuit missionaries[\LINK][COLOR_REVERT] or [COLOR_UNIT_TEXT][LINK=UNIT_PREACHER]firebrand preachers[\LINK][COLOR_REVERT] increases the effectiveness of the monastery.[PARAGRAPH:2]For more information on monasteries, see [LINK=CONCEPT_MONASTERIES]Monasteries[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]"Monastery" denotes the building, or complex of buildings, comprising the domestic quarters of monastics, whether monks or nuns, and whether living in community or alone (hermits). The monastery generally includes a place reserved for prayer which may be a chapel, church or temple, and may also serve as an oratory.[PARAGRAPH:1]A monastery complex typically has buildings which include a church, dormitory, cloister, refectory, library, balneary and infirmary. Depending on the location, the monastic order and the occupation of its inhabitants, the complex may also include buildings to aid self-sufficiency and service to the community. These could include a hospice, a school, and agricultural and manufacturing buildings such as a barn, forge or brewery.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1]O [COLOR_HIGHLIGHT_TEXT]grande mosteiro[COLOR_REVERT] é a atualização do [LINK=IMPROVEMENT_MONASTERY]mosteiro[\LINK].[PARAGRAPH:1]Os mosteiros funcionam apenas enquanto são habitados por monges. Um colono com a profissão [LINK=PROFESSION_MISSIONARY]missionário[\LINK] precisa ser fortificado no terreno com o mosteiro. Empregar [LINK=UNIT_CHRISTIAN_MISSIONARY]missionários jesuítas[\LINK] ou [LINK=UNIT_PREACHER]Pregadores Fervorosos[\LINK] aumenta a eficácia do mosteiro.[PARAGRAPH:2]Para obter mais informações sobre mosteiros, consulte [LINK=CONCEPT_MONASTERIES]Mosteiros[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]"Mosteiro" denota o edifício, ou complexo de edifícios, que compreende os alojamentos domésticos dos monásticos, sejam monges ou freiras, e que vivam em comunidade ou sozinhos (eremitas). O mosteiro geralmente inclui um local reservado à oração que pode ser uma capela, igreja ou templo, podendo também servir de oratório.[PARAGRAPH:1]Um complexo monástico normalmente possui edifícios que incluem igreja, dormitório, claustro, refeitório, biblioteca, balneário e enfermaria. Dependendo da localização, da ordem monástica e da ocupação dos seus habitantes, o complexo pode também incluir edifícios de apoio à auto-suficiência e ao serviço da comunidade. Estes podem incluir um hospício, uma escola e edifícios agrícolas e industriais, como um celeiro, uma forja ou uma cervejaria.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Un monastère (du grec monos, « seul ») est un ensemble de bâtiments où habite une communauté religieuse de moines ou de moniales. On parle également d'abbaye s'il est dirigé par un abbé ou de prieuré s'il est dépendant ou de moindre importance. Souvent, le prieuré est dépendant d'une abbaye ou monastère. Les monastères des ordres militaires du Moyen âge sont appelés commanderies. On parle de couvent pour les résidences de Franciscains et Dominicains, ainsi que d'autres ordres, tandis que les Bénédictins ou Prémontrés habitent des abbayes ou prieurés.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Das [COLOR_HIGHLIGHT_TEXT]Große Kloster[COLOR_REVERT] ist die Erweiterung des [LINK=IMPROVEMENT_MONASTERY]Klosters[\LINK].[PARAGRAPH:1]Ein [COLOR_HIGHLIGHT_TEXT]Kloster[COLOR_REVERT] ist nur aktiv, wenn Mönche darin leben. Dafür muss ein Kolonist im Beruf [LINK=PROFESSION_MISSIONARY]Missionar[\LINK] im Kloster befestigt werden. Wird ein [LINK=UNIT_CHRISTIAN_MISSIONARY]Jesuitenmissionar[\LINK] oder ein [LINK=UNIT_CHRISTIAN_MISSIONARY]Evangelist[\LINK] eingesetzt, erhöht sich die Effektivität des Klosters.[PARAGRAPH:2]Für weitere Informationen siehe [LINK=CONCEPT_MONASTERIES]Klöster[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff 'Kloster' steht für ein Gebäude oder einen Komplex mehrerer Gebäude, welches üblicherweise von Mönchen oder Nonnen bewohnt wird. Ein Kloster beinhaltet üblicherweise Gebetsstellen, wie eine Kapelle, eine Kirche oder einen Tempel, aber auch Räume oder Gebäude für den Alltag und die Selbstversorgung, wie einen Schlafsaal, Speisesaal, Werkstellen, Scheunen, Schmieden und manchmal Brauereien. In manchen größeren Klöstern findet man auch Büchereien, Schulen oder Krankenhäuser, die dann auch oft den umliegenden Gemeinden Dienste anbieten.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Das [COLOR_HIGHLIGHT_TEXT]Große Kloster[COLOR_REVERT] ist die Erweiterung des [COLOR:40:225:235:255][LINK=IMPROVEMENT_MONASTERY]Klosters[\LINK][COLOR_REVERT].[PARAGRAPH:1]Ein [COLOR_HIGHLIGHT_TEXT]Kloster[COLOR_REVERT] ist nur aktiv, wenn Mönche darin leben. Dafür muss ein Kolonist im Beruf [COLOR_UNIT_TEXT][LINK=PROFESSION_MISSIONARY]Missionar[\LINK][COLOR_REVERT] im Kloster befestigt werden. Wird ein [COLOR_UNIT_TEXT][LINK=UNIT_CHRISTIAN_MISSIONARY]Jesuitenmissionar[\LINK][COLOR_REVERT] oder ein [COLOR_UNIT_TEXT][LINK=UNIT_CHRISTIAN_MISSIONARY]Evangelist[\LINK][COLOR_REVERT] eingesetzt, erhöht sich die Effektivität des Klosters.[PARAGRAPH:2]Für weitere Informationen siehe [LINK=CONCEPT_MONASTERIES]Klöster[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Der Begriff 'Kloster' steht für ein Gebäude oder einen Komplex mehrerer Gebäude, welches üblicherweise von Mönchen oder Nonnen bewohnt wird. Ein Kloster beinhaltet üblicherweise Gebetsstellen, wie eine Kapelle, eine Kirche oder einen Tempel, aber auch Räume oder Gebäude für den Alltag und die Selbstversorgung, wie einen Schlafsaal, Speisesaal, Werkstellen, Scheunen, Schmieden und manchmal Brauereien. In manchen größeren Klöstern findet man auch Büchereien, Schulen oder Krankenhäuser, die dann auch oft den umliegenden Gemeinden Dienste anbieten.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_PASTURE</Tag>
-		<English>Pasture</English>
+		<English>[COLOR_CAT_FOOD]Pasture[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Pasto</Text>
@@ -1083,7 +1083,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Ranch</Text>
+			<Text>[COLOR_CAT_FOOD]Ranch[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1101,14 +1101,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_PASTURE_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Pastures[COLOR_REVERT] can be built on unvegetated terrain that is either flat or hilly, and where [LINK=CONCEPT_CATTLE_OR_SHEEP_BREEDING]livestock[\LINK] can be bred. The production of [LINK=YIELD_HORSES]horses[\LINK], [LINK=YIELD_CATTLE]cattle[\LINK] and [LINK=YIELD_SHEEP]sheep[\LINK] is increased on those tiles.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Pasture is land with forage for livestock either as part of a farm or for ranching on open range, or where wild animals can graze or browse. Before factory farming, pasture was where grazing animals such as cattle and horses fed. It is still used extensively, particularly in arid regions where pasture land is unsuitable for any other agricultural production. In wetter climates pasture is valued for free range and organic farming.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Pastures[COLOR_REVERT] can be built on unvegetated terrain that is either flat or hilly, and where [LINK=CONCEPT_CATTLE_OR_SHEEP_BREEDING]livestock[\LINK] can be bred. The production of [COLOR:110:220:80:255][LINK=YIELD_HORSES]horses[\LINK][COLOR_REVERT], [COLOR:110:220:80:255][LINK=YIELD_CATTLE]cattle[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_SHEEP]sheep[\LINK][COLOR_REVERT] is increased on those tiles.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Pasture is land with forage for livestock either as part of a farm or for ranching on open range, or where wild animals can graze or browse. Before factory farming, pasture was where grazing animals such as cattle and horses fed. It is still used extensively, particularly in arid regions where pasture land is unsuitable for any other agricultural production. In wetter climates pasture is valued for free range and organic farming.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]pastagens[COLOR_REVERT] podem ser construídas em terrenos sem vegetação, planos ou montanhosos, e onde [LINK=CONCEPT_CATTLE_OR_SHEEP_BREEDING]gado[\LINK] pode ser criado. A produção de [LINK=YIELD_HORSES]cavalos[\LINK], [LINK=YIELD_CATTLE]gado[\LINK] e [LINK=YIELD_SHEEP]ovelhas[\LINK] é aumentada nesses lotes.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Pasto é uma terra com forragem para o gado como parte de uma fazenda ou para pecuária em campo aberto, ou onde animais selvagens podem pastar ou navegar. Antes da agricultura industrial, as pastagens eram onde os animais que pastavam, como gado e cavalos, se alimentavam. Ainda é amplamente utilizado, especialmente em regiões áridas onde as pastagens são inadequadas para qualquer outra produção agrícola. Em climas mais úmidos, as pastagens são valorizadas para a agricultura ao ar livre e orgânica.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Le pâturage est une forme d'alimentation des animaux herbivores qui se nourrissent de plantes (telles que les graminées). Le pâturage diffère de la prédation parce que l'organisme mangé n'est généralement pas tué, et du parasitisme parce que les deux organismes n'ont pas de relation symbiotique et que le « brouteur » n'est généralement pas limité dans le choix des espèces qu'il peut consommer (voir espèces généraliste et spécialisée).</French>
 		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Als 'Weideland' bezeichnet man Flächen mit Vegetation, die der Viehzucht dienen. Oft gehören diese Flächen zu einer Farm oder einer Ranch. In vielen Fällen dient dazu Land, das ansonsten für den Anbau von Nutzpflanzen nicht geeignet ist.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_PEN</Tag>
-		<English>Breeding Pen</English>
+		<English>[COLOR_CAT_FOOD]Breeding Pen[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Curral</Text>
@@ -1117,7 +1117,7 @@
 		</Portuguese>
 		<French>Basse-cour</French>
 		<German>
-			<Text>Zuchtstall</Text>
+			<Text>[COLOR_CAT_FOOD]Zuchtstall[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1132,7 +1132,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_PEN</Tag>
-		<English>Large Breeding Pen</English>
+		<English>[COLOR_CAT_FOOD]Large Breeding Pen[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Curral Grande</Text>
@@ -1141,7 +1141,7 @@
 		</Portuguese>
 		<French>Grande basse-cour:Grandes basses-cours</French>
 		<German>
-			<Text>Großer Zuchtbetrieb</Text>
+			<Text>[COLOR_CAT_FOOD]Großer Zuchtbetrieb[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1156,7 +1156,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_PASTURE</Tag>
-		<English>Large Pasture</English>
+		<English>[COLOR_CAT_FOOD]Large Pasture[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Pasto Grande</Text>
@@ -1169,7 +1169,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Große Ranch</Text>
+			<Text>[COLOR_CAT_FOOD]Große Ranch[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1187,14 +1187,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_PASTURE_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large pastures[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_PASTURE]pastures[\LINK]. The production of [LINK=YIELD_HORSES]horses[\LINK], [LINK=YIELD_CATTLE]cattle[\LINK] and [LINK=YIELD_SHEEP]sheep[\LINK] is increased on those tiles.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Pasture is land with forage for livestock either as part of a farm or in ranching on open range, or where wild animals can graze or browse. Before factory farming, pasture was where grazing animals such as cattle and horses fed. It is still used extensively, particularly in arid regions where pasture land is unsuitable for any other agricultural production. In wetter climates pasture is valued for free range and organic farming.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large pastures[COLOR_REVERT] are the upgrades of [COLOR:110:220:80:255][LINK=IMPROVEMENT_PASTURE]pastures[\LINK][COLOR_REVERT]. The production of [COLOR:110:220:80:255][LINK=YIELD_HORSES]horses[\LINK][COLOR_REVERT], [COLOR:110:220:80:255][LINK=YIELD_CATTLE]cattle[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=YIELD_SHEEP]sheep[\LINK][COLOR_REVERT] is increased on those tiles.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Pasture is land with forage for livestock either as part of a farm or in ranching on open range, or where wild animals can graze or browse. Before factory farming, pasture was where grazing animals such as cattle and horses fed. It is still used extensively, particularly in arid regions where pasture land is unsuitable for any other agricultural production. In wetter climates pasture is valued for free range and organic farming.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Grandes pastagens[COLOR_REVERT] são atualizações de [LINK=IMPROVEMENT_PASTURE]pastagens[\LINK]. A produção de [LINK=YIELD_HORSES]cavalos[\LINK], [LINK=YIELD_CATTLE]gado[\LINK] e [LINK=YIELD_SHEEP]ovelhas[\LINK] é aumentada nesses lotes.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Pasto é uma terra com forragem para o gado como parte de uma fazenda ou em criação de gado ao ar livre, ou onde animais selvagens podem pastar ou navegar. Antes da agricultura industrial, as pastagens eram onde os animais que pastavam, como gado e cavalos, se alimentavam. Ainda é amplamente utilizado, especialmente em regiões áridas onde as pastagens são inadequadas para qualquer outra produção agrícola. Em climas mais úmidos, as pastagens são valorizadas para a agricultura ao ar livre e orgânica.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Le pâturage est une forme d'alimentation des animaux herbivores qui se nourrissent de plantes (telles que les graminées). Le pâturage diffère de la prédation parce que l'organisme mangé n'est généralement pas tué, et du parasitisme parce que les deux organismes n'ont pas de relation symbiotique et que le « brouteur » n'est généralement pas limité dans le choix des espèces qu'il peut consommer (voir espèces généraliste et spécialisée).</French>
 		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Als 'Weideland' bezeichnet man Flächen mit Vegetation, die der Viehzucht dienen. Oft gehören diese Flächen zu einer Farm oder einer Ranch. In vielen Fällen dient dazu Land, dass ansonsten für den Anbau von Nutzpflanzen nicht geeignet ist.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_PLANTATION</Tag>
-		<English>Plantation</English>
+		<English>[COLOR_CAT_GOLD]Plantation[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Plantação</Text>
@@ -1203,7 +1203,7 @@
 		</Portuguese>
 		<French>Plantation</French>
 		<German>
-			<Text>Plantage</Text>
+			<Text>[COLOR_CAT_GOLD]Plantage[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1213,14 +1213,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_PLANTATION_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Plantations[COLOR_REVERT] can be built on all flat [LINK=TERRAIN_GRASS]grassland[\LINK], [LINK=TERRAIN_PLAINS]prairie[\LINK], [LINK=TERRAIN_SAVANNAH]savannah[\LINK] and [LINK=TERRAIN_MARSH]marsh[\LINK] terrain. Building a plantation significantly increases the production of [LINK=YIELD_COFFEE_BERRIES]coffee berries[\LINK], [LINK=YIELD_COTTON]cotton[\LINK], [LINK=YIELD_HEMP]hemp[\LINK], [LINK=YIELD_INDIGO]indigo[\LINK], [LINK=YIELD_SUGAR]sugar[\LINK] and [LINK=YIELD_TOBACCO]tobacco[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A plantation is a large artificially established forest, farm or estate, where crops are grown for sale, intended for distant markets rather than local consumption.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Plantations[COLOR_REVERT] can be built on all flat [COLOR:215:200:150:255][LINK=TERRAIN_GRASS]grassland[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS]prairie[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_SAVANNAH]savannah[\LINK][COLOR_REVERT] and [COLOR:215:200:150:255][LINK=TERRAIN_MARSH]marsh[\LINK][COLOR_REVERT] terrain. Building a plantation significantly increases the production of [COLOR:255:205:40:255][LINK=YIELD_COFFEE_BERRIES]coffee berries[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_COTTON]cotton[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_HEMP]hemp[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_INDIGO]indigo[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_SUGAR]sugar[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_TOBACCO]tobacco[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A plantation is a large artificially established forest, farm or estate, where crops are grown for sale, intended for distant markets rather than local consumption.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]plantações[COLOR_REVERT] podem ser construídas em todos os terrenos planos de [LINK=TERRAIN_GRASS]pradaria[\LINK], [LINK=TERRAIN_PLAINS]planície[\LINK], [LINK=TERRAIN_SAVANNAH]savana[\LINK] e [LINK=TERRAIN_MARSH]pântano[\LINK]. Construir uma plantação aumenta significativamente a produção de [LINK=YIELD_COFFEE_BERRIES]bagas de café[\LINK], [LINK=YIELD_COTTON]algodão[\LINK], [LINK=YIELD_HEMP]cânhamo[\LINK], [LINK=YIELD_INDIGO]índigo[\LINK], [LINK=YIELD_SUGAR]açúcar[\LINK] e [LINK=YIELD_TOBACCO]tabaco[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma plantação é uma grande floresta, fazenda ou propriedade estabelecida artificialmente, onde as culturas são cultivadas para venda, destinadas a mercados distantes, em vez de consumo local.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une plantation est une exploitation agricole en monoculture de cultures à forte valeur économique destinées à la vente vers des marchés internationaux. La plantation est souvent associée à certaines cultures tels le coton, la canne à sucre, le tabac, le café, la banane, le cacao ou le chanvre.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Plantagen[COLOR_REVERT] können auf flachem und unbewaldetem Terrain, wie z.B. [LINK=TERRAIN_GRASS]Grasland[\LINK], [LINK=TERRAIN_PLAINS]Prärie[\LINK], [LINK=TERRAIN_SAVANNAH]Savanne[\LINK] oder auch [LINK=TERRAIN_MARSH]Sumpf[\LINK], angelegt werden. Die Anlage einer Plantage steigert die Produktion von [LINK=YIELD_COFFEE_BERRIES]Kaffeebeeren[\LINK], [LINK=YIELD_COTTON]Baumwolle[\LINK], [LINK=YIELD_HEMP]Hanf[\LINK], [LINK=YIELD_INDIGO]Indigo[\LINK], [LINK=YIELD_SUGAR]Zucker[\LINK] und [LINK=YIELD_TOBACCO]Tabak[\LINK] erheblich.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Plantage ist üblicherweise ein grösseres, künstlich angelegtes Anbaugebiet von Pflanzen, die dann in Europa verkauft und deren weiterverarbeitet werden sollen.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Plantagen[COLOR_REVERT] können auf flachem und unbewaldetem Terrain, wie z.B. [COLOR:215:200:150:255][LINK=TERRAIN_GRASS]Grasland[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS]Prärie[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_SAVANNAH]Savanne[\LINK][COLOR_REVERT] oder auch [COLOR:215:200:150:255][LINK=TERRAIN_MARSH]Sumpf[\LINK][COLOR_REVERT], angelegt werden. Die Anlage einer Plantage steigert die Produktion von [COLOR:255:205:40:255][LINK=YIELD_COFFEE_BERRIES]Kaffeebeeren[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_COTTON]Baumwolle[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_HEMP]Hanf[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_INDIGO]Indigo[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_SUGAR]Zucker[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=YIELD_TOBACCO]Tabak[\LINK][COLOR_REVERT] erheblich.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Plantage ist üblicherweise ein grösseres, künstlich angelegtes Anbaugebiet von Pflanzen, die dann in Europa verkauft und deren weiterverarbeitet werden sollen.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_PLANTATION</Tag>
-		<English>Large Plantation</English>
+		<English>[COLOR_CAT_GOLD]Large Plantation[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Grande Plantação</Text>
@@ -1233,7 +1233,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Große Plantage</Text>
+			<Text>[COLOR_CAT_GOLD]Große Plantage[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1251,14 +1251,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_PLANTATION_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large plantations[COLOR_REVERT] are upgraded versions of the [LINK=IMPROVEMENT_PLANTATION]plantation[\LINK]. The purpose of a plantation is to significantly increase the production of [LINK=YIELD_COFFEE_BERRIES]coffee berries[\LINK], [LINK=YIELD_COTTON]cotton[\LINK], [LINK=YIELD_HEMP]hemp[\LINK], [LINK=YIELD_INDIGO]indigo[\LINK], [LINK=YIELD_SUGAR]sugar[\LINK] and [LINK=YIELD_TOBACCO]tobacco[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A plantation is a large artificially established forest, farm or estate, where crops are grown for sale, intended for distant markets rather than local consumption.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large plantations[COLOR_REVERT] are upgraded versions of the [COLOR:255:205:40:255][LINK=IMPROVEMENT_PLANTATION]plantation[\LINK][COLOR_REVERT]. The purpose of a plantation is to significantly increase the production of [COLOR:255:205:40:255][LINK=YIELD_COFFEE_BERRIES]coffee berries[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_COTTON]cotton[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_HEMP]hemp[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_INDIGO]indigo[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_SUGAR]sugar[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_TOBACCO]tobacco[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A plantation is a large artificially established forest, farm or estate, where crops are grown for sale, intended for distant markets rather than local consumption.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Grandes plantações[COLOR_REVERT] são versões atualizadas da [LINK=IMPROVEMENT_PLANTATION]plantação[\LINK]. O objetivo de uma plantação é aumentar significativamente a produção de [LINK=YIELD_COFFEE_BERRIES]bagas de café[\LINK], [LINK=YIELD_COTTON]algodão[\LINK], [LINK=YIELD_HEMP]cânhamo[\LINK], [LINK=YIELD_INDIGO]índigo[\LINK], [LINK=YIELD_SUGAR]açúcar[\LINK] e [LINK=YIELD_TOBACCO]tabaco[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma plantação é uma grande floresta, fazenda ou propriedade estabelecida artificialmente, onde as culturas são cultivadas para venda, destinadas a mercados distantes, em vez de consumo local.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une plantation est une exploitation agricole en monoculture de cultures à forte valeur économique destinées à la vente vers des marchés internationaux. La plantation est souvent associée à certaines cultures tels le coton, la canne à sucre, le tabac, le café, la banane, le cacao ou le chanvre.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Große Plantagen[COLOR_REVERT] sind eine Erweiterung der [LINK=IMPROVEMENT_PLANTATION]Plantage[\LINK]. Der Zweck einer Plantage ist die gesteigerte Produktion von [LINK=YIELD_COFFEE_BERRIES]Kaffeebeeren[\LINK], [LINK=YIELD_COTTON]Baumwolle[\LINK], [LINK=YIELD_HEMP]Hanf[\LINK], [LINK=YIELD_INDIGO]Indigo[\LINK], [LINK=YIELD_SUGAR]Zucker[\LINK] und [LINK=YIELD_TOBACCO]Tabak[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Plantage ist üblicherweise ein grösseres, künstlich angelegtes Anbaugebiet von Pflanzen, die dann in Europa verkauft und weiterverarbeitet werden sollen.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Große Plantagen[COLOR_REVERT] sind eine Erweiterung der [COLOR:255:205:40:255][LINK=IMPROVEMENT_PLANTATION]Plantage[\LINK][COLOR_REVERT]. Der Zweck einer Plantage ist die gesteigerte Produktion von [COLOR:255:205:40:255][LINK=YIELD_COFFEE_BERRIES]Kaffeebeeren[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_COTTON]Baumwolle[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_HEMP]Hanf[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_INDIGO]Indigo[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_SUGAR]Zucker[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=YIELD_TOBACCO]Tabak[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Plantage ist üblicherweise ein grösseres, künstlich angelegtes Anbaugebiet von Pflanzen, die dann in Europa verkauft und weiterverarbeitet werden sollen.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_QUARRY</Tag>
-		<English>Quarry</English>
+		<English>[COLOR_CAT_PROD]Quarry[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Pedreira</Text>
@@ -1271,7 +1271,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Steinbruch</Text>
+			<Text>[COLOR_CAT_PROD]Steinbruch[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1289,14 +1289,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_QUARRY_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Quarries[COLOR_REVERT] can be built only on peaks. They increase the production of [LINK=YIELD_STONE]stone[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A quarry is an open-pit mine from which rock is extracted. Quarries are generally used for building materials such as dimension stone, construction aggregate, riprap, sand and gravel.[PARAGRAPH:1]They are often co-located with concrete and asphalt plants since large amounts of aggregate are used in those materials. The word "quarry" can include underground quarrying for stone, such as Bath stone.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Quarries[COLOR_REVERT] can be built only on peaks. They increase the production of [COLOR:190:130:70:255][LINK=YIELD_STONE]stone[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A quarry is an open-pit mine from which rock is extracted. Quarries are generally used for building materials such as dimension stone, construction aggregate, riprap, sand and gravel.[PARAGRAPH:1]They are often co-located with concrete and asphalt plants since large amounts of aggregate are used in those materials. The word "quarry" can include underground quarrying for stone, such as Bath stone.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Pedreiras[COLOR_REVERT] só podem ser construídas em picos. Eles aumentam a produção de [LINK=YIELD_STONE]pedra[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma pedreira é uma mina a céu aberto da qual a rocha é extraída. As pedreiras são geralmente usadas para materiais de construção, como rochas ornamentais, agregados de construção, enrocamento, areia e cascalho.[PARAGRAPH:1]Elas são frequentemente co-localizadas com usinas de concreto e asfalto, uma vez que grandes quantidades de agregados são usadas nesses materiais. A palavra "pedreira" pode incluir extração subterrânea de pedra, como pedra de Bath.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une carrière est un endroit d'où sont extraits des matériaux de construction à partir de roche. Le chantier se fait à ciel ouvert, soit « à flanc de coteau », soit « en fosse » (jusqu'à une centaine de mètres de profondeur parfois). Les carrières exploitent des roches meubles (éboulis, alluvionnaires) ou massives (roches consolidées sédimentaire (calcaires et grès), éruptive ou métamorphique (granites, porphyres, gneiss, amphibolites, quartzites, schistes, basaltes).</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Steinbrüche[COLOR_REVERT] können nur in den Bergen angelegt werden. Sie erhöhen die Produktion von [LINK=YIELD_STONE]Steinen[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Steinbruch ist meist eine grubenähnliche Anlage, die dazu dient, Fels oder Mineralien abzubauen. In vielen Fällen dient dieses Gestein als Baumaterial.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Steinbrüche[COLOR_REVERT] können nur in den Bergen angelegt werden. Sie erhöhen die Produktion von [COLOR:190:130:70:255][LINK=YIELD_STONE]Steinen[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Steinbruch ist meist eine grubenähnliche Anlage, die dazu dient, Fels oder Mineralien abzubauen. In vielen Fällen dient dieses Gestein als Baumaterial.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_QUARRY</Tag>
-		<English>Large Quarry</English>
+		<English>[COLOR_CAT_PROD]Large Quarry[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Grande Pedreira</Text>
@@ -1309,7 +1309,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Großer Steinbruch</Text>
+			<Text>[COLOR_CAT_PROD]Großer Steinbruch[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1327,14 +1327,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_QUARRY_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large quarries[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_QUARRY]quarries[\LINK]. They increase the production of [LINK=YIELD_STONE]stone[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A quarry is an open-pit mine from which rock is extracted. Quarries are generally used for building materials such as dimension stone, construction aggregate, riprap, sand and gravel.[PARAGRAPH:1]They are often co-located with concrete and asphalt plants since large amounts of aggregate are used in those materials. The word "quarry" can include underground quarrying for stone, such as Bath stone.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Large quarries[COLOR_REVERT] are the upgrades of [COLOR:190:130:70:255][LINK=IMPROVEMENT_QUARRY]quarries[\LINK][COLOR_REVERT]. They increase the production of [COLOR:190:130:70:255][LINK=YIELD_STONE]stone[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A quarry is an open-pit mine from which rock is extracted. Quarries are generally used for building materials such as dimension stone, construction aggregate, riprap, sand and gravel.[PARAGRAPH:1]They are often co-located with concrete and asphalt plants since large amounts of aggregate are used in those materials. The word "quarry" can include underground quarrying for stone, such as Bath stone.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Grandes pedreiras[COLOR_REVERT] são atualizações de [LINK=IMPROVEMENT_QUARRY]pedreiras[\LINK]. Eles aumentam a produção de [LINK=YIELD_STONE]pedra[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma pedreira é uma mina a céu aberto da qual a rocha é extraída. As pedreiras são geralmente usadas para materiais de construção, como rochas ornamentais, agregados de construção, enrocamento, areia e cascalho.[PARAGRAPH:1]Elas são frequentemente co-localizadas com usinas de concreto e asfalto, uma vez que grandes quantidades de agregados são usadas nesses materiais. A palavra "pedreira" pode incluir extração subterrânea de pedra, como pedra de Bath.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une carrière est un endroit d'où sont extraits des matériaux de construction à partir de roche. Le chantier se fait à ciel ouvert, soit « à flanc de coteau », soit « en fosse » (jusqu'à une centaine de mètres de profondeur parfois). Les carrières exploitent des roches meubles (éboulis, alluvionnaires) ou massives (roches consolidées sédimentaire (calcaires et grès), éruptive ou métamorphique (granites, porphyres, gneiss, amphibolites, quartzites, schistes, basaltes).</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Große Steinbrüche[COLOR_REVERT] sind die Erweiterung des [LINK=IMPROVEMENT_QUARRY]Steinbruchs[\LINK]. Sie erhöhen die Produktion von [LINK=YIELD_STONE]Steinen[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Steinbruch ist meist eine grubenähnliche Anlage, die dazu dient, Fels oder Mineralien abzubauen. In vielen Fällen dient dieses Gestein als Baumaterial.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Große Steinbrüche[COLOR_REVERT] sind die Erweiterung des [COLOR:190:130:70:255][LINK=IMPROVEMENT_QUARRY]Steinbruchs[\LINK][COLOR_REVERT]. Sie erhöhen die Produktion von [COLOR:190:130:70:255][LINK=YIELD_STONE]Steinen[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Steinbruch ist meist eine grubenähnliche Anlage, die dazu dient, Fels oder Mineralien abzubauen. In vielen Fällen dient dieses Gestein als Baumaterial.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_TRAPPER_HUT</Tag>
-		<English>Trapper Hut</English>
+		<English>[COLOR_CAT_GOLD]Trapper Hut[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Cabana do Caçador</Text>
@@ -1347,7 +1347,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Jagdhütte</Text>
+			<Text>[COLOR_CAT_GOLD]Jagdhütte[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1365,14 +1365,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_TRAPPER_HUT_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Trapper huts[COLOR_REVERT] can be built in [LINK=FEATURE_FOREST]forests[\LINK], [LINK=FEATURE_LIGHT_FOREST]light forests[\LINK] and [LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK], on [LINK=TERRAIN_TUNDRA]tundra[\LINK] and [LINK=TERRAIN_SNOW]permafrost[\LINK] terrain, as well as tiles with the [LINK=BONUS_BISON]bison[\LINK] bonus. They boost the production of [LINK=YIELD_FUR]fur[\LINK] and [LINK=YIELD_PREMIUM_FUR]luxury fur[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Hunting wild animals like deer and beaver is a lonely job far from civilization and cities. During the trapping season hunters and trappers live in their trappers' huts, leaving only to sell their furs.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Trapper huts[COLOR_REVERT] can be built in [COLOR:190:130:70:255][LINK=FEATURE_FOREST]forests[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=FEATURE_LIGHT_FOREST]light forests[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK][COLOR_REVERT], on [COLOR:215:200:150:255][LINK=TERRAIN_TUNDRA]tundra[\LINK][COLOR_REVERT] and [COLOR:215:200:150:255][LINK=TERRAIN_SNOW]permafrost[\LINK][COLOR_REVERT] terrain, as well as tiles with the [LINK=BONUS_BISON]bison[\LINK] bonus. They boost the production of [COLOR:255:205:40:255][LINK=YIELD_FUR]fur[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_PREMIUM_FUR]luxury fur[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Hunting wild animals like deer and beaver is a lonely job far from civilization and cities. During the trapping season hunters and trappers live in their trappers' huts, leaving only to sell their furs.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Cabanas de caçadores[COLOR_REVERT] podem ser construídas em [LINK=FEATURE_FOREST]florestas[\LINK], [LINK=FEATURE_LIGHT_FOREST]florestas leves[\LINK] e [LINK=FEATURE_FOREST_TUNDRA]taiga[\LINK], em [LINK=TERRAIN_TUNDRA]tundra[\LINK] e Terreno [LINK=TERRAIN_SNOW]permafrost[\LINK], bem como lotes com o bônus [LINK=BONUS_BISON]bisão[\LINK]. Eles aumentam a produção de [LINK=YIELD_FUR]peles[\LINK] e [LINK=YIELD_PREMIUM_FUR]peles de luxo[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Caçar animais selvagens como veados e castores é um trabalho solitário, longe da civilização e das cidades. Durante a temporada de captura, caçadores e caçadores vivem nas cabanas de seus caçadores, saindo apenas para vender suas peles.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Chasser et trapper les animaux sauvages comme les cerfs ou les visons a été pendant longtemp un travail solitaire loin de la civilization et des grandes villes. Pendant les mois de chasse, les chasseurs et trappeurs vivaient dans des huttes qu'ils ne quittaient que pour vendre leurs fourrures.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Jagdhütten[COLOR_REVERT] können in [LINK=FEATURE_FOREST]Wäldern[\LINK], im [LINK=FEATURE_LIGHT_FOREST]Buschland[\LINK] und der [LINK=FEATURE_FOREST_TUNDRA]Taiga[\LINK], sogar auf [LINK=TERRAIN_TUNDRA]Tundra[\LINK] und [LINK=TERRAIN_SNOW]Permafrost[\LINK] sowie auf Geländefeldern mit der Bonusressource [LINK=BONUS_BISON]Büffel[\LINK] angelegt werden. Sie steigern die Ausbeute an [LINK=YIELD_FUR]Pelzen[\LINK] und [LINK=YIELD_PREMIUM_FUR]Hochwertigen Pelzen[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Die Jagd auf Rehe, Biber und andere Tiere fand meist weit abseits der Städte statt. Während der Jagdsaison lebten die Jäger und Trapper oft monatelang in einsamen Jagdhütten und verliessen diese nur zum Verkauf ihrer Waren in den Städten.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Jagdhütten[COLOR_REVERT] können in [COLOR:190:130:70:255][LINK=FEATURE_FOREST]Wäldern[\LINK][COLOR_REVERT], im [COLOR:190:130:70:255][LINK=FEATURE_LIGHT_FOREST]Buschland[\LINK][COLOR_REVERT] und der [COLOR:190:130:70:255][LINK=FEATURE_FOREST_TUNDRA]Taiga[\LINK][COLOR_REVERT], sogar auf [COLOR:215:200:150:255][LINK=TERRAIN_TUNDRA]Tundra[\LINK][COLOR_REVERT] und [COLOR:215:200:150:255][LINK=TERRAIN_SNOW]Permafrost[\LINK][COLOR_REVERT] sowie auf Geländefeldern mit der Bonusressource [LINK=BONUS_BISON]Büffel[\LINK] angelegt werden. Sie steigern die Ausbeute an [COLOR:255:205:40:255][LINK=YIELD_FUR]Pelzen[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=YIELD_PREMIUM_FUR]Hochwertigen Pelzen[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Die Jagd auf Rehe, Biber und andere Tiere fand meist weit abseits der Städte statt. Während der Jagdsaison lebten die Jäger und Trapper oft monatelang in einsamen Jagdhütten und verliessen diese nur zum Verkauf ihrer Waren in den Städten.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_TRAPPER_CAMP</Tag>
-		<English>Trapper Camp</English>
+		<English>[COLOR_CAT_GOLD]Trapper Camp[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Acampamento de Caçadores</Text>
@@ -1385,7 +1385,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Trappercamp</Text>
+			<Text>[COLOR_CAT_GOLD]Trappercamp[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1403,14 +1403,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_TRAPPER_CAMP_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Trapper camps[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK]. They boost the production of [LINK=YIELD_FUR]fur[\LINK] and [LINK=YIELD_PREMIUM_FUR]luxury fur[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Hunting wild animals like deer and beaver is a lonely job far from civilization and cities. During the trapping season hunters and trappers live in their trappers' huts, leaving only to sell their furs.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Trapper camps[COLOR_REVERT] are the upgrades of [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK][COLOR_REVERT]. They boost the production of [COLOR:255:205:40:255][LINK=YIELD_FUR]fur[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_PREMIUM_FUR]luxury fur[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Hunting wild animals like deer and beaver is a lonely job far from civilization and cities. During the trapping season hunters and trappers live in their trappers' huts, leaving only to sell their furs.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Acampamentos de caçadores[COLOR_REVERT] são atualizações de [LINK=IMPROVEMENT_TRAPPER_HUT]cabanas de caçadores[\LINK]. Eles aumentam a produção de [LINK=YIELD_FUR]peles[\LINK] e [LINK=YIELD_PREMIUM_FUR]peles de luxo[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Caçar animais selvagens como veados e castores é um trabalho solitário, longe da civilização e das cidades. Durante a temporada de captura, caçadores e caçadores vivem nas cabanas de seus caçadores, saindo apenas para vender suas peles.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Chasser et trapper les animaux sauvages comme les cerfs ou les visons a été pendant longtemp un travail solitaire loin de la civilization et des grandes villes. Pendant les mois de chasse, les chasseurs et trappeurs vivaient dans des huttes qu'ils ne quittaient que pour vendre leurs fourrures.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Trappercamps[COLOR_REVERT] sind die Erweiterung der [LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütte[\LINK]. Sie verbessern die Ausbeute an [LINK=YIELD_FUR]Pelzen[\LINK] und [LINK=YIELD_PREMIUM_FUR]Hochwertigen Pelzen[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Die Jagd auf Rehe, Biber und andere Tiere fand meist weit abseits der Städte statt. Während der Jagdsaison lebten die Jäger und Trapper oft monatelang in einsamen Jagdhütten und verliessen diese nur zum Verkauf ihrer Waren in den Städten.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Trappercamps[COLOR_REVERT] sind die Erweiterung der [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütte[\LINK][COLOR_REVERT]. Sie verbessern die Ausbeute an [COLOR:255:205:40:255][LINK=YIELD_FUR]Pelzen[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=YIELD_PREMIUM_FUR]Hochwertigen Pelzen[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Die Jagd auf Rehe, Biber und andere Tiere fand meist weit abseits der Städte statt. Während der Jagdsaison lebten die Jäger und Trapper oft monatelang in einsamen Jagdhütten und verliessen diese nur zum Verkauf ihrer Waren in den Städten.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_VINEYARD</Tag>
-		<English>Vineyard</English>
+		<English>[COLOR_CAT_FOOD]Vineyard[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Vinhedo</Text>
@@ -1423,7 +1423,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Weinberg</Text>
+			<Text>[COLOR_CAT_FOOD]Weinberg[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1441,7 +1441,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_VINEYARD_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Vineyards[COLOR_REVERT] can be built only on hilly [LINK=TERRAIN_GRASS]grassland[\LINK] terrain. The production of [LINK=YIELD_FOOD]food[\LINK] and [LINK=YIELD_GRAPES]grapes[\LINK] is increased by the vineyard.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Wine, a beverage made from fermented grapes, was first produced as early as 6000 BC. Its use spread throughout the Middle East and Egypt, and it quickly became a popular beverage of the ancient world. Grapes used for wine making are grown in many different regions of the world. Most vineyards are located in the hills and valleys of temperate regions. Wine making as an industry has been perfected over several centuries.[PARAGRAPH:1]Many regions such as the Rhine and Loire valleys of Europe are well-known for their fine wines, and derive a significant portion of their economy from wine making.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Vineyards[COLOR_REVERT] can be built only on hilly [COLOR:215:200:150:255][LINK=TERRAIN_GRASS]grassland[\LINK][COLOR_REVERT] terrain. The production of [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_GRAPES]grapes[\LINK][COLOR_REVERT] is increased by the vineyard.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Wine, a beverage made from fermented grapes, was first produced as early as 6000 BC. Its use spread throughout the Middle East and Egypt, and it quickly became a popular beverage of the ancient world. Grapes used for wine making are grown in many different regions of the world. Most vineyards are located in the hills and valleys of temperate regions. Wine making as an industry has been perfected over several centuries.[PARAGRAPH:1]Many regions such as the Rhine and Loire valleys of Europe are well-known for their fine wines, and derive a significant portion of their economy from wine making.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Vinhedos[COLOR_REVERT] só podem ser construídos em terrenos montanhosos de [LINK=TERRAIN_GRASS]pradarias[\LINK]. A produção de [LINK=YIELD_FOOD]alimentos[\LINK] e de [LINK=YIELD_GRAPES]uvas[\LINK] é aumentada pelo vinhedo.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]O vinho, uma bebida feita de uvas fermentadas, foi produzido pela primeira vez em 6.000 aC. Seu uso se espalhou por todo o Oriente Médio e Egito, e rapidamente se tornou uma bebida popular no mundo antigo. As uvas utilizadas na produção de vinho são cultivadas em diversas regiões do mundo. A maioria dos vinhedos está localizada nas colinas e vales das regiões temperadas. A produção de vinho como indústria foi aperfeiçoada ao longo de vários séculos.[PARAGRAPH:1]Muitas regiões, como os vales do Reno e do Loire, na Europa, são conhecidas pelos seus vinhos finos e obtêm uma parte significativa da sua economia da produção de vinho.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Le vin est une boisson obtenue par la fermentation du raisin. Sa production débute dès 6 000 ans av. J.-C. Sa consommation se répand à travers tout le Moyen-Orient et l'Egypte, et il devient rapidement une boisson très populaire dans le monde antique. Le raisin utilisé dans la fabrication du vin est cultivé dans de nombreuses régions du monde. Les vignes sont généralement situées sur les coteaux et dans les vallées des régions tempérées. Les procédés de fabrication du vin ont été perfectionnés au cours des siècles. De nombreuses régions, comme les vallées du Rhin et de la Loire, sont réputées pour leurs bons vins, et une grande partie de leur économie est liée à la fabrication du vin.</French>
 		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Der aus fermentierten Trauben hergestellte Wein wurde erstmals um 6000 vor Christus produziert und war im Nahen Osten und in Ägypten weit verbreitet. Das Getränk entwickelte sich schnell zu einem der beliebtesten kulinarischen Genüsse der Antike. Die für die Weinherstellung benötigten Trauben werden in vielen verschiedenen Gebieten der Welt angebaut, die meisten Weinhänge befinden sich jedoch in den Hügeln und Tälern von Regionen mit gemäßigtem Klima. Im Laufe mehrerer Jahrhunderte wurde die industrielle Weinherstellung immer weiter perfektioniert.[PARAGRAPH:1]Viele Anbaugebiete wie die Rhein- und Loiretäler in Europa sind für ihre feinen Weine bekannt und beziehen einen Großteil ihrer wirtschaftlichen Erträge aus der Weinproduktion.</German>
@@ -1450,7 +1450,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_VINEYARD</Tag>
-		<English>Mature Vineyard</English>
+		<English>[COLOR_CAT_FOOD]Mature Vineyard[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Vinha Madura</Text>
@@ -1463,7 +1463,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Alter Weinberg</Text>
+			<Text>[COLOR_CAT_FOOD]Alter Weinberg[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1481,7 +1481,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_VINEYARD_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Mature vineyards[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_VINEYARD]vineyards[\LINK]. The production of [LINK=YIELD_FOOD]food[\LINK] and [LINK=YIELD_GRAPES]grapes[\LINK] is increased by the mature vineyard.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Wine, a beverage from fermented grapes, was first produced as early as 6000 BC. Its use spread throughout the Middle East and Egypt, and it quickly became a popular beverage of the ancient world.[PARAGRAPH:1]The grapes used for the making of wine are grown in many different regions of the world. Most vineyards are located in hills and valleys of temperate regions. Wine making as an industry has been perfected over several centuries.[PARAGRAPH:1]Many regions such as the Rhine and Loire valleys of Europe are well-known for their fine wines, and derive a significant portion of their economy from wine making.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Mature vineyards[COLOR_REVERT] are the upgrades of [COLOR:110:220:80:255][LINK=IMPROVEMENT_VINEYARD]vineyards[\LINK][COLOR_REVERT]. The production of [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=YIELD_GRAPES]grapes[\LINK][COLOR_REVERT] is increased by the mature vineyard.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Wine, a beverage from fermented grapes, was first produced as early as 6000 BC. Its use spread throughout the Middle East and Egypt, and it quickly became a popular beverage of the ancient world.[PARAGRAPH:1]The grapes used for the making of wine are grown in many different regions of the world. Most vineyards are located in hills and valleys of temperate regions. Wine making as an industry has been perfected over several centuries.[PARAGRAPH:1]Many regions such as the Rhine and Loire valleys of Europe are well-known for their fine wines, and derive a significant portion of their economy from wine making.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Vinhedos maduros[COLOR_REVERT] são melhorias de [LINK=IMPROVEMENT_VINEYARD]vinhedos[\LINK]. A produção de [LINK=YIELD_FOOD]alimentos[\LINK] e de [LINK=YIELD_GRAPES]uvas[\LINK] é aumentada pelo vinhedo maduro.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]O vinho, uma bebida de uvas fermentadas, foi produzido pela primeira vez em 6.000 aC. Seu uso se espalhou por todo o Oriente Médio e Egito, e rapidamente se tornou uma bebida popular no mundo antigo.[PARAGRAPH:1]As uvas usadas para fazer vinho são cultivadas em muitas regiões diferentes do mundo. A maioria dos vinhedos está localizada em colinas e vales de regiões temperadas. A produção de vinho como indústria foi aperfeiçoada ao longo de vários séculos.[PARAGRAPH:1]Muitas regiões, como os vales do Reno e do Loire, na Europa, são conhecidas pelos seus vinhos finos e obtêm uma parte significativa da sua economia da produção de vinho.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Le vin est une boisson obtenue par la fermentation du raisin. Sa production débute dès 6 000 ans av. J.-C. Sa consommation se répand à travers tout le Moyen-Orient et l'Egypte, et il devient rapidement une boisson très populaire dans le monde antique. Le raisin utilisé dans la fabrication du vin est cultivé dans de nombreuses régions du monde. Les vignes sont généralement situées sur les coteaux et dans les vallées des régions tempérées. Les procédés de fabrication du vin ont été perfectionnés au cours des siècles. De nombreuses régions, comme les vallées du Rhin et de la Loire, sont réputées pour leurs bons vins, et une grande partie de leur économie est liée à la fabrication du vin.</French>
 		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Der aus fermentierten Trauben hergestellte Wein wurde erstmals um 6000 vor Christus produziert und war im Nahen Osten und in Ägypten weit verbreitet. Das Getränk entwickelte sich schnell zu einem der beliebtesten kulinarischen Genüsse der Antike. Die für die Weinherstellung benötigten Trauben werden in vielen verschiedenen Gebieten der Welt angebaut, die meisten Weinhänge befinden sich jedoch in den Hügeln und Tälern von Regionen mit gemäßigtem Klima. Im Laufe mehrerer Jahrhunderte wurde die industrielle Weinherstellung immer weiter perfektioniert.[PARAGRAPH:1]Viele Anbaugebiete wie die Rhein- und Loiretäler in Europa sind für ihre feinen Weine bekannt und beziehen einen Großteil ihrer wirtschaftlichen Erträge aus der Weinproduktion.</German>
@@ -1490,7 +1490,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_WATER_WORKED</Tag>
-		<English>Waterworks</English>
+		<English>[COLOR_CAT_TERRAIN]Waterworks[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Sistema Hidráulico</Text>
@@ -1503,7 +1503,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Bearbeitetes Wasser</Text>
+			<Text>[COLOR_CAT_TERRAIN]Bearbeitetes Wasser[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1527,7 +1527,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_RAFT_STATION</Tag>
-		<English>River Ferry Station</English>
+		<English>[COLOR_CAT_GOLD]River Ferry Station[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Estação de Balsas Fluviais</Text>
@@ -1536,7 +1536,7 @@
 		</Portuguese>
 		<French>Gare de River Ferry</French>
 		<German>
-			<Text>Flussfährenstation</Text>
+			<Text>[COLOR_CAT_GOLD]Flussfährenstation[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1551,10 +1551,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_ALLOWS_CROSSING_OF_LARGE_RIVERS</Tag>
-		<English>[ICON_BULLET]Allows all land units to cross [LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK]</English>
+		<English>[ICON_BULLET]Allows all land units to cross [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK][COLOR_REVERT]</English>
 		<Portuguese>[ICON_BULLET]Permite que todas as unidades terrestres cruzem [LINK=TERRAIN_LARGE_RIVERS]grandes rios[\LINK]</Portuguese>
 		<French>[ICON_BULLET]Permet à toutes les unités terrestres de traverser [LINK=TERRAIN_LARGE_RIVERS]grands fleuves[\LINK]</French>
-		<German>[ICON_BULLET]Erlaubt es allen Landeinheiten einen [LINK=TERRAIN_LARGE_RIVERS]Großen Fluss[\LINK] zu überqueren.</German>
+		<German>[ICON_BULLET]Erlaubt es allen Landeinheiten einen [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]Großen Fluss[\LINK][COLOR_REVERT] zu überqueren.</German>
 		<Russian>[ICON_BULLET]Позволяет всем сухопутным юнитам пересекать [LINK=TERRAIN_LARGE_RIVERS]большие реки[\LINK]</Russian>
 	</TEXT>
 	<TEXT>
@@ -1567,7 +1567,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_FISHING_NETS</Tag>
-		<English>Fishing Nets</English>
+		<English>[COLOR_CAT_FOOD]Fishing Nets[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Redes de Pesca</Text>
@@ -1576,7 +1576,7 @@
 		</Portuguese>
 		<French>Filets de pêche</French>
 		<German>
-			<Text>Fischernetze</Text>
+			<Text>[COLOR_CAT_FOOD]Fischernetze[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>1</Plural>
 		</German>
@@ -1590,7 +1590,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_HUNTERS_STAGE</Tag>
-		<English>Hunters' Blind</English>
+		<English>[COLOR_CAT_FOOD]Hunters' Blind[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Esconderijo</Text>
@@ -1599,7 +1599,7 @@
 		</Portuguese>
 		<French>Affût de chasseur</French>
 		<German>
-			<Text>Jagdpier</Text>
+			<Text>[COLOR_CAT_FOOD]Jagdpier[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1613,7 +1613,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_SALINA</Tag>
-		<English>Salt Works</English>
+		<English>[COLOR_CAT_GOLD]Salt Works[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Salinas</Text>
@@ -1622,7 +1622,7 @@
 		</Portuguese>
 		<French>Salines</French>
 		<German>
-			<Text>Saline</Text>
+			<Text>[COLOR_CAT_GOLD]Saline[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1637,7 +1637,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_LARGE_SALINA</Tag>
-		<English>Large Salt Works</English>
+		<English>[COLOR_CAT_GOLD]Large Salt Works[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Grandes Salinas</Text>
@@ -1646,7 +1646,7 @@
 		</Portuguese>
 		<French>Grande saline</French>
 		<German>
-			<Text>Große Saline</Text>
+			<Text>[COLOR_CAT_GOLD]Große Saline[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1661,29 +1661,29 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_BUILD_ONLY_LARGE_RIVERS</Tag>
-		<English>[ICON_BULLET]Can only be built on [LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK]</English>
+		<English>[ICON_BULLET]Can only be built on [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK][COLOR_REVERT]</English>
 		<Portuguese>[ICON_BULLET]Só pode ser construído em [LINK=TERRAIN_LARGE_RIVERS]rios grandes[\LINK]</Portuguese>
 		<French>[ICON_BULLET]Ne peut être construit que sur[LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK]</French>
-		<German>[ICON_BULLET]Kann nur auf [LINK=TERRAIN_LARGE_RIVERS]Großen Flüssen[\LINK] gebaut werden.</German>
+		<German>[ICON_BULLET]Kann nur auf [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]Großen Flüssen[\LINK][COLOR_REVERT] gebaut werden.</German>
 		<Russian>[ICON_BULLET]Можно строить только на [LINK=TERRAIN_LARGE_RIVERS]больших реках[\LINK]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_BUILD_ONLY_LAKE</Tag>
-		<English>[ICON_BULLET]Can only be built on [LINK=TERRAIN_LAKE]fresh water lakes[\LINK] or [LINK=TERRAIN_ICE_LAKE]ice lakes[\LINK].</English>
+		<English>[ICON_BULLET]Can only be built on [COLOR:215:200:150:255][LINK=TERRAIN_LAKE]fresh water lakes[\LINK][COLOR_REVERT] or [COLOR:215:200:150:255][LINK=TERRAIN_ICE_LAKE]ice lakes[\LINK][COLOR_REVERT].</English>
 		<Portuguese>[ICON_BULLET]Só pode ser construído em [LINK=TERRAIN_LAKE]lagos de água doce[\LINK] ou [LINK=TERRAIN_ICE_LAKE]lagos de gelo[\LINK].</Portuguese>
 		<French>[ICON_BULLET]Ne peut être construit que sur les [LINK=TERRAIN_LAKE]lacs d'eau douce[\LINK], les [LINK=TERRAIN_ICE_LAKE]lacs de glace[\LINK], les [LINK=TERRAIN_ICE_LAKE]côtes[\LINK] ou les [LINK=TERRAIN_ICE_LAKE]côtes peu profondes[\LINK].</French>
-		<German>[ICON_BULLET]Kann nur auf [LINK=TERRAIN_LAKE]Süßwassersee[\LINK], [LINK=TERRAIN_ICE_LAKE]Eisseen[\LINK], [LINK=TERRAIN_ICE_LAKE]Küsten[\LINK] oderr [LINK=TERRAIN_ICE_LAKE]flachen Küsten[\LINK] gebaut werden.</German>
+		<German>[ICON_BULLET]Kann nur auf [COLOR:215:200:150:255][LINK=TERRAIN_LAKE]Süßwassersee[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_ICE_LAKE]Eisseen[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_ICE_LAKE]Küsten[\LINK][COLOR_REVERT] oderr [COLOR:215:200:150:255][LINK=TERRAIN_ICE_LAKE]flachen Küsten[\LINK][COLOR_REVERT] gebaut werden.</German>
 		<Russian>[ICON_BULLET]Можно строить только на [LINK=TERRAIN_LAKE]пресноводном[\LINK] или [LINK=TERRAIN_ICE_LAKE]замёрзшем[\LINK] озёрах.</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_BUILD_ONLY_SALTWATER</Tag>
-		<English>[ICON_BULLET]Can only be built on [LINK=TERRAIN_SHALLOW_COAST]shallow coasts[\LINK], [LINK=TERRAIN_COAST]coasts[\LINK], or [LINK=TERRAIN_OCEAN]ocean[\LINK].</English>
+		<English>[ICON_BULLET]Can only be built on [COLOR:215:200:150:255][LINK=TERRAIN_SHALLOW_COAST]shallow coasts[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_COAST]coasts[\LINK][COLOR_REVERT], or [COLOR:215:200:150:255][LINK=TERRAIN_OCEAN]ocean[\LINK][COLOR_REVERT].</English>
 		<Portuguese>[ICON_BULLET]Só pode ser construído em [LINK=TERRAIN_SHALLOW_COAST]costas rasas[\LINK], [LINK=TERRAIN_COAST]costas[\LINK] ou [LINK=TERRAIN_OCEAN]oceano[\LINK].</Portuguese>
 		<Russian>[ICON_BULLET]Можно строить только на [LINK=TERRAIN_COAST]побережье[\LINK], [LINK=TERRAIN_SHALLOW_COAST]мелководье[\LINK] или в [LINK=TERRAIN_OCEAN]океане[\LINK].</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_BUILD_ONLY_FRESHWATER</Tag>
-		<English>[ICON_BULLET]Can only be built on [LINK=TERRAIN_LAKE]fresh water lakes[\LINK], [LINK=TERRAIN_ICE_LAKE]ice lakes[\LINK], or [LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK].</English>
+		<English>[ICON_BULLET]Can only be built on [COLOR:215:200:150:255][LINK=TERRAIN_LAKE]fresh water lakes[\LINK][COLOR_REVERT], [COLOR:215:200:150:255][LINK=TERRAIN_ICE_LAKE]ice lakes[\LINK][COLOR_REVERT], or [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK][COLOR_REVERT].</English>
 		<Portuguese>[ICON_BULLET]Só pode ser construído em [LINK=TERRAIN_LAKE]lagos de água doce[\LINK], [LINK=TERRAIN_ICE_LAKE]lagos de gelo[\LINK] ou [LINK=TERRAIN_LARGE_RIVERS]rios grandes[\LINK].</Portuguese>
 		<Russian>[ICON_BULLET]Можно строить только на [LINK=TERRAIN_LAKE]пресноводном[\LINK] и [LINK=TERRAIN_ICE_LAKE]замёрзшем[\LINK] озёрах или на [LINK=TERRAIN_LARGE_RIVERS]больших реках[\LINK].</Russian>
 	</TEXT>
@@ -1721,7 +1721,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_CLAY_PIT</Tag>
-		<English>Clay Pit</English>
+		<English>[COLOR_CAT_PROD]Clay Pit[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Poço de Barro</Text>
@@ -1734,7 +1734,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Lehmgrube</Text>
+			<Text>[COLOR_CAT_PROD]Lehmgrube[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1752,14 +1752,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_CLAY_PIT_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]A [COLOR_HIGHLIGHT_TEXT]clay pit[COLOR_REVERT] can be built only on hills. They increase the production of [LINK=YIELD_CLAY]clay[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A clay pit is an open-pit mine from which clay is extracted. Clay is generally used for goods and other everyday items.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]A [COLOR_HIGHLIGHT_TEXT]clay pit[COLOR_REVERT] can be built only on hills. They increase the production of [COLOR:190:130:70:255][LINK=YIELD_CLAY]clay[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A clay pit is an open-pit mine from which clay is extracted. Clay is generally used for goods and other everyday items.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1]Um [COLOR_HIGHLIGHT_TEXT]poço de barro[COLOR_REVERT] só pode ser construído em colinas. Eles aumentam a produção de [LINK=YIELD_CLAY]argila[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma mina de argila é uma mina a céu aberto da qual a argila é extraída. A argila é geralmente usada para mercadorias e outros itens de uso diário.</Portuguese>
 		<French>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]A [COLOR_HIGHLIGHT_TEXT]clay pit[COLOR_REVERT] can be built only on hills. They increase the production of [LINK=YIELD_CLAY]clay[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A clay pit is an open-pit mine from which clay is extracted. Clay is generally used for goods and other everyday items.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Lehmgruben[COLOR_REVERT] können nur auf Hügeln angelegt werden. Sie erhöhen die Produktion von [LINK=YIELD_CLAY]Ton[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Tongrube ist eine Anlage, die dazu dient, Ton abzubauen. In vielen Fällen dient dieses Material als Material zur Herstellung von Waren und anderen Alltagsgegenständen.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Lehmgruben[COLOR_REVERT] können nur auf Hügeln angelegt werden. Sie erhöhen die Produktion von [COLOR:190:130:70:255][LINK=YIELD_CLAY]Ton[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Tongrube ist eine Anlage, die dazu dient, Ton abzubauen. In vielen Fällen dient dieses Material als Material zur Herstellung von Waren und anderen Alltagsgegenständen.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_OPEN_CLAY_MINE</Tag>
-		<English>Open Clay Mine</English>
+		<English>[COLOR_CAT_PROD]Open Clay Mine[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Mina de Argila</Text>
@@ -1772,7 +1772,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Lehmtagebau</Text>
+			<Text>[COLOR_CAT_PROD]Lehmtagebau[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1790,14 +1790,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_OPEN_CLAY_MINE_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Open clay mines[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_CLAY_PIT]clay pits[\LINK]. They increase the production of [LINK=YIELD_CLAY]clay[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]In open-pit clay mines clay is extracted. Clay is generally used for goods and other everyday items.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Open clay mines[COLOR_REVERT] are the upgrades of [COLOR:190:130:70:255][LINK=IMPROVEMENT_CLAY_PIT]clay pits[\LINK][COLOR_REVERT]. They increase the production of [COLOR:190:130:70:255][LINK=YIELD_CLAY]clay[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]In open-pit clay mines clay is extracted. Clay is generally used for goods and other everyday items.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Minas de argila abertas[COLOR_REVERT] são as atualizações de [LINK=IMPROVEMENT_CLAY_PIT]poços de argila[\LINK]. Eles aumentam a produção de [LINK=YIELD_CLAY]argila[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Em minas de argila a céu aberto a argila é extraída. A argila é geralmente usada para mercadorias e outros itens de uso diário.</Portuguese>
 		<French>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Open clay mines[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_CLAY_PIT]clay pits[\LINK]. They increase the production of [LINK=YIELD_CLAY]clay[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]In open-pit clay mines clay is extracted. Clay is generally used for goods and other everyday items.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Der[COLOR_HIGHLIGHT_TEXT]Lehmtagebau[COLOR_REVERT] ist die Erweiterung der [LINK=IMPROVEMENT_CLAY_PIT]IMPROVEMENT_CLAY_PIT[\LINK]. Er erhöht die Produktion von [LINK=YIELD_CLAY]Ton[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Tagebau ist meist eine grubenähnliche Anlage, die dazu dient, Ton in großen Mengen abzubauen. In vielen Fällen dient dieses Material als Material zur Herstellung von Waren und anderen Alltagsgegenständen.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Der[COLOR_HIGHLIGHT_TEXT]Lehmtagebau[COLOR_REVERT] ist die Erweiterung der [COLOR:190:130:70:255][LINK=IMPROVEMENT_CLAY_PIT]IMPROVEMENT_CLAY_PIT[\LINK][COLOR_REVERT]. Er erhöht die Produktion von [COLOR:190:130:70:255][LINK=YIELD_CLAY]Ton[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Tagebau ist meist eine grubenähnliche Anlage, die dazu dient, Ton in großen Mengen abzubauen. In vielen Fällen dient dieses Material als Material zur Herstellung von Waren und anderen Alltagsgegenständen.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_PEAT_PIT</Tag>
-		<English>Peat Pit</English>
+		<English>[COLOR_CAT_PROD]Peat Pit[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Poço de Turfa</Text>
@@ -1810,7 +1810,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Torfgrube</Text>
+			<Text>[COLOR_CAT_PROD]Torfgrube[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1828,14 +1828,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_PEAT_PIT_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]A [COLOR_HIGHLIGHT_TEXT]peat pit[COLOR_REVERT] can be built only on flat wetlands. They increase the production of [LINK=YIELD_PEAT]peat[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A peat pit is an open-pit mine from which peat is extracted. </English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]A [COLOR_HIGHLIGHT_TEXT]peat pit[COLOR_REVERT] can be built only on flat wetlands. They increase the production of [COLOR:190:130:70:255][LINK=YIELD_PEAT]peat[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A peat pit is an open-pit mine from which peat is extracted. </English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1]Uma [COLOR_HIGHLIGHT_TEXT]poça de turfa[COLOR_REVERT] só pode ser construída em zonas úmidas planas. Eles aumentam a produção de [LINK=YIELD_PEAT]turfa[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma mina de turfa é uma mina a céu aberto da qual a turfa é extraída. </Portuguese>
 		<French>[BOLD]Strategy :[\BOLD][PARAGRAPH:1]A [COLOR_HIGHLIGHT_TEXT]peat pit[COLOR_REVERT] can be built only on flat wetlands. They increase the production of [LINK=YIELD_PEAT]peat[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A peat pit is an open-pit mine from which peat is extracted. </French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Torfgruben[COLOR_REVERT] können nur auf flachem Feuchtland angelegt werden. Sie erhöhen die Produktion von [LINK=YIELD_PEAT]Torf[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Torfgrube ist eine Anlage, die dazu dient, Torf abzubauen.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Torfgruben[COLOR_REVERT] können nur auf flachem Feuchtland angelegt werden. Sie erhöhen die Produktion von [COLOR:190:130:70:255][LINK=YIELD_PEAT]Torf[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Eine Torfgrube ist eine Anlage, die dazu dient, Torf abzubauen.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_OPEN_PEAT_MINE</Tag>
-		<English>Open Peat Mine</English>
+		<English>[COLOR_CAT_PROD]Open Peat Mine[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Mina de Turfa Aberta</Text>
@@ -1848,7 +1848,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Torf Tagebau</Text>
+			<Text>[COLOR_CAT_PROD]Torf Tagebau[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1866,9 +1866,9 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_IMPROVEMENT_OPEN_PEAT_MINE_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Open peat mines[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_PEAT_PIT]peat pits[\LINK]. They increase the production of [LINK=YIELD_PEAT]peat[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Peat forms when plant material does not fully decay in acidic and anaerobic conditions. It is composed mainly of wetland vegetation: principally bog plants including mosses, sedges, and shrubs. As it accumulates, the peat holds water. This slowly creates wetter conditions that allow the area of wetland to expand. Peatland can include ridges and raised bogs.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Open peat mines[COLOR_REVERT] are the upgrades of [COLOR:190:130:70:255][LINK=IMPROVEMENT_PEAT_PIT]peat pits[\LINK][COLOR_REVERT]. They increase the production of [COLOR:190:130:70:255][LINK=YIELD_PEAT]peat[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Peat forms when plant material does not fully decay in acidic and anaerobic conditions. It is composed mainly of wetland vegetation: principally bog plants including mosses, sedges, and shrubs. As it accumulates, the peat holds water. This slowly creates wetter conditions that allow the area of wetland to expand. Peatland can include ridges and raised bogs.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Minas de turfa abertas[COLOR_REVERT] são as atualizações de [LINK=IMPROVEMENT_PEAT_PIT]poços de turfa[\LINK]. Eles aumentam a produção de [LINK=YIELD_PEAT]turfa[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]A turfa se forma quando o material vegetal não se decompõe totalmente em condições ácidas e anaeróbicas. É composto principalmente por vegetação pantanosa: principalmente plantas pantanosas, incluindo musgos, ciperáceas e arbustos. À medida que se acumula, a turfa retém água. Isto cria lentamente condições mais húmidas que permitem a expansão da área de zonas úmidas. As turfeiras podem incluir cumes e pântanos elevados.</Portuguese>
 		<French>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Open peat mines[COLOR_REVERT] are the upgrades of [LINK=IMPROVEMENT_PEAT_PIT]peat pits[\LINK]. They increase the production of [LINK=YIELD_PEAT]peat[\LINK].[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]In open-pit peat mines peat is extracted.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Der [COLOR_HIGHLIGHT_TEXT]Torf Tagebau[COLOR_REVERT] ist die Erweiterung der [LINK=IMPROVEMENT_PEAT_PIT]Torfgrube[\LINK]. Er erhöht die Produktion von [LINK=YIELD_PEAT]Torf[\LINK].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Tagebau ist meist eine grubenähnliche Anlage, die dazu dient, Torf in großen Mengen abzubauen. </German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1]Der [COLOR_HIGHLIGHT_TEXT]Torf Tagebau[COLOR_REVERT] ist die Erweiterung der [COLOR:190:130:70:255][LINK=IMPROVEMENT_PEAT_PIT]Torfgrube[\LINK][COLOR_REVERT]. Er erhöht die Produktion von [COLOR:190:130:70:255][LINK=YIELD_PEAT]Torf[\LINK][COLOR_REVERT].[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Tagebau ist meist eine grubenähnliche Anlage, die dazu dient, Torf in großen Mengen abzubauen. </German>
 	</TEXT>
 </Civ4GameText>

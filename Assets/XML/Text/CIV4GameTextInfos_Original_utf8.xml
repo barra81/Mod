@@ -414,10 +414,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_REQUIRED_TERRAIN_YIELDS_TEXT</Tag>
-		<English>[ICON_BULLET]Required Terrain Yields: </English>
+		<English>[ICON_BULLET][COLOR:255:150:50:255]Required Terrain Yields:[COLOR_REVERT] </English>
 		<Portuguese>[ICON_BULLET]Recursos de terreno necessários: </Portuguese>
 		<French>[ICON_BULLET]Ressource nécessaire sur le Terrain:</French>
-		<German>[ICON_BULLET]Benötigte Terrain Yields: </German>
+		<German>[ICON_BULLET][COLOR:255:150:50:255]Benötigte Terrain Yields:[COLOR_REVERT] </German>
 		<Russian>[ICON_BULLET]Требуемая урожайность местности: </Russian>
 		<Hungarian>[ICON_BULLET]Szükséges Terep Hozam: </Hungarian>
 	</TEXT>
@@ -549,10 +549,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_STREAM_EFFECT</Tag>
-		<English>[ICON_BULLET]Doubles movement with current[NEWLINE][ICON_BULLET]Halves movement against current</English>
+		<English>[ICON_BULLET][COLOR:110:150:255:255]Doubles movement[COLOR_REVERT] with current[NEWLINE][ICON_BULLET][COLOR:110:150:255:255]Halves movement[COLOR_REVERT] against current</English>
 		<Portuguese>[ICON_BULLET]Duplica o movimento com a corrente[NEWLINE][ICON_BULLET]Reduz pela metade o movimento contra a corrente</Portuguese>
 		<French>[ICON_BULLET]Doubles le mouvement suivant le courant[NEWLINE][ICON_BULLET]Divise le mouvement à contre-courant</French>
-		<German>[ICON_BULLET]Verdoppelt Bewegung mit Strom[NEWLINE][ICON_BULLET]Halbiert Bewegung gegen Strom</German>
+		<German>[ICON_BULLET][COLOR:110:150:255:255]Verdoppelt Bewegung[COLOR_REVERT] mit Strom[NEWLINE][ICON_BULLET][COLOR:110:150:255:255]Halbiert Bewegung[COLOR_REVERT] gegen Strom</German>
 		<Russian>[ICON_BULLET]Движение по течению удваивает скорость перемещения[NEWLINE][ICON_BULLET]Движение против течения вдвое замедляет скорость перемещения</Russian>
 		<Hungarian>[ICON_BULLET]Dupla mozgás folyásirányban[NEWLINE][ICON_BULLET]Fele mozgás folyásiránnyal szemben</Hungarian>
 	</TEXT>
@@ -699,10 +699,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PROMOTION_WITHDRAWAL_TEXT</Tag>
-		<English>[ICON_BULLET]%D1_Change%% withdrawal chance on attack</English>
+		<English>[ICON_BULLET]%D1_Change%% [COLOR:110:150:255:255]withdrawal chance[COLOR_REVERT] on attack</English>
 		<Portuguese>[ICON_BULLET]%D1_Change%% chance de retirada no ataque</Portuguese>
 		<French>[ICON_BULLET]Chances de repli en attaque de %D1_Change%%</French>
-		<German>[ICON_BULLET]%D1_Change%% Rückzugswahrscheinlichkeitdes Rückzugs im Angriff</German>
+		<German>[ICON_BULLET]%D1_Change%% [COLOR:110:150:255:255]Rückzugswahrscheinlichkeitdes Rückzugs[COLOR_REVERT] im Angriff</German>
 		<Italian>[ICON_BULLET]%D1_Change%% di probabilità di ritirata in attacco</Italian>
 		<Spanish>[ICON_BULLET]%D1_Change%% a la probabilidad de retirarse en ataque</Spanish>
 		<Russian>[ICON_BULLET]%D1_Change%% к шансу выйти из боя при атаке</Russian>
@@ -1062,10 +1062,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_WITHDRAWL_PROBABILITY_SHORT</Tag>
-		<English>[ICON_BULLET]Withdrawal chance on attack: %d1_Amount%%</English>
+		<English>[ICON_BULLET][COLOR:110:150:255:255]Withdrawal chance on attack:[COLOR_REVERT] %d1_Amount%%</English>
 		<Portuguese>[ICON_BULLET]Chance de retirada no ataque: %d1_Amount%%</Portuguese>
 		<French>[ICON_BULLET]Chances de rompre le combat en attaque: %d1_Amount%%</French>
-		<German>[ICON_BULLET]Chance auf Rückzug beim Angriff: %d1_Amount%%</German>
+		<German>[ICON_BULLET][COLOR:110:150:255:255]Chance auf Rückzug beim Angriff:[COLOR_REVERT] %d1_Amount%%</German>
 		<Italian>[ICON_BULLET]Probabilità di ritirata in attacco: %d1_Amount%%</Italian>
 		<Spanish>[ICON_BULLET]Probabilidad de retirarse en ataque: %d1_Amount%%</Spanish>
 		<Russian>[ICON_BULLET]Шанс отступить при атаке: %d1_Amount%%</Russian>
@@ -1073,10 +1073,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_WITHDRAWL_PROBABILITY</Tag>
-		<English>[ICON_BULLET]Can withdraw from combat on attack (%d1_Amount%% chance)</English>
+		<English>[ICON_BULLET]Can [COLOR:110:150:255:255]withdraw from combat[COLOR_REVERT] on attack (%d1_Amount%% chance)</English>
 		<Portuguese>[ICON_BULLET]Pode se retirar do combate ao atacar (%d1_Amount%% chance)</Portuguese>
 		<French>[ICON_BULLET]Peut rompre le combat en attaque(%d1_Amount%% de chance)</French>
-		<German>[ICON_BULLET]Kann im Angriff den Rückzug antreten (Wahrscheinlichkeit: %d1_Amount%%)</German>
+		<German>[ICON_BULLET]Kann im Angriff den [COLOR:110:150:255:255]Rückzug[COLOR_REVERT] antreten (Wahrscheinlichkeit: %d1_Amount%%)</German>
 		<Italian>[ICON_BULLET]Può ritirarsi dal combattimento in attacco(%d1_Amount%% di probabilità)</Italian>
 		<Spanish>[ICON_BULLET]Puede retirarse del combate en ataque(probabilidad del %d1_Amount%%)</Spanish>
 		<Russian>[ICON_BULLET]Может выйти из боя при атаке (шанс %d1_Amount%%)</Russian>
@@ -1584,20 +1584,20 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TIMELINE_AVAILABLE_FROM</Tag>
-		<English>Available from : %d1_Num</English>
+		<English>[COLOR:40:225:235:255]Available from :[COLOR_REVERT] %d1_Num</English>
 		<Portuguese>Disponível em: %d1_Num</Portuguese>
 		<French>Disponible à partir du : %d1_Num</French>
-		<German>Verfügbar ab : %d1_Num</German>
+		<German>[COLOR:40:225:235:255]Verfügbar ab :[COLOR_REVERT] %d1_Num</German>
 		<Italian>Disponibile a partire dal : %d1_Num</Italian>
 		<Spanish>Disponible a partir del : %d1_Num</Spanish>
 		<Russian>[COLOR_SELECTED_TEXT]Доступен с :[COLOR_REVERT] %d1_Num</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TIMELINE_OBSOLETE_FROM</Tag>
-		<English>No longer available from : %d1_Num</English>
+		<English>[COLOR:255:150:50:255]No longer available from :[COLOR_REVERT] %d1_Num</English>
 		<Portuguese>Não está mais disponível em: %d1_Num</Portuguese>
 		<French>N'est plus disponible auprès de : %d1_Num</French>
-		<German>Nicht mehr verfügbar ab : %d1_Num</German>
+		<German>[COLOR:255:150:50:255]Nicht mehr verfügbar ab :[COLOR_REVERT] %d1_Num</German>
 		<Italian>Non più disponibile presso : %d1_Num</Italian>
 		<Spanish>Ya no está disponible en : %d1_Num</Spanish>
 		<Russian>[COLOR_SELECTED_TEXT]Недоступен с :[COLOR_REVERT] %d1_Num</Russian>
@@ -3458,10 +3458,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLOT_PEAK</Tag>
-		<English>Peak</English>
+		<English>[COLOR_CAT_TERRAIN]Peak[COLOR_REVERT]</English>
 		<Portuguese>Pico</Portuguese>
 		<French>Montagne</French>
-		<German>Berg</German>
+		<German>[COLOR_CAT_TERRAIN]Berg[COLOR_REVERT]</German>
 		<Italian>Montagna</Italian>
 		<Spanish>Pico</Spanish>
 		<Russian>Горы</Russian>
@@ -3469,10 +3469,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLOT_HILLS</Tag>
-		<English>Hills/</English>
+		<English>[COLOR_CAT_TERRAIN]Hills[COLOR_REVERT]/</English>
 		<Portuguese>Colinas/</Portuguese>
 		<French>Collines/</French>
-		<German>Hügel/</German>
+		<German>[COLOR_CAT_TERRAIN]Hügel[COLOR_REVERT]/</German>
 		<Italian>Colline/</Italian>
 		<Spanish>Colina/</Spanish>
 		<Russian>Холмы/</Russian>
@@ -3480,10 +3480,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLOT_FRESH_WATER_LAKE</Tag>
-		<English>Fresh Water Lake</English>
+		<English>[COLOR_CAT_TERRAIN]Fresh Water Lake[COLOR_REVERT]</English>
 		<Portuguese>Lago de água doce</Portuguese>
 		<French>Lac d'eau douce</French>
-		<German>Süßwassersee</German>
+		<German>[COLOR_CAT_TERRAIN]Süßwassersee[COLOR_REVERT]</German>
 		<Italian>Lago d'acqua dolce</Italian>
 		<Spanish>Lago de agua dulce</Spanish>
 		<Russian>Пресноводное озеро</Russian>
@@ -12424,9 +12424,9 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_NAVAL_CONTROL</Tag>
-		<English>[ICON_BULLET]Naval Control: Radius %d1_Num plots; Movement Cost deduction from other ships -%d2_Num</English>
+		<English>[ICON_BULLET][COLOR:110:150:255:255]Naval Control:[COLOR_REVERT] Radius %d1_Num plots; Movement Cost deduction from other ships -%d2_Num</English>
 		<Portuguese>[ICON_BULLET]Controle Naval: Raio de %d1_Num lotes; Dedução do custo de movimento de outros navios -%d2_Num</Portuguese>
-		<German>[ICON_BULLET]Seekontrolle: Radius %d1_Num Felder; Bewegungskosten-Abzug bei anderen Schiffen -%d2_Num</German>
+		<German>[ICON_BULLET][COLOR:110:150:255:255]Seekontrolle:[COLOR_REVERT] Radius %d1_Num Felder; Bewegungskosten-Abzug bei anderen Schiffen -%d2_Num</German>
 		<Russian>[ICON_BULLET]Зона контроля: радиус — %d1_Num; увеличивает стоимость перемещения для других кораблей на %d2_Num</Russian>
 	</TEXT>
 	<TEXT>
@@ -12882,10 +12882,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ACTION_LEAD_TROOPS</Tag>
-		<English>Gives a total of %d1_Num experience points to units in the same tile. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</English>
+		<English>Gives a total of %d1_Num [COLOR:40:225:235:255]experience points[COLOR_REVERT] to units in the same tile. Notice: [COLOR:40:225:235:255]Experience points[COLOR_REVERT] are granted only once, even if the officer can be assigned to a unit multiple times.</English>
 		<Portuguese>Dá um total de %d1_Num pontos de experiência para unidades no mesmo lote. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</Portuguese>
 		<French>Octroie un total de %d1_Num expérience aux unités dans la même case. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</French>
-		<German>Überträgt insgesamt %d1_Num Erfahrungspunkte auf Einheiten auf demselben Geländefeld. Achtung, die Erfahrungspunkte werden nur einmal vergeben, auch wenn der Offizier mehrfach einer Einheit zugeordnet werden kann.</German>
+		<German>Überträgt insgesamt %d1_Num [COLOR:40:225:235:255]Erfahrungspunkte[COLOR_REVERT] auf Einheiten auf demselben Geländefeld. Achtung, die [COLOR:40:225:235:255]Erfahrungspunkte[COLOR_REVERT] werden nur einmal vergeben, auch wenn der Offizier mehrfach einer Einheit zugeordnet werden kann.</German>
 		<Italian>Dà un totale di %d1_Num di esperienza alle unità presenti nella stessa casella. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</Italian>
 		<Spanish>Da un total de %d1_Num de experiencia a las unidades en la misma casilla. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</Spanish>
 		<Russian>Дает %d1_Num очков опыта юнитам на этой клетке. Очки опыта начисляются только один раз; полученные при этом повышения остаются у офицера, а не у отряда.</Russian>
@@ -13941,10 +13941,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMBAT_MESSAGE_TERRAIN_ATTACK</Tag>
-		<English>(Terrain Attack: %D1%%)</English>
+		<English>([COLOR:110:150:255:255]Terrain Attack:[COLOR_REVERT] %D1%%)</English>
 		<Portuguese>(Ataque Terreno: %D1%%)</Portuguese>
 		<French>(Attaque terrain : %D1%%)</French>
-		<German>(Geländeangriff: %D1%%)</German>
+		<German>([COLOR:110:150:255:255]Geländeangriff:[COLOR_REVERT] %D1%%)</German>
 		<Italian>(Attacco da terreno: %D1%%)</Italian>
 		<Spanish>(Ataque a terreno: %D1%%)</Spanish>
 		<Russian>(Атака на местности : %D1%%)</Russian>
@@ -13952,10 +13952,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMBAT_MESSAGE_TERRAIN</Tag>
-		<English>(Terrain defense : %d1%%)</English>
+		<English>([COLOR:110:150:255:255]Terrain defense :[COLOR_REVERT] %d1%%)</English>
 		<Portuguese>(Defesa de terreno: %d1%%)</Portuguese>
 		<French>(Défense terrain : %d1%%)</French>
-		<German>(Gelände-Verteidigung : %d1%%)</German>
+		<German>([COLOR:110:150:255:255]Gelände-Verteidigung :[COLOR_REVERT] %d1%%)</German>
 		<Italian>(Difesa da terreno : %d1%%)</Italian>
 		<Spanish>(Defender terreno : %d1%%)</Spanish>
 		<Russian>(Защита на местности : %D1%%)</Russian>
@@ -14254,20 +14254,20 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_SLAVE_EMANCIPATION_UNREST</Tag>
-		<English>The emancipation of slaves has caused unrest in %s1.</English>
-		<German>Die Freilassung von Sklaven hat in %s1 Unruhe ausgelöst.</German>
+		<English>The emancipation of slaves has caused [COLOR_WARNING_TEXT]unrest[COLOR_REVERT] in %s1.</English>
+		<German>Die Freilassung von Sklaven hat in %s1 [COLOR_WARNING_TEXT]Unruhe[COLOR_REVERT] ausgelöst.</German>
 		<Russian>Освобождение рабов вызвало волнения в городе %s1.</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_HELP_COMMANDED_BY</Tag>
-		<English>Unit is commanded by </English>
-		<German>Einheit wird kommandiert von </German>
+		<English>Unit is [COLOR:110:150:255:255]commanded by[COLOR_REVERT] </English>
+		<German>Einheit wird [COLOR:110:150:255:255]kommandiert von[COLOR_REVERT] </German>
 		<Russian>Командование подразделением осуществляет </Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ACTION_ATTACH_LEADER</Tag>
-		<English>Assigns this commander to an eligible unit. The commander can later be detached from the unit.</English>
-		<German>Der Befehlshaber wird einer geeigneten Einheit zugeteilt und kann später wieder von ihr abkommandiert werden.</German>
+		<English>Assigns this [COLOR:110:150:255:255]commander[COLOR_REVERT] to an eligible unit. The [COLOR:110:150:255:255]commander[COLOR_REVERT] can later be detached from the unit.</English>
+		<German>Der [COLOR:110:150:255:255]Befehlshaber[COLOR_REVERT] wird einer geeigneten Einheit zugeteilt und kann später wieder von ihr abkommandiert werden.</German>
 		<Russian>Назначает этого командира в выбранный отряд. Впоследствии командира можно будет убрать из отряда.</Russian>
 	</TEXT>
 </Civ4GameText>

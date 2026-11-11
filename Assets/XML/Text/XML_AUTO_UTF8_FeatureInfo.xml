@@ -2,7 +2,7 @@
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_FOREST</Tag>
-		<English>Deciduous Forest</English>
+		<English>[COLOR_CAT_PROD]Deciduous Forest[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Floresta Decídua</Text>
 			<Gender>Female</Gender>
@@ -10,7 +10,7 @@
 		</Portuguese>
 		<French>Forêt de feuillus</French>
 		<German>
-			<Text>Laubwald</Text>
+			<Text>[COLOR_CAT_PROD]Laubwald[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -18,14 +18,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_FOREST_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Deciduous forests[COLOR_REVERT] grow in intermediate and high latitudes, and also on higher terrain in low latitudes. Your colonists can harvest [LINK=YIELD_FUR]fur[\LINK] and [LINK=YIELD_LUMBER]lumber[\LINK] there.[PARAGRAPH:1]Forests prevent any other resource on that plot except [LINK=YIELD_ORE]ore[\LINK], unless a bonus resource is present.[LINK=IMPROVEMENT_LODGE]Lodges[\LINK] and [LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK] can be built in deciduous forests. Putting up any other improvement clears the forest.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioneers[\LINK] can plant deciduous forests on [LINK=TERRAIN_PLAINS]prairie[\LINK] terrain.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A forest, also referred to as a wood or the woods and less often as a "wold" (or "weald"), "holt", or "frith" (or "firth"), means trees are the dominant plant. There are many definitions for forest. Forests cover 9.4% of the Earth's surface (or 30% of the land area), though long ago they covered much more, about 50% of the land, creating habitats for a wide range of organisms, working as hydrologic flow modulators and soil conservers, constituting one of the most important aspects of the Earth's biosphere. Although forest is primarily trees the forest ecosystem has many additional species such as fungi.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Deciduous forests[COLOR_REVERT] grow in intermediate and high latitudes, and also on higher terrain in low latitudes. Your colonists can harvest [COLOR:255:205:40:255][LINK=YIELD_FUR]fur[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=YIELD_LUMBER]lumber[\LINK][COLOR_REVERT] there.[PARAGRAPH:1]Forests prevent any other resource on that plot except [COLOR:190:130:70:255][LINK=YIELD_ORE]ore[\LINK][COLOR_REVERT], unless a bonus resource is present.[COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Lodges[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK][COLOR_REVERT] can be built in deciduous forests. Putting up any other improvement clears the forest.[PARAGRAPH:1][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioneers[\LINK][COLOR_REVERT] can plant deciduous forests on [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS]prairie[\LINK][COLOR_REVERT] terrain.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A forest, also referred to as a wood or the woods and less often as a "wold" (or "weald"), "holt", or "frith" (or "firth"), means trees are the dominant plant. There are many definitions for forest. Forests cover 9.4% of the Earth's surface (or 30% of the land area), though long ago they covered much more, about 50% of the land, creating habitats for a wide range of organisms, working as hydrologic flow modulators and soil conservers, constituting one of the most important aspects of the Earth's biosphere. Although forest is primarily trees the forest ecosystem has many additional species such as fungi.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Florestas decíduas[COLOR_REVERT] crescem em latitudes intermediárias e altas, e também em terrenos mais elevados em latitudes baixas. Seus colonos podem colher [LINK=YIELD_FUR]peles[\LINK] e [LINK=YIELD_LUMBER]madeira[\LINK] lá.[PARAGRAPH:1]As florestas impedem qualquer outro recurso naquele terreno, exceto [LINK=YIELD_ORE]minério[\LINK], a menos que um recurso bônus esteja presente.[LINK=IMPROVEMENT_LODGE]Alojamentos[\LINK] e [LINK=IMPROVEMENT_TRAPPER_HUT]cabanas de caçadores[\LINK] podem ser construídos em florestas decíduas. Colocar qualquer outra melhoria limpa a floresta.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioneiros[\LINK] podem plantar florestas decíduas em terrenos de [LINK=TERRAIN_PLAINS]planícies[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma floresta, também chamada de bosque ou bosque e menos frequentemente como "wold" (ou "weald"), "holt" ou "frith" (ou "firth"), significa que as árvores são a planta dominante. Existem muitas definições para floresta. As florestas cobrem 9,4% da superfície terrestre (ou 30% da área terrestre), embora há muito tempo cobrissem muito mais, cerca de 50% da terra, criando habitats para uma ampla gama de organismos, funcionando como moduladores de fluxo hidrológico e conservadores do solo, constituindo um dos aspectos mais importantes da biosfera terrestre. Embora a floresta seja composta principalmente de árvores, o ecossistema florestal possui muitas espécies adicionais, como fungos.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]La [COLOR_HIGHLIGHT_TEXT]Forêt[COLOR_REVERT] pousse à des lattitudes intermédiaires. Le terrain permet de produire de la [LINK=YIELD_FUR]fourrure[\LINK] et du [LINK=YIELD_LUMBER]bois de construction[\LINK].[PARAGRAPH:1]La forêt empêche la production de n'importe quelle autre bien à l'exception du [LINK=YIELD_ORE]minerai[\LINK], à part si une ressource bonus y est présente. Des [LINK=IMPROVEMENT_LODGE]abris[\LINK] et des [LINK=IMPROVEMENT_TRAPPER_HUT]Huttes de trappeurs[\LINK] peuvent être construites dans la forêt.[PARAGRAPH:1]Les [LINK=PROFESSION_PIONEER]pionniers[\LINK] peuvent planter de la forêt sur les terrains de [LINK=TERRAIN_GRASS]prairie[\LINK] et de [LINK=TERRAIN_PLAINS]Plaines[\LINK].[PARAGRAPH:2][BOLD]Contexte :[\BOLD][PARAGRAPH:1]Une forêt ou un massif forestier est une étendue boisée, relativement grande, constituée d'un ou plusieurs peuplements d'arbres et d'espèces associées. Un boisement de faible étendue est dit bois, boqueteau ou bosquet selon son importance. Divers types de forêts existent; des forêts primaires aux forêts dites urbaines, avec les gradients intermédiaires. Il existe également de nombreux types d'exploitation des forêts (sylviculture, agrosylviculture). La forêt est aussi un milieu de vie et une source de revenus pour l'homme : au début du XXe siècle, plus de 500 millions de personnes, dont 150 millions d'autochtones vivent encore en forêt ou à ses abords. Elle abrite une grande richesse écologique composée d'une centaine d'espèces de mammifères, d'une cinquantaine d'espèces d'oiseaux, d'un millier d'espèces végétales et de plusieurs millions d'espèces d'insectes.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Laubwald[COLOR_REVERT] wächst in gemäßigten und nördlichen Breitengraden, aber auch in höheren Lagen der niedrigeren Breitengrade. Die Kolonisten können dort [LINK=YIELD_FUR]Pelze[\LINK] gewinnen und [LINK=YIELD_LUMBER]Holz[\LINK] schlagen. Zur Gewinnung anderer Rohstoffe sind Wälder schlecht geeignet. Es können [LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK] und [LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütten[\LINK] in Laubwäldern gebaut werden. Andere Geländeverbesserungen entfernen den Wald.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioniere[\LINK] können neue Laubwälder in der [LINK=TERRAIN_PLAINS]Prärie[\LINK] anpflanzen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Unter einem Wald versteht man ein Gebiet mit stark ausgeprägtem Baumbewuchs verschiendensten Alters. Die Dichte und die Baumarten und Pflanzenarten variieren von Region zu Region.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Laubwald[COLOR_REVERT] wächst in gemäßigten und nördlichen Breitengraden, aber auch in höheren Lagen der niedrigeren Breitengrade. Die Kolonisten können dort [COLOR:255:205:40:255][LINK=YIELD_FUR]Pelze[\LINK][COLOR_REVERT] gewinnen und [COLOR:190:130:70:255][LINK=YIELD_LUMBER]Holz[\LINK][COLOR_REVERT] schlagen. Zur Gewinnung anderer Rohstoffe sind Wälder schlecht geeignet. Es können [COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütten[\LINK][COLOR_REVERT] in Laubwäldern gebaut werden. Andere Geländeverbesserungen entfernen den Wald.[PARAGRAPH:1][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioniere[\LINK][COLOR_REVERT] können neue Laubwälder in der [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS]Prärie[\LINK][COLOR_REVERT] anpflanzen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Unter einem Wald versteht man ein Gebiet mit stark ausgeprägtem Baumbewuchs verschiendensten Alters. Die Dichte und die Baumarten und Pflanzenarten variieren von Region zu Region.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_FOREST_EVERGREEN</Tag>
-		<English>Coniferous Forest</English>
+		<English>[COLOR_CAT_PROD]Coniferous Forest[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Floresta de Coníferas</Text>
 			<Gender>Female</Gender>
@@ -33,7 +33,7 @@
 		</Portuguese>
 		<French>Forêt de conifères</French>
 		<German>
-			<Text>Nadelwald</Text>
+			<Text>[COLOR_CAT_PROD]Nadelwald[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -41,16 +41,16 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_FOREST_EVERGREEN_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Coniferous forests[COLOR_REVERT] grow in intermediate and high latitudes, and also on higher terrain in low latitudes. Your colonists can harvest [LINK=YIELD_FUR]fur[\LINK] and [LINK=YIELD_LUMBER]lumber[\LINK] there.[NEWLINE]Forests prevent any other resource on that plot except [LINK=YIELD_ORE]ore[\LINK], unless a bonus resource is present.[LINK=IMPROVEMENT_LODGE]Lodges[\LINK] and [LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK] can be built in  coniferous forests. Putting up any other improvement clears the forest.[NEWLINE][LINK=PROFESSION_PIONEER]Pioneers[\LINK] can plant coniferous forests on [LINK=TERRAIN_GRASS]grassland[\LINK] terrain.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]An evergreen forest keeps its leaves, or needles, year round. Seeds are protected inside cones, one of the features that makes evergreens much hardier than deciduous trees. Subarctic forests will be exclusively coniferous. Although forest is primarily trees the forest ecosystem has many additional species such as fungi.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Coniferous forests[COLOR_REVERT] grow in intermediate and high latitudes, and also on higher terrain in low latitudes. Your colonists can harvest [COLOR:255:205:40:255][LINK=YIELD_FUR]fur[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=YIELD_LUMBER]lumber[\LINK][COLOR_REVERT] there.[NEWLINE]Forests prevent any other resource on that plot except [COLOR:190:130:70:255][LINK=YIELD_ORE]ore[\LINK][COLOR_REVERT], unless a bonus resource is present.[COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Lodges[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK][COLOR_REVERT] can be built in  coniferous forests. Putting up any other improvement clears the forest.[NEWLINE][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioneers[\LINK][COLOR_REVERT] can plant coniferous forests on [COLOR:215:200:150:255][LINK=TERRAIN_GRASS]grassland[\LINK][COLOR_REVERT] terrain.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]An evergreen forest keeps its leaves, or needles, year round. Seeds are protected inside cones, one of the features that makes evergreens much hardier than deciduous trees. Subarctic forests will be exclusively coniferous. Although forest is primarily trees the forest ecosystem has many additional species such as fungi.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Florestas de coníferas[COLOR_REVERT] crescem em latitudes intermediárias e altas, e também em terrenos mais elevados em latitudes baixas. Seus colonos podem colher [LINK=YIELD_FUR]peles[\LINK] e [LINK=YIELD_LUMBER]madeira[\LINK] lá.[NEWLINE]As florestas impedem qualquer outro recurso naquele terreno, exceto [LINK=YIELD_ORE]minério[\LINK], a menos que um recurso bônus esteja presente.[LINK=IMPROVEMENT_LODGE]Alojamentos[\LINK] e [LINK=IMPROVEMENT_TRAPPER_HUT]cabanas de caçadores[\LINK] podem ser construídos em florestas de coníferas. Colocar qualquer outra melhoria limpa a floresta.[NEWLINE][LINK=PROFESSION_PIONEER]Pioneiros[\LINK] podem plantar florestas de coníferas em terrenos de [LINK=TERRAIN_GRASS]pradarias[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma floresta perene mantém suas folhas, ou agulhas, o ano todo. As sementes são protegidas dentro de cones, uma das características que torna as sempre-vivas muito mais resistentes do que as árvores decíduas. As florestas subárticas serão exclusivamente de coníferas. Embora a floresta seja composta principalmente de árvores, o ecossistema florestal possui muitas espécies adicionais, como fungos.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]La [COLOR_HIGHLIGHT_TEXT]Forêt[COLOR_REVERT] pousse à des lattitudes intermédiaires. Le terrain permet de produire de la [LINK=YIELD_FUR]fourrure[\LINK] et du [LINK=YIELD_LUMBER]bois de construction[\LINK].[NEWLINE]La forêt empêche la production de n'importe quelle autre bien à l'exception du [LINK=YIELD_ORE]minerai[\LINK], à part si une ressource bonus y est présente. Des [LINK=IMPROVEMENT_LODGE]abris[\LINK] et des [LINK=IMPROVEMENT_TRAPPER_HUT]Huttes de trappeurs[\LINK] peuvent être construites dans la forêt.[NEWLINE]Les [LINK=PROFESSION_PIONEER]pionniers[\LINK] peuvent planter de la forêt sur les terrains de [LINK=TERRAIN_GRASS]prairie[\LINK] et de [LINK=TERRAIN_PLAINS]Plaines[\LINK].[PARAGRAPH:2][BOLD]Contexte :[\BOLD][PARAGRAPH:1]Une forêt ou un massif forestier est une étendue boisée, relativement grande, constituée d'un ou plusieurs peuplements d'arbres et d'espèces associées. Un boisement de faible étendue est dit bois, boqueteau ou bosquet selon son importance. Divers types de forêts existent ; des forêts primaires aux forêts dites urbaines, avec les gradients intermédiaires. Il existe également de nombreux types d'exploitation des forêts (sylviculture, agrosylviculture). La forêt est aussi un milieu de vie et une source de revenus pour l'homme : au début du XXe siècle, plus de 500 millions de personnes, dont 150 millions d'autochtones vivent encore en forêt ou à ses abords. Elle abrite une grande richesse écologique composée d'une centaine d'espèces de mammifères, d'une cinquantaine d'espèces d'oiseaux, d'un millier d'espèces végétales et de plusieurs millions d'espèces d'insectes.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Nadelwald[COLOR_REVERT] wächst in gemässigten und nördlichen Breitengraden, aber auch in höheren Lagen der niedrigen Breitengrade. Die Kolonisten können dort [LINK=YIELD_FUR]Pelze[\LINK] gewinnen und [LINK=YIELD_LUMBER]Holz[\LINK] schlagen. Zur Gewinnung anderer Rohstoffe, ist der Nadelwald sehr schlecht geeignet. Es können [LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK] und [LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütten[\LINK] in Wäldern gebaut werden. Andere Geländeverbesserungen entfernen den Wald.[NEWLINE][LINK=PROFESSION_PIONEER]Pioniere[\LINK] können neue Nadelwälder auf [LINK=TERRAIN_GRASS]Grasland[\LINK] anpflanzen.[NEWLINE][NEWLINE][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Unter einem Wald versteht man ein Gebiet mit stark ausgeprägtem Baumbewuchs verschiendensten Alters. Die Dichte und die Baumarten und Pflanzenarten variieren von Region zu Region.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Nadelwald[COLOR_REVERT] wächst in gemässigten und nördlichen Breitengraden, aber auch in höheren Lagen der niedrigen Breitengrade. Die Kolonisten können dort [COLOR:255:205:40:255][LINK=YIELD_FUR]Pelze[\LINK][COLOR_REVERT] gewinnen und [COLOR:190:130:70:255][LINK=YIELD_LUMBER]Holz[\LINK][COLOR_REVERT] schlagen. Zur Gewinnung anderer Rohstoffe, ist der Nadelwald sehr schlecht geeignet. Es können [COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütten[\LINK][COLOR_REVERT] in Wäldern gebaut werden. Andere Geländeverbesserungen entfernen den Wald.[NEWLINE][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioniere[\LINK][COLOR_REVERT] können neue Nadelwälder auf [COLOR:215:200:150:255][LINK=TERRAIN_GRASS]Grasland[\LINK][COLOR_REVERT] anpflanzen.[NEWLINE][NEWLINE][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Unter einem Wald versteht man ein Gebiet mit stark ausgeprägtem Baumbewuchs verschiendensten Alters. Die Dichte und die Baumarten und Pflanzenarten variieren von Region zu Region.</German>
 		<Italian>[TAB]A forest, also referred to as a wood or the woods and less often as a "wold" (or "weald"), "holt", or "frith" (or "firth"), is an area with a high density of trees. There are many definitions for forest, based on the various criteria. These plant communities cover approximately 9.4% of the Earth's surface (or 30% of total land area), though they once covered much more (about 50% of total land area), in many different regions and function as habitats for organisms, hydrologic flow modulators, and soil conservers, constituting one of the most important aspects of the Earth's biosphere. Although a forest is classified primarily by trees a forest ecosystem is defined intrinsically with additional species such as fungi.</Italian>
 		<Spanish>[TAB]A forest, also referred to as a wood or the woods and less often as a "wold" (or "weald"), "holt", or "frith" (or "firth"), is an area with a high density of trees. There are many definitions for forest, based on the various criteria. These plant communities cover approximately 9.4% of the Earth's surface (or 30% of total land area), though they once covered much more (about 50% of total land area), in many different regions and function as habitats for organisms, hydrologic flow modulators, and soil conservers, constituting one of the most important aspects of the Earth's biosphere. Although a forest is classified primarily by trees a forest ecosystem is defined intrinsically with additional species such as fungi.</Spanish>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_DENSE_FOREST</Tag>
-		<English>Dense Forest</English>
+		<English>[COLOR_CAT_PROD]Dense Forest[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Floresta Densa</Text>
 			<Gender>Female</Gender>
@@ -58,7 +58,7 @@
 		</Portuguese>
 		<French>Forêt dense</French>
 		<German>
-			<Text>Dichter Wald</Text>
+			<Text>[COLOR_CAT_PROD]Dichter Wald[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -66,13 +66,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_DENSE_FOREST_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Dense forest[COLOR_REVERT] is almost impassable. In the tropics getting through it means using a machete. Travelling in the temperate dense forest takes a lot of time and a sharp axe. A [LINK=PROFESSION_PIONEER]Pioneer[\LINK] can plant dense forests on [LINK=TERRAIN_PLAINS_FERTILE]plains[\LINK] terrain.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Dense forest[COLOR_REVERT] is almost impassable. In the tropics getting through it means using a machete. Travelling in the temperate dense forest takes a lot of time and a sharp axe. A [COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioneer[\LINK][COLOR_REVERT] can plant dense forests on [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS_FERTILE]plains[\LINK][COLOR_REVERT] terrain.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Floresta densa[COLOR_REVERT] é quase intransponível. Nos trópicos, passar significa usar um facão. Viajar na floresta densa e temperada exige muito tempo e um machado afiado. Um [LINK=PROFESSION_PIONEER]Pioneer[\LINK] pode plantar florestas densas em terrenos de [LINK=TERRAIN_PLAINS_FERTILE]planícies[\LINK].</Portuguese>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Dichter Wald[COLOR_REVERT] is fast unpassierbar. Man braucht eine Machete oder Axt, um voranzukommen. Ein [LINK=PROFESSION_PIONEER]Pionier[\LINK] kann dichten Wald auf dem [LINK=TERRAIN_PLAINS_FERTILE]Ebenen[\LINK] Terrain anpflanzen. </German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Dichter Wald[COLOR_REVERT] is fast unpassierbar. Man braucht eine Machete oder Axt, um voranzukommen. Ein [COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pionier[\LINK][COLOR_REVERT] kann dichten Wald auf dem [COLOR:215:200:150:255][LINK=TERRAIN_PLAINS_FERTILE]Ebenen[\LINK][COLOR_REVERT] Terrain anpflanzen. </German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_FOREST_TUNDRA</Tag>
-		<English>Northern Forest</English>
+		<English>[COLOR_CAT_PROD]Northern Forest[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Floresta Boreal</Text>
 			<Gender>Female</Gender>
@@ -80,7 +80,7 @@
 		</Portuguese>
 		<French>Forêt boréale</French>
 		<German>
-			<Text>Nordwald</Text>
+			<Text>[COLOR_CAT_PROD]Nordwald[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -88,7 +88,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ANCIENT_FOREST</Tag>
-		<English>Ancient Northern Forest</English>
+		<English>[COLOR_CAT_PROD]Ancient Northern Forest[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Antiga Floresta Boreal</Text>
 			<Gender>Female</Gender>
@@ -96,7 +96,7 @@
 		</Portuguese>
 		<French>Forêt boréale primordiale</French>
 		<German>
-			<Text>Alter Nordwald</Text>
+			<Text>[COLOR_CAT_PROD]Alter Nordwald[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -104,20 +104,20 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ANCIENT_FOREST_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Ancient northern forests[COLOR_REVERT] have the world's tallest trees. The old growth there is prized for ship masts. It can be planted on [LINK=TERRAIN_TAIGA]taiga[\LINK] terrain by [LINK=PROFESSION_PIONEER]pioneers[\LINK]  </English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Ancient northern forests[COLOR_REVERT] have the world's tallest trees. The old growth there is prized for ship masts. It can be planted on [COLOR:215:200:150:255][LINK=TERRAIN_TAIGA]taiga[\LINK][COLOR_REVERT] terrain by [COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]pioneers[\LINK][COLOR_REVERT]  </English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]As antigas florestas boreais[COLOR_REVERT] têm as árvores mais altas do mundo. A vegetação antiga é valorizada pelos mastros dos navios. Pode ser plantada em terreno de [LINK=TERRAIN_TAIGA]taiga[\LINK] por [LINK=PROFESSION_PIONEER]pioneiros[\LINK]  </Portuguese>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Alter Nordwald[COLOR_REVERT] kann durch [LINK=PROFESSION_PIONEER]Pioniere[\LINK] im [LINK=TERRAIN_TAIGA]Taiga[\LINK] Gelände angepflanzt werden.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Alter Nordwald[COLOR_REVERT] kann durch [COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioniere[\LINK][COLOR_REVERT] im [COLOR:215:200:150:255][LINK=TERRAIN_TAIGA]Taiga[\LINK][COLOR_REVERT] Gelände angepflanzt werden.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_FOREST_TUNDRA_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Taigas[COLOR_REVERT], or [COLOR_HIGHLIGHT_TEXT]northern forests[COLOR_REVERT], grow predominantly in high latitudes, though they can be found on high terrain in low latitudes. Your colonists can harvest [LINK=YIELD_FUR]fur[\LINK], [LINK=YIELD_PREMIUM_FUR]premium fur[\LINK], [LINK=YIELD_VALUABLE_WOOD]exotic wood[\LINK] and [LINK=YIELD_LUMBER]lumber[\LINK] there.[PARAGRAPH:1]Taiga prevents any other resource on its plot other than [LINK=YIELD_ORE]ore[\LINK], unless a bonus resource is present.[LINK=IMPROVEMENT_LODGE]Lodges[\LINK] and [LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK] can be built in taiga. Other improvements remove the taiga.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioneers[\LINK] can plant northern forests on [LINK=TERRAIN_TUNDRA]tundra[\LINK] terrain.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A forest is mainly trees. These plant communities cover approximately 9.4% of the Earth's surface, or 30% of total land area, though they once covered about 50% of the land area. The brief taiga summer is alive with colourful plants and insects, though iceworms nest only in folk songs.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Taigas[COLOR_REVERT], or [COLOR_HIGHLIGHT_TEXT]northern forests[COLOR_REVERT], grow predominantly in high latitudes, though they can be found on high terrain in low latitudes. Your colonists can harvest [COLOR:255:205:40:255][LINK=YIELD_FUR]fur[\LINK][COLOR_REVERT], [COLOR:255:205:40:255][LINK=YIELD_PREMIUM_FUR]premium fur[\LINK][COLOR_REVERT], [COLOR:190:130:70:255][LINK=YIELD_VALUABLE_WOOD]exotic wood[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=YIELD_LUMBER]lumber[\LINK][COLOR_REVERT] there.[PARAGRAPH:1]Taiga prevents any other resource on its plot other than [COLOR:190:130:70:255][LINK=YIELD_ORE]ore[\LINK][COLOR_REVERT], unless a bonus resource is present.[COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Lodges[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK][COLOR_REVERT] can be built in taiga. Other improvements remove the taiga.[PARAGRAPH:1][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioneers[\LINK][COLOR_REVERT] can plant northern forests on [COLOR:215:200:150:255][LINK=TERRAIN_TUNDRA]tundra[\LINK][COLOR_REVERT] terrain.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A forest is mainly trees. These plant communities cover approximately 9.4% of the Earth's surface, or 30% of total land area, though they once covered about 50% of the land area. The brief taiga summer is alive with colourful plants and insects, though iceworms nest only in folk songs.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Taigas[COLOR_REVERT], ou [COLOR_HIGHLIGHT_TEXT]florestas boreais[COLOR_REVERT], crescem predominantemente em altas latitudes, embora possam ser encontradas em terrenos elevados em baixas latitudes. Seus colonos podem colher [LINK=YIELD_FUR]peles[\LINK], [LINK=YIELD_PREMIUM_FUR]peles de luxo[\LINK], [LINK=YIELD_VALUABLE_WOOD]madeira exótica[\LINK] e [LINK=YIELD_LUMBER]madeira[\LINK] lá.[PARAGRAPH:1]Taiga impede qualquer outro recurso em seu terreno que não seja [LINK=YIELD_ORE]minério[\LINK], a menos que um recurso bônus seja presente.[LINK=IMPROVEMENT_LODGE]Alojamentos[\LINK] e [LINK=IMPROVEMENT_TRAPPER_HUT]cabanas de caçadores[\LINK] podem ser construídas na taiga. Outras melhorias removem a taiga.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioneiros[\LINK] podem plantar florestas boreais em terreno de [LINK=TERRAIN_TUNDRA]tundra[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma floresta é composta principalmente de árvores. Essas comunidades de plantas cobrem aproximadamente 9,4% da superfície da Terra, ou 30% da área total da terra, embora já tenham coberto cerca de 50% da área terrestre. O breve verão da taiga está repleto de plantas e insetos coloridos, embora os vermes do gelo façam ninhos apenas em canções folclóricas.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]La [COLOR_HIGHLIGHT_TEXT]Taïga[COLOR_REVERT] pousse principalement dans les climats de haute lattitude, bien qu'on puisse également la trouver dans les terrains très élevées de plus basse lattitutde. Le terrain permet de produire de la [LINK=YIELD_FUR]fourrure[\LINK], de la [LINK=YIELD_PREMIUM_FUR]fourrure de qualité[\LINK], du [LINK=YIELD_VALUABLE_WOOD]bois précieux[\LINK] et du [LINK=YIELD_LUMBER]bois de construction[\LINK].[PARAGRAPH:1]La taïga empêche la production de n'importe quelle autre bien à l'exception du [LINK=YIELD_ORE]minerai[\LINK], à part si une ressource bonus y est présente. Des [LINK=IMPROVEMENT_LODGE]abris[\LINK] et des [LINK=IMPROVEMENT_TRAPPER_HUT]Huttes de trappeurs[\LINK] peuvent être construites dans la taïga.[PARAGRAPH:1]Les [LINK=PROFESSION_PIONEER]pionniers[\LINK] peuvent planter de la taïga sur les terrains de [LINK=TERRAIN_TUNDRA]Tundra[\LINK].[PARAGRAPH:2][BOLD]Contexte :[\BOLD][PARAGRAPH:1]La taïga ou forêt boréale est l'un des principaux biomes terrestres. Fortement liée au climat subarctique, elle consiste en une formation végétale de type forestière parcourue par un vaste réseau lacustre résultant de l'érosion fluvioglaciaire. Sa végétation a la particularité d'être formée d'une majorité de conifères adaptés au froid (pins, épicéas, mélèzes et sapins), associée à un mélange de feuillus principalement composé de bouleaux, d'aulnes, de saules et de peupliers. Véritable désert humain, la taïga est la plus vaste continuité boisée de la planète et occupe à elle seule 10 % des terres émergées. Elle couvre la majorité des territoires intérieurs de l'Alaska, du Canada, de la Scandinavie, de la Finlande et de la Russie.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Taiga[COLOR_REVERT], hier auch [COLOR_HIGHLIGHT_TEXT]Nordwald[COLOR_REVERT] genannt, wächst in nördlichen Breitengraden, aber auch gelegentlich in höheren Lagen der gemässigten Breitengrade. Die Kolonisten können dort [LINK=YIELD_FUR]Pelze[\LINK] oder [LINK=YIELD_PREMIUM_FUR]Hochwertige Pelze[\LINK] gewinnen und [LINK=YIELD_LUMBER]Holz[\LINK] schlagen. Zur Gewinnung anderer Rohstoffe ist Taiga sehr schlecht geeignet. Es können [LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK] und [LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütten[\LINK] in der Taiga gebaut werden. Andere Geländeverbesserungen entfernen den Wald.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioniere[\LINK] können neue Nordwälder in der [LINK=TERRAIN_TUNDRA]Tundra[\LINK] anpflanzen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Unter einem Wald versteht man ein Gebiet mit stark ausgeprägtem Baumbewuchs verschiendensten Alters. Die Dichte und die Baumarten und Pflanzenarten variieren von Region zu Region.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Taiga[COLOR_REVERT], hier auch [COLOR_HIGHLIGHT_TEXT]Nordwald[COLOR_REVERT] genannt, wächst in nördlichen Breitengraden, aber auch gelegentlich in höheren Lagen der gemässigten Breitengrade. Die Kolonisten können dort [COLOR:255:205:40:255][LINK=YIELD_FUR]Pelze[\LINK][COLOR_REVERT] oder [COLOR:255:205:40:255][LINK=YIELD_PREMIUM_FUR]Hochwertige Pelze[\LINK][COLOR_REVERT] gewinnen und [COLOR:190:130:70:255][LINK=YIELD_LUMBER]Holz[\LINK][COLOR_REVERT] schlagen. Zur Gewinnung anderer Rohstoffe ist Taiga sehr schlecht geeignet. Es können [COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütten[\LINK][COLOR_REVERT] in der Taiga gebaut werden. Andere Geländeverbesserungen entfernen den Wald.[PARAGRAPH:1][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioniere[\LINK][COLOR_REVERT] können neue Nordwälder in der [COLOR:215:200:150:255][LINK=TERRAIN_TUNDRA]Tundra[\LINK][COLOR_REVERT] anpflanzen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Unter einem Wald versteht man ein Gebiet mit stark ausgeprägtem Baumbewuchs verschiendensten Alters. Die Dichte und die Baumarten und Pflanzenarten variieren von Region zu Region.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ICE</Tag>
-		<English>Polar Ice</English>
+		<English>[COLOR_WARNING_TEXT]Polar Ice[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Gelo Polar</Text>
 			<Gender>Male</Gender>
@@ -125,7 +125,7 @@
 		</Portuguese>
 		<French>Banquise</French>
 		<German>
-			<Text>Polareis</Text>
+			<Text>[COLOR_WARNING_TEXT]Polareis[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -150,7 +150,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_JUNGLE</Tag>
-		<English>Jungle</English>
+		<English>[COLOR_CAT_PROD]Jungle[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Selva</Text>
 			<Gender>Female</Gender>
@@ -162,7 +162,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Dschungel</Text>
+			<Text>[COLOR_CAT_PROD]Dschungel[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -180,14 +180,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_JUNGLE_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Jungles[COLOR_REVERT] grow in tropical latitudes, and your colonists can harvest [LINK=YIELD_COCOA_FRUITS]cocoa pods[\LINK] there, as well as [LINK=YIELD_VALUABLE_WOOD]exotic wood[\LINK]. [LINK=YIELD_LUMBER]Lumber[\LINK] is also found in jungles.[PARAGRAPH:1]Unlike forests, [LINK=PROFESSION_FARMER]farmers[\LINK] can grow a little [LINK=YIELD_FOOD]food[\LINK] in jungles if the underlying terrain is capable of producing at least 3 food. [LINK=IMPROVEMENT_LODGE]Lodges[\LINK] and [LINK=IMPROVEMENT_FRUIT_PLANTATION]fruits plantations[\LINK] can be built in jungles. Other construction removes the jungle.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioneers[\LINK] can plant jungles on both [LINK=TERRAIN_MARSH]marsh[\LINK] and [LINK=TERRAIN_SAVANNAH]savanna[\LINK] terrain.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Jungle or tropical forest refers to the dense, impenetrable tropical rainforest biome luxuriant with animal and plant life. The term "jungle" is a synonym for tropical rainforest.[PARAGRAPH:1]The northwest Pacific coast of North America also has the characteristic rainfall and plant growth to qualify as the world's only temperate jungle.[PARAGRAPH:1]The word "jungle" originates from the Sanskrit word "jangala" which in India referred to uncultivated land. Although the Sanskrit word refers to "dry land", it has been suggested that an Anglo-Indian misinterpretation led to its use for a dense "tangled thicket". while others have argued that a cognate word in Urdu did refer to forests. The term is prevalent in many languages of South Asia, and on the Iranian plateau, particularly in Bangla, Hindi, Marathi, Urdu, Punjabi and Persian.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Jungles[COLOR_REVERT] grow in tropical latitudes, and your colonists can harvest [COLOR:255:205:40:255][LINK=YIELD_COCOA_FRUITS]cocoa pods[\LINK][COLOR_REVERT] there, as well as [COLOR:190:130:70:255][LINK=YIELD_VALUABLE_WOOD]exotic wood[\LINK][COLOR_REVERT]. [COLOR:190:130:70:255][LINK=YIELD_LUMBER]Lumber[\LINK][COLOR_REVERT] is also found in jungles.[PARAGRAPH:1]Unlike forests, [COLOR_UNIT_TEXT][LINK=PROFESSION_FARMER]farmers[\LINK][COLOR_REVERT] can grow a little [COLOR:110:220:80:255][LINK=YIELD_FOOD]food[\LINK][COLOR_REVERT] in jungles if the underlying terrain is capable of producing at least 3 food. [COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Lodges[\LINK][COLOR_REVERT] and [COLOR:110:220:80:255][LINK=IMPROVEMENT_FRUIT_PLANTATION]fruits plantations[\LINK][COLOR_REVERT] can be built in jungles. Other construction removes the jungle.[PARAGRAPH:1][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioneers[\LINK][COLOR_REVERT] can plant jungles on both [COLOR:215:200:150:255][LINK=TERRAIN_MARSH]marsh[\LINK][COLOR_REVERT] and [COLOR:215:200:150:255][LINK=TERRAIN_SAVANNAH]savanna[\LINK][COLOR_REVERT] terrain.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]Jungle or tropical forest refers to the dense, impenetrable tropical rainforest biome luxuriant with animal and plant life. The term "jungle" is a synonym for tropical rainforest.[PARAGRAPH:1]The northwest Pacific coast of North America also has the characteristic rainfall and plant growth to qualify as the world's only temperate jungle.[PARAGRAPH:1]The word "jungle" originates from the Sanskrit word "jangala" which in India referred to uncultivated land. Although the Sanskrit word refers to "dry land", it has been suggested that an Anglo-Indian misinterpretation led to its use for a dense "tangled thicket". while others have argued that a cognate word in Urdu did refer to forests. The term is prevalent in many languages of South Asia, and on the Iranian plateau, particularly in Bangla, Hindi, Marathi, Urdu, Punjabi and Persian.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Selvas[COLOR_REVERT] crescem em latitudes tropicais, e seus colonos podem colher [LINK=YIELD_COCOA_FRUITS]vagens de cacau[\LINK] lá, bem como [LINK=YIELD_VALUABLE_WOOD]madeira exótica[\LINK]. [LINK=YIELD_LUMBER]A madeira[\LINK] também é encontrada nas selvas.[PARAGRAPH:1]Ao contrário das florestas, os [LINK=PROFESSION_FARMER]agricultores[\LINK] podem cultivar um pouco de [LINK=YIELD_FOOD]comida[\LINK] nas selvas se o terreno subjacente for capaz de produzir pelo menos 3 alimentos. [LINK=IMPROVEMENT_LODGE]Alojamentos[\LINK] e [LINK=IMPROVEMENT_FRUIT_PLANTATION]plantações de frutas[\LINK] podem ser construídas em selvas. Outras construções removem a selva.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioneiros[\LINK] podem plantar selvas em terrenos de [LINK=TERRAIN_MARSH]pântano[\LINK] e de [LINK=TERRAIN_SAVANNAH]savana[\LINK].[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Selva ou floresta tropical refere-se ao tropical denso e impenetrável bioma de floresta tropical exuberante com vida animal e vegetal. O termo "selva" é sinônimo de floresta tropical.[PARAGRAPH:1]A costa noroeste do Pacífico da América do Norte também tem chuvas e crescimento de plantas característicos para se qualificar como a única selva temperada do mundo.[PARAGRAPH:1]A palavra "selva" se origina da palavra sânscrita "jangala", que na Índia se referia a terras não cultivadas. Embora a palavra sânscrita se refira a "terra seca", foi sugerido que uma má interpretação anglo-indiana levou ao seu uso para um denso "matagal emaranhado". enquanto outros argumentaram que uma palavra cognata em urdu se referia a florestas. O termo prevalece em muitas línguas do Sul da Ásia e no planalto iraniano, particularmente em bangla, hindi, marata, urdu, punjabi e persa.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]La jungle désigne les forêts de feuillus humides tropicales et subtropicales ou les forêts tropicales humides constituent un biome des zones intertropicales caractérisé par une formation végétale arborée haute et dense ainsi qu'un climat chaud et très humide.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Dschungel[COLOR_REVERT] wächst in tropischen Breitengraden. Ihre Kolonisten können dort [LINK=YIELD_COCOA_FRUITS]Kakaofrüchte[\LINK] ernten, aber auch [LINK=YIELD_VALUABLE_WOOD]Edelholz[\LINK] schlagen. Normales [LINK=YIELD_LUMBER]Holz[\LINK] ist im Dschungel natürlich ebenfalls vorhanden.[PARAGRAPH:1]Im Gegensatz zu anderen Wäldern, kann im Dschungel auch [LINK=YIELD_FOOD]Nahrung[\LINK] geerntet werden, wenn das zugrunde liegende Gelände mindestens 3 Nahrung erzeugt. Im Dschungel können [LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK] und [LINK=IMPROVEMENT_FRUIT_PLANTATION]Obstplantagen gebaut werden[\LINK]. Der Bau einer anderen Geländeverbesserung entfernt den Dschungel.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioniere[\LINK] können in [LINK=TERRAIN_MARSH]Sümpfen[\LINK] and [LINK=TERRAIN_SAVANNAH]Savannen[\LINK] neuen Dschungel anpflanzen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Dschungel oder Tropischer Wald bezieht sich aufgrund seiner Dichte auf einen mehr oder weniger undurchdringlichen Regenwald mit einer Vielzahl von Pflanzen und Tieren.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Dschungel[COLOR_REVERT] wächst in tropischen Breitengraden. Ihre Kolonisten können dort [COLOR:255:205:40:255][LINK=YIELD_COCOA_FRUITS]Kakaofrüchte[\LINK][COLOR_REVERT] ernten, aber auch [COLOR:190:130:70:255][LINK=YIELD_VALUABLE_WOOD]Edelholz[\LINK][COLOR_REVERT] schlagen. Normales [COLOR:190:130:70:255][LINK=YIELD_LUMBER]Holz[\LINK][COLOR_REVERT] ist im Dschungel natürlich ebenfalls vorhanden.[PARAGRAPH:1]Im Gegensatz zu anderen Wäldern, kann im Dschungel auch [COLOR:110:220:80:255][LINK=YIELD_FOOD]Nahrung[\LINK][COLOR_REVERT] geerntet werden, wenn das zugrunde liegende Gelände mindestens 3 Nahrung erzeugt. Im Dschungel können [COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK][COLOR_REVERT] und [COLOR:110:220:80:255][LINK=IMPROVEMENT_FRUIT_PLANTATION]Obstplantagen gebaut werden[\LINK][COLOR_REVERT]. Der Bau einer anderen Geländeverbesserung entfernt den Dschungel.[PARAGRAPH:1][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioniere[\LINK][COLOR_REVERT] können in [COLOR:215:200:150:255][LINK=TERRAIN_MARSH]Sümpfen[\LINK][COLOR_REVERT] and [COLOR:215:200:150:255][LINK=TERRAIN_SAVANNAH]Savannen[\LINK][COLOR_REVERT] neuen Dschungel anpflanzen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Dschungel oder Tropischer Wald bezieht sich aufgrund seiner Dichte auf einen mehr oder weniger undurchdringlichen Regenwald mit einer Vielzahl von Pflanzen und Tieren.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_MANGROVE</Tag>
-		<English>Mangroves</English>
+		<English>[COLOR_CAT_PROD]Mangroves[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Manguezais</Text>
 			<Gender>Female</Gender>
@@ -195,7 +195,7 @@
 		</Portuguese>
 		<French>Mangrove</French>
 		<German>
-			<Text>Mangroven</Text>
+			<Text>[COLOR_CAT_PROD]Mangroven[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -209,7 +209,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_TROPICAL_GROVES</Tag>
-		<English>Tropical Grove</English>
+		<English>[COLOR_CAT_FOOD]Tropical Grove[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Bosque Tropical</Text>
 			<Gender>Male</Gender>
@@ -217,7 +217,7 @@
 		</Portuguese>
 		<French>Bosquet tropical:Bosquets tropicaux</French>
 		<German>
-			<Text>Tropischer Hain</Text>
+			<Text>[COLOR_CAT_FOOD]Tropischer Hain[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -231,7 +231,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_TAR_PIT</Tag>
-		<English>Tar Pit</English>
+		<English>[COLOR_WARNING_TEXT]Tar Pit[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Poço de Alcatrão</Text>
 			<Gender>Male</Gender>
@@ -239,7 +239,7 @@
 		</Portuguese>
 		<French>Goudron</French>
 		<German>
-			<Text>Teergrube</Text>
+			<Text>[COLOR_WARNING_TEXT]Teergrube[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -253,7 +253,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_SALT_PAN</Tag>
-		<English>Salt Desert</English>
+		<English>[COLOR_CAT_GOLD]Salt Desert[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Deserto de Sal</Text>
 			<Gender>Male</Gender>
@@ -261,7 +261,7 @@
 		</Portuguese>
 		<French>Désert salin</French>
 		<German>
-			<Text>Salzwüste</Text>
+			<Text>[COLOR_CAT_GOLD]Salzwüste[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -275,7 +275,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_SALT_DRAINAGE</Tag>
-		<English>Salt Water Pools</English>
+		<English>[COLOR_CAT_GOLD]Salt Water Pools[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Piscinas de Água Salgada</Text>
 			<Gender>Female</Gender>
@@ -283,7 +283,7 @@
 		</Portuguese>
 		<French>Marais salant naturel</French>
 		<German>
-			<Text>Salzwassertümpel</Text>
+			<Text>[COLOR_CAT_GOLD]Salzwassertümpel[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -297,7 +297,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_FLOOD_PLAINS</Tag>
-		<English>Fertile Flood Plains</English>
+		<English>[COLOR_CAT_FOOD]Fertile Flood Plains[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Planícies Inundáveis Férteis</Text>
 			<Gender>Female</Gender>
@@ -305,7 +305,7 @@
 		</Portuguese>
 		<French>Plaine d'inondation</French>
 		<German>
-			<Text>Fruchtbares Schwemmland</Text>
+			<Text>[COLOR_CAT_FOOD]Fruchtbares Schwemmland[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -319,7 +319,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_CRATER</Tag>
-		<English>Meteor Crater</English>
+		<English>[COLOR_CAT_TERRAIN]Meteor Crater[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Cratera do Meteoro</Text>
 			<Gender>Female</Gender>
@@ -327,7 +327,7 @@
 		</Portuguese>
 		<French>Cartère de météorite</French>
 		<German>
-			<Text>Meteoritenkrater</Text>
+			<Text>[COLOR_CAT_TERRAIN]Meteoritenkrater[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -341,7 +341,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_REMARKABLE_MOUNTAIN</Tag>
-		<English>Remarkable high mountain</English>
+		<English>[COLOR_CAT_TERRAIN]Remarkable high mountain[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Montanha Intransponível</Text>
 			<Gender>Female</Gender>
@@ -349,7 +349,7 @@
 		</Portuguese>
 		<French>Montagne infranchissable</French>
 		<German>
-			<Text>Außergewöhnlich hoher Berg</Text>
+			<Text>[COLOR_CAT_TERRAIN]Außergewöhnlich hoher Berg[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -364,7 +364,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ROCK_FORMATIONS_DESERT</Tag>
-		<English>Rock Formation (Desert)</English>
+		<English>[COLOR_CAT_TERRAIN]Rock Formation (Desert)[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Formação Rochosa (Deserto)</Text>
 			<Gender>Female</Gender>
@@ -372,7 +372,7 @@
 		</Portuguese>
 		<French>Formation rocheuse (Désert)</French>
 		<German>
-			<Text>Felsenformation (Wüste)</Text>
+			<Text>[COLOR_CAT_TERRAIN]Felsenformation (Wüste)[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -386,7 +386,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ROCK_FORMATIONS_TEMPERATE</Tag>
-		<English>Rock Formation (Temperate)</English>
+		<English>[COLOR_CAT_TERRAIN]Rock Formation (Temperate)[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Formação Rochosa (Temperada)</Text>
 			<Gender>Female</Gender>
@@ -394,7 +394,7 @@
 		</Portuguese>
 		<French>Formation rocheuse (tempérée)</French>
 		<German>
-			<Text>Felsenformation (Gemäßigt)</Text>
+			<Text>[COLOR_CAT_TERRAIN]Felsenformation (Gemäßigt)[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -408,7 +408,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ROCK_FORMATIONS_POLAR</Tag>
-		<English>Rock Formation (Polar)</English>
+		<English>[COLOR_CAT_TERRAIN]Rock Formation (Polar)[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Formação Rochosa (Polar)</Text>
 			<Gender>Female</Gender>
@@ -416,7 +416,7 @@
 		</Portuguese>
 		<French>Formation rocheuse (polaire)</French>
 		<German>
-			<Text>Felsenformation (Polar)</Text>
+			<Text>[COLOR_CAT_TERRAIN]Felsenformation (Polar)[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -430,7 +430,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_LIGHT_FOREST</Tag>
-		<English>Light Forest</English>
+		<English>[COLOR_CAT_PROD]Light Forest[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Floresta Clara</Text>
 			<Gender>Female</Gender>
@@ -441,7 +441,7 @@
 			<Gender>Female</Gender>
 			<Plural>0:1</Plural>
 		</French>
-		<German>Buschland</German>
+		<German>[COLOR_CAT_PROD]Buschland[COLOR_REVERT]</German>
 		<Italian>
 			<Text>Foresta rada</Text>
 			<Gender>Female</Gender>
@@ -456,14 +456,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_LIGHT_FOREST_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Light forest[COLOR_REVERT] can grow in all latitudes. It slightly increases the production of [LINK=YIELD_FUR]fur[\LINK] and [LINK=YIELD_LUMBER]lumber[\LINK] on its plot, but also keeps all the other yields the plot has due to its base terrain, albeit in reduced numbers.[PARAGRAPH:1][LINK=IMPROVEMENT_LODGE]Lodges[\LINK] and [LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK] can be built in light forests. Other improvements remove the forest.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioneers[\LINK] cannot plant light forests. Once they're gone, they're gone forever.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A forest is an area where trees predominate. Forests cover 9.4% of the Earth's surface or 30% of total land area. They once covered much more, about 50% of total land area. They are rich habitats for organisms, hydrologic flow modulators and soil conservers, constituting one of the most important aspects of the Earth's biosphere. A forest ecosystem includes additional species such as fungi.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Light forest[COLOR_REVERT] can grow in all latitudes. It slightly increases the production of [COLOR:255:205:40:255][LINK=YIELD_FUR]fur[\LINK][COLOR_REVERT] and [COLOR:190:130:70:255][LINK=YIELD_LUMBER]lumber[\LINK][COLOR_REVERT] on its plot, but also keeps all the other yields the plot has due to its base terrain, albeit in reduced numbers.[PARAGRAPH:1][COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Lodges[\LINK][COLOR_REVERT] and [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]trapper huts[\LINK][COLOR_REVERT] can be built in light forests. Other improvements remove the forest.[PARAGRAPH:1][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioneers[\LINK][COLOR_REVERT] cannot plant light forests. Once they're gone, they're gone forever.[PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A forest is an area where trees predominate. Forests cover 9.4% of the Earth's surface or 30% of total land area. They once covered much more, about 50% of total land area. They are rich habitats for organisms, hydrologic flow modulators and soil conservers, constituting one of the most important aspects of the Earth's biosphere. A forest ecosystem includes additional species such as fungi.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]A floresta clara[COLOR_REVERT] pode crescer em todas as latitudes. Aumenta ligeiramente a produção de [LINK=YIELD_FUR]peles[\LINK] e [LINK=YIELD_LUMBER]madeira[\LINK] em seu terreno, mas também mantém todos os outros recursos que o terreno tem devido ao seu terreno base, embora em números reduzidos.[PARAGRAPH:1][LINK=IMPROVEMENT_LODGE]Alojamentos[\LINK] e [LINK=IMPROVEMENT_TRAPPER_HUT]cabanas de caçadores[\LINK] podem ser construídas em florestas leves. Outras melhorias removem a floresta.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioneiros[\LINK] não podem plantar florestas leves. Depois que eles desaparecem, eles desaparecem para sempre.[PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma floresta é uma área onde predominam árvores. As florestas cobrem 9,4% da superfície da Terra ou 30% da área total da terra. Antigamente, eles cobriam muito mais, cerca de 50% da área total do terreno. São habitats ricos para organismos, moduladores de fluxo hidrológico e conservadores de solo, constituindo um dos aspectos mais importantes da biosfera terrestre. Um ecossistema florestal inclui espécies adicionais, como fungos.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une forêt ou un massif forestier est une étendue boisée, relativement grande, constituée d'un ou plusieurs peuplements d'arbres et d'espèces associées. Un boisement de faible étendue est dit bois, boqueteau ou bosquet selon son importance. Les définitions de la forêt sont nombreuses en fonction des latitudes et des usages.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Buschland[COLOR_REVERT] und lichte Wälder wachsen in allen Breitengraden. Die Kolonisten können dort ein wenig [LINK=YIELD_FUR]Felle[\LINK] gewinnen und auch etwas[LINK=YIELD_LUMBER]Holz[\LINK] schlagen. Die Gewinnung anderer Rohstoffe wird durch Buschland nur leicht behindert. Es können [LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK] und [LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütten[\LINK] im Buschland gebaut werden. Andere Geländeverbesserungen entfernen den Wald.[PARAGRAPH:1][LINK=PROFESSION_PIONEER]Pioniere[\LINK] können kein neues Buschland pflanzen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Unter einem Wald versteht man ein Gebiet mit stark ausgeprägtem Baumbewuchs verschiendensten Alters. Die Dichte und die Baumarten und Pflanzenarten variieren von Region zu Region.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Buschland[COLOR_REVERT] und lichte Wälder wachsen in allen Breitengraden. Die Kolonisten können dort ein wenig [COLOR:255:205:40:255][LINK=YIELD_FUR]Felle[\LINK][COLOR_REVERT] gewinnen und auch etwas[COLOR:190:130:70:255][LINK=YIELD_LUMBER]Holz[\LINK][COLOR_REVERT] schlagen. Die Gewinnung anderer Rohstoffe wird durch Buschland nur leicht behindert. Es können [COLOR:190:130:70:255][LINK=IMPROVEMENT_LODGE]Holzfällerhütten[\LINK][COLOR_REVERT] und [COLOR:255:205:40:255][LINK=IMPROVEMENT_TRAPPER_HUT]Jagdhütten[\LINK][COLOR_REVERT] im Buschland gebaut werden. Andere Geländeverbesserungen entfernen den Wald.[PARAGRAPH:1][COLOR_UNIT_TEXT][LINK=PROFESSION_PIONEER]Pioniere[\LINK][COLOR_REVERT] können kein neues Buschland pflanzen.[PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Unter einem Wald versteht man ein Gebiet mit stark ausgeprägtem Baumbewuchs verschiendensten Alters. Die Dichte und die Baumarten und Pflanzenarten variieren von Region zu Region.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_SWAMP</Tag>
-		<English>Swamp</English>
+		<English>[COLOR_CAT_TERRAIN]Swamp[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Pântano</Text>
 			<Gender>Male</Gender>
@@ -471,7 +471,7 @@
 		</Portuguese>
 		<French>Marais</French>
 		<German>
-			<Text>Sumpf</Text>
+			<Text>[COLOR_CAT_TERRAIN]Sumpf[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -485,7 +485,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_BOG</Tag>
-		<English>Bog</English>
+		<English>[COLOR_CAT_TERRAIN]Bog[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Turfeira</Text>
 			<Gender>Female</Gender>
@@ -493,7 +493,7 @@
 		</Portuguese>
 		<French>Fondrière</French>
 		<German>
-			<Text>Moorpflanzen</Text>
+			<Text>[COLOR_CAT_TERRAIN]Moorpflanzen[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -507,7 +507,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_BARREL_CACTUS</Tag>
-		<English>Barrel Cactus Field</English>
+		<English>[COLOR_CAT_FOOD]Barrel Cactus Field[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Campo de Cactos de Barril</Text>
 			<Gender>Male</Gender>
@@ -515,7 +515,7 @@
 		</Portuguese>
 		<French>Champ de cactus</French>
 		<German>
-			<Text>Kugelkaktusfeld</Text>
+			<Text>[COLOR_CAT_FOOD]Kugelkaktusfeld[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -529,7 +529,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_CACTUS_TREES</Tag>
-		<English>Cactus Trees</English>
+		<English>[COLOR_CAT_FOOD]Cactus Trees[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Cactos</Text>
 			<Gender>Male</Gender>
@@ -537,7 +537,7 @@
 		</Portuguese>
 		<French>Cactus géant</French>
 		<German>
-			<Text>Kaktusbäume</Text>
+			<Text>[COLOR_CAT_FOOD]Kaktusbäume[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>1</Plural>
 		</German>
@@ -551,7 +551,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_LICHEN</Tag>
-		<English>Lichen</English>
+		<English>[COLOR_CAT_FOOD]Lichen[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Líquen</Text>
 			<Gender>Male</Gender>
@@ -559,7 +559,7 @@
 		</Portuguese>
 		<French>Lichen</French>
 		<German>
-			<Text>Flechten</Text>
+			<Text>[COLOR_CAT_FOOD]Flechten[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>1</Plural>
 		</German>
@@ -573,7 +573,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_MOSS</Tag>
-		<English>Moss</English>
+		<English>[COLOR_CAT_FOOD]Moss[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Musgo</Text>
 			<Gender>Male</Gender>
@@ -581,7 +581,7 @@
 		</Portuguese>
 		<French>Mousse</French>
 		<German>
-			<Text>Moos</Text>
+			<Text>[COLOR_CAT_FOOD]Moos[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -595,7 +595,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_THICKET</Tag>
-		<English>Thicket</English>
+		<English>[COLOR_CAT_PROD]Thicket[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Arvoredo</Text>
 			<Gender>Male</Gender>
@@ -603,7 +603,7 @@
 		</Portuguese>
 		<French>Bosquet</French>
 		<German>
-			<Text>Dickicht</Text>
+			<Text>[COLOR_CAT_PROD]Dickicht[COLOR_REVERT]</Text>
 			<Gender>Neuter</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -617,7 +617,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_STORM</Tag>
-		<English>Storm</English>
+		<English>[COLOR_WARNING_TEXT]Storm[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Tempestade</Text>
 			<Gender>Female</Gender>
@@ -629,7 +629,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Gewittersturm</Text>
+			<Text>[COLOR_WARNING_TEXT]Gewittersturm[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -647,14 +647,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_STORM_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Storms[COLOR_REVERT] take many movement points to get through and, on top of that, damage your ships. You want to avoid these weather systems. They occur only on [LINK=TERRAIN_OCEAN]ocean[\LINK] tiles, so on [LINK=TERRAIN_COAST]coast[\LINK] or [COLOR_HIGHLIGHT_TEXT]fresh water lake[COLOR_REVERT] tiles you'll be safe from them.[PARAGRAPH:1]Storms can never destroy a ship, but they can weaken it severely. For more information, see [LINK=CONCEPT_WINDS_AND_STORMS]Winds and Storms[\LINK][PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A storm is any disturbed state of an astronomical body's atmosphere especially affecting its surface, and strongly implying severe weather. It may be marked by strong wind, hail, thunder and/or lightning (a thunderstorm), heavy precipitation (snowstorm, rainstorm), heavy freezing rain (ice storm), strong winds (tropical cyclone, windstorm), or wind transporting some substance through the atmosphere as in a dust storm, blizzard or sandstorm. Storms destroy lives and property through storm surge, heavy rain flooding roads and homes, lightning, wildfires, and vertical wind shear. However heavy rainfall can alleviate drought. Heavy snowfall is good for skiing and snowboarding.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Storms[COLOR_REVERT] take many movement points to get through and, on top of that, damage your ships. You want to avoid these weather systems. They occur only on [COLOR:215:200:150:255][LINK=TERRAIN_OCEAN]ocean[\LINK][COLOR_REVERT] tiles, so on [COLOR:215:200:150:255][LINK=TERRAIN_COAST]coast[\LINK][COLOR_REVERT] or [COLOR_HIGHLIGHT_TEXT]fresh water lake[COLOR_REVERT] tiles you'll be safe from them.[PARAGRAPH:1]Storms can never destroy a ship, but they can weaken it severely. For more information, see [LINK=CONCEPT_WINDS_AND_STORMS]Winds and Storms[\LINK][PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1]A storm is any disturbed state of an astronomical body's atmosphere especially affecting its surface, and strongly implying severe weather. It may be marked by strong wind, hail, thunder and/or lightning (a thunderstorm), heavy precipitation (snowstorm, rainstorm), heavy freezing rain (ice storm), strong winds (tropical cyclone, windstorm), or wind transporting some substance through the atmosphere as in a dust storm, blizzard or sandstorm. Storms destroy lives and property through storm surge, heavy rain flooding roads and homes, lightning, wildfires, and vertical wind shear. However heavy rainfall can alleviate drought. Heavy snowfall is good for skiing and snowboarding.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Tempestades[COLOR_REVERT] exigem muitos pontos de movimento para passar e, além disso, danificam seus navios. Você deseja evitar esses sistemas climáticos. Eles ocorrem apenas em lotes de [LINK=TERRAIN_OCEAN]oceano[\LINK], portanto, em lotes de [LINK=TERRAIN_COAST]costa[\LINK] ou [COLOR_HIGHLIGHT_TEXT]lago de água doce[COLOR_REVERT] você estará a salvo deles.[PARAGRAPH:1]Tempestades nunca podem destruir um navio, mas podem enfraquecê-lo severamente. Para obter mais informações, consulte [LINK=CONCEPT_WINDS_AND_STORMS]Ventos e tempestades[\LINK][PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1]Uma tempestade é qualquer estado perturbado da atmosfera de um corpo astronômico, afetando especialmente sua superfície e implicando fortemente em clima severo. Pode ser marcada por vento forte, granizo, trovões e/ou relâmpagos (tempestade), precipitação forte (tempestade de neve, tempestade de chuva), chuva forte e congelante (tempestade de gelo), ventos fortes (ciclone tropical, tempestade de vento) ou vento transportando alguma substância através da atmosfera como em uma tempestade de poeira, nevasca ou tempestade de areia. As tempestades destroem vidas e propriedades através de tempestades, fortes chuvas que inundam estradas e casas, relâmpagos, incêndios florestais e cisalhamento vertical do vento. No entanto, chuvas fortes podem aliviar a seca. A forte nevasca é boa para esquiar e praticar snowboard.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Une tempête est un phénomène météorologique violent à large échelle dite synoptique, avec un diamètre compris en général entre 200 à 1 000 km, caractérisé par des vents rapides (tourbillon) et des précipitations intenses. Elle peut être accompagnée d'orages donnant des éclairs et du tonnerre ainsi que de la grêle et des tornades.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Stürme[COLOR_REVERT] benötigen viele Bewegungspunkte, um hindurch zu segeln und beschädigen auch die Schiffe darin. Daher sollten Stürme, wenn möglich, vermieden werden. Sie kommen nur auf dem offenen [LINK=TERRAIN_COEAN]Ozean[\LINK] vor. Daher sind [LINK=TERRAIN_COAST]Küstengewässer[\LINK] für Schiffe viel sicherer.[PARAGRAPH:1]Stürme zerstören Schiffe nicht vollständig, können diese aber schwer beschädigen. Für weitere Informationen siehe [LINK=CONCEPT_WINDS_AND_STORMS]Wind und Stürme[\LINK][PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Sturm ist ein gestörter Zustand der Atmosphäre, der heftige Wetterbedingungen verursacht. Dazu können sehr starke Winde, Regen, Schnee, Hagel, Donner und Blitze gehören.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Stürme[COLOR_REVERT] benötigen viele Bewegungspunkte, um hindurch zu segeln und beschädigen auch die Schiffe darin. Daher sollten Stürme, wenn möglich, vermieden werden. Sie kommen nur auf dem offenen [COLOR:215:200:150:255][LINK=TERRAIN_COEAN]Ozean[\LINK][COLOR_REVERT] vor. Daher sind [COLOR:215:200:150:255][LINK=TERRAIN_COAST]Küstengewässer[\LINK][COLOR_REVERT] für Schiffe viel sicherer.[PARAGRAPH:1]Stürme zerstören Schiffe nicht vollständig, können diese aber schwer beschädigen. Für weitere Informationen siehe [LINK=CONCEPT_WINDS_AND_STORMS]Wind und Stürme[\LINK][PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Ein Sturm ist ein gestörter Zustand der Atmosphäre, der heftige Wetterbedingungen verursacht. Dazu können sehr starke Winde, Regen, Schnee, Hagel, Donner und Blitze gehören.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_SANDSTORM</Tag>
-		<English>Sandstorm</English>
+		<English>[COLOR_WARNING_TEXT]Sandstorm[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Tempestade de Areia</Text>
 			<Gender>Male</Gender>
@@ -662,7 +662,7 @@
 		</Portuguese>
 		<French>Tempête de sable</French>
 		<German>
-			<Text>Sandsturm</Text>
+			<Text>[COLOR_WARNING_TEXT]Sandsturm[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -676,14 +676,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_BLIZZARD</Tag>
-		<English>Blizzard</English>
+		<English>[COLOR_WARNING_TEXT]Blizzard[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Nevasca</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</Portuguese>
 		<German>
-			<Text>Blizzard</Text>
+			<Text>[COLOR_WARNING_TEXT]Blizzard[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -697,7 +697,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_FOG</Tag>
-		<English>Fog</English>
+		<English>[COLOR_WARNING_TEXT]Fog[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Nevoeiro</Text>
 			<Gender>Male</Gender>
@@ -705,7 +705,7 @@
 		</Portuguese>
 		<French>Brouillard</French>
 		<German>
-			<Text>Nebel</Text>
+			<Text>[COLOR_WARNING_TEXT]Nebel[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -719,7 +719,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_REEF</Tag>
-		<English>Coral Reef</English>
+		<English>[COLOR_CAT_FOOD]Coral Reef[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Recife de Coral</Text>
 			<Gender>Male</Gender>
@@ -727,7 +727,7 @@
 		</Portuguese>
 		<French>Récif de coraux</French>
 		<German>
-			<Text>Korallenriff</Text>
+			<Text>[COLOR_CAT_FOOD]Korallenriff[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -741,7 +741,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_STONE_REEF</Tag>
-		<English>Rock Reef</English>
+		<English>[COLOR_CAT_PROD]Rock Reef[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Recife Rochoso</Text>
 			<Gender>Male</Gender>
@@ -749,7 +749,7 @@
 		</Portuguese>
 		<French>Récifs rocheux</French>
 		<German>
-			<Text>Felsenriff</Text>
+			<Text>[COLOR_CAT_PROD]Felsenriff[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -763,7 +763,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_PEARL_REEF</Tag>
-		<English>Pearl Reef</English>
+		<English>[COLOR_CAT_GOLD]Pearl Reef[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Recife de Pérolas</Text>
 			<Gender>Male</Gender>
@@ -771,7 +771,7 @@
 		</Portuguese>
 		<French>Récif perlier</French>
 		<German>
-			<Text>Perlenriff</Text>
+			<Text>[COLOR_CAT_GOLD]Perlenriff[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -785,7 +785,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_KELP</Tag>
-		<English>Kelp</English>
+		<English>[COLOR_CAT_FOOD]Kelp[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Alga Marinha</Text>
 			<Gender>Female</Gender>
@@ -793,7 +793,7 @@
 		</Portuguese>
 		<French>Varech</French>
 		<German>
-			<Text>Seetang</Text>
+			<Text>[COLOR_CAT_FOOD]Seetang[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -807,7 +807,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_SEAGRASS</Tag>
-		<English>Seagrass</English>
+		<English>[COLOR_CAT_FOOD]Seagrass[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Ervas Marinhas</Text>
 			<Gender>Female</Gender>
@@ -815,7 +815,7 @@
 		</Portuguese>
 		<French>Sargasse</French>
 		<German>
-			<Text>Seegrass</Text>
+			<Text>[COLOR_CAT_FOOD]Seegrass[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -829,7 +829,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ARROW_N</Tag>
-		<English>Northerly Current</English>
+		<English>[COLOR_CAT_MILITARY]Northerly Current[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Corrente Norte</Text>
 			<Gender>Male</Gender>
@@ -837,7 +837,7 @@
 		</Portuguese>
 		<French>Courant vers le nord</French>
 		<German>
-			<Text>Nord Strömung</Text>
+			<Text>[COLOR_CAT_MILITARY]Nord Strömung[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -851,7 +851,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ARROW_S</Tag>
-		<English>Southerly Current</English>
+		<English>[COLOR_CAT_MILITARY]Southerly Current[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Corrente Sul</Text>
 			<Gender>Male</Gender>
@@ -859,7 +859,7 @@
 		</Portuguese>
 		<French>Courant vers le sud</French>
 		<German>
-			<Text>Süd Strömung</Text>
+			<Text>[COLOR_CAT_MILITARY]Süd Strömung[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -873,7 +873,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ARROW_E</Tag>
-		<English>Easterly Current</English>
+		<English>[COLOR_CAT_MILITARY]Easterly Current[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Corrente Leste</Text>
 			<Gender>Male</Gender>
@@ -881,7 +881,7 @@
 		</Portuguese>
 		<French>Courant vers l'est</French>
 		<German>
-			<Text>Ost Strömung</Text>
+			<Text>[COLOR_CAT_MILITARY]Ost Strömung[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -895,7 +895,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ARROW_W</Tag>
-		<English>Westerly Current</English>
+		<English>[COLOR_CAT_MILITARY]Westerly Current[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Corrente Oeste</Text>
 			<Gender>Male</Gender>
@@ -903,7 +903,7 @@
 		</Portuguese>
 		<French>Courant vers l'Ouest</French>
 		<German>
-			<Text>West Strömung</Text>
+			<Text>[COLOR_CAT_MILITARY]West Strömung[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -917,7 +917,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ARROW_NE</Tag>
-		<English>Nor'East Current</English>
+		<English>[COLOR_CAT_MILITARY]Nor'East Current[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Corrente Nordeste</Text>
 			<Gender>Male</Gender>
@@ -925,7 +925,7 @@
 		</Portuguese>
 		<French>Courant vers le Nord Est</French>
 		<German>
-			<Text>Nord-Ost Strömung</Text>
+			<Text>[COLOR_CAT_MILITARY]Nord-Ost Strömung[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -939,7 +939,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ARROW_NW</Tag>
-		<English>Nor'West Current</English>
+		<English>[COLOR_CAT_MILITARY]Nor'West Current[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Corrente Noroeste</Text>
 			<Gender>Male</Gender>
@@ -947,7 +947,7 @@
 		</Portuguese>
 		<French>Courant vers le Nord-Ouest</French>
 		<German>
-			<Text>Nord-West Strömung</Text>
+			<Text>[COLOR_CAT_MILITARY]Nord-West Strömung[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -961,7 +961,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ARROW_SE</Tag>
-		<English>Sou'East Current</English>
+		<English>[COLOR_CAT_MILITARY]Sou'East Current[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Corrente Sudeste</Text>
 			<Gender>Male</Gender>
@@ -969,7 +969,7 @@
 		</Portuguese>
 		<French>Courant vers le Sud-Est</French>
 		<German>
-			<Text>Süd-Ost Strömung</Text>
+			<Text>[COLOR_CAT_MILITARY]Süd-Ost Strömung[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -983,7 +983,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_ARROW_SW</Tag>
-		<English>Sou'West Current</English>
+		<English>[COLOR_CAT_MILITARY]Sou'West Current[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Corrente Sudoeste</Text>
 			<Gender>Male</Gender>
@@ -991,7 +991,7 @@
 		</Portuguese>
 		<French>Courant vers le Sud-Ouest</French>
 		<German>
-			<Text>Süd-West Strömung</Text>
+			<Text>[COLOR_CAT_MILITARY]Süd-West Strömung[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1005,7 +1005,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_LUSHGRASS</Tag>
-		<English>Lush Grass</English>
+		<English>[COLOR_CAT_FOOD]Lush Grass[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Grama Exuberante</Text>
 			<Gender>Female</Gender>
@@ -1013,7 +1013,7 @@
 		</Portuguese>
 		<French>Herbes hautes</French>
 		<German>
-			<Text>Saftiges Gras</Text>
+			<Text>[COLOR_CAT_FOOD]Saftiges Gras[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1027,7 +1027,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_WILD_FLOWERS</Tag>
-		<English>Wild Flowers</English>
+		<English>[COLOR_CAT_FOOD]Wild Flowers[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Flores Selvagens</Text>
 			<Gender>Female</Gender>
@@ -1035,7 +1035,7 @@
 		</Portuguese>
 		<French>Fleurs sauvages</French>
 		<German>
-			<Text>Wilde Blumen</Text>
+			<Text>[COLOR_CAT_FOOD]Wilde Blumen[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1050,7 +1050,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_MEADOW</Tag>
-		<English>Hill Meadow</English>
+		<English>[COLOR_CAT_FOOD]Hill Meadow[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Prado da Colina</Text>
 			<Gender>Male</Gender>
@@ -1058,7 +1058,7 @@
 		</Portuguese>
 		<French>Bocage de collines</French>
 		<German>
-			<Text>Weidelhügel</Text>
+			<Text>[COLOR_CAT_FOOD]Weidelhügel[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1072,7 +1072,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_SHRUB</Tag>
-		<English>Shrubs</English>
+		<English>[COLOR_CAT_FOOD]Shrubs[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Arbustos</Text>
 			<Gender>Male</Gender>
@@ -1080,7 +1080,7 @@
 		</Portuguese>
 		<French>Buissons</French>
 		<German>
-			<Text>Sträuche</Text>
+			<Text>[COLOR_CAT_FOOD]Sträuche[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1094,10 +1094,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_TORNADO</Tag>
-		<English>Tornado</English>
+		<English>[COLOR_WARNING_TEXT]Tornado[COLOR_REVERT]</English>
 		<Portuguese>Tornado</Portuguese>
 		<French>Tornade</French>
-		<German>Tornado</German>
+		<German>[COLOR_WARNING_TEXT]Tornado[COLOR_REVERT]</German>
 		<Italian>Tornado</Italian>
 		<Spanish>Tornado</Spanish>
 		<Russian>Торнадо</Russian>
@@ -1111,7 +1111,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_VENT_DEF</Tag>
-		<English>Unfavourable wind</English>
+		<English>[COLOR_WARNING_TEXT]Unfavourable wind[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Vento Desfavorável</Text>
 			<Gender>Male</Gender>
@@ -1123,7 +1123,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Ungünstige Winde</Text>
+			<Text>[COLOR_WARNING_TEXT]Ungünstige Winde[COLOR_REVERT]</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1141,14 +1141,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_VENT_DEF_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Unfavourable winds[COLOR_REVERT] grant a defensive bonus to all ships on the tile, but they take more movement points to sail through. This movement penalty can be reduced by the [LINK=PROMOTION_MOBILITY1]Mobility I[\LINK] and [LINK=PROMOTION_SAILING3]Naval Warfare III[\LINK] promotions.[PARAGRAPH:1]Like other weather systems, unfavourable winds occur only on [LINK=TERRAIN_COEAN]ocean[\LINK] tiles, not on [LINK=TERRAIN_COAST]coast[\LINK] or [COLOR_HIGHLIGHT_TEXT]fresh water lake[COLOR_REVERT] tiles.[PARAGRAPH:2]For more information, see [LINK=CONCEPT_WINDS_AND_STORMS]Winds and Storms[\LINK][PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1](navigation) Unfavourable winds delay a vessel sailing in its desired direction.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Unfavourable winds[COLOR_REVERT] grant a defensive bonus to all ships on the tile, but they take more movement points to sail through. This movement penalty can be reduced by the [LINK=PROMOTION_MOBILITY1]Mobility I[\LINK] and [LINK=PROMOTION_SAILING3]Naval Warfare III[\LINK] promotions.[PARAGRAPH:1]Like other weather systems, unfavourable winds occur only on [COLOR:215:200:150:255][LINK=TERRAIN_COEAN]ocean[\LINK][COLOR_REVERT] tiles, not on [COLOR:215:200:150:255][LINK=TERRAIN_COAST]coast[\LINK][COLOR_REVERT] or [COLOR_HIGHLIGHT_TEXT]fresh water lake[COLOR_REVERT] tiles.[PARAGRAPH:2]For more information, see [LINK=CONCEPT_WINDS_AND_STORMS]Winds and Storms[\LINK][PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1](navigation) Unfavourable winds delay a vessel sailing in its desired direction.</English>
 		<Portuguese>[BOLD]Estratégia :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Ventos desfavoráveis[COLOR_REVERT] concedem um bônus defensivo a todos os navios no lote, mas eles exigem mais pontos de movimento para navegar. Essa penalidade de movimento pode ser reduzida pelas promoções [LINK=PROMOTION_MOBILITY1]Mobility I[\LINK] e [LINK=PROMOTION_SAILING3]Naval Warfare III[\LINK].[PARAGRAPH:1]Como outros sistemas climáticos, ventos desfavoráveis ocorrem apenas em lotes de [LINK=TERRAIN_COEAN]oceano[\LINK], não em [LINK=TERRAIN_COAST]costa[\LINK] ou [COLOR_HIGHLIGHT_TEXT]água doce lago[COLOR_REVERT].[PARAGRAPH:2]Para obter mais informações, consulte [LINK=CONCEPT_WINDS_AND_STORMS]Ventos e tempestades[\LINK][PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1](navegação) Ventos desfavoráveis atrasam um navio navegando na direção desejada.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1](navigation) Un vent défavorable empêche un équipage de se déplacer dans la direction qu'il souhaite.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Ungünstige Winde[COLOR_REVERT] geben den darin befindlichen Schiffen zwar kleine Vorteile bei der Verteidigung, erfordern aber mehr Bewegungspunkte, um darin zu segeln. Dieser Effekt kann aber durch die Beförderungen [LINK=PROMOTION_MOBILITY1]Mobilität I[\LINK] und [LINK=PROMOTION_SAILING3]Seekrieg III[\LINK] gesenkt werden. Ungünstige Winde kommen nur auf dem offenen [LINK=TERRAIN_COEAN]Ozean[\LINK] vor. Für weitere Informationen siehe [LINK=CONCEPT_WINDS_AND_STORMS]Wind und Stürme[\LINK][PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Wind, der das Vorankommen eines Segelschiffs in einer bestimmten Richtung behindert.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Ungünstige Winde[COLOR_REVERT] geben den darin befindlichen Schiffen zwar kleine Vorteile bei der Verteidigung, erfordern aber mehr Bewegungspunkte, um darin zu segeln. Dieser Effekt kann aber durch die Beförderungen [LINK=PROMOTION_MOBILITY1]Mobilität I[\LINK] und [LINK=PROMOTION_SAILING3]Seekrieg III[\LINK] gesenkt werden. Ungünstige Winde kommen nur auf dem offenen [COLOR:215:200:150:255][LINK=TERRAIN_COEAN]Ozean[\LINK][COLOR_REVERT] vor. Für weitere Informationen siehe [LINK=CONCEPT_WINDS_AND_STORMS]Wind und Stürme[\LINK][PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Wind, der das Vorankommen eines Segelschiffs in einer bestimmten Richtung behindert.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_VENT_FAV</Tag>
-		<English>Favourable wind</English>
+		<English>[COLOR_CAT_MILITARY]Favourable wind[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Vento Favorável</Text>
 			<Gender>Male</Gender>
@@ -1160,7 +1160,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>Günstige Brise</Text>
+			<Text>[COLOR_CAT_MILITARY]Günstige Brise[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</German>
@@ -1178,17 +1178,17 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_VENT_FAV_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Favourable winds[COLOR_REVERT] impose a defensive penalty for any ships on that tile, but they allow vessels with the [LINK=PROMOTION_SEA_EXPLORER]Sea Explorer[\LINK] promotion to move at double speed. The defensive penalty can be reduced by the [LINK=PROMOTION_MOBILITY1]Mobility I[\LINK] promotions.[PARAGRAPH:1]Like other weather systems, favourable winds occur only on [LINK=TERRAIN_COEAN]ocean[\LINK] tiles, not on [LINK=TERRAIN_COAST]coast[\LINK] or [COLOR_HIGHLIGHT_TEXT]fresh water lake[COLOR_REVERT] tiles.[PARAGRAPH:2]For more information, see [LINK=CONCEPT_WINDS_AND_STORMS]Winds and Storms[\LINK][PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1](navigation) A favourable wind is one which aids a craft in making progress in a desired direction; usually used in plural form in connection with sailing vessels; also called a fair wind.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Favourable winds[COLOR_REVERT] impose a defensive penalty for any ships on that tile, but they allow vessels with the [LINK=PROMOTION_SEA_EXPLORER]Sea Explorer[\LINK] promotion to move at double speed. The defensive penalty can be reduced by the [LINK=PROMOTION_MOBILITY1]Mobility I[\LINK] promotions.[PARAGRAPH:1]Like other weather systems, favourable winds occur only on [COLOR:215:200:150:255][LINK=TERRAIN_COEAN]ocean[\LINK][COLOR_REVERT] tiles, not on [COLOR:215:200:150:255][LINK=TERRAIN_COAST]coast[\LINK][COLOR_REVERT] or [COLOR_HIGHLIGHT_TEXT]fresh water lake[COLOR_REVERT] tiles.[PARAGRAPH:2]For more information, see [LINK=CONCEPT_WINDS_AND_STORMS]Winds and Storms[\LINK][PARAGRAPH:2][BOLD]Background :[\BOLD][PARAGRAPH:1](navigation) A favourable wind is one which aids a craft in making progress in a desired direction; usually used in plural form in connection with sailing vessels; also called a fair wind.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Ventos favoráveis[COLOR_REVERT] impõem uma penalidade defensiva para qualquer navio naquele lote, mas permitem que navios com a promoção [LINK=PROMOTION_SEA_EXPLORER]Sea Explorer[\LINK] se movam em velocidade dupla. A penalidade defensiva pode ser reduzida pelas promoções de [LINK=PROMOTION_MOBILITY1]Mobilidade I[\LINK].[PARAGRAPH:1]Como outros sistemas climáticos, ventos favoráveis ocorrem apenas em lotes de [LINK=TERRAIN_COEAN]oceano[\LINK], e não em lotes de [LINK=TERRAIN_COAST]costa[\LINK] ou de [COLOR_HIGHLIGHT_TEXT]lago de água doce[COLOR_REVERT].[PARAGRAPH:2]Para obter mais informações, consulte [LINK=CONCEPT_WINDS_AND_STORMS]Ventos e Tempestades[\LINK][PARAGRAPH:2][BOLD]Antecedentes:[\BOLD][PARAGRAPH:1](navegação) Um vento favorável é aquele que ajuda uma embarcação a progredir na direção desejada; geralmente usado no plural em conexão com embarcações à vela; também chamado de vento favorável.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1](navigation) Un vent favorable aide un équipage à se déplacer dans la direction qu'il souhaite.</French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Günstige Winde[COLOR_REVERT] erlauben es Schiffen mit der Beförderung [LINK=PROMOTION_SEA_EXPLORER]Entdecker der Meere[\LINK] mit doppelter Geschwindigkeit zu segeln. Allerdings senken sie auch die Verteidigungswerte des darin befindlichen Schiffes. Dieser Effekt kann aber durch die Beförderung [LINK=PROMOTION_MOBILITY1]Mobilität I[\LINK] gesenkt werden. Günstige Winde kommen nur auf dem offenen [LINK=TERRAIN_COEAN]Ozean[\LINK] vor. Für weitere Informationen siehe [LINK=CONCEPT_WINDS_AND_STORMS]Wind und Stürme[\LINK][PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Wind, der das Vorankommen eines Segelschiffs in einer bestimmten Richtung begünstigt.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Günstige Winde[COLOR_REVERT] erlauben es Schiffen mit der Beförderung [LINK=PROMOTION_SEA_EXPLORER]Entdecker der Meere[\LINK] mit doppelter Geschwindigkeit zu segeln. Allerdings senken sie auch die Verteidigungswerte des darin befindlichen Schiffes. Dieser Effekt kann aber durch die Beförderung [LINK=PROMOTION_MOBILITY1]Mobilität I[\LINK] gesenkt werden. Günstige Winde kommen nur auf dem offenen [COLOR:215:200:150:255][LINK=TERRAIN_COEAN]Ozean[\LINK][COLOR_REVERT] vor. Für weitere Informationen siehe [LINK=CONCEPT_WINDS_AND_STORMS]Wind und Stürme[\LINK][PARAGRAPH:2][BOLD]Hintergrund :[\BOLD][PARAGRAPH:1]Wind, der das Vorankommen eines Segelschiffs in einer bestimmten Richtung begünstigt.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_VOLCANO</Tag>
-		<English>Volcano</English>
+		<English>[COLOR_WARNING_TEXT]Volcano[COLOR_REVERT]</English>
 		<Portuguese>Vulcão</Portuguese>
 		<French>Volcan</French>
-		<German>Vulkan</German>
+		<German>[COLOR_WARNING_TEXT]Vulkan[COLOR_REVERT]</German>
 		<Italian>Vulcano</Italian>
 		<Spanish>Volcán</Spanish>
 		<Russian>Вулкан</Russian>
@@ -1202,32 +1202,32 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_RIVER_FORD</Tag>
-		<English>River Ford</English>
+		<English>[COLOR_CAT_MILITARY]River Ford[COLOR_REVERT]</English>
 		<Portuguese>Vau Fluvial</Portuguese>
 		<French>Passage à gué</French>
-		<German>Flussfurt</German>
+		<German>[COLOR_CAT_MILITARY]Flussfurt[COLOR_REVERT]</German>
 		<Russian>Речной брод</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_RIVER_FORD_PEDIA</Tag>
-		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]River fords[COLOR_REVERT] allow all land units to make it across a [LINK=TERRAIN_LARGE_RIVERS]large river[\LINK] without being swept away. They form naturally from sediment deposited by the flowing river.</English>
+		<English>[BOLD]Strategy :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]River fords[COLOR_REVERT] allow all land units to make it across a [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]large river[\LINK][COLOR_REVERT] without being swept away. They form naturally from sediment deposited by the flowing river.</English>
 		<Portuguese>[BOLD]Estratégia:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Vaus fluviais[COLOR_REVERT] permitem que todas as unidades terrestres atravessem um [LINK=TERRAIN_LARGE_RIVERS]grande rio[\LINK] sem serem arrastadas. Eles se formam naturalmente a partir de sedimentos depositados pelo rio que flui.</Portuguese>
 		<French>[BOLD]Stratégie :[\BOLD][PARAGRAPH:1]Les [COLOR_HIGHLIGHT_TEXT]passages à gué[COLOR_REVERT] permettent à toutes les unités de traverser des [LINK=TERRAIN_LARGE_RIVERS]grandes  rivières[\LINK] sans être emportés par le courant. Ils se forment naturellement avec le dépôt de sédiments par le cours de la rivière. </French>
-		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Flussfurten[COLOR_REVERT] erlauben es allen Landeinheiten, einen [LINK=TERRAIN_LARGE_RIVERS]Großen Fluss[\LINK] zu überqueren. Sie enstehen auf natürliche Weise durch Ablagerungen von Sedimenten.</German>
+		<German>[BOLD]Strategie :[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Flussfurten[COLOR_REVERT] erlauben es allen Landeinheiten, einen [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]Großen Fluss[\LINK][COLOR_REVERT] zu überqueren. Sie enstehen auf natürliche Weise durch Ablagerungen von Sedimenten.</German>
 		<Russian>[BOLD]Стратегия:[\BOLD][PARAGRAPH:1][COLOR_HIGHLIGHT_TEXT]Речные броды[COLOR_REVERT] позволяют всем сухопутным юнитам переправляться через [LINK=TERRAIN_LARGE_RIVERS]большие реки[\LINK], не опасаясь быть смытыми мощными потоками воды. Они образуются естественным образом из осадка, принесённого текущей рекой.</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TERRAIN_FEATURE_ALLOWS_CROSSING_OF_LARGE_RIVERS</Tag>
-		<English>[ICON_BULLET]Allows all land units to cross [LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK]</English>
+		<English>[ICON_BULLET]Allows all land units to cross [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]large rivers[\LINK][COLOR_REVERT]</English>
 		<Portuguese>[ICON_BULLET]Permite que todas as unidades terrestres cruzem [LINK=TERRAIN_LARGE_RIVERS]grandes rios[\LINK]</Portuguese>
 		<French>[ICON_BULLETPermet à toutes les unités terrestres de traverser les [LINK=TERRAIN_LARGE_RIVERS]grandes rivières[\LINK]</French>
-		<German>[ICON_BULLET]Erlaubt es allen Landeinheiten, einen [LINK=TERRAIN_LARGE_RIVERS]Großen Fluss[\LINK] zu überqueren.</German>
+		<German>[ICON_BULLET]Erlaubt es allen Landeinheiten, einen [COLOR:215:200:150:255][LINK=TERRAIN_LARGE_RIVERS]Großen Fluss[\LINK][COLOR_REVERT] zu überqueren.</German>
 		<Russian>[ICON_BULLET]Позволяет всем сухопутным юнитам пересекать [LINK=TERRAIN_LARGE_RIVERS]большие реки[\LINK]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_PEAK2</Tag>
-		<English>Mountain Peak</English>
-		<German>Berggipfel</German>
+		<English>[COLOR_CAT_TERRAIN]Mountain Peak[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_TERRAIN]Berggipfel[COLOR_REVERT]</German>
 		<Russian>Горная вершина</Russian>
 	</TEXT>
 	<TEXT>
@@ -1238,8 +1238,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_PEAK1</Tag>
-		<English>Mountain Peak</English>
-		<German>Berggipfel</German>
+		<English>[COLOR_CAT_TERRAIN]Mountain Peak[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_TERRAIN]Berggipfel[COLOR_REVERT]</German>
 		<Russian>Горная вершина</Russian>
 	</TEXT>
 	<TEXT>
@@ -1250,8 +1250,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_PEAK3</Tag>
-		<English>Mountain Peak</English>
-		<German>Berggipfel</German>
+		<English>[COLOR_CAT_TERRAIN]Mountain Peak[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_TERRAIN]Berggipfel[COLOR_REVERT]</German>
 		<Russian>Горная вершина</Russian>
 	</TEXT>
 	<TEXT>

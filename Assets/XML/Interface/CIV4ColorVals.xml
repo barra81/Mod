@@ -1147,5 +1147,61 @@
 			<fBlue>0.075</fBlue>
 			<fAlpha>1.00</fAlpha>
 		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_CAT_FOOD</Type>
+			<fRed>0.431</fRed>
+			<fGreen>0.863</fGreen>
+			<fBlue>0.314</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_CAT_PROD</Type>
+			<fRed>0.745</fRed>
+			<fGreen>0.510</fGreen>
+			<fBlue>0.275</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_CAT_GOLD</Type>
+			<fRed>1.000</fRed>
+			<fGreen>0.804</fGreen>
+			<fBlue>0.157</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_CAT_RESEARCH</Type>
+			<fRed>0.157</fRed>
+			<fGreen>0.882</fGreen>
+			<fBlue>0.922</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_CAT_MILITARY</Type>
+			<fRed>0.431</fRed>
+			<fGreen>0.588</fGreen>
+			<fBlue>1.000</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_CAT_DIPLO</Type>
+			<fRed>0.745</fRed>
+			<fGreen>0.510</fGreen>
+			<fBlue>1.000</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_CAT_REQ</Type>
+			<fRed>1.000</fRed>
+			<fGreen>0.588</fGreen>
+			<fBlue>0.196</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_CAT_TERRAIN</Type>
+			<fRed>0.843</fRed>
+			<fGreen>0.784</fGreen>
+			<fBlue>0.588</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
 	</ColorVals>
 </Civ4ColorVals>
