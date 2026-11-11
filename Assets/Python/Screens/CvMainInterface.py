@@ -3517,8 +3517,8 @@ class CvMainInterface:
 
 				if not pHeadSelectedCity:
 					# width of the longest entry plus room for the table border and the scroll bar (never wider than before)
-					iWidth = min(iWidth, iMaxTextWidth + 40)
-					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY - (iBtnHeight * 7), iWidth, (iBtnHeight * 7), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
+					iWidth = min(iWidth, iMaxTextWidth + 20)
+					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - (iBtnHeight * 7), iWidth, (iBtnHeight * 7), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
 					screen.enableSelect("ScoreBackground", False)
 					screen.setTableColumnHeader("ScoreBackground", 0, "", iWidth - 10)
 					for (szRowText, ePlayerRow) in aScoreRows:
