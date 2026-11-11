@@ -225,6 +225,11 @@
 		<Hungarian>Település megvizsgálása</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_POPUP_BUY_MISSING_YIELDS</Tag>
+		<English>Buy the missing materials (%d1_Price[ICON_GOLD])</English>
+		<German>Fehlende Materialien kaufen (%d1_Price[ICON_GOLD])</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_SETTLE_NEW_CITY_NAME</Tag>
 		<English>Settlement name :</English>
 		<Portuguese>Nome da colônia:</Portuguese>

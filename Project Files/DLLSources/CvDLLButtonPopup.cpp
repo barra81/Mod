@@ -714,6 +714,27 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 				gDLL->getInterfaceIFace()->selectCity(pCity, true);
 			}
 		}
+		else if (pPopupReturn->getButtonClicked() == iExamineCityID + 1)
+		{
+			// WTP: buy the missing materials: the project goes back on the order queue and is hurried with gold
+			const HurryTypes eBuyHurry = (HurryTypes)GC.getInfoTypeForString("HURRY_GOLD");
+			if (eBuyHurry != NO_HURRY)
+			{
+				if (info.getData2() == ORDER_TRAIN)
+				{
+					gDLL->sendDoTask(info.getData1(), TASK_PUSH_TRAIN_UNIT, info.getData3(), NO_UNITAI, false, false, false, false);
+				}
+				else if (info.getData2() == ORDER_CONSTRUCT)
+				{
+					gDLL->sendDoTask(info.getData1(), TASK_PUSH_CONSTRUCT_BUILDING, info.getData3(), -1, false, false, false, false);
+				}
+				else
+				{
+					break;
+				}
+				gDLL->sendDoTask(info.getData1(), TASK_HURRY, eBuyHurry, -1, false, false, false, false);
+			}
+		}
 		break;
 
 	case BUTTONPOPUP_CHOOSE_YIELD_BUILD:
@@ -2073,6 +2094,47 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 		iExamineCityID = std::max(iExamineCityID, GC.getNumBuildingInfos());
 
 		gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_EXAMINE_CITY").c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), iExamineCityID, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+
+		// WTP: buy the missing materials of the project that cannot be continued with gold (from Europe prices, like the hurry of the city screen);
+		// the project is put back on the order queue and hurried
+		if (!bFinish && (eTrainUnit != NO_UNIT || eConstructBuilding != NO_BUILDING))
+		{
+			const PlayerTypes eBuyOwner = pCity->getOwnerINLINE();
+			const PlayerTypes eBuyParent = GET_PLAYER(eBuyOwner).getParent();
+			const HurryTypes eBuyHurry = (HurryTypes)GC.getInfoTypeForString("HURRY_GOLD");
+			if (eBuyParent != NO_PLAYER && eBuyHurry != NO_HURRY && GC.getHurryInfo(eBuyHurry).isCity())
+			{
+				const int iHammersNeeded = (eTrainUnit != NO_UNIT) ? pCity->getYieldProductionNeeded(eTrainUnit, YIELD_HAMMERS) : pCity->getYieldProductionNeeded(eConstructBuilding, YIELD_HAMMERS);
+				const int iHammers = (eTrainUnit != NO_UNIT) ? pCity->getUnitProduction(eTrainUnit) : pCity->getBuildingProduction(eConstructBuilding);
+				bool bBuyPossible = (iHammers >= iHammersNeeded); // only the cargo materials are bought here
+				int iBuyPrice = GC.getHurryInfo(eBuyHurry).getFlatGold() * GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getGrowthPercent() / 100;
+				bool bBuyMissing = false;
+				for (YieldTypes eBuyYield = FIRST_YIELD; bBuyPossible && eBuyYield < NUM_YIELD_TYPES; ++eBuyYield)
+				{
+					if (GC.getYieldInfo(eBuyYield).isCargo())
+					{
+						const int iBuyNeeded = (eTrainUnit != NO_UNIT) ? pCity->getYieldProductionNeeded(eTrainUnit, eBuyYield) : pCity->getYieldProductionNeeded(eConstructBuilding, eBuyYield);
+						const int iBuyDeficit = iBuyNeeded - pCity->getYieldStored(eBuyYield);
+						if (iBuyDeficit > 0)
+						{
+							if (!GET_PLAYER(eBuyOwner).isYieldEuropeTradable(eBuyYield))
+							{
+								bBuyPossible = false;
+							}
+							else
+							{
+								bBuyMissing = true;
+								iBuyPrice += iBuyDeficit * GET_PLAYER(eBuyParent).getYieldSellPrice(eBuyYield) * GC.getHurryInfo(eBuyHurry).getYieldCostEuropePercent() / 100;
+							}
+						}
+					}
+				}
+				if (bBuyPossible && bBuyMissing && iBuyPrice > 0 && GET_PLAYER(eBuyOwner).getGold() >= iBuyPrice)
+				{
+					gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_BUY_MISSING_YIELDS", iBuyPrice).c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), iExamineCityID + 1, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+				}
+			}
+		}
 	}
 
 	UnitTypes eProductionUnit = pCity->getProductionUnit();
