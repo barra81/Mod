@@ -4148,7 +4148,7 @@ class CvMainInterface:
 				iMaxLines = 6
 			# the priority messages (the first iNumPriority ones) are always at the top of the newest page; on the other pages the others
 			iNumPriority = min(iNumPriority, iNum)
-			fMessageGap = 0.4 # extra space after every message (in lines), better to read
+			fMessageGap = 0.2 # extra space after every message (in lines), better to read
 			aiPriority = []
 			iPriorityLines = 0
 			for i in range(iNumPriority):
