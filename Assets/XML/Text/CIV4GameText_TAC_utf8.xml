@@ -1345,12 +1345,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_NOT_ENOUGH_RAW</Tag>
-		<English>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]We could produce more %F3_yield_icon if we had more %F2_yield_icon available there.</English>
-		<Portuguese>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Poderíamos produzir mais %F3_yield_icon se tivéssemos mais %F2_yield_icon disponível lá.</Portuguese>
+		<English>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]We could produce more %F3_yield_icon [COLOR_RED]if we had more %F2_yield_icon available there.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Poderíamos produzir mais %F3_yield_icon [COLOR_RED]se tivéssemos mais %F2_yield_icon disponível lá.[COLOR_REVERT]</Portuguese>
 		<French>%s1_city est à cours de %F2_yield_icon et ne peut ainsi plus produire de %F3_yield_icon.</French>
-		<German>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Wir könnten mehr %F3_yield_icon herstellen, stünde uns dort mehr %F2_yield_icon zur Verfügung.</German>
-		<Russian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Мы могли бы производить больше %F3_yield_icon, если бы у нас было больше %F2_yield_icon.</Russian>
-		<Hungarian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Több %F3_yield_icon-t tudnánk előállítani, ha több %F2_yield_icon állna rendelkezésre.</Hungarian>
+		<German>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Wir könnten mehr %F3_yield_icon herstellen, [COLOR_RED]stünde uns dort mehr %F2_yield_icon zur Verfügung.[COLOR_REVERT]</German>
+		<Russian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Мы могли бы производить больше %F3_yield_icon, [COLOR_RED]если бы у нас было больше %F2_yield_icon.[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Több %F3_yield_icon-t tudnánk előállítani, [COLOR_RED]ha több %F2_yield_icon állna rendelkezésre.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRADE_WORLD_MAP_STRING</Tag>
@@ -1691,10 +1691,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_STUDENT_ALMOST_GRADUATED</Tag>
-		<English>[COLOR_CAT_RESEARCH]%s2_city : A striving citizen will finish his education at the %s3_building in %d1_Num [NUM1:turn:turns].[COLOR_REVERT]</English>
+		<English>[COLOR_POSITIVE_TEXT]%s2_city[COLOR_REVERT][COLOR_CAT_RESEARCH] : A striving citizen will finish his education at the %s3_building in %d1_Num [NUM1:turn:turns].[COLOR_REVERT]</English>
 		<Portuguese>%s2_city: Um cidadão esforçado terminará seus estudos no %s3_building em %d1_Num [NUM1:turno:turnos].</Portuguese>
 		<French>%s2_city : Un étudiant va bientôt achever sa formation dans l'%s3_building : %d1_Num [NUM1:tour:tours].</French>
-		<German>[COLOR_CAT_RESEARCH]%s2_city : In %d1 [NUM1:Runde:Runden] wird ein strebsamer Bürger an der %s3_building seine Ausbildung beenden.[COLOR_REVERT]</German>
+		<German>[COLOR_POSITIVE_TEXT]%s2_city[COLOR_REVERT][COLOR_CAT_RESEARCH] : In %d1 [NUM1:Runde:Runden] wird ein strebsamer Bürger an der %s3_building seine Ausbildung beenden.[COLOR_REVERT]</German>
 		<Russian>[COLOR_SELECTED_TEXT]%s2_city :[COLOR_REVERT] Способный горожанин закончит обучение в [COLOR_FONT_CREAM]%s3_building[COLOR_REVERT] через %d1_Num [NUM1:ход:хода].</Russian>
 		<Hungarian>%s2_city : Egy ügyes lakos %d1_Num [NUM1:kör:kör] múlva befejezi a városi %s3_building falai között a tanulmányait.</Hungarian>
 	</TEXT>

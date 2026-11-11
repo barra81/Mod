@@ -3366,6 +3366,47 @@ bool CvDLLButtonPopup::launchFoundingFatherPopup(CvPopup* pPopup, CvPopupInfo &i
 	return true;
 }
 
+// WTP: a button of the profession popup, for sorting
+struct WtpProfessionButton
+{
+	CvWString szLabel;
+	CvWString szName; // the name of the profession (sort key)
+	ProfessionTypes eProfession;
+	bool bOutside; // outside of the settlement (second block)
+	bool bStudent;
+};
+
+static WtpProfessionButton wtpMakeProfessionButton(const CvProfessionInfo& kProfession, const CvWString& szLabel, ProfessionTypes eProfession, bool bOutside)
+{
+	WtpProfessionButton kButton;
+	kButton.szLabel = szLabel;
+	kButton.szName = kProfession.getDescription();
+	kButton.eProfession = eProfession;
+	kButton.bOutside = bOutside;
+	kButton.bStudent = false;
+	for (int i = 0; i < kProfession.getNumYieldsProduced(); ++i)
+	{
+		if (kProfession.getYieldsProduced(i) == YIELD_EDUCATION)
+		{
+			kButton.bStudent = true;
+		}
+	}
+	return kButton;
+}
+
+static bool wtpProfessionButtonLess(const WtpProfessionButton& kA, const WtpProfessionButton& kB)
+{
+	if (kA.bOutside != kB.bOutside)
+	{
+		return kB.bOutside; // the professions inside of the settlement first
+	}
+	if (kA.bStudent != kB.bStudent)
+	{
+		return kA.bStudent; // a student on top
+	}
+	return _wcsicoll(kA.szName.GetCString(), kB.szName.GetCString()) < 0;
+}
+
 bool CvDLLButtonPopup::launchChooseProfessionPopup(CvPopup* pPopup, CvPopupInfo& info)
 {
 	// ------------------------------------------------------------------
@@ -3488,6 +3529,8 @@ bool CvDLLButtonPopup::launchChooseProfessionPopup(CvPopup* pPopup, CvPopupInfo&
 	// Main loop over professions
 	// ------------------------------------------------------------------
 	int buttonCount = 0;
+	// WTP: the buttons are collected and sorted: alphabetical, a student first, the professions outside of the settlement as a second block
+	std::vector<WtpProfessionButton> aProfessionButtons;
 	FOREACH_PROFESSION(eLoopProfession, kProfessionInfo)
 	{
 		bool allowCurrent =
@@ -3540,11 +3583,7 @@ bool CvDLLButtonPopup::launchChooseProfessionPopup(CvPopup* pPopup, CvPopupInfo&
 						label += CvWString::format(L"(%d/%d %c)",
 							shown, peerMax, ch);
 					}
-					gDLL->getInterfaceIFace()->popupAddGenericButton(
-						pPopup, label,
-						kProfessionInfo.getButton(),
-						eLoopProfession,
-						WIDGET_GENERAL);
+					aProfessionButtons.push_back(wtpMakeProfessionButton(kProfessionInfo, label, eLoopProfession, false));
 				}
 				continue;
 			}
@@ -3588,11 +3627,7 @@ bool CvDLLButtonPopup::launchChooseProfessionPopup(CvPopup* pPopup, CvPopupInfo&
 						label += CvWString::format(L"(%d/%d %c)",
 							shown, peerMax, ch);
 					}
-					gDLL->getInterfaceIFace()->popupAddGenericButton(
-						pPopup, label,
-						kProfessionInfo.getButton(),
-						eLoopProfession,
-						WIDGET_GENERAL);
+					aProfessionButtons.push_back(wtpMakeProfessionButton(kProfessionInfo, label, eLoopProfession, false));
 				}
 			}
 		}
@@ -3615,12 +3650,17 @@ bool CvDLLButtonPopup::launchChooseProfessionPopup(CvPopup* pPopup, CvPopupInfo&
 				txt += gDLL->getText("TXT_KEY_PROFESSION_NON_CITIZEN");
 			}
 			++buttonCount;
-			gDLL->getInterfaceIFace()->popupAddGenericButton(
-				pPopup, txt,
-				kProfessionInfo.getButton(),
-				eLoopProfession,
-				WIDGET_GENERAL);
+			aProfessionButtons.push_back(wtpMakeProfessionButton(kProfessionInfo, txt, eLoopProfession, true));
 		}
+	}
+	std::stable_sort(aProfessionButtons.begin(), aProfessionButtons.end(), wtpProfessionButtonLess);
+	for (size_t iButton = 0; iButton < aProfessionButtons.size(); ++iButton)
+	{
+		gDLL->getInterfaceIFace()->popupAddGenericButton(
+			pPopup, aProfessionButtons[iButton].szLabel,
+			GC.getProfessionInfo(aProfessionButtons[iButton].eProfession).getButton(),
+			aProfessionButtons[iButton].eProfession,
+			WIDGET_GENERAL);
 	}
 
 	// ------------------------------------------------------------------
