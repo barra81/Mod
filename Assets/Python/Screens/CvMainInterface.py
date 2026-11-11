@@ -4148,13 +4148,14 @@ class CvMainInterface:
 				iMaxLines = 6
 			# the priority messages (the first iNumPriority ones) are always at the top of the newest page; on the other pages the others
 			iNumPriority = min(iNumPriority, iNum)
+			fMessageGap = 0.4 # extra space after every message (in lines), better to read
 			aiPriority = []
 			iPriorityLines = 0
 			for i in range(iNumPriority):
-				if len(aiPriority) > 0 and iPriorityLines + len(aatLines[i]) > max(2, iMaxLines - 2):
+				if len(aiPriority) > 0 and iPriorityLines + len(aatLines[i]) + fMessageGap > max(2, iMaxLines - 2):
 					break
 				aiPriority.append(i)
-				iPriorityLines += len(aatLines[i])
+				iPriorityLines += len(aatLines[i]) + fMessageGap
 			aPages = []
 			iEnd = iNum
 			while iEnd > iNumPriority:
@@ -4164,9 +4165,9 @@ class CvMainInterface:
 					iLimit = iMaxLines
 				iFirst = iEnd
 				iSum = 0
-				while iFirst > iNumPriority and (iSum + len(aatLines[iFirst - 1]) <= iLimit or iFirst == iEnd):
+				while iFirst > iNumPriority and (iSum + len(aatLines[iFirst - 1]) + fMessageGap <= iLimit or iFirst == iEnd):
 					iFirst -= 1
-					iSum += len(aatLines[iFirst])
+					iSum += len(aatLines[iFirst]) + fMessageGap
 				aPages.append((iFirst, iEnd, iSum))
 				iEnd = iFirst
 				if not self.bMessagePanelExpanded:
@@ -4190,7 +4191,7 @@ class CvMainInterface:
 				iFooterHeight += iLine
 			if iFooterHeight > 0:
 				iFooterHeight += iGap / 2
-			iTextHeight = iTextLines * iLine + iPad / 2
+			iTextHeight = int(iTextLines * iLine) + iPad / 2
 			iHeight = iHeaderHeight + iGap + iTextHeight + iFooterHeight + iPad
 
 			if self.bMessagePanelExpanded:
@@ -4226,7 +4227,7 @@ class CvMainInterface:
 			szBullet = u"%c " % game.getSymbolID(FontSymbols.BULLET_CHAR)
 			iLabel = 0
 			iTextY = iY + iHeaderHeight + iGap
-			iRow = 0
+			fRow = 0.0
 			for i in aiShow:
 				iTargetX, iTargetY, eContact = atTargets[i]
 				for iPart in range(len(aatLines[i])):
@@ -4248,14 +4249,15 @@ class CvMainInterface:
 						eWidget = WidgetTypes.WIDGET_GENERAL
 						iData1 = self.BUTTON_MESSAGE_LINE
 						iData2 = i
-					screen.setText(szName, "Background", self.setFontSize(szLine, -1), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + iRow * iLine, -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+					screen.setText(szName, "Background", self.setFontSize(szLine, -1), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
 					screen.show(szName)
 					screen.moveToFront(szName)
 					self.aszMessageLines.append(szName)
-					iRow += 1
+					fRow += 1.0
+				fRow += fMessageGap
 
 			# footer: further (older) messages, the messages of the turn before
-			iFooterY = iTextY + iTextLines * iLine + iPad / 2 + iGap / 2
+			iFooterY = iTextY + int(iTextLines * iLine) + iPad / 2 + iGap / 2
 			screen.hide("HudMsgFooterMore")
 			screen.hide("HudMsgFooterPrevious")
 			if bMore:
