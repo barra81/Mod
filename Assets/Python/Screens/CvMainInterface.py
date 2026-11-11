@@ -1787,22 +1787,22 @@ class CvMainInterface:
 	# WTP: is an own ship in the port of this sail command (Europe / Africa / Port Royal)?
 	def isOwnShipInPort(self, iCommand):
 		try:
-			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
 			if iCommand == CommandTypes.COMMAND_SAIL_TO_EUROPE:
-				iNum = pPlayer.getNumEuropeUnits()
-				pfGet = pPlayer.getEuropeUnit
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_EUROPE
 			elif iCommand == CommandTypes.COMMAND_SAIL_TO_AFRICA:
-				iNum = pPlayer.getNumAfricaUnits()
-				pfGet = pPlayer.getAfricaUnit
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_AFRICA
 			elif iCommand == CommandTypes.COMMAND_SAIL_TO_PORT_ROYAL:
-				iNum = pPlayer.getNumPortRoyalUnits()
-				pfGet = pPlayer.getPortRoyalUnit
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_PORT_ROYAL
 			else:
 				return False
-			for iUnit in range(iNum):
-				pUnit = pfGet(iUnit)
-				if pUnit is not None and not pUnit.isNone() and pUnit.getDomainType() == DomainTypes.DOMAIN_SEA:
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			(pUnit, iter) = pPlayer.firstUnit()
+			while (pUnit):
+				# the ships in a port have this travel state (the docks list of the player only holds the colonists)
+				if (pUnit.getUnitTravelState() == eState and not pUnit.isCargo() and not pUnit.isDelayedDeath()
+					and gc.getUnitInfo(pUnit.getUnitType()).getDomainType() == DomainTypes.DOMAIN_SEA):
 					return True
+				(pUnit, iter) = pPlayer.nextUnit(iter)
 		except:
 			pass
 		return False
