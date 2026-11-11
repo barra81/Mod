@@ -1051,14 +1051,17 @@ class CvDomesticAdvisor:
 
 	def openTradeLocation(self, iRow):
 		# rows of the exported goods tab: 0 Europe, 1 Africa, 2 Port Royal
-		szScreen = {0: "showEuropeScreen", 1: "showAfricaScreen", 2: "showPortRoyalScreen"}.get(iRow)
-		if szScreen is None:
+		tScreen = {0: ("showEuropeScreen", "europeScreen", CvScreenEnums.EUROPE_SCREEN), 1: ("showAfricaScreen", "africaScreen", CvScreenEnums.AFRICA_SCREEN), 2: ("showPortRoyalScreen", "portroyalScreen", CvScreenEnums.PORT_ROYAL_SCREEN)}.get(iRow)
+		if tScreen is None:
 			return
 		try:
 			import CvScreensInterface
 			screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
 			screen.hideScreen()
-			getattr(CvScreensInterface, szScreen)((-1,))
+			getattr(CvScreensInterface, tScreen[0])((-1,))
+			# back to the advisor when the trade screen is closed (only if it really opened)
+			if getattr(CvScreensInterface, tScreen[1]).getScreen().isActive():
+				CvScreensInterface.iReturnToDomesticScreen = tScreen[2]
 		except:
 			pass
 
