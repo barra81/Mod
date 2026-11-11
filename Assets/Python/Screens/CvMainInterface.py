@@ -1784,6 +1784,29 @@ class CvMainInterface:
 		return 0
 
 	# Will hide and show the selection buttons and their associated buttons
+	# WTP: is an own ship in the port of this sail command (Europe / Africa / Port Royal)?
+	def isOwnShipInPort(self, iCommand):
+		try:
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			if iCommand == CommandTypes.COMMAND_SAIL_TO_EUROPE:
+				iNum = pPlayer.getNumEuropeUnits()
+				pfGet = pPlayer.getEuropeUnit
+			elif iCommand == CommandTypes.COMMAND_SAIL_TO_AFRICA:
+				iNum = pPlayer.getNumAfricaUnits()
+				pfGet = pPlayer.getAfricaUnit
+			elif iCommand == CommandTypes.COMMAND_SAIL_TO_PORT_ROYAL:
+				iNum = pPlayer.getNumPortRoyalUnits()
+				pfGet = pPlayer.getPortRoyalUnit
+			else:
+				return False
+			for iUnit in range(iNum):
+				pUnit = pfGet(iUnit)
+				if pUnit is not None and not pUnit.isNone() and pUnit.getDomainType() == DomainTypes.DOMAIN_SEA:
+					return True
+		except:
+			pass
+		return False
+
 	def updateSelectionButtons( self ):
 		global g_pSelectedUnit
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
@@ -2096,7 +2119,8 @@ class CvMainInterface:
 							screen.setHitMargins(szName, 18, 18)
 							if not CyInterface().canHandleAction(i, False):
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_DISABLED_BUTTON").getPath())
-							elif pHeadSelectedUnit.isActionRecommended(i):
+							elif pHeadSelectedUnit.isActionRecommended(i) or self.isOwnShipInPort(gc.getActionInfo(i).getCommandType()):
+								# (WTP: the buttons to sail to Europe / Africa / Port Royal are marked when an own ship is in that port)
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath())
 							ActionButtonList.append(szName)
 
