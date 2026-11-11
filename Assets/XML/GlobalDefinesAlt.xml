@@ -2116,9 +2116,9 @@
 		<DefineName>MESSAGE_PANEL_ENABLED</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
-	<!-- WTP: seconds the game's own (fast, click-through) message area still shows a message while the panel is on. 0 = not at all (the messages stay in the message log). -->
+	<!-- WTP: 1 = the game's own message area (fast, click-through) does not show the messages of the turn while the panel is on (they stay in the message log), 0 = it shows them as before -->
 	<Define>
-		<DefineName>MESSAGE_PANEL_ENGINE_SECONDS</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
+		<DefineName>MESSAGE_PANEL_HIDE_ENGINE_DISPLAY</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 </Civ4Defines>

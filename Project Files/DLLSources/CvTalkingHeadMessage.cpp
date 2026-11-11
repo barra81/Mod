@@ -160,7 +160,13 @@ void CvTalkingHeadMessage::setTarget(ChatTargetTypes eType)
 int CvTalkingHeadMessage::getExpireTurn()
 {
 	int iExpireTurn = getTurn();
-	switch (m_eMessageType)
+	InterfaceMessageTypes eExpireType = m_eMessageType;
+	if (m_eMessageType == MESSAGE_TYPE_LOG_ONLY && m_iLength >= WTP_HUD_MESSAGE_LENGTH_BASE)
+	{
+		// WTP: a message of the message panel (see CvDLLInterfaceIFaceBase::addPlayerMessage)
+		eExpireType = (InterfaceMessageTypes)(m_iLength - WTP_HUD_MESSAGE_LENGTH_BASE);
+	}
+	switch (eExpireType)
 	{
 	case MESSAGE_TYPE_INFO:
 		iExpireTurn += 2;

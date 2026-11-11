@@ -3832,7 +3832,7 @@ class CvMainInterface:
 			iPad = max(6, iLine / 2)
 			iWidth = max(380, int(xRes * 0.23))
 			iX = (xRes - iWidth) / 2
-			iY = TOP_CENTER_HUD_HEIGHT + 8
+			iY = int(yRes * 0.072) # as high as the game's own message area (it starts below the top buttons)
 			iHeaderHeight = iLine + iPad
 			iCharsPerLine = max(20, int((iWidth - 2 * iPad) / (iLine * 0.45)))
 

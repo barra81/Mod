@@ -5,6 +5,10 @@
 class CvSavegameReader;
 class CvSavegameWriter;
 
+// WTP: a message for the message panel is given to the game as MESSAGE_TYPE_LOG_ONLY (the game's own message area does not show it)
+// with the length WTP_HUD_MESSAGE_LENGTH_BASE + the type it would have had, so that it expires like that type (see getExpireTurn)
+static const int WTP_HUD_MESSAGE_LENGTH_BASE = 1000;
+
 class CvTalkingHeadMessage
 {
 public:
