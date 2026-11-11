@@ -74,6 +74,7 @@ public:
 	int getFirstBuildingOrder(int /*BuildingTypes*/ eBuilding);
 	int getProduction();
 	int getProductionNeeded(int /*YieldTypes*/ eYield);
+	int getBuildingYieldProductionNeeded(int /*BuildingTypes*/ eBuilding, int /*YieldTypes*/ eYield); // WTP: cost of a building for this city
 	int getProductionTurnsLeft();
 	int getUnitProductionTurnsLeft(int /*UnitTypes*/ iUnit, int iNum);
 	int getBuildingProductionTurnsLeft(int /*BuildingTypes*/ iBuilding, int iNum);								

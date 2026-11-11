@@ -235,6 +235,11 @@ int CyCity::getProductionNeeded(int /*YieldTypes*/ eYield)
 	return m_pCity ? m_pCity->getProductionNeeded((YieldTypes) eYield) : -1;
 }
 
+int CyCity::getBuildingYieldProductionNeeded(int /*BuildingTypes*/ eBuilding, int /*YieldTypes*/ eYield)
+{
+	return m_pCity ? m_pCity->getYieldProductionNeeded((BuildingTypes) eBuilding, (YieldTypes) eYield) : -1;
+}
+
 int CyCity::getProductionTurnsLeft()
 {
 	return m_pCity ? m_pCity->getProductionTurnsLeft() : -1;

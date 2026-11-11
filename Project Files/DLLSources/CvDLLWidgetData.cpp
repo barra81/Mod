@@ -949,11 +949,6 @@ bool CvDLLWidgetData::executeAltAction(const CvWidgetDataStruct &widgetDataStruc
 		doContactCiv(widgetDataStruct);
 		break;
 
-	// WTP: right click on a building of the city screen: upgrade it (popup with the buildings of the same slot)
-	case WIDGET_ASSIGN_CITIZEN_TO_BUILDING:
-		bHandled = WtpBuildingUpgrade::open(widgetDataStruct.m_iData1, widgetDataStruct.m_iData2);
-		break;
-
 	default:
 		bHandled = false;
 		break;

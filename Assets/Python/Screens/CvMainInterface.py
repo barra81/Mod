@@ -293,6 +293,7 @@ class CvMainInterface:
 	BUTTON_AUTO_ASSIGN_TARGET = 755 # WTP: city screen: the colony takes colonists of the job automation
 	BUTTON_MESSAGE_PANEL = 756 # WTP: the message panel of the turn (click: expand / collapse)
 	BUTTON_MESSAGE_MORE = 758 # WTP: message panel footer: the next older page of messages
+	BUTTON_BUILDING_UPGRADE_CLOSE = 760 # WTP: building upgrade panel of the city screen: close
 	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -580,6 +581,8 @@ class CvMainInterface:
 		self.iPioneerPlanHoverY = 0
 		# WTP: message panel (the messages of the turn, click to expand)
 		self.bMessagePanelExpanded = False
+		self.aszUpgradeWidgets = [] # WTP: building upgrade panel of the city screen
+		self.iUpgradeCity = -1
 		self.tMessagePanelKey = None
 		self.bMessagePanelPrevious = False # shows the messages of the turn before
 		self.iMessagePage = 0 # page of the expanded panel (0 = the newest messages)
@@ -3804,6 +3807,13 @@ class CvMainInterface:
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_MORE):
 				self.iMessagePage += 1 # (the panel starts again with the newest messages after the last page)
 				self.updateMessagePanel()
+			# WTP: a click on a building of the city screen opens the panel to upgrade it; the buttons of the panel start the construction
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_ASSIGN_CITIZEN_TO_BUILDING and inputClass.getFunctionName().startswith("CityBuildingGraphic")):
+				self.showBuildingUpgradePanel(inputClass.getData1(), inputClass.getMouseX(), inputClass.getMouseY())
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_CONSTRUCT and inputClass.getFunctionName().startswith("WtpUpg")):
+				self.hideBuildingUpgradePanel()
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_BUILDING_UPGRADE_CLOSE):
+				self.hideBuildingUpgradePanel()
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_PREVIOUS):
 				self.bMessagePanelPrevious = not self.bMessagePanelPrevious
 				self.iMessagePage = 0
@@ -3933,7 +3943,103 @@ class CvMainInterface:
 		screen.hide("HudMsgFooterMore")
 		screen.hide("HudMsgFooterPrevious")
 
+	# WTP: panel of the city screen to upgrade a building (click on the building): the buildings of the same slot that can be
+	# constructed now, with the hammers; the buttons are the construction buttons of the game (tooltip of the building, a click
+	# puts the building to the top of the construction list)
+	def hideBuildingUpgradePanel(self):
+		try:
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
+			for szName in self.aszUpgradeWidgets:
+				screen.hide(szName)
+				screen.deleteWidget(szName)
+			self.aszUpgradeWidgets = []
+			self.iUpgradeCity = -1
+		except:
+			self.aszUpgradeWidgets = []
+			self.iUpgradeCity = -1
+
+	def showBuildingUpgradePanel(self, iSpecial, iMouseX, iMouseY):
+		try:
+			self.hideBuildingUpgradePanel()
+			pCity = CyInterface().getHeadSelectedCity()
+			if pCity is None or iSpecial < 0:
+				return
+			if pCity.getOwner() != gc.getGame().getActivePlayer():
+				return
+			eCivilization = gc.getPlayer(pCity.getOwner()).getCivilizationType()
+			aiCandidates = []
+			iCurrent = -1
+			for iBuildingClass in range(gc.getNumBuildingClassInfos()):
+				iBuilding = gc.getCivilizationInfo(eCivilization).getCivilizationBuildings(iBuildingClass)
+				if iBuilding < 0 or gc.getBuildingInfo(iBuilding).getSpecialBuildingType() != iSpecial:
+					continue
+				if pCity.isHasBuilding(iBuilding):
+					iCurrent = iBuilding
+				elif pCity.canConstruct(iBuilding, False, False, False):
+					# the same test as the construction list on the right side
+					aiCandidates.append((iBuildingClass, iBuilding))
+			if iCurrent < 0 or len(aiCandidates) == 0:
+				return
+
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
+			xRes = screen.getXResolution()
+			yRes = screen.getYResolution()
+			iRow = max(30, int(yRes * 0.028))
+			iIcon = iRow - 4
+			iPad = max(8, iRow / 3)
+			iWidth = max(340, int(xRes * 0.17))
+			iHeaderHeight = iRow
+			iHeight = iPad * 2 + iHeaderHeight + (len(aiCandidates) + 1) * iRow
+			iX = min(max(0, iMouseX + 12), xRes - iWidth - 4)
+			iY = min(max(0, iMouseY + 12), yRes - iHeight - 4)
+			self.iUpgradeCity = pCity.getID()
+
+			# a denser background (the panel style is semi-transparent)
+			for iLayer in range(3):
+				szPanel = "WtpUpgBack%d" % iLayer
+				screen.addPanel(szPanel, u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+				screen.show(szPanel)
+				screen.moveToFront(szPanel)
+				self.aszUpgradeWidgets.append(szPanel)
+
+			szHeader = localText.getText("TXT_KEY_WTP_BUILDING_UPGRADE_HEADER", (gc.getBuildingInfo(iCurrent).getTextKey(), pCity.getNameKey()))
+			screen.setText("WtpUpgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iY + iPad, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			screen.show("WtpUpgHeader")
+			screen.moveToFront("WtpUpgHeader")
+			self.aszUpgradeWidgets.append("WtpUpgHeader")
+
+			iRowY = iY + iPad + iHeaderHeight
+			for i in range(len(aiCandidates)):
+				iBuildingClass, iBuilding = aiCandidates[i]
+				kBuilding = gc.getBuildingInfo(iBuilding)
+				iHammers = pCity.getBuildingYieldProductionNeeded(iBuilding, YieldTypes.YIELD_HAMMERS)
+				szText = u"%s (%d%c)" % (kBuilding.getDescription(), iHammers, gc.getYieldInfo(YieldTypes.YIELD_HAMMERS).getChar())
+				szIcon = "WtpUpgIcon%d" % i
+				szLabel = "WtpUpgText%d" % i
+				screen.setImageButton(szIcon, kBuilding.getButton(), iX + iPad, iRowY, iIcon, iIcon, WidgetTypes.WIDGET_CONSTRUCT, iBuildingClass, pCity.getID())
+				screen.setText(szLabel, "Background", self.setFontSize(szText, -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad + iIcon + 8, iRowY + iIcon / 4, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_CONSTRUCT, iBuildingClass, pCity.getID())
+				for szName in (szIcon, szLabel):
+					screen.show(szName)
+					screen.moveToFront(szName)
+					self.aszUpgradeWidgets.append(szName)
+				iRowY += iRow
+
+			szClose = localText.getText("TXT_KEY_NEVER_MIND", ())
+			screen.setText("WtpUpgClose", "Background", self.setFontSize(szClose, -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad + iIcon + 8, iRowY + iIcon / 4, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_BUILDING_UPGRADE_CLOSE, -1)
+			screen.show("WtpUpgClose")
+			screen.moveToFront("WtpUpgClose")
+			self.aszUpgradeWidgets.append("WtpUpgClose")
+		except:
+			self.hideBuildingUpgradePanel()
+			CvUtil.pyPrint("Building upgrade panel failed: " + str(sys.exc_info()[1]))
+
 	def updateMessagePanel(self):
+
+		# the building upgrade panel closes with the city screen / when another city is shown
+		if len(self.aszUpgradeWidgets) > 0:
+			pUpgradeCity = CyInterface().getHeadSelectedCity()
+			if (not CyInterface().isCityScreenUp()) or pUpgradeCity is None or pUpgradeCity.getID() != self.iUpgradeCity:
+				self.hideBuildingUpgradePanel()
 
 		try:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
