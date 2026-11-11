@@ -3971,8 +3971,6 @@ class CvMainInterface:
 				iFirst -= 1
 				iSum += len(aatLines[iFirst])
 			iTextLines = iSum
-			if iFirst > 0 and not self.bMessagePanelExpanded:
-				iTextLines = iMaxLines # more messages than room: the panel keeps its full size
 			iTextHeight = iTextLines * iLine + iPad / 2
 			iHeight = iHeaderHeight + iGap + iTextHeight + iPad
 
@@ -3987,18 +3985,20 @@ class CvMainInterface:
 			self.aszMessageLines = []
 			self.dMessageCapitals = {}
 
-			# a denser background: the panel style is semi-transparent, three of them on top of each other are better to read
+			# a denser background: the panel style is semi-transparent, several of them on top of each other are better to read
+			# (two when collapsed, three when expanded)
 			screen.deleteWidget("HudMsgPanel")
 			screen.deleteWidget("HudMsgPanelBack1")
 			screen.deleteWidget("HudMsgPanelBack2")
 			screen.addPanel("HudMsgPanelBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			screen.addPanel("HudMsgPanelBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			screen.addPanel("HudMsgPanel", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
 			screen.show("HudMsgPanelBack1")
-			screen.show("HudMsgPanelBack2")
-			screen.show("HudMsgPanel")
 			screen.moveToFront("HudMsgPanelBack1")
-			screen.moveToFront("HudMsgPanelBack2")
+			if self.bMessagePanelExpanded:
+				screen.addPanel("HudMsgPanelBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+				screen.show("HudMsgPanelBack2")
+				screen.moveToFront("HudMsgPanelBack2")
+			screen.addPanel("HudMsgPanel", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
+			screen.show("HudMsgPanel")
 			screen.moveToFront("HudMsgPanel")
 
 			szBullet = u"%c " % game.getSymbolID(FontSymbols.BULLET_CHAR)

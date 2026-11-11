@@ -430,6 +430,7 @@ namespace WtpHudMessages
 {
 	void add(const CvWString& szText, int iX, int iY);
 	void clear();
+	bool firstTimeSound(const char* szSound); // true once per batch (until clear) for every sound
 	int getNum();
 	const CvWString& getText(int i);
 	int getX(int i);
