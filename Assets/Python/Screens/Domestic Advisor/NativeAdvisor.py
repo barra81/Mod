@@ -55,12 +55,19 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 				knownList.append(pLoopCity)
 		return knownList
 
-	def contactNation(self, iRow):
+	def contactNation(self, iRow, iPlotIndex = -1):
 		try:
-			citylist = self.getKnownSettlementList()
-			if iRow < 0 or iRow >= len(citylist):
-				return False
-			iNative = citylist[iRow].getOwner()
+			# the table can be sorted: the plot index of the cell identifies the settlement, not the row
+			iNative = -1
+			if iPlotIndex >= 0:
+				pPlot = gc.getMap().plotByIndex(iPlotIndex)
+				if pPlot is not None and not pPlot.isNone() and pPlot.isCity():
+					iNative = pPlot.getPlotCity().getOwner()
+			if iNative < 0:
+				citylist = self.getKnownSettlementList()
+				if iRow < 0 or iRow >= len(citylist):
+					return False
+				iNative = citylist[iRow].getOwner()
 			player = gc.getPlayer(gc.getGame().getActivePlayer())
 			if not player.canContact(iNative):
 				return False
@@ -136,7 +143,7 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 				self.tableManager.addPanelButton(self.settlementIcon, WidgetTypes.WIDGET_JUMP_TO_SETTLEMENT, pLoopCity.plot().getIndex(), iNativeCity)
 				self.tableManager.addText(pLoopCity.getName())
 				# clickable: opens the diplomacy screen (symbol in front)
-				self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.OPEN_BORDERS_CHAR) + gc.getPlayer(pLoopCity.getOwner()).getCivilizationShortDescription(0))
+				self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.OPEN_BORDERS_CHAR) + gc.getPlayer(pLoopCity.getOwner()).getCivilizationShortDescription(0), pLoopCity.plot().getIndex())
 				self.tableManager.addInt(pLoopCity.getPopulation())
 				
 				if bIsVisited:
@@ -199,7 +206,7 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 				return 0
 			# WTP: a click on the civ column opens the diplomacy screen of this nation
 			if (inputClass.getMouseX() == 2):
-				if self.contactNation(inputClass.getMouseY()):
+				if self.contactNation(inputClass.getMouseY(), inputClass.getData1()):
 					return 0
 			# WTP: waypoint column
 			logWaypoint("click: column %d row %d data1 %d data2 %d" % (inputClass.getMouseX(), inputClass.getMouseY(), inputClass.getData1(), inputClass.getData2()))
