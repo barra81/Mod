@@ -3851,7 +3851,7 @@ class CvMainInterface:
 		iWidth = 0
 		for szChar in szText:
 			if ord(szChar) >= 0x2000:
-				iWidth += 2
+				iWidth += 3.4
 			else:
 				iWidth += 1
 		return iWidth
