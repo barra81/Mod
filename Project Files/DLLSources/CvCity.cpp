@@ -8282,6 +8282,46 @@ void CvCity::doYields()
 	// R&R, ray, adjustment Domestic Markets
 
 
+	// WTP: the materials of the project in production are kept (not sold to the domestic market, not lost to a storage overflow) while the project is
+	// finished within two turns or materials of it were bought: aiProjectReserve is the amount of every material that is kept
+	int aiProjectReserve[NUM_YIELD_TYPES];
+	for (int iReserve = 0; iReserve < NUM_YIELD_TYPES; ++iReserve)
+	{
+		aiProjectReserve[iReserve] = 0;
+	}
+	bool bProtectProject = false;
+	if (isHuman() && !isNative() && !isProductionAutomated() && isProduction())
+	{
+		const UnitTypes eProjectUnit = getProductionUnit();
+		const BuildingTypes eProjectBuilding = getProductionBuilding();
+		if (eProjectUnit != NO_UNIT || eProjectBuilding != NO_BUILDING)
+		{
+			bool bBought = false;
+			for (YieldTypes eRushed = FIRST_YIELD; eRushed < NUM_YIELD_TYPES; ++eRushed)
+			{
+				if (GC.getYieldInfo(eRushed).isCargo() && getYieldRushed(eRushed) > 0)
+				{
+					bBought = true;
+					break;
+				}
+			}
+			const int iProjectTurns = (eProjectUnit != NO_UNIT) ? getProductionTurnsLeft(eProjectUnit, 0) : getProductionTurnsLeft(eProjectBuilding, 0);
+			if (bBought || iProjectTurns <= 2)
+			{
+				bProtectProject = true;
+				for (YieldTypes eReserve = FIRST_YIELD; eReserve < NUM_YIELD_TYPES; ++eReserve)
+				{
+					if (GC.getYieldInfo(eReserve).isCargo() && !GC.getYieldInfo(eReserve).isIgnoredForStorageCapacity())
+					{
+						const int iNeeded = (eProjectUnit != NO_UNIT) ? getYieldProductionNeeded(eProjectUnit, eReserve) : getYieldProductionNeeded(eProjectBuilding, eReserve);
+						const int iStoredAfter = std::max(0, getYieldStored(eReserve) + aiYields[eReserve]);
+						aiProjectReserve[eReserve] = std::min(iStoredAfter, std::max(0, iNeeded - getYieldRushed(eReserve)));
+					}
+				}
+			}
+		}
+	}
+
 	if (getMarketModifier() > 0)
 	{
 		int iTotalProfitFromDomesticMarket = 0;
@@ -8294,9 +8334,9 @@ void CvCity::doYields()
 
 			FAssert(validEnumRange(eYield));
 			int iAmount = aYields.get(eYield);
-			if (iAmount > 0 && (getYieldStored(eYield) + aiYields[eYield]) > getMaintainLevel(eYield)) // R&R, ray, improvment from vetiarvind
+			if (iAmount > 0 && (getYieldStored(eYield) + aiYields[eYield]) > std::max(getMaintainLevel(eYield), aiProjectReserve[eYield])) // R&R, ray, improvment from vetiarvind (WTP: the materials of the project are kept)
 			{
-				const int iAmountForSale = getYieldStored(eYield) + aiYields[eYield] - getMaintainLevel(eYield);
+				const int iAmountForSale = getYieldStored(eYield) + aiYields[eYield] - std::max(getMaintainLevel(eYield), aiProjectReserve[eYield]);
 				if (iAmount > iAmountForSale)
 				{
 					iAmount = iAmountForSale;
@@ -8335,8 +8375,8 @@ void CvCity::doYields()
 	CvWString szSurplusLostYields;
 	bool bPrintOnce = false;
 
-	// WTP: the materials of a project that is finished within two turns are not lost to a storage overflow. Goods that are worth more are
-	// lost in the same number instead (the most valuable first)
+	// WTP: the materials of the project are not lost to a storage overflow. Goods that are worth more are lost in the same number instead
+	// (the most valuable first)
 	int aiProtectedCut[NUM_YIELD_TYPES];
 	int aiExtraLoss[NUM_YIELD_TYPES];
 	for (int iProtect = 0; iProtect < NUM_YIELD_TYPES; ++iProtect)
@@ -8344,77 +8384,68 @@ void CvCity::doYields()
 		aiProtectedCut[iProtect] = 0;
 		aiExtraLoss[iProtect] = 0;
 	}
-	if (isHuman() && !isNative() && !isProductionAutomated() && isProduction() && iTotalYields > iMaxCapacity
-		&& !(getHasUnlockedStorageLossTradeSettings() && iTotalYields < iMaxCapacity))
+	if (bProtectProject && iTotalYields > iMaxCapacity && !(getHasUnlockedStorageLossTradeSettings() && iTotalYields < iMaxCapacity))
 	{
-		const UnitTypes eProjectUnit = getProductionUnit();
-		const BuildingTypes eProjectBuilding = getProductionBuilding();
-		if (eProjectUnit != NO_UNIT || eProjectBuilding != NO_BUILDING)
+		int aiStoredAfter[NUM_YIELD_TYPES];
+		int aiOwnLoss[NUM_YIELD_TYPES];
+		int iTotalCut = 0;
+		for (YieldTypes eProtectYield = FIRST_YIELD; eProtectYield < NUM_YIELD_TYPES; ++eProtectYield)
 		{
-			const int iProjectTurns = (eProjectUnit != NO_UNIT) ? getProductionTurnsLeft(eProjectUnit, 0) : getProductionTurnsLeft(eProjectBuilding, 0);
-			if (iProjectTurns <= 2)
+			aiStoredAfter[eProtectYield] = 0;
+			aiOwnLoss[eProtectYield] = 0;
+			if (!GC.getYieldInfo(eProtectYield).isCargo() || GC.getYieldInfo(eProtectYield).isIgnoredForStorageCapacity())
 			{
-				int aiStoredAfter[NUM_YIELD_TYPES];
-				int aiReserve[NUM_YIELD_TYPES];
-				int aiOwnLoss[NUM_YIELD_TYPES];
-				int iTotalCut = 0;
-				for (YieldTypes eProtectYield = FIRST_YIELD; eProtectYield < NUM_YIELD_TYPES; ++eProtectYield)
+				continue;
+			}
+			const int iStoredAfter = std::max(0, getYieldStored(eProtectYield) + aiYields[eProtectYield]);
+			aiStoredAfter[eProtectYield] = iStoredAfter;
+			if (iStoredAfter > 0)
+			{
+				int iExcess = (iTotalYields - iMaxCapacity) * iStoredAfter / iTotalYields;
+				if (iExcess == 0)
 				{
-					aiStoredAfter[eProtectYield] = 0;
-					aiReserve[eProtectYield] = 0;
-					aiOwnLoss[eProtectYield] = 0;
-					if (!GC.getYieldInfo(eProtectYield).isCargo() || GC.getYieldInfo(eProtectYield).isIgnoredForStorageCapacity())
-					{
-						continue;
-					}
-					const int iStoredAfter = std::max(0, getYieldStored(eProtectYield) + aiYields[eProtectYield]);
-					const int iNeeded = (eProjectUnit != NO_UNIT) ? getYieldProductionNeeded(eProjectUnit, eProtectYield) : getYieldProductionNeeded(eProjectBuilding, eProtectYield);
-					aiStoredAfter[eProtectYield] = iStoredAfter;
-					aiReserve[eProtectYield] = std::min(iStoredAfter, std::max(0, iNeeded - getYieldRushed(eProtectYield)));
-					if (iStoredAfter > 0)
-					{
-						int iExcess = (iTotalYields - iMaxCapacity) * iStoredAfter / iTotalYields;
-						if (iExcess == 0)
-						{
-							iExcess = 1;
-						}
-						int iLoss = std::max(GC.getCITY_YIELD_DECAY_PERCENT() * iExcess / 100, GC.getMIN_CITY_YIELD_DECAY());
-						iLoss = std::min(iLoss, iExcess);
-						const int iCut = std::max(0, iLoss - (iStoredAfter - aiReserve[eProtectYield]));
-						aiProtectedCut[eProtectYield] = iCut;
-						aiOwnLoss[eProtectYield] = iLoss - iCut;
-						iTotalCut += iCut;
-					}
+					iExcess = 1;
 				}
-				while (iTotalCut > 0)
+				int iLoss = std::max(GC.getCITY_YIELD_DECAY_PERCENT() * iExcess / 100, GC.getMIN_CITY_YIELD_DECAY());
+				iLoss = std::min(iLoss, iExcess);
+				const int iCut = std::max(0, iLoss - (iStoredAfter - aiProjectReserve[eProtectYield]));
+				aiProtectedCut[eProtectYield] = iCut;
+				aiOwnLoss[eProtectYield] = iLoss - iCut;
+				iTotalCut += iCut;
+			}
+		}
+		const int iTotalCutAtStart = iTotalCut;
+		while (iTotalCut > 0)
+		{
+			YieldTypes eBest = NO_YIELD;
+			int iBestPrice = -1;
+			int iBestRoom = 0;
+			for (YieldTypes eReplace = FIRST_YIELD; eReplace < NUM_YIELD_TYPES; ++eReplace)
+			{
+				if (!GC.getYieldInfo(eReplace).isCargo() || GC.getYieldInfo(eReplace).isIgnoredForStorageCapacity())
 				{
-					YieldTypes eBest = NO_YIELD;
-					int iBestPrice = -1;
-					int iBestRoom = 0;
-					for (YieldTypes eReplace = FIRST_YIELD; eReplace < NUM_YIELD_TYPES; ++eReplace)
-					{
-						if (!GC.getYieldInfo(eReplace).isCargo() || GC.getYieldInfo(eReplace).isIgnoredForStorageCapacity())
-						{
-							continue;
-						}
-						const int iRoom = aiStoredAfter[eReplace] - aiReserve[eReplace] - aiOwnLoss[eReplace] - aiExtraLoss[eReplace];
-						const int iReplacePrice = GC.getYieldInfo(eReplace).price(FIRST_TRADELOCATION).buyLow;
-						if (iRoom > 0 && iReplacePrice > iBestPrice)
-						{
-							eBest = eReplace;
-							iBestPrice = iReplacePrice;
-							iBestRoom = iRoom;
-						}
-					}
-					if (eBest == NO_YIELD)
-					{
-						break;
-					}
-					const int iTake = std::min(iBestRoom, iTotalCut);
-					aiExtraLoss[eBest] += iTake;
-					iTotalCut -= iTake;
+					continue;
+				}
+				const int iRoom = aiStoredAfter[eReplace] - aiProjectReserve[eReplace] - aiOwnLoss[eReplace] - aiExtraLoss[eReplace];
+				const int iReplacePrice = GC.getYieldInfo(eReplace).price(FIRST_TRADELOCATION).buyLow;
+				if (iRoom > 0 && iReplacePrice > iBestPrice)
+				{
+					eBest = eReplace;
+					iBestPrice = iReplacePrice;
+					iBestRoom = iRoom;
 				}
 			}
+			if (eBest == NO_YIELD)
+			{
+				break;
+			}
+			const int iTake = std::min(iBestRoom, iTotalCut);
+			aiExtraLoss[eBest] += iTake;
+			iTotalCut -= iTake;
+		}
+		if (iTotalCutAtStart > 0)
+		{
+			gDLL->logMsg("WTP_ProjectProtect.log", CvString::format("%s: overflow would cost %d material(s) of the project, %d moved to other goods", CvString(getName()).c_str(), iTotalCutAtStart, iTotalCutAtStart - iTotalCut).c_str());
 		}
 	}
 
