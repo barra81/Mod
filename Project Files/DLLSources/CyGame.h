@@ -176,6 +176,8 @@ public:
 	int getHudMessageX(int i) const;
 	int getHudMessageY(int i) const;
 	int getNumHudMessagesPrevious() const;
+	int getNumHudPriority() const;
+	int getNumHudPriorityPrevious() const;
 	std::wstring getHudMessagePreviousText(int i) const;
 	int getHudMessagePreviousX(int i) const;
 	int getHudMessagePreviousY(int i) const;

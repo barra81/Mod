@@ -3846,6 +3846,16 @@ class CvMainInterface:
 	# Every line of a message is a clickable label (the game does not pass clicks on a multiline text): a click centers the map on the place
 	# of the message (colony, battle, unit ...) or on the named colony / native settlement. A message that names a native tribe or its chief
 	# and has no place of its own also opens the diplomacy with the tribe (and centers its main settlement).
+	def getMessageWidth(self, szText):
+		# width in characters: the symbols of the game font (icons) are wider than letters
+		iWidth = 0
+		for szChar in szText:
+			if ord(szChar) >= 0x2000:
+				iWidth += 2
+			else:
+				iWidth += 1
+		return iWidth
+
 	def wrapMessage(self, szMessage, iCharsPerLine):
 		# splits a message with color markup into lines of about iCharsPerLine visible characters; the colors that are open at the end of
 		# a line are closed there and opened again at the start of the next line
@@ -3869,13 +3879,24 @@ class CvMainInterface:
 			szLine += szLead
 			iVisible += len(szLead)
 			for szWord in re.findall(u"\\S+\\s*", szToken, re.UNICODE):
-				iWord = len(szWord.rstrip())
+				iWord = self.getMessageWidth(szWord.rstrip())
 				if iVisible > 0 and iVisible + iWord > iCharsPerLine:
 					aszLines.append(szLine + u"</color>" * len(aszOpen))
 					szLine = u"".join(aszOpen)
 					iVisible = 0
+				if iWord > iCharsPerLine:
+					# a word without blanks that is longer than a line (e.g. a row of icons): broken between the characters
+					for szChar in szWord:
+						iChar = self.getMessageWidth(szChar)
+						if iVisible > 0 and iVisible + iChar > iCharsPerLine:
+							aszLines.append(szLine + u"</color>" * len(aszOpen))
+							szLine = u"".join(aszOpen)
+							iVisible = 0
+						szLine += szChar
+						iVisible += iChar
+					continue
 				szLine += szWord
-				iVisible += len(szWord)
+				iVisible += self.getMessageWidth(szWord)
 		aszLines.append(szLine)
 		return aszLines
 
@@ -4079,7 +4100,11 @@ class CvMainInterface:
 
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
-			tKey = (iNumCurrent, iNumPrevious, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, xRes, yRes)
+			if bPrevious:
+				iNumPriority = game.getNumHudPriorityPrevious()
+			else:
+				iNumPriority = game.getNumHudPriority()
+			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, xRes, yRes)
 			if tKey == self.tMessagePanelKey:
 				return
 			self.tMessagePanelKey = tKey
@@ -4121,12 +4146,25 @@ class CvMainInterface:
 			else:
 				iFooterLines = 0
 				iMaxLines = 6
+			# the priority messages (the first iNumPriority ones) are always at the top of the newest page; on the other pages the others
+			iNumPriority = min(iNumPriority, iNum)
+			aiPriority = []
+			iPriorityLines = 0
+			for i in range(iNumPriority):
+				if len(aiPriority) > 0 and iPriorityLines + len(aatLines[i]) > max(2, iMaxLines - 2):
+					break
+				aiPriority.append(i)
+				iPriorityLines += len(aatLines[i])
 			aPages = []
 			iEnd = iNum
-			while iEnd > 0:
+			while iEnd > iNumPriority:
+				if len(aPages) == 0:
+					iLimit = max(1, iMaxLines - iPriorityLines)
+				else:
+					iLimit = iMaxLines
 				iFirst = iEnd
 				iSum = 0
-				while iFirst > 0 and (iSum + len(aatLines[iFirst - 1]) <= iMaxLines or iFirst == iEnd):
+				while iFirst > iNumPriority and (iSum + len(aatLines[iFirst - 1]) <= iLimit or iFirst == iEnd):
 					iFirst -= 1
 					iSum += len(aatLines[iFirst])
 				aPages.append((iFirst, iEnd, iSum))
@@ -4134,12 +4172,17 @@ class CvMainInterface:
 				if not self.bMessagePanelExpanded:
 					break
 			if len(aPages) == 0:
-				aPages.append((0, 0, 0))
+				aPages.append((iNumPriority, iNumPriority, 0))
 			bMore = (len(aPages) > 1)
 			if self.iMessagePage >= len(aPages):
 				self.iMessagePage = 0
 			iFirst, iLast, iSum = aPages[self.iMessagePage]
-			iTextLines = iSum
+			if self.iMessagePage == 0:
+				aiShow = aiPriority + range(iFirst, iLast)
+				iTextLines = iSum + iPriorityLines
+			else:
+				aiShow = range(iFirst, iLast)
+				iTextLines = iSum
 			iFooterHeight = 0
 			if bMore:
 				iFooterHeight += iLine
@@ -4184,7 +4227,7 @@ class CvMainInterface:
 			iLabel = 0
 			iTextY = iY + iHeaderHeight + iGap
 			iRow = 0
-			for i in range(iFirst, iLast):
+			for i in aiShow:
 				iTargetX, iTargetY, eContact = atTargets[i]
 				for iPart in range(len(aatLines[i])):
 					szLine = aatLines[i][iPart]
@@ -4216,7 +4259,7 @@ class CvMainInterface:
 			screen.hide("HudMsgFooterMore")
 			screen.hide("HudMsgFooterPrevious")
 			if bMore:
-				iOlder = aPages[self.iMessagePage][0]
+				iOlder = aPages[self.iMessagePage][0] - iNumPriority
 				szMore = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_MORE", (iOlder, self.iMessagePage + 1, len(aPages)))
 				screen.setText("HudMsgFooterMore", "Background", self.setFontSize(szMore, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iFooterY, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_MORE, -1)
 				screen.show("HudMsgFooterMore")

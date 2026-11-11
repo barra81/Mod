@@ -19,6 +19,22 @@ namespace WtpHudMessages
 		int iX;
 		int iY;
 	};
+	// priority messages are kept in front of the others (in the order they came), the panel shows them at the top
+	static bool s_bPriority = false;
+	static int s_iNumPriority = 0;
+	static int s_iNumPriorityPrevious = 0;
+	void setPriority(bool bPriority)
+	{
+		s_bPriority = bPriority;
+	}
+	int getNumPriority()
+	{
+		return s_iNumPriority;
+	}
+	int getNumPriorityPrevious()
+	{
+		return s_iNumPriorityPrevious;
+	}
 	static std::vector<Entry>& entries()
 	{
 		static std::vector<Entry> aEntries;
@@ -30,7 +46,15 @@ namespace WtpHudMessages
 		kEntry.szText = szText;
 		kEntry.iX = iX;
 		kEntry.iY = iY;
-		entries().push_back(kEntry);
+		if (s_bPriority)
+		{
+			entries().insert(entries().begin() + s_iNumPriority, kEntry);
+			s_iNumPriority++;
+		}
+		else
+		{
+			entries().push_back(kEntry);
+		}
 	}
 	// the messages of the turn before (shown on demand by the panel)
 	static std::vector<Entry>& previousEntries()
@@ -43,8 +67,10 @@ namespace WtpHudMessages
 		if (!entries().empty())
 		{
 			previousEntries() = entries();
+			s_iNumPriorityPrevious = s_iNumPriority;
 		}
 		entries().clear();
+		s_iNumPriority = 0;
 	}
 	int getNumPrevious()
 	{
