@@ -4207,7 +4207,7 @@ class CvMainInterface:
 			aiPriority = []
 			iPriorityLines = 0
 			for i in range(iNumPriority):
-				if len(aiPriority) > 0 and iPriorityLines + len(aatLines[i]) + fMessageGap > max(2, iMaxLines - (0 if not self.bMessagePanelExpanded else 2)):
+				if len(aiPriority) > 0 and iPriorityLines + len(aatLines[i]) + fMessageGap > max(2, iMaxLines - 2 * int(self.bMessagePanelExpanded)):
 					break
 				aiPriority.append(i)
 				iPriorityLines += len(aatLines[i]) + fMessageGap
