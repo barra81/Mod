@@ -54,9 +54,12 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 				return False
 			iNative = citylist[iRow].getOwner()
 			player = gc.getPlayer(gc.getGame().getActivePlayer())
-			if not player.canContact(iNative):
+			if not player.canContact(iNative) or player.isTurnDone():
 				return False
 			self.parent.getScreen().hideScreen()
+			# back to the native info tab when the diplomacy screen is closed (see CvDiplomacy)
+			import CvScreensInterface
+			CvScreensInterface.bReturnToDomesticAfterDiplomacy = True
 			player.contact(iNative)
 			return True
 		except:
@@ -87,7 +90,8 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 			if True:
 				self.tableManager.addPanelButton(self.settlementIcon, WidgetTypes.WIDGET_JUMP_TO_SETTLEMENT, pLoopCity.plot().getIndex(), iNativeCity)
 				self.tableManager.addText(pLoopCity.getName())
-				self.tableManager.addText(gc.getPlayer(pLoopCity.getOwner()).getCivilizationShortDescription(0))
+				# clickable: opens the diplomacy screen (link blue)
+				self.tableManager.addText(u"<color=100,160,255>" + gc.getPlayer(pLoopCity.getOwner()).getCivilizationShortDescription(0) + u"</color>")
 				self.tableManager.addInt(pLoopCity.getPopulation())
 				
 				if bIsVisited:

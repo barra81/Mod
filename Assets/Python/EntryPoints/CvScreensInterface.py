@@ -601,6 +601,9 @@ def update (argsList):
 		screen = HandleInputMap.get(argsList[0])
 		screen.update(argsList[1])
 
+# WTP: diplomacy opened from the native info tab of the domestic advisor
+bReturnToDomesticAfterDiplomacy = False
+
 # WTP: screen id of a trade screen opened from the exported goods tab of the domestic advisor (-1: none)
 iReturnToDomesticScreen = -1
 
