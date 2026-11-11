@@ -32,19 +32,9 @@ namespace WtpHudMessages
 		kEntry.iY = iY;
 		entries().push_back(kEntry);
 	}
-	static std::set<std::string>& playedSounds()
-	{
-		static std::set<std::string> aSounds;
-		return aSounds;
-	}
 	void clear()
 	{
 		entries().clear();
-		playedSounds().clear();
-	}
-	bool firstTimeSound(const char* szSound)
-	{
-		return playedSounds().insert(std::string(szSound)).second;
 	}
 	int getNum()
 	{
@@ -79,9 +69,8 @@ void CvDLLInterfaceIFaceBase::addPlayerMessage(PlayerTypes ePlayer, bool bForce,
 			|| eType == MESSAGE_TYPE_MINOR_EVENT || eType == MESSAGE_TYPE_COMBAT_MESSAGE))
 	{
 		WtpHudMessages::add(szString, coord.x(), coord.y());
-		// the sound of a message is played here because a message that is only logged has none: once per sound and turn, all at once
-		// the messages came one after the other before
-		if (pszSound != NULL && pszSound[0] != 0 && WtpHudMessages::firstTimeSound(pszSound))
+		// the sound of a message is played here because a message that is only logged has none, so every message plays its own sound as before
+		if (pszSound != NULL && pszSound[0] != 0)
 		{
 			playGeneralSound(pszSound);
 		}
