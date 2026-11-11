@@ -11,7 +11,7 @@
 //
 // Reads "WTP_Settings.txt" from the mod folder at every turn change (created with defaults when missing), so values can be
 // changed while the game is running:
-//   PathfinderParallel=1     1 = child nodes of the path search are expanded with TBB (as before), 0 = always serial
+//   PathfinderParallel=1     1 = child nodes of the path search are expanded with TBB, 0 = always serial (default, faster in the measurements)
 //   PathfinderMinChildren=0  parallel only when at least this many child nodes have to be expanded in one step
 //
 // Remove the following define to compile all timing out. The settings keep working.
@@ -80,7 +80,7 @@ namespace WtpTiming
 		if (!kData.bInit)
 		{
 			kData.bInit = true;
-			kData.iPathfinderParallel = 1;
+			kData.iPathfinderParallel = 0; // measured: serial is about 25-30% faster in the late game
 			kData.iPathfinderMinChildren = 0;
 			LARGE_INTEGER kFreq;
 			kFreq.QuadPart = 0;
