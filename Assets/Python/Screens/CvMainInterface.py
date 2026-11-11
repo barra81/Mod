@@ -3404,11 +3404,10 @@ class CvMainInterface:
 				iWidth = int((25 * xResolution) / 100)
 				yCoord = yResolution - SADDLE_HEIGHT * 14/16 - self.SCORE_TEXT_BOTTOM_MARGIN_SMALL
 
-				# Scrollable Scoreboard
-				if (not pHeadSelectedCity):
-					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, yCoord - (iBtnHeight * (iCount - 1)), iWidth, (iBtnHeight * (iCount - 1)), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
-					screen.enableSelect("ScoreBackground", False)
-					screen.setTableColumnHeader("ScoreBackground", 0, "", iWidth - 10)
+				# Scrollable Scoreboard: the rows are collected first, the table is as wide as the longest entry (created after the loop)
+				aScoreRows = []
+				iTableY = yCoord # the yCoord is changed below
+				iMaxTextWidth = 0
 
 				i = 0
 				while (i < gc.getMAX_CIV_TEAMS()):
@@ -3491,8 +3490,9 @@ class CvMainInterface:
 
 									szBuffer = szBuffer + "</font>"
 
-									if ( CyInterface().determineWidth( szBuffer ) > iWidth ):
-										iWidth = CyInterface().determineWidth( szBuffer )
+									iTextWidth = CyInterface().determineWidth( szBuffer )
+									if ( iTextWidth > iMaxTextWidth ):
+										iMaxTextWidth = iTextWidth
 
 									szName = "ScoreText" + str(ePlayer)
 									if ( CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW or CyInterface().isInAdvancedStart() or pHeadSelectedCity != None):
@@ -3500,9 +3500,7 @@ class CvMainInterface:
 									else:
 										yCoord = yResolution - SADDLE_HEIGHT - self.SCORE_TEXT_BOTTOM_MARGIN_SMALL
 
-									if not pHeadSelectedCity:
-										iRow = screen.appendTableRow("ScoreBackground")
-										screen.setTableText("ScoreBackground", 0, iRow, szBuffer, "", WidgetTypes.WIDGET_CONTACT_CIV, ePlayer, -1, CvUtil.FONT_RIGHT_JUSTIFY)
+									aScoreRows.append((szBuffer, ePlayer))
 
 									CyInterface().checkFlashReset(ePlayer)
 
@@ -3518,6 +3516,14 @@ class CvMainInterface:
 					yCoord = yResolution - SADDLE_HEIGHT - self.SCORE_BACKGROUND_BOTTOM_MARGIN_SMALL
 
 				if not pHeadSelectedCity:
+					# width of the longest entry plus room for the table border and the scroll bar (never wider than before)
+					iWidth = min(iWidth, iMaxTextWidth + 40)
+					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY - (iBtnHeight * 7), iWidth, (iBtnHeight * 7), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
+					screen.enableSelect("ScoreBackground", False)
+					screen.setTableColumnHeader("ScoreBackground", 0, "", iWidth - 10)
+					for (szRowText, ePlayerRow) in aScoreRows:
+						iRow = screen.appendTableRow("ScoreBackground")
+						screen.setTableText("ScoreBackground", 0, iRow, szRowText, "", WidgetTypes.WIDGET_CONTACT_CIV, ePlayerRow, -1, CvUtil.FONT_RIGHT_JUSTIFY)
 					screen.show("ScoreBackground")
 
 	# Will update the help Strings
