@@ -2447,7 +2447,20 @@ bool CvDLLButtonPopup::launchEducationPopup(CvPopup* pPopup, CvPopupInfo &info)
 			WtpEducationEntry kEntry;
 			kEntry.szName = kUnit.getDescription();
 			kEntry.eUnit = eUnitType;
+			// a student is a profession (a colony with a free place in a school): a unit that becomes a student is listed first
 			kEntry.bStudent = (strstr(kUnit.getType(), "STUDENT") != NULL);
+			const ProfessionTypes eEducatedProfession = getProfessionForEducatedUnit(eUnitType);
+			if (eEducatedProfession != NO_PROFESSION)
+			{
+				const CvProfessionInfo& kEducatedProfession = GC.getProfessionInfo(eEducatedProfession);
+				for (int iYield = 0; iYield < kEducatedProfession.getNumYieldsProduced(); ++iYield)
+				{
+					if (kEducatedProfession.getYieldsProduced(iYield) == YIELD_EDUCATION)
+					{
+						kEntry.bStudent = true;
+					}
+				}
+			}
 			aSortedUnits.push_back(kEntry);
 		}
 	}
