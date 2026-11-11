@@ -662,6 +662,26 @@ std::wstring CyGame::getReplayMessageText(int i) const
 {
 	return (NULL != m_pGame ? m_pGame->getReplayMessageText(i) : L"");
 }
+static bool wtpGetCursor(POINT& pt)
+{
+	if (!GetCursorPos(&pt)) return false;
+	HWND hWnd = GetForegroundWindow();
+	if (hWnd == NULL || !ScreenToClient(hWnd, &pt)) return false;
+	return true;
+}
+
+int CyGame::getCursorClientX() const
+{
+	POINT pt;
+	return wtpGetCursor(pt) ? (int)pt.x : -1;
+}
+
+int CyGame::getCursorClientY() const
+{
+	POINT pt;
+	return wtpGetCursor(pt) ? (int)pt.y : -1;
+}
+
 int CyGame::getNumHudMessages() const
 {
 	return WtpHudMessages::getNum();

@@ -3990,8 +3990,20 @@ class CvMainInterface:
 			iWidth = max(340, int(xRes * 0.17))
 			iHeaderHeight = iRow
 			iHeight = iPad * 2 + iHeaderHeight + (len(aiCandidates) + 1) * iRow
-			iX = min(max(0, iMouseX + 12), xRes - iWidth - 4)
-			iY = min(max(0, iMouseY + 12), yRes - iHeight - 4)
+			# anchored at the cursor: left of it, on the right side if there is not enough room on the left
+			iCursorX = gc.getGame().getCursorClientX()
+			iCursorY = gc.getGame().getCursorClientY()
+			if iCursorX < 0 or iCursorY < 0:
+				iCursorX = iMouseX
+				iCursorY = iMouseY
+			iCursorX = min(max(0, iCursorX), xRes)
+			iCursorY = min(max(0, iCursorY), yRes)
+			iGap = 8
+			if iCursorX - iGap - iWidth >= 0:
+				iX = iCursorX - iGap - iWidth
+			else:
+				iX = min(iCursorX + iGap, xRes - iWidth - 4)
+			iY = min(max(0, iCursorY - iPad), yRes - iHeight - 4)
 			self.iUpgradeCity = pCity.getID()
 
 			# a denser background (the panel style is semi-transparent)

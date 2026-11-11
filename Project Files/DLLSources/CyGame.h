@@ -169,6 +169,8 @@ public:
 	uint getNumReplayMessages() const;
 	// WTP: the messages of the turn for the message panel of the main interface
 	int getNumHudMessages() const;
+	int getCursorClientX() const; // WTP: mouse position in the game window (-1 if unknown)
+	int getCursorClientY() const;
 	std::wstring getHudMessageText(int i) const;
 	int getHudMessageX(int i) const;
 	int getHudMessageY(int i) const;
