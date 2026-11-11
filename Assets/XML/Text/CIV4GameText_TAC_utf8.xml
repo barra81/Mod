@@ -3369,6 +3369,11 @@
 		<German>[COLOR_RED]%s1_city[COLOR_REVERT] : Produktion steht still, es fehlen [COLOR_RED]%d4%F2_yield_icon pro Runde[COLOR_REVERT] für die Produktion von %F3_yield_icon</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_MORE</Tag>
+		<English>[COLOR_FONT_CREAM]%d1_Num older messages: click to see them (page %d2_Num of %d3_Num)[COLOR_REVERT]</English>
+		<German>[COLOR_FONT_CREAM]%d1_Num ältere Meldungen: Klick zum Anzeigen (Seite %d2_Num von %d3_Num)[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_PREVIOUS</Tag>
 		<English>[COLOR_FONT_CREAM]Show the messages of the previous turn[COLOR_REVERT]</English>
 		<German>[COLOR_FONT_CREAM]Meldungen der vorherigen Runde anzeigen[COLOR_REVERT]</German>

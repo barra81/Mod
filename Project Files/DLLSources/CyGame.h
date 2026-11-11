@@ -172,6 +172,10 @@ public:
 	std::wstring getHudMessageText(int i) const;
 	int getHudMessageX(int i) const;
 	int getHudMessageY(int i) const;
+	int getNumHudMessagesPrevious() const;
+	std::wstring getHudMessagePreviousText(int i) const;
+	int getHudMessagePreviousX(int i) const;
+	int getHudMessagePreviousY(int i) const;
 	CyReplayInfo* getReplayInfo() const;
 	void saveReplay(int iPlayer);
 	void addPlayer(int /*PlayerTypes*/ eNewPlayer, int /*LeaderHeadTypes*/ eLeader, int /*CivilizationTypes*/ eCiv);

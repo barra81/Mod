@@ -292,6 +292,8 @@ class CvMainInterface:
 	BUTTON_PRIVATE_BUILD = 754 # WTP: private pioneer
 	BUTTON_AUTO_ASSIGN_TARGET = 755 # WTP: city screen: the colony takes colonists of the job automation
 	BUTTON_MESSAGE_PANEL = 756 # WTP: the message panel of the turn (click: expand / collapse)
+	BUTTON_MESSAGE_MORE = 758 # WTP: message panel footer: the next older page of messages
+	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
 	PRIVATE_BUILD_RANGE = 3 # WTP: as CvPlayer::startPrivateBuild
@@ -579,6 +581,8 @@ class CvMainInterface:
 		# WTP: message panel (the messages of the turn, click to expand)
 		self.bMessagePanelExpanded = False
 		self.tMessagePanelKey = None
+		self.bMessagePanelPrevious = False # shows the messages of the turn before
+		self.iMessagePage = 0 # page of the expanded panel (0 = the newest messages)
 		self.aszMessageLines = []
 		self.atMessageTargets = []
 		self.dMessageCapitals = {}
@@ -3794,6 +3798,15 @@ class CvMainInterface:
 			# WTP: message panel of the turn: a click expands or collapses it
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_PANEL):
 				self.bMessagePanelExpanded = not self.bMessagePanelExpanded
+				self.bMessagePanelPrevious = False
+				self.iMessagePage = 0
+				self.updateMessagePanel()
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_MORE):
+				self.iMessagePage += 1 # (the panel starts again with the newest messages after the last page)
+				self.updateMessagePanel()
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_PREVIOUS):
+				self.bMessagePanelPrevious = not self.bMessagePanelPrevious
+				self.iMessagePage = 0
 				self.updateMessagePanel()
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_LINE):
 				self.clickMessageLine(inputClass.getData2())
@@ -3917,18 +3930,28 @@ class CvMainInterface:
 		screen.deleteWidget("HudMsgPanelBack1")
 		screen.deleteWidget("HudMsgPanelBack2")
 		screen.hide("HudMsgHeader")
+		screen.hide("HudMsgFooterMore")
+		screen.hide("HudMsgFooterPrevious")
 
 	def updateMessagePanel(self):
 
 		try:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
 			game = gc.getGame()
-			iNum = game.getNumHudMessages()
+			iNumCurrent = game.getNumHudMessages()
+			iNumPrevious = game.getNumHudMessagesPrevious()
+			bPrevious = self.bMessagePanelPrevious and self.bMessagePanelExpanded
+			if bPrevious:
+				iNum = iNumPrevious
+			else:
+				iNum = iNumCurrent
 			# (MESSAGE_PANEL_ENABLED = 0: the DLL collects no messages, so there is nothing to show)
-			bShow = (iNum > 0
+			bShow = (iNumCurrent > 0
 				and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW and not CyInterface().isCityScreenUp())
-			if iNum == 0:
+			if iNumCurrent == 0:
 				self.bMessagePanelExpanded = False
+				self.bMessagePanelPrevious = False
+				self.iMessagePage = 0
 
 			if not bShow:
 				if self.tMessagePanelKey is not None:
@@ -3938,7 +3961,7 @@ class CvMainInterface:
 
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
-			tKey = (iNum, self.bMessagePanelExpanded, xRes, yRes)
+			tKey = (iNumCurrent, iNumPrevious, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, xRes, yRes)
 			if tKey == self.tMessagePanelKey:
 				return
 			self.tMessagePanelKey = tKey
@@ -3959,29 +3982,61 @@ class CvMainInterface:
 			aiX = []
 			aiY = []
 			for i in range(iNum):
-				aszMessages.append(game.getHudMessageText(i))
-				aiX.append(game.getHudMessageX(i))
-				aiY.append(game.getHudMessageY(i))
+				if bPrevious:
+					aszMessages.append(game.getHudMessagePreviousText(i))
+					aiX.append(game.getHudMessagePreviousX(i))
+					aiY.append(game.getHudMessagePreviousY(i))
+				else:
+					aszMessages.append(game.getHudMessageText(i))
+					aiX.append(game.getHudMessageX(i))
+					aiY.append(game.getHudMessageY(i))
 			aatLines = [self.wrapMessage(szMessage, iCharsPerLine) for szMessage in aszMessages]
 			atTargets = self.getMessageTargets(aszMessages, aiX, aiY)
 			self.atMessageTargets = atTargets
 
-			# which messages: the newest ones that fit
+			# which messages: collapsed the newest ones that fit; expanded pages of the full height of the panel, the newest page
+			# first, a click on the footer shows the next older page (and after the last one the newest again)
+			bFooterPrevious = self.bMessagePanelExpanded and (iNumPrevious > 0 or bPrevious)
 			if self.bMessagePanelExpanded:
-				iMaxLines = max(6, (int(yRes * 0.80) - iY - iHeaderHeight - iGap - 2 * iPad) / iLine)
+				iFooterLines = 1 # the footer of the previous turn
+				iMaxLines = max(6, (int(yRes * 0.80) - iY - iHeaderHeight - iGap - 2 * iPad) / iLine - 2 * iFooterLines)
 			else:
+				iFooterLines = 0
 				iMaxLines = 6
-			iFirst = iNum
-			iSum = 0
-			while iFirst > 0 and (iSum + len(aatLines[iFirst - 1]) <= iMaxLines or iFirst == iNum):
-				iFirst -= 1
-				iSum += len(aatLines[iFirst])
+			aPages = []
+			iEnd = iNum
+			while iEnd > 0:
+				iFirst = iEnd
+				iSum = 0
+				while iFirst > 0 and (iSum + len(aatLines[iFirst - 1]) <= iMaxLines or iFirst == iEnd):
+					iFirst -= 1
+					iSum += len(aatLines[iFirst])
+				aPages.append((iFirst, iEnd, iSum))
+				iEnd = iFirst
+				if not self.bMessagePanelExpanded:
+					break
+			if len(aPages) == 0:
+				aPages.append((0, 0, 0))
+			bMore = (len(aPages) > 1)
+			if self.iMessagePage >= len(aPages):
+				self.iMessagePage = 0
+			iFirst, iLast, iSum = aPages[self.iMessagePage]
 			iTextLines = iSum
+			iFooterHeight = 0
+			if bMore:
+				iFooterHeight += iLine
+			if bFooterPrevious:
+				iFooterHeight += iLine
+			if iFooterHeight > 0:
+				iFooterHeight += iGap / 2
 			iTextHeight = iTextLines * iLine + iPad / 2
-			iHeight = iHeaderHeight + iGap + iTextHeight + iPad
+			iHeight = iHeaderHeight + iGap + iTextHeight + iFooterHeight + iPad
 
 			if self.bMessagePanelExpanded:
-				szHeader = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_COLLAPSE", (iNum,))
+				if bPrevious:
+					szHeader = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_PREVIOUS_HEADER", (iNum,))
+				else:
+					szHeader = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_COLLAPSE", (iNum,))
 			else:
 				szHeader = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_EXPAND", (iNum,))
 
@@ -4011,7 +4066,7 @@ class CvMainInterface:
 			iLabel = 0
 			iTextY = iY + iHeaderHeight + iGap
 			iRow = 0
-			for i in range(iFirst, iNum):
+			for i in range(iFirst, iLast):
 				iTargetX, iTargetY, eContact = atTargets[i]
 				for iPart in range(len(aatLines[i])):
 					szLine = aatLines[i][iPart]
@@ -4037,6 +4092,26 @@ class CvMainInterface:
 					screen.moveToFront(szName)
 					self.aszMessageLines.append(szName)
 					iRow += 1
+
+			# footer: further (older) messages, the messages of the turn before
+			iFooterY = iTextY + iTextLines * iLine + iPad / 2 + iGap / 2
+			screen.hide("HudMsgFooterMore")
+			screen.hide("HudMsgFooterPrevious")
+			if bMore:
+				iOlder = aPages[self.iMessagePage][0]
+				szMore = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_MORE", (iOlder, self.iMessagePage + 1, len(aPages)))
+				screen.setText("HudMsgFooterMore", "Background", self.setFontSize(szMore, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iFooterY, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_MORE, -1)
+				screen.show("HudMsgFooterMore")
+				screen.moveToFront("HudMsgFooterMore")
+				iFooterY += iLine
+			if bFooterPrevious:
+				if bPrevious:
+					szPrevious = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_CURRENT", ())
+				else:
+					szPrevious = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_PREVIOUS", ())
+				screen.setText("HudMsgFooterPrevious", "Background", self.setFontSize(szPrevious, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iFooterY, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PREVIOUS, -1)
+				screen.show("HudMsgFooterPrevious")
+				screen.moveToFront("HudMsgFooterPrevious")
 
 			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
 			screen.show("HudMsgHeader")

@@ -32,9 +32,36 @@ namespace WtpHudMessages
 		kEntry.iY = iY;
 		entries().push_back(kEntry);
 	}
+	// the messages of the turn before (shown on demand by the panel)
+	static std::vector<Entry>& previousEntries()
+	{
+		static std::vector<Entry> aEntries;
+		return aEntries;
+	}
 	void clear()
 	{
+		if (!entries().empty())
+		{
+			previousEntries() = entries();
+		}
 		entries().clear();
+	}
+	int getNumPrevious()
+	{
+		return (int)previousEntries().size();
+	}
+	const CvWString& getPreviousText(int i)
+	{
+		static const CvWString szEmpty;
+		return (i >= 0 && i < getNumPrevious()) ? previousEntries()[i].szText : szEmpty;
+	}
+	int getPreviousX(int i)
+	{
+		return (i >= 0 && i < getNumPrevious()) ? previousEntries()[i].iX : -1;
+	}
+	int getPreviousY(int i)
+	{
+		return (i >= 0 && i < getNumPrevious()) ? previousEntries()[i].iY : -1;
 	}
 	int getNum()
 	{

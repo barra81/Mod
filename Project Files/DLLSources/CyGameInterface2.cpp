@@ -72,6 +72,10 @@ void CyGamePythonInterface2(python::class_<CyGame>& x)
 		.def("getHudMessageText", &CyGame::getHudMessageText, "wstring (int)")
 		.def("getHudMessageX", &CyGame::getHudMessageX, "int (int)")
 		.def("getHudMessageY", &CyGame::getHudMessageY, "int (int)")
+		.def("getNumHudMessagesPrevious", &CyGame::getNumHudMessagesPrevious, "int () - messages of the turn before")
+		.def("getHudMessagePreviousText", &CyGame::getHudMessagePreviousText, "wstring (int)")
+		.def("getHudMessagePreviousX", &CyGame::getHudMessagePreviousX, "int (int)")
+		.def("getHudMessagePreviousY", &CyGame::getHudMessagePreviousY, "int (int)")
 		.def("getReplayInfo", &CyGame::getReplayInfo, python::return_value_policy<python::manage_new_object>())
 		;
 }

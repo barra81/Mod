@@ -434,6 +434,10 @@ namespace WtpHudMessages
 	const CvWString& getText(int i);
 	int getX(int i);
 	int getY(int i);
+	int getNumPrevious();
+	const CvWString& getPreviousText(int i);
+	int getPreviousX(int i);
+	int getPreviousY(int i);
 }
 
 

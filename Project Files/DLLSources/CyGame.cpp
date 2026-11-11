@@ -678,6 +678,22 @@ int CyGame::getHudMessageY(int i) const
 {
 	return WtpHudMessages::getY(i);
 }
+int CyGame::getNumHudMessagesPrevious() const
+{
+	return WtpHudMessages::getNumPrevious();
+}
+std::wstring CyGame::getHudMessagePreviousText(int i) const
+{
+	return std::wstring(WtpHudMessages::getPreviousText(i).GetCString());
+}
+int CyGame::getHudMessagePreviousX(int i) const
+{
+	return WtpHudMessages::getPreviousX(i);
+}
+int CyGame::getHudMessagePreviousY(int i) const
+{
+	return WtpHudMessages::getPreviousY(i);
+}
 uint CyGame::getNumReplayMessages() const
 {
 	return (NULL != m_pGame ? m_pGame->getNumReplayMessages() : 0);
