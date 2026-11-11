@@ -735,10 +735,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_RISE</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ has risen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ [COLOR_GREEN]has risen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] em %s2_civ aumentou para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix pour [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] a augmenté pour atteindre %d3[ICON_GOLD] dans les %s2_civ</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ ist auf %d3[ICON_GOLD] gestiegen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ ist auf %d3[ICON_GOLD] [COLOR_GREEN]gestiegen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ è salito a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en %s2_civ ha subido a %d3[ICON_GOLD].</Spanish>
 		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в %s2_civ поднялась до %d3[ICON_GOLD]</Russian>
@@ -746,10 +746,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_FALL</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ has fallen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ [COLOR_RED]has fallen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] em %s2_civ caiu para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix pour [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] a chuté pour atteindre %d3[ICON_GOLD] dans les %s2_civ</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ ist auf %d3[ICON_GOLD] gefallen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ ist auf %d3[ICON_GOLD] [COLOR_RED]gefallen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ è sceso a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en %s2_civ ha bajado a %d3[ICON_GOLD].</Spanish>
 		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в %s2_civ упала до %d3[ICON_GOLD]</Russian>
@@ -757,40 +757,40 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_RISE_AFRICA</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa has risen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa [COLOR_GREEN]has risen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] na África aumentou para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en Afrique a augmenté pour atteindre %d3[ICON_GOLD]</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Afrika ist auf %d3[ICON_GOLD] gestiegen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Afrika ist auf %d3[ICON_GOLD] [COLOR_GREEN]gestiegen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa è salito a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en África ha subido a %d3[ICON_GOLD].</Spanish>
 		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Африке выросла до %d3[ICON_GOLD]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_FALL_AFRICA</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa has fallen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa [COLOR_RED]has fallen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] na África caiu para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en Afrique a chuté pour atteindre %d3[ICON_GOLD]</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Afrika ist auf %d3[ICON_GOLD] gefallen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Afrika ist auf %d3[ICON_GOLD] [COLOR_RED]gefallen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa è sceso a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en África ha bajado a %d3[ICON_GOLD].</Spanish>
 		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Африке упала до %d3[ICON_GOLD]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_RISE_PORT_ROYAL</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal has risen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal [COLOR_GREEN]has risen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] em Port Royal aumentou para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] à Port Royal a augmenté pour atteindre %d3[ICON_GOLD]</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal ist auf %d3[ICON_GOLD] gestiegen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal ist auf %d3[ICON_GOLD] [COLOR_GREEN]gestiegen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] a Port Royal è salito a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en Port Royal ha subido a %d3[ICON_GOLD].</Spanish>
 		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Порт-Ройале выросла до %d3[ICON_GOLD]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_FALL_PORT_ROYAL</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal has fallen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal [COLOR_RED]has fallen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] em Port Royal caiu para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] à Port Royal a chuté pour atteindre %d3[ICON_GOLD]</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal ist auf %d3[ICON_GOLD] gefallen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal ist auf %d3[ICON_GOLD] [COLOR_RED]gefallen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] a Port Royal è sceso a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en Port Royal ha bajado a %d3[ICON_GOLD].</Spanish>
 		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Порт-Ройале упала до %d3[ICON_GOLD]</Russian>
