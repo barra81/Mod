@@ -211,7 +211,7 @@ public:
 	// will be added until the project is finished (may be NULL). bPossible is false if a missing material cannot be bought
 	int getBuyMissingYieldsPrice(UnitTypes eUnit, BuildingTypes eBuilding, bool& bPossible, const int* aiExpected = NULL) const;
 	bool buyMissingYields();
-	void checkBuyMaterialsPanel();
+	bool isBuyMaterialsPanelWanted() const; // the end of the turn asks for it (WtpBuyMaterialsPanel)
 
 	CultureLevelTypes cultureDistance(int iDX, int iDY) const;
 

@@ -2636,6 +2636,49 @@ namespace WtpDeferredEducation
 	}
 }
 
+namespace WtpBuyMaterialsPanel
+{
+	bool relaunch()
+	{
+		static bool s_bWaiting = false;
+		static int s_iTurn = -1;
+		static std::vector<int> s_aiAsked; // the cities that were asked in this turn
+		if (s_bWaiting)
+		{
+			if (gDLL->getInterfaceIFace()->isPopupUp() || gDLL->getInterfaceIFace()->isPopupQueued())
+			{
+				return true;
+			}
+			s_bWaiting = false;
+		}
+		if (s_iTurn != GC.getGameINLINE().getGameTurn())
+		{
+			s_iTurn = GC.getGameINLINE().getGameTurn();
+			s_aiAsked.clear();
+		}
+		const PlayerTypes ePlayer = GC.getGameINLINE().getActivePlayer();
+		CvPlayer& kPlayer = GET_PLAYER(ePlayer);
+		bool bLaunched = false;
+		int iLoop;
+		for (CvCity* pCity = kPlayer.firstCity(&iLoop); pCity != NULL; pCity = kPlayer.nextCity(&iLoop))
+		{
+			if (std::find(s_aiAsked.begin(), s_aiAsked.end(), pCity->getID()) != s_aiAsked.end())
+			{
+				continue;
+			}
+			if (pCity->isBuyMaterialsPanelWanted())
+			{
+				s_aiAsked.push_back(pCity->getID());
+				CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSEPRODUCTION, pCity->getID(), WTP_BUY_MATERIALS_POPUP);
+				gDLL->getInterfaceIFace()->addPopup(pInfo, ePlayer, false, true);
+				bLaunched = true;
+			}
+		}
+		s_bWaiting = bLaunched;
+		return bLaunched;
+	}
+}
+
 static bool wtpEducationEntryLess(const WtpEducationEntry& kA, const WtpEducationEntry& kB)
 {
 	if (kA.bStudent != kB.bStudent)

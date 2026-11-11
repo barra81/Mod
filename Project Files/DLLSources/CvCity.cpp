@@ -573,7 +573,6 @@ void CvCity::doTurn()
 	if (!isDisorder())
 	{
 		doProduction(bAllowNoProduction);
-		checkBuyMaterialsPanel(); // WTP
 	}
 
 	if (!isNative())
@@ -2831,34 +2830,29 @@ bool CvCity::buyMissingYields()
 	return true;
 }
 
-// WTP: one turn before a project is finished: if materials will be missing then, a panel offers to buy them
-void CvCity::checkBuyMaterialsPanel()
+// WTP: at the end of the turn: is the project finished next turn while materials will be missing then (and can they be bought)?
+bool CvCity::isBuyMaterialsPanelWanted() const
 {
 	if (!isHuman() || isNative() || isDisorder() || isProductionAutomated() || !isProduction() || getOwnerINLINE() != GC.getGameINLINE().getActivePlayer())
 	{
-		return;
+		return false;
 	}
 	const UnitTypes eUnit = getProductionUnit();
 	const BuildingTypes eBuilding = getProductionBuilding();
 	if (eUnit == NO_UNIT && eBuilding == NO_BUILDING)
 	{
-		return;
+		return false;
 	}
 	const int iTurns = (eUnit != NO_UNIT) ? getProductionTurnsLeft(eUnit, 0) : getProductionTurnsLeft(eBuilding, 0);
 	if (iTurns != 1)
 	{
-		return;
+		return false;
 	}
 	int aiYields[NUM_YIELD_TYPES];
 	calculateNetYields(aiYields, NULL, NULL, false);
 	bool bPossible = false;
 	const int iPrice = getBuyMissingYieldsPrice(eUnit, eBuilding, bPossible, aiYields);
-	if (!bPossible || iPrice <= 0 || GET_PLAYER(getOwnerINLINE()).getGold() < iPrice)
-	{
-		return;
-	}
-	CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSEPRODUCTION, getID(), WTP_BUY_MATERIALS_POPUP);
-	gDLL->getInterfaceIFace()->addPopup(pInfo, getOwnerINLINE(), false);
+	return bPossible && iPrice > 0 && GET_PLAYER(getOwnerINLINE()).getGold() >= iPrice;
 }
 
 void CvCity::hurry(HurryTypes eHurry)
