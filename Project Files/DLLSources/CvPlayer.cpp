@@ -20266,6 +20266,66 @@ bool CvPlayer::isIndependenceMilitaryUnit(const CvUnit& kUnit)
 	return kUnit.getDomainType() == DOMAIN_LAND && !kUnit.isOnlyDefensive() && !kUnit.isUnarmed();
 }
 
+// WTP: waypoint of a native settlement
+int CvPlayer::getNativeWaypoint(int iPlotIndex) const
+{
+	for (size_t i = 0; i + 1 < m_aiNativeWaypoints.size(); i += 2)
+	{
+		if (m_aiNativeWaypoints[i] == iPlotIndex)
+		{
+			return m_aiNativeWaypoints[i + 1];
+		}
+	}
+	return -1;
+}
+
+void CvPlayer::setNativeWaypoint(int iPlotIndex, int iCityId)
+{
+	for (size_t i = 0; i + 1 < m_aiNativeWaypoints.size(); i += 2)
+	{
+		if (m_aiNativeWaypoints[i] == iPlotIndex)
+		{
+			if (iCityId < 0)
+			{
+				m_aiNativeWaypoints.erase(m_aiNativeWaypoints.begin() + i, m_aiNativeWaypoints.begin() + i + 2);
+			}
+			else
+			{
+				m_aiNativeWaypoints[i + 1] = iCityId;
+			}
+			return;
+		}
+	}
+	if (iCityId >= 0)
+	{
+		m_aiNativeWaypoints.push_back(iPlotIndex);
+		m_aiNativeWaypoints.push_back(iCityId);
+	}
+}
+
+// a unit that was just created in a native settlement of this player's mission / trading post: it goes to the waypoint
+void CvPlayer::sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity)
+{
+	if (pUnit == NULL || pNativeCity == NULL || !isHuman())
+	{
+		return;
+	}
+	const int iCityId = getNativeWaypoint(GC.getMapINLINE().plotNum(pNativeCity->getX_INLINE(), pNativeCity->getY_INLINE()));
+	if (iCityId < 0)
+	{
+		return;
+	}
+	CvCity* pTarget = getCity(iCityId);
+	CvSelectionGroup* pGroup = pUnit->getGroup();
+	if (pTarget == NULL || pGroup == NULL)
+	{
+		return;
+	}
+	pGroup->pushMission(MISSION_MOVE_TO, pTarget->getX_INLINE(), pTarget->getY_INLINE());
+	CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT", pUnit->getNameKey(), pNativeCity->getNameKey(), pTarget->getNameKey());
+	gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, pTarget->coord(), "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, pUnit->getButton(), COLOR_WHITE, true, true);
+}
+
 void CvPlayer::applyMissionaryPoints(CvCity* pCity)
 {
 	FAssert(pCity->getOwnerINLINE() == getID());
@@ -20300,6 +20360,8 @@ void CvPlayer::applyMissionaryPoints(CvCity* pCity)
 
 								CvWString szBuffer = gDLL->getText("TXT_KEY_NATIVES_CONVERTED", pCity->getNameKey());
 								gDLL->UI().addPlayerMessage(ePlayer, true, GC.getEVENT_MESSAGE_TIME(), szBuffer, pCity, "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, GC.getUnitInfo(eUnit).getButton(), COLOR_UNIT_TEXT, true, true);
+
+								GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pUnit, pCity); // WTP
 
 								changeMissionaryPoints(ePlayer, -iThreshold);
 								setMissionaryThresholdMultiplier(ePlayer, (getMissionaryThresholdMultiplier(ePlayer) * (100 + GC.getDefineINT("MISSIONARY_THRESHOLD_INCREASE"))) / 100);
@@ -20439,6 +20501,8 @@ void CvPlayer::applyTradePostMestizoPoints(CvCity* pCity)
 
 							CvWString szBuffer = gDLL->getText("TXT_KEY_TRADE_POST_MESTIZO_CREATED", pCity->getNameKey());
 							gDLL->UI().addPlayerMessage(ePlayer, true, GC.getEVENT_MESSAGE_TIME(), szBuffer, pCity, "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, GC.getUnitInfo(eUnit).getButton(), COLOR_UNIT_TEXT, true, true);
+
+							GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pUnit, pCity); // WTP
 
 							changeTradePostMestizoPoints(ePlayer, -iThreshold);
 						}

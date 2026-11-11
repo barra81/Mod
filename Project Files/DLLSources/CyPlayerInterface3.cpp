@@ -118,6 +118,8 @@ void CyPlayerPythonInterface3(python::class_<CyPlayer>& x)
 		.def("getYieldSoldTotal", &CyPlayer::getYieldSoldTotal, "int (TradeLocationTypes eLocation, int /*YieldTypes*/ eIndex)")
 		.def("getMissionaryPoints", &CyPlayer::getMissionaryPoints, "int (int /*PlayerTypes*/ ePlayer)") 
 		.def("missionaryThreshold", &CyPlayer::missionaryThreshold, "int (int /*PlayerTypes*/ ePlayer)") 
+		.def("getNativeWaypoint", &CyPlayer::getNativeWaypoint, "int (int iPlotIndex) - WTP: id of the city that is the waypoint of the native settlement, -1 if none")
+		.def("setNativeWaypoint", &CyPlayer::setNativeWaypoint, "void (int iPlotIndex, int iCityId) - WTP: -1 removes the waypoint")
 		.def("getMissionaryRateModifier", &CyPlayer::getMissionaryRateModifier, "int (int /*PlayerTypes*/ ePlayer)")
 		//WTP, ray Kings Used Ship - START
 		.def("getRandomUsedShipClassTypeID", &CyPlayer::getRandomUsedShipClassTypeID, "int ()") 

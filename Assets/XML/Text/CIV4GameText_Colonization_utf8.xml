@@ -235,6 +235,26 @@
 		<German>[COLOR_SELECTED_TEXT]%s2_CityName[COLOR_REVERT][NEWLINE][NEWLINE]Naechste Runde waere [COLOR_BUILDING_TEXT]%s1_Project[COLOR_REVERT] fertig, aber nicht alle Materialien werden da sein. Jetzt kaufen?%s3_Requires</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_HEADER</Tag>
+		<English>Waypoint for units from %s1_Village: choose the destination city</English>
+		<German>Wegpunkt für Einheiten aus %s1_Village: Zielstadt wählen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_REMOVE</Tag>
+		<English>Remove waypoint</English>
+		<German>Wegpunkt entfernen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_UNIT_SENT</Tag>
+		<English>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] from %s2_Village is on its way to %s3_City (waypoint).</English>
+		<German>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] aus %s2_Village ist auf dem Weg nach %s3_City (Wegpunkt).</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_COLUMN</Tag>
+		<English>Waypoint</English>
+		<German>Wegpunkt</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_SETTLE_NEW_CITY_NAME</Tag>
 		<English>Settlement name :</English>
 		<Portuguese>Nome da colônia:</Portuguese>

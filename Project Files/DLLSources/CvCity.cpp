@@ -9098,6 +9098,7 @@ void CvCity::doNativeTradePost()
 			// we send a message now
 			CvWString szBuffer = gDLL->getText("TXT_KEY_TRADE_POST_CREATED_TREASURE", getNameKey());
 			gDLL->UI().addPlayerMessage(ePlayer, false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, pTreasure->getButton(), COLOR_WHITE, true, true);
+			GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pTreasure, this); // WTP
 		}
 	}
 	return;

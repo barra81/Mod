@@ -6,6 +6,8 @@
 
 // WTP: data2 of a BUTTONPOPUP_CHOOSEPRODUCTION popup that offers to buy the missing materials of the project that is finished next turn
 static const int WTP_BUY_MATERIALS_POPUP = 1001;
+static const int WTP_NATIVE_WAYPOINT_POPUP = 1002; // data1 = plot index of the native settlement
+static const int WTP_NATIVE_WAYPOINT_REMOVE = 9999; // button id: remove the waypoint
 
 class CvSavegameReader;
 class CvSavegameWriter;
