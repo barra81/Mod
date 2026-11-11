@@ -15,6 +15,24 @@
 #include "CvPopupReturn.h"
 
 class CvPopup;
+
+// WTP: graduating students whose specialty the player wants to choose at the end of the turn ("ask me again at the end of the turn" in the education popup)
+namespace WtpDeferredEducation
+{
+	void add(int iCityId, int iUnitId);
+	// opens the education popups of the deferred students that still wait. true if a popup was opened (the turn must not end yet)
+	bool relaunch();
+}
+
+// WTP: the units of the education lists: alphabetical, a student first
+struct WtpEducationEntry
+{
+	CvWString szName;
+	UnitTypes eUnit;
+	bool bStudent;
+};
+void wtpSortEducationEntries(std::vector<WtpEducationEntry>& aEntries);
+
 class CvDLLButtonPopup
 {
 

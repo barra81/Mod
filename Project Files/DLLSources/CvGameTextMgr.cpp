@@ -32,6 +32,7 @@
 #include "CyArgsList.h"
 #include "CvDLLPythonIFaceBase.h"
 #include "DesyncMonitor.h"
+#include "CvDLLButtonPopup.h"
 
 int shortenID(int iId)
 {
@@ -10074,14 +10075,25 @@ void CvGameTextMgr::setCitizenHelp(CvWStringBuffer &szString, const CvCity& kCit
 						szString.append(NEWLINE);
 						szString.append(gDLL->getText("TXT_KEY_MISC_HELP_STUDENT", iTurns));
 					}
+					// WTP: the professions that can be learned, alphabetical
+					std::vector<WtpEducationEntry> aEducationEntries;
 					for (int iUnit = 0; iUnit < GC.getNumUnitInfos(); ++iUnit)
 					{
-						int iPrice = kCity.getSpecialistTuition((UnitTypes) iUnit);
-						if (iPrice >= 0)
+						if (kCity.getSpecialistTuition((UnitTypes) iUnit) >= 0)
 						{
-							szString.append(NEWLINE);
-							szString.append(gDLL->getText("TXT_KEY_MISC_HELP_GRADUATION_CHANCE", GC.getUnitInfo((UnitTypes) iUnit).getTextKeyWide(), iPrice));
+							WtpEducationEntry kEntry;
+							kEntry.szName = GC.getUnitInfo((UnitTypes) iUnit).getDescription();
+							kEntry.eUnit = (UnitTypes) iUnit;
+							kEntry.bStudent = false;
+							aEducationEntries.push_back(kEntry);
 						}
+					}
+					wtpSortEducationEntries(aEducationEntries);
+					for (size_t iEntry = 0; iEntry < aEducationEntries.size(); ++iEntry)
+					{
+						const UnitTypes eEducationUnit = aEducationEntries[iEntry].eUnit;
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_MISC_HELP_GRADUATION_CHANCE", GC.getUnitInfo(eEducationUnit).getTextKeyWide(), kCity.getSpecialistTuition(eEducationUnit)));
 					}
 				}
 			}

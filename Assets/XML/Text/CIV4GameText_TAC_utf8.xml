@@ -3388,4 +3388,9 @@
 		<English>[COLOR_FONT_CREAM]Messages of the previous turn: %d1_Num[COLOR_REVERT]</English>
 		<German>[COLOR_FONT_CREAM]Meldungen der vorherigen Runde: %d1_Num[COLOR_REVERT]</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_EDUCATION_ASK_LATER</Tag>
+		<English>Ask me again at the end of the turn</English>
+		<German>Zum Ende der Runde noch einmal fragen</German>
+	</TEXT>
 </Civ4GameText>
