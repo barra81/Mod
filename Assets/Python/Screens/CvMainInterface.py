@@ -1785,13 +1785,18 @@ class CvMainInterface:
 
 	# Will hide and show the selection buttons and their associated buttons
 	# WTP: is an own ship in the port of this sail command (Europe / Africa / Port Royal)?
-	def isOwnShipInPort(self, iCommand):
+	def isOwnShipInPort(self, iAction):
 		try:
-			if iCommand == CommandTypes.COMMAND_SAIL_TO_EUROPE:
+			# the sail buttons are automate actions (AUTOMATE_SAIL_TO_*), recognized by their button art (the Africa / Port Royal
+			# automate types are not exposed to Python); the plain sail commands are handled as well
+			kAction = gc.getActionInfo(iAction)
+			szButton = kAction.getButton().lower()
+			iCommand = kAction.getCommandType()
+			if iCommand == CommandTypes.COMMAND_SAIL_TO_EUROPE or "sail_to_mother" in szButton:
 				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_EUROPE
-			elif iCommand == CommandTypes.COMMAND_SAIL_TO_AFRICA:
+			elif iCommand == CommandTypes.COMMAND_SAIL_TO_AFRICA or "sail_to_africa" in szButton:
 				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_AFRICA
-			elif iCommand == CommandTypes.COMMAND_SAIL_TO_PORT_ROYAL:
+			elif iCommand == CommandTypes.COMMAND_SAIL_TO_PORT_ROYAL or "sail_to_portroyal" in szButton:
 				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_PORT_ROYAL
 			else:
 				return False
@@ -2119,7 +2124,7 @@ class CvMainInterface:
 							screen.setHitMargins(szName, 18, 18)
 							if not CyInterface().canHandleAction(i, False):
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_DISABLED_BUTTON").getPath())
-							elif pHeadSelectedUnit.isActionRecommended(i) or self.isOwnShipInPort(gc.getActionInfo(i).getCommandType()):
+							elif pHeadSelectedUnit.isActionRecommended(i) or self.isOwnShipInPort(i):
 								# (WTP: the buttons to sail to Europe / Africa / Port Royal are marked when an own ship is in that port)
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath())
 							ActionButtonList.append(szName)

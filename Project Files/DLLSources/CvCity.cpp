@@ -8272,7 +8272,9 @@ void CvCity::doYields()
 
 							if (iTurns == 2 || iTurns == 1) {
 								CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_STUDENT_ALMOST_GRADUATED", iTurns, getNameKey(), GC.getBuildingInfo(eSchoolBuilding).getTextKeyWide());
+								WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 								gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_CULTUREEXPANDS", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(YIELD_EDUCATION).getButton(), COLOR_WHITE, true, true);
+								WtpHudMessages::setPriority(false);
 
 							}
 							// TAC - Messages - Ray - END
