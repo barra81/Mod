@@ -5762,7 +5762,9 @@ void CvCity::calculateNetYields(int aiYields[NUM_YIELD_TYPES], int* aiProducedYi
 				int iMissing = aiConsumedYields[eYieldConsumed] - aiProducedYields[eYieldConsumed] * getBaseYieldRateModifier(eYieldConsumed) / 100 - getYieldStored(eYieldConsumed);
 				iMissing = std::max(1, iMissing);
 				CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_NO_RAW_AMOUNT", getNameKey(), GC.getYieldInfo(eYieldConsumed).getChar(), GC.getYieldInfo(eYieldProduced).getChar(), iMissing);
+				WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 				gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(eYieldConsumed).getButton(), COLOR_RED, true, true);
+				WtpHudMessages::setPriority(false);
 			}
 		}
 	}
@@ -5787,7 +5789,9 @@ void CvCity::calculateNetYields(int aiYields[NUM_YIELD_TYPES], int* aiProducedYi
 					}
 				}
 				CvWString szBuffer = gDLL->getText("TXT_KEY_ALMOST_NO_RAW", getNameKey(),GC.getYieldInfo(eYieldConsumed).getChar(), GC.getYieldInfo(eYieldProduced).getChar());
+				WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 				gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(eYieldConsumed).getButton(), COLOR_RED, true, true);
+				WtpHudMessages::setPriority(false);
 			}
 		}
 	}
@@ -5810,7 +5814,9 @@ void CvCity::calculateNetYields(int aiYields[NUM_YIELD_TYPES], int* aiProducedYi
 						 eYieldConsumed = eYieldConsumed2;
 					}
 					CvWString szBuffer = gDLL->getText("TXT_KEY_NOT_ENOUGH_RAW", getNameKey(),GC.getYieldInfo(eYieldConsumed).getChar(), GC.getYieldInfo(eYieldProduced).getChar());
+					WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 					gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(eYieldConsumed).getButton(), COLOR_RED, true, true);
+					WtpHudMessages::setPriority(false);
 				}
 			}
 		}

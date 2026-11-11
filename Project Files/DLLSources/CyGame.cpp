@@ -709,6 +709,16 @@ int CyGame::getHudMessageY(int i) const
 {
 	return WtpHudMessages::getY(i);
 }
+int CyGame::getNumHudPriority() const
+{
+	return WtpHudMessages::getNumPriority();
+}
+
+int CyGame::getNumHudPriorityPrevious() const
+{
+	return WtpHudMessages::getNumPriorityPrevious();
+}
+
 int CyGame::getNumHudMessagesPrevious() const
 {
 	return WtpHudMessages::getNumPrevious();

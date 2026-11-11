@@ -429,6 +429,9 @@ public:
 namespace WtpHudMessages
 {
 	void add(const CvWString& szText, int iX, int iY);
+	void setPriority(bool bPriority); // the messages that are added while it is set are shown at the top of the panel
+	int getNumPriority();
+	int getNumPriorityPrevious();
 	void clear();
 	int getNum();
 	const CvWString& getText(int i);
