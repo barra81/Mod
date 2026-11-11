@@ -4,6 +4,9 @@
 
 //#include "CvEnums.h"
 
+// WTP: data2 of a BUTTONPOPUP_CHOOSEPRODUCTION popup that offers to buy the missing materials of the project that is finished next turn
+static const int WTP_BUY_MATERIALS_POPUP = 1001;
+
 class CvSavegameReader;
 class CvSavegameWriter;
 

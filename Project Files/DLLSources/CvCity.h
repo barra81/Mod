@@ -207,6 +207,11 @@ public:
 	int hurryProduction(HurryTypes eHurry) const;
 	int maxHurryPopulation() const;
 	int hurryYield(HurryTypes eHurry, YieldTypes eYield) const;
+	// WTP: buying the missing materials (not the hammers) of a project with gold, at the prices of the hurry. aiExpected: the materials that
+	// will be added until the project is finished (may be NULL). bPossible is false if a missing material cannot be bought
+	int getBuyMissingYieldsPrice(UnitTypes eUnit, BuildingTypes eBuilding, bool& bPossible, const int* aiExpected = NULL) const;
+	bool buyMissingYields();
+	void checkBuyMaterialsPanel();
 
 	CultureLevelTypes cultureDistance(int iDX, int iDY) const;
 

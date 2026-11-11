@@ -230,6 +230,11 @@
 		<German>Fehlende Materialien kaufen (%d1_Price[ICON_GOLD])</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_POPUP_BUY_MATERIALS_HEADER</Tag>
+		<English>[COLOR_SELECTED_TEXT]%s2_CityName[COLOR_REVERT][NEWLINE][NEWLINE]Next turn the [COLOR_BUILDING_TEXT]%s1_Project[COLOR_REVERT] would be completed, but not all materials will be there. Buy them now?%s3_Requires</English>
+		<German>[COLOR_SELECTED_TEXT]%s2_CityName[COLOR_REVERT][NEWLINE][NEWLINE]Naechste Runde waere [COLOR_BUILDING_TEXT]%s1_Project[COLOR_REVERT] fertig, aber nicht alle Materialien werden da sein. Jetzt kaufen?%s3_Requires</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_SETTLE_NEW_CITY_NAME</Tag>
 		<English>Settlement name :</English>
 		<Portuguese>Nome da colônia:</Portuguese>
