@@ -68,6 +68,10 @@ void CyGamePythonInterface2(python::class_<CyGame>& x)
 		.def("getReplayMessageColor", &CyGame::getReplayMessageColor)
 		.def("getReplayMessageText", &CyGame::getReplayMessageText)
 		.def("getNumReplayMessages", &CyGame::getNumReplayMessages)
+		.def("getNumHudMessages", &CyGame::getNumHudMessages, "int () - messages of the turn for the message panel")
+		.def("getHudMessageText", &CyGame::getHudMessageText, "wstring (int)")
+		.def("getHudMessageX", &CyGame::getHudMessageX, "int (int)")
+		.def("getHudMessageY", &CyGame::getHudMessageY, "int (int)")
 		.def("getReplayInfo", &CyGame::getReplayInfo, python::return_value_policy<python::manage_new_object>())
 		;
 }

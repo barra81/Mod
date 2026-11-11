@@ -16,6 +16,8 @@ import CvScreensInterface
 # Achievements END
 import CvEventInterface
 import time
+import re
+import sys
 import math
 
 # GLOBAL SYSTEM SHORTCUTS
@@ -289,6 +291,7 @@ class CvMainInterface:
 	BUTTON_PIONEER_PLAN_PRIORITY = 753 # WTP: iData2 = the priority
 	BUTTON_PRIVATE_BUILD = 754 # WTP: private pioneer
 	BUTTON_AUTO_ASSIGN_TARGET = 755 # WTP: city screen: the colony takes colonists of the job automation
+	BUTTON_MESSAGE_PANEL = 756 # WTP: the message panel of the turn (click: expand / collapse)
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
 	PRIVATE_BUILD_RANGE = 3 # WTP: as CvPlayer::startPrivateBuild
 
@@ -572,6 +575,9 @@ class CvMainInterface:
 		self.iPioneerPlanPriority = 1
 		self.aszPioneerPlanWidgets = []
 		self.iPioneerPlanHoverY = 0
+		# WTP: message panel (the messages of the turn, click to expand)
+		self.bMessagePanelExpanded = False
+		self.tMessagePanelKey = None
 
 		self.TableYields = []
 		for iYield in range(YieldTypes.NUM_YIELD_TYPES):
@@ -1288,6 +1294,7 @@ class CvMainInterface:
 			screen.hideEndTurn("EndTurnText")
 
 		self.updateEndTurnButton()
+		self.updateMessagePanel()
 
 		if (CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_HIDE_ALL and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_ADVANCED_START):
 			if (CyInterface().isCityScreenUp()):
@@ -3774,6 +3781,11 @@ class CvMainInterface:
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_AUTO_ASSIGN_TARGET):
 				self.toggleAutoAssignTarget()
 
+			# WTP: message panel of the turn: a click expands or collapses it
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_PANEL):
+				self.bMessagePanelExpanded = not self.bMessagePanelExpanded
+				self.updateMessagePanel()
+
 			# WTP: pioneer plan: the improvement and the priority chosen
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_PIONEER_PLAN_BUILD):
 				self.iPioneerPlanBuild = inputClass.getData2()
@@ -3784,6 +3796,96 @@ class CvMainInterface:
 				self.drawPioneerPlanChoice()
 
 		return 0
+
+	# WTP: the message panel. The game's own message area (top center) shows the messages of a turn only for a few seconds and ignores the
+	# mouse. The DLL keeps the messages of the turn (CyGame.getNumHudMessages, MESSAGE_PANEL_ENABLED in GlobalDefinesAlt.xml) and this panel
+	# shows them as long as the turn lasts: the newest ones when collapsed, all of them after a click on the panel (it grows downwards).
+	def updateMessagePanel(self):
+
+		try:
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
+			game = gc.getGame()
+			iNum = game.getNumHudMessages()
+			bShow = (iNum > 0 and gc.getDefineINT("MESSAGE_PANEL_ENABLED") != 0
+				and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW and not CyInterface().isCityScreenUp())
+			if iNum == 0:
+				self.bMessagePanelExpanded = False
+
+			if not bShow:
+				if self.tMessagePanelKey is not None:
+					self.tMessagePanelKey = None
+					screen.deleteWidget("HudMsgText")
+					screen.deleteWidget("HudMsgPanel")
+					screen.hide("HudMsgHeader")
+				return
+
+			xRes = screen.getXResolution()
+			yRes = screen.getYResolution()
+			tKey = (iNum, self.bMessagePanelExpanded, xRes, yRes)
+			if tKey == self.tMessagePanelKey:
+				return
+			self.tMessagePanelKey = tKey
+
+			# geometry: centered below the top HUD, about as wide as the game's own message area
+			iLine = max(14, int(yRes * 0.0135))
+			iPad = max(6, iLine / 2)
+			iWidth = max(380, int(xRes * 0.23))
+			iX = (xRes - iWidth) / 2
+			iY = TOP_CENTER_HUD_HEIGHT + 8
+			iHeaderHeight = iLine + iPad
+			iCharsPerLine = max(20, int((iWidth - 2 * iPad) / (iLine * 0.45)))
+
+			aszMessages = []
+			aiLines = []
+			for i in range(iNum):
+				szMessage = game.getHudMessageText(i)
+				aszMessages.append(szMessage)
+				# estimated number of lines (the markup of colors does not take room)
+				iLen = len(re.sub(u"<[^>]*>", u"", szMessage))
+				aiLines.append(max(1, (iLen + iCharsPerLine - 1) / iCharsPerLine))
+
+			iFirst = 0
+			if not self.bMessagePanelExpanded:
+				# collapsed: the newest messages that fit in a few lines
+				iMaxLines = 7
+				iSum = 0
+				iFirst = iNum
+				while iFirst > 0 and (iSum + aiLines[iFirst - 1] <= iMaxLines or iFirst == iNum):
+					iFirst -= 1
+					iSum += aiLines[iFirst]
+				iTextLines = iSum
+			else:
+				iTextLines = sum(aiLines)
+
+			iMaxHeight = int(yRes * 0.60) - iY
+			iTextHeight = min(iTextLines * iLine + iPad, iMaxHeight - iHeaderHeight - 2 * iPad)
+			iHeight = iHeaderHeight + iTextHeight + 2 * iPad
+
+			szBullet = u"%c " % game.getSymbolID(FontSymbols.BULLET_CHAR)
+			szText = u"\n".join([szBullet + aszMessages[i] for i in range(iFirst, iNum)])
+			szText = self.setFontSize(szText, -1)
+			if self.bMessagePanelExpanded:
+				szHeader = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_COLLAPSE", (iNum,))
+			else:
+				szHeader = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_EXPAND", (iNum,))
+
+			screen.deleteWidget("HudMsgText")
+			screen.deleteWidget("HudMsgPanel")
+			screen.addPanel("HudMsgPanel", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
+			screen.addMultilineText("HudMsgText", szText, iX + iPad, iY + iHeaderHeight + iPad, iWidth - 2 * iPad, iTextHeight, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1, CvUtil.FONT_LEFT_JUSTIFY)
+			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
+			screen.show("HudMsgPanel")
+			screen.show("HudMsgText")
+			screen.show("HudMsgHeader")
+			screen.moveToFront("HudMsgPanel")
+			screen.moveToFront("HudMsgText")
+			screen.moveToFront("HudMsgHeader")
+		except:
+			# the panel must never break the main interface
+			self.tMessagePanelKey = None
+			if not getattr(self, "bMessagePanelErrorShown", False):
+				self.bMessagePanelErrorShown = True
+				CvUtil.pyPrint("Message panel failed: " + str(sys.exc_info()[1]))
 
 	# WTP: pioneer plan mode: choose an improvement and a priority, left click marks a plot, right click removes the mark
 	def togglePioneerPlan(self):

@@ -2111,4 +2111,14 @@
 		<DefineName>WAREHOUSE_STORAGE_PERCENT</DefineName>
 		<iDefineIntVal>130</iDefineIntVal>
 	</Define>
+	<!-- WTP: message panel of the turn (top center). 1 = the messages of the turn stay in a panel that is clicked to expand it, 0 = the game's own message area only -->
+	<Define>
+		<DefineName>MESSAGE_PANEL_ENABLED</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+	<!-- WTP: seconds the game's own (fast, click-through) message area still shows a message while the panel is on. 0 = not at all (the messages stay in the message log). -->
+	<Define>
+		<DefineName>MESSAGE_PANEL_ENGINE_SECONDS</DefineName>
+		<iDefineIntVal>0</iDefineIntVal>
+	</Define>
 </Civ4Defines>

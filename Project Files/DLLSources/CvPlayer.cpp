@@ -9036,6 +9036,7 @@ void CvPlayer::setTurnActive(bool bNewValue, bool bDoTurn)
 				gDLL->getInterfaceIFace()->setForcePopup(false);
 				gDLL->getInterfaceIFace()->clearQueuedPopups();
 				gDLL->getInterfaceIFace()->flushTalkingHeadMessages();
+				WtpHudMessages::clear(); // WTP: message panel: the messages of the next turn start here
 			}
 
 			GC.getGameINLINE().changeNumGameTurnActive(-1);

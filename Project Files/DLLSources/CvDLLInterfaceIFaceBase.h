@@ -424,5 +424,17 @@ public:
 	virtual void setBusy(bool bBusy) = 0;
 };
 
+// WTP: the messages of the human player since the end of his last turn, for the message panel of the main interface (Python,
+// CyGame.getNumHudMessages ...). The panel can be clicked to expand it, the messages of the game's own message area are too short-lived to read.
+namespace WtpHudMessages
+{
+	void add(const CvWString& szText, int iX, int iY);
+	void clear();
+	int getNum();
+	const CvWString& getText(int i);
+	int getX(int i);
+	int getY(int i);
+}
+
 
 #endif // CvDLLInterfaceIFaceBase_h
