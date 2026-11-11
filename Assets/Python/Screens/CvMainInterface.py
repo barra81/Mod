@@ -4207,7 +4207,7 @@ class CvMainInterface:
 			aiPriority = []
 			iPriorityLines = 0
 			for i in range(iNumPriority):
-				if len(aiPriority) > 0 and iPriorityLines + len(aatLines[i]) + fMessageGap > max(2, iMaxLines - (1 if not self.bMessagePanelExpanded else 2)):
+				if len(aiPriority) > 0 and iPriorityLines + len(aatLines[i]) + fMessageGap > max(2, iMaxLines - (0 if not self.bMessagePanelExpanded else 2)):
 					break
 				aiPriority.append(i)
 				iPriorityLines += len(aatLines[i]) + fMessageGap
@@ -4220,7 +4220,7 @@ class CvMainInterface:
 					iLimit = iMaxLines
 				iFirst = iEnd
 				iSum = 0
-				while iFirst > iNumPriority and (iSum + len(aatLines[iFirst - 1]) + fMessageGap <= iLimit or iFirst == iEnd):
+				while iFirst > iNumPriority and (iSum + len(aatLines[iFirst - 1]) + fMessageGap <= iLimit or (iFirst == iEnd and (self.bMessagePanelExpanded or iPriorityLines == 0))):
 					iFirst -= 1
 					iSum += len(aatLines[iFirst]) + fMessageGap
 				aPages.append((iFirst, iEnd, iSum))
