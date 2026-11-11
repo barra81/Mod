@@ -20281,6 +20281,13 @@ int CvPlayer::getNativeWaypoint(int iPlotIndex) const
 
 void CvPlayer::setNativeWaypoint(int iPlotIndex, int iCityId)
 {
+	// the banner of the settlement shows the waypoint marker
+	CvPlot* pWpPlot = GC.getMapINLINE().plotByIndexINLINE(iPlotIndex);
+	if (pWpPlot != NULL && pWpPlot->isCity())
+	{
+		pWpPlot->getPlotCity()->setBillboardDirty(true);
+	}
+
 	for (size_t i = 0; i + 1 < m_aiNativeWaypoints.size(); i += 2)
 	{
 		if (m_aiNativeWaypoints[i] == iPlotIndex)
