@@ -206,6 +206,8 @@ BUILDING_MANAGMENT_TOGGLE = 1000
 AUTOMATION_MANAGMENT_TOGGLE = 1001
 # WTP: message panel: 1 = one label per message (the mouse over highlight covers all lines of a message, needs line breaks inside a label), 0 = one label per line
 MESSAGE_PANEL_ONE_LABEL_PER_MESSAGE = 0
+# WTP: message panel: 1 = the mouse over mark covers all lines of the message (needs the cursor events of the labels)
+MESSAGE_PANEL_HOVER_BLOCK = 1
 MAP_MANAGMENT_TOGGLE = 1002
 GO_TO_CITY = 1003
 
@@ -3785,6 +3787,13 @@ class CvMainInterface:
 		global SHOW_ALL_YIELDS
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
 
+		# WTP: message panel: while the mouse is over a line, all lines of the message are marked (the game marks only the line itself)
+		if (MESSAGE_PANEL_HOVER_BLOCK and inputClass.getFunctionName().startswith("HudMsgLine")):
+			if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CURSOR_MOVE_ON):
+				self.showMessageHover(screen, inputClass.getFunctionName())
+			elif (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CURSOR_MOVE_OFF):
+				screen.hide("HudMsgHover")
+
 		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED):
 
 			if (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == BUILDING_MANAGMENT_TOGGLE):
@@ -3984,6 +3993,21 @@ class CvMainInterface:
 			atTargets.append(tTarget)
 		return atTargets
 
+	def showMessageHover(self, screen, szLine):
+		try:
+			for iMessage, tBlock in self.dMessageBlocks.items():
+				if szLine in tBlock[0]:
+					aszNames, iY, iHeight = tBlock
+					screen.deleteWidget("HudMsgHover")
+					screen.addPanel("HudMsgHover", u"", u"", True, False, self.iMessagePanelX + 4, iY - 2, self.iMessagePanelW - 8, int(iHeight) + 4, PanelStyles.PANEL_STYLE_DAWNTOP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+					screen.show("HudMsgHover")
+					screen.moveToFront("HudMsgHover")
+					for szName in aszNames:
+						screen.moveToFront(szName)
+					return
+		except:
+			pass
+
 	def hideMessagePanel(self, screen):
 		for szName in self.aszMessageLines:
 			screen.hide(szName)
@@ -3991,6 +4015,7 @@ class CvMainInterface:
 		screen.deleteWidget("HudMsgPanel")
 		screen.deleteWidget("HudMsgPanelBack1")
 		screen.deleteWidget("HudMsgPanelBack2")
+		screen.deleteWidget("HudMsgHover")
 		screen.hide("HudMsgHeader")
 		screen.hide("HudMsgFooterMore")
 		screen.hide("HudMsgFooterPrevious")
@@ -4238,6 +4263,12 @@ class CvMainInterface:
 				screen.hide(szName)
 			self.aszMessageLines = []
 			self.dMessageCapitals = {}
+			self.dMessageBlocks = {} # message -> (names of its labels, y, height): the area that is marked while the mouse is over it
+			self.iMessageHover = -1
+			self.iMessagePanelX = iX
+			self.iMessagePanelW = iWidth
+			self.iMessageLine = iLine
+			screen.hide("HudMsgHover")
 
 			# a denser background: the panel style is semi-transparent, several of them on top of each other are better to read
 			# (two when collapsed, three when expanded)
@@ -4284,6 +4315,9 @@ class CvMainInterface:
 					self.aszMessageLines.append(szName)
 					fRow += len(aatLines[i])
 				else:
+					iBlockY = iTextY + int(fRow * iLine)
+					iBlockLines = len(aatLines[i])
+					self.dMessageBlocks[i] = ([], iBlockY, iBlockLines * iLine)
 					for iPart in range(len(aatLines[i])):
 						szLine = aatLines[i][iPart]
 						if iPart == 0:
@@ -4297,6 +4331,7 @@ class CvMainInterface:
 						screen.show(szName)
 						screen.moveToFront(szName)
 						self.aszMessageLines.append(szName)
+						self.dMessageBlocks[i][0].append(szName)
 						fRow += 1.0
 				fRow += fMessageGap
 
