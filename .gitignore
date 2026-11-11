@@ -29,3 +29,7 @@ Thumbs.db
 .idea
 /Assets/EditorCache.xml
 /Assets/EditorSettings.xml
+
+# WTP: files the game writes while playing (must survive branch switches / stashes of GitHub Desktop)
+WTP_Timing.txt
+WTP_Settings.txt
