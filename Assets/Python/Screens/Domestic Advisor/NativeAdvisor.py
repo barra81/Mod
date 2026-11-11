@@ -57,17 +57,10 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 
 	def contactNation(self, iRow, iPlotIndex = -1):
 		try:
-			# the table can be sorted: the plot index of the cell identifies the settlement, not the row
-			iNative = -1
-			if iPlotIndex >= 0:
-				pPlot = gc.getMap().plotByIndex(iPlotIndex)
-				if pPlot is not None and not pPlot.isNone() and pPlot.isCity():
-					iNative = pPlot.getPlotCity().getOwner()
-			if iNative < 0:
-				citylist = self.getKnownSettlementList()
-				if iRow < 0 or iRow >= len(citylist):
-					return False
-				iNative = citylist[iRow].getOwner()
+			pCityOfRow = self.getCityOfRow(iRow)
+			if pCityOfRow is None:
+				return False
+			iNative = pCityOfRow.getOwner()
 			player = gc.getPlayer(gc.getGame().getActivePlayer())
 			if not player.canContact(iNative):
 				return False
@@ -80,6 +73,22 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 		except:
 			return False
 
+	def getCityOfRow(self, iRow):
+		# the table can be sorted: the row is found by the name that is displayed in it
+		citylist = self.getKnownSettlementList()
+		try:
+			szName = self.tableManager.getScreen().getTableText(self.tableManager.currentPageName(), 1, iRow)
+			logWaypoint("row %d shows '%s'" % (iRow, szName))
+			for pCity in citylist:
+				if pCity.getName() == szName:
+					return pCity
+		except:
+			import traceback
+			logWaypoint(traceback.format_exc())
+		if iRow >= 0 and iRow < len(citylist):
+			return citylist[iRow]
+		return None
+
 	def hasOwnPresence(self, pNativeCity, player):
 		if pNativeCity.getTradePostPlayer() == player.getID():
 			return True
@@ -89,17 +98,9 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 
 	def openWaypointPopup(self, iRow, iPlotIndex = -1):
 		try:
-			# the table can be sorted: the row is not the index of the list, so the plot index of the cell is used
-			pNative = None
-			if iPlotIndex >= 0:
-				pPlot = gc.getMap().plotByIndex(iPlotIndex)
-				if pPlot is not None and not pPlot.isNone() and pPlot.isCity():
-					pNative = pPlot.getPlotCity()
+			pNative = self.getCityOfRow(iRow)
 			if pNative is None:
-				citylist = self.getKnownSettlementList()
-				if iRow < 0 or iRow >= len(citylist):
-					return False
-				pNative = citylist[iRow]
+				return False
 			player = gc.getPlayer(gc.getGame().getActivePlayer())
 			if not self.hasOwnPresence(pNative, player):
 				logWaypoint("no own presence in row %d" % iRow)
