@@ -991,7 +991,12 @@ class CvDomesticAdvisor:
 					popupInfo.setText(u"showDomesticAdvisor")
 					popupInfo.addPopup(inputClass.getData1())
 				else:
-					self.updateAppropriateCitySelection()
+					# WTP: a click on any cell of a city row opens the city (ctrl/shift keeps the multi selection)
+					iRow = inputClass.getMouseY()
+					if (not inputClass.isCtrlKeyDown() and not inputClass.isShiftKeyDown() and iRow >= 0 and iRow < len(self.Cities)):
+						self.openCityFromRow(iRow)
+					else:
+						self.updateAppropriateCitySelection()
 
 		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED):
 			if (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL):
@@ -1025,6 +1030,9 @@ class CvDomesticAdvisor:
 							self.drawContents()
 				# auto-generated list creation - end - Nightinggale
 				elif (iData == 10001):
+					# WTP: a click on a transport selects it on the map (shift + click: select it here to assign trade routes)
+					if (not inputClass.isShiftKeyDown() and self.selectTransportOnMap(inputClass.getData2())):
+						return 0
 					if (self.selectedSelectionGroupHeadUnitID == inputClass.getData2()):
 						self.selectedSelectionGroupHeadUnitID = -1
 						self.drawContents()
@@ -1032,6 +1040,32 @@ class CvDomesticAdvisor:
 						self.selectedSelectionGroupHeadUnitID = inputClass.getData2()
 						self.drawContents()
 		return 0
+
+	def openCityFromRow(self, iRow):
+		pCity = self.Cities[iRow]
+		screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+		screen.hideScreen()
+
+		CyInterface().selectCity(pCity, True)
+
+		# the advisor opens again when the city screen is left (same as the zoom button of the first column)
+		popupInfo = CyPopupInfo()
+		popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+		popupInfo.setText(u"showDomesticAdvisor")
+		popupInfo.addPopup(pCity.getOwner())
+
+	def selectTransportOnMap(self, iUnitID):
+		try:
+			pUnit = gc.getPlayer(gc.getGame().getActivePlayer()).getUnit(iUnitID)
+			if pUnit is None or pUnit.isNone():
+				return False
+			screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+			screen.hideScreen()
+			CyInterface().selectUnit(pUnit, True, False, True)
+			pUnit.centerCamera()
+			return True
+		except:
+			return False
 
 	def updateAppropriateCitySelection(self):
 		nCities = gc.getPlayer(gc.getGame().getActivePlayer()).getNumCities()
