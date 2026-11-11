@@ -246,6 +246,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_WAYPOINT_UNIT_SENT</Tag>
+		<English>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] from %s2_Village is on its way to %s3_City (waypoint), about %d4 turns.</English>
+		<German>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] aus %s2_Village ist auf dem Weg nach %s3_City (Wegpunkt), voraussichtlich %d4 Runden.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_UNIT_SENT_NOPATH</Tag>
 		<English>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] from %s2_Village is on its way to %s3_City (waypoint).</English>
 		<German>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] aus %s2_Village ist auf dem Weg nach %s3_City (Wegpunkt).</German>
 	</TEXT>

@@ -20321,9 +20321,20 @@ void CvPlayer::sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity
 	{
 		return;
 	}
+	int iPathTurns = 0;
+	const bool bPath = pGroup->generatePath(pUnit->plot(), pTarget->plot(), 0, false, &iPathTurns);
 	pGroup->pushMission(MISSION_MOVE_TO, pTarget->getX_INLINE(), pTarget->getY_INLINE());
-	CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT", pUnit->getNameKey(), pNativeCity->getNameKey(), pTarget->getNameKey());
-	gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, pTarget->coord(), "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, pUnit->getButton(), COLOR_WHITE, true, true);
+	CvWString szBuffer;
+	if (bPath)
+	{
+		szBuffer = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT", pUnit->getNameKey(), pNativeCity->getNameKey(), pTarget->getNameKey(), std::max(1, iPathTurns));
+	}
+	else
+	{
+		szBuffer = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT_NOPATH", pUnit->getNameKey(), pNativeCity->getNameKey(), pTarget->getNameKey());
+	}
+	// the message centers on the unit
+	gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, pUnit->coord(), "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, pUnit->getButton(), COLOR_WHITE, true, true);
 }
 
 void CvPlayer::applyMissionaryPoints(CvCity* pCity)
