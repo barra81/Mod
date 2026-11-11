@@ -2138,12 +2138,6 @@ class CvMainInterface:
 							Xcord = ACTION_BUTTON_X_BEGIN - iCount * ACTION_BUTTON_X_STEP - LARGE_BUTTON_SIZE
 							Ycord = yResolution - SADDLE_HEIGHT / 8
 							szName = "ActionButton" + str(iCount)
-							if iCount < 8 and CyInterface().canHandleAction(i, False) and self.isOwnShipInPort(i):
-								# WTP: a ring behind the sail buttons (Europe / Africa / Port Royal) whose port has an own ship, a bit larger than the button
-								szRing = "WtpPortRing" + str(iCount)
-								iRingPad = LARGE_BUTTON_SIZE / 5
-								screen.addDDSGFC(szRing, "Art/Interface/Game Hud/Actions/port_ring.dds", int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)
-								ActionButtonList.append(szRing)
 							screen.setImageButton(szName, gc.getActionInfo(i).getButton(), int(Xcord) - LARGE_BUTTON_SIZE, int(Ycord) - LARGE_BUTTON_SIZE, LARGE_BUTTON_SIZE * 2, LARGE_BUTTON_SIZE * 2, WidgetTypes.WIDGET_ACTION, i, -1)
 							screen.setImageShape(szName, ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 							screen.setHitMargins(szName, 18, 18)
@@ -2152,6 +2146,13 @@ class CvMainInterface:
 							elif pHeadSelectedUnit.isActionRecommended(i) or self.isOwnShipInPort(i):
 								# (WTP: the buttons to sail to Europe / Africa / Port Royal are marked when an own ship is in that port)
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath())
+							if iCount < 8 and CyInterface().canHandleAction(i, False) and self.isOwnShipInPort(i):
+								# WTP: a ring above the sail buttons (Europe / Africa / Port Royal) whose port has an own ship, a bit larger than the button
+								szRing = "WtpPortRing" + str(iCount)
+								iRingPad = LARGE_BUTTON_SIZE / 5
+								screen.addDDSGFC(szRing, "Art/Interface/Game Hud/Actions/port_ring.dds", int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)
+								screen.setHitTest(szRing, HitTestTypes.HITTEST_NOHIT)
+								ActionButtonList.append(szRing)
 							ActionButtonList.append(szName)
 
 							iCount += 1
