@@ -25,7 +25,7 @@ namespace WtpDeferredEducation
 }
 
 // WTP: right click on a building of the city screen: a popup to upgrade it (the construction order of a building of the same slot)
-// The popup is a BUTTONPOPUP_CHOOSEPRODUCTION with this value as data2
+// The popup is a BUTTONPOPUP_CHOOSE_EDUCATION (that type is shown in the city screen) with this value as data3, the building as data2
 static const int WTP_BUILDING_UPGRADE_POPUP = 1000;
 namespace WtpBuildingUpgrade
 {

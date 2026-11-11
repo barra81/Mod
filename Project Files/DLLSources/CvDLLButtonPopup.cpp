@@ -745,6 +745,11 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 		break;
 
 	case BUTTONPOPUP_CHOOSE_EDUCATION:
+		if (info.getData3() == WTP_BUILDING_UPGRADE_POPUP)
+		{
+			// WTP: the upgrade popup of a building: the buttons act by themselves (WIDGET_CONSTRUCT), nothing to do here
+			break;
+		}
 		if (pPopupReturn->getButtonClicked() == GC.getNumUnitInfos())
 		{
 			CvCity* pCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getCity(info.getData1());
@@ -1899,7 +1904,7 @@ static bool wtpOpenBuildingUpgrade(int iSpecialBuilding, int iBuildingOfSlot)
 	{
 		return false;
 	}
-	CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSEPRODUCTION, pCity->getID(), WTP_BUILDING_UPGRADE_POPUP, eCurrent);
+	CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSE_EDUCATION, pCity->getID(), eCurrent, WTP_BUILDING_UPGRADE_POPUP);
 	gDLL->getInterfaceIFace()->addPopup(pInfo, GC.getGameINLINE().getActivePlayer(), false, true);
 	return true;
 }
@@ -1907,7 +1912,7 @@ static bool wtpOpenBuildingUpgrade(int iSpecialBuilding, int iBuildingOfSlot)
 static bool launchBuildingUpgradePopup(CvPopup* pPopup, CvPopupInfo& info)
 {
 	CvCity* pCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getCity(info.getData1());
-	const BuildingTypes eCurrent = (BuildingTypes) info.getData3();
+	const BuildingTypes eCurrent = (BuildingTypes) info.getData2();
 	if (pCity == NULL || eCurrent == NO_BUILDING)
 	{
 		return false;
@@ -2533,6 +2538,14 @@ void wtpSortEducationEntries(std::vector<WtpEducationEntry>& aEntries)
 
 bool CvDLLButtonPopup::launchEducationPopup(CvPopup* pPopup, CvPopupInfo &info)
 {
+	// WTP: the upgrade popup of a building (right click on a building of the city screen)
+	if (info.getData3() == WTP_BUILDING_UPGRADE_POPUP)
+	{
+		const bool bUpgradeLaunched = launchBuildingUpgradePopup(pPopup, info);
+		gDLL->logMsg("WTP_BuildingUpgrade.log", bUpgradeLaunched ? "upgrade popup launched" : "upgrade popup NOT launched (no city or nothing to build)");
+		return bUpgradeLaunched;
+	}
+
 	CvPlayer& kPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
 	CvCity* pCity = kPlayer.getCity(info.getData1());
 	if (NULL == pCity)

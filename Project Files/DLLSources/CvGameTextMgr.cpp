@@ -355,7 +355,7 @@ void CvGameTextMgr::setMinimizePopupHelp(CvWString& szString, const CvPopupInfo 
 		{
 			CvPlayer& kPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
 			CvCity* pCity = kPlayer.getCity(info.getData1());
-			CvUnit* pUnit = kPlayer.getUnit(info.getData2());
+			CvUnit* pUnit = (info.getData3() == WTP_BUILDING_UPGRADE_POPUP) ? NULL : kPlayer.getUnit(info.getData2());
 			if (pCity != NULL && pUnit != NULL)
 			{
 				BuildingTypes eSchoolBuilding = pCity->getYieldBuilding(YIELD_EDUCATION);
