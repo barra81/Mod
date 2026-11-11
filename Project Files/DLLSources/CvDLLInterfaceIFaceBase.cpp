@@ -89,6 +89,93 @@ namespace WtpHudMessages
 	{
 		return (i >= 0 && i < getNumPrevious()) ? previousEntries()[i].iY : -1;
 	}
+	// savegame: all the messages as one string (fields separated by control characters)
+	static const wchar SEP_FIELD = 1;
+	static const wchar SEP_ENTRY = 2;
+	static const wchar SEP_SECTION = 3;
+	static void appendEntries(CvWString& szData, const std::vector<Entry>& aEntries)
+	{
+		for (size_t i = 0; i < aEntries.size(); i++)
+		{
+			szData += aEntries[i].szText;
+			szData += SEP_FIELD;
+			szData += CvWString::format(L"%d", aEntries[i].iX);
+			szData += SEP_FIELD;
+			szData += CvWString::format(L"%d", aEntries[i].iY);
+			szData += SEP_ENTRY;
+		}
+	}
+	CvWString serialize()
+	{
+		CvWString szData;
+		szData += CvWString::format(L"%d", s_iNumPriority);
+		szData += SEP_SECTION;
+		szData += CvWString::format(L"%d", s_iNumPriorityPrevious);
+		szData += SEP_SECTION;
+		appendEntries(szData, entries());
+		szData += SEP_SECTION;
+		appendEntries(szData, previousEntries());
+		return szData;
+	}
+	static void parseEntries(const CvWString& szSection, std::vector<Entry>& aEntries)
+	{
+		aEntries.clear();
+		size_t iPos = 0;
+		while (iPos < szSection.length())
+		{
+			size_t iEnd = szSection.find(SEP_ENTRY, iPos);
+			if (iEnd == CvWString::npos)
+			{
+				break;
+			}
+			CvWString szEntry = szSection.substr(iPos, iEnd - iPos);
+			iPos = iEnd + 1;
+			size_t iX = szEntry.rfind(SEP_FIELD);
+			if (iX == CvWString::npos || iX == 0)
+			{
+				continue;
+			}
+			size_t iText = szEntry.rfind(SEP_FIELD, iX - 1);
+			if (iText == CvWString::npos)
+			{
+				continue;
+			}
+			Entry kEntry;
+			kEntry.szText = szEntry.substr(0, iText);
+			kEntry.iX = (int)wcstol(szEntry.substr(iText + 1, iX - iText - 1).c_str(), NULL, 10);
+			kEntry.iY = (int)wcstol(szEntry.substr(iX + 1).c_str(), NULL, 10);
+			aEntries.push_back(kEntry);
+		}
+	}
+	void deserialize(const CvWString& szData)
+	{
+		entries().clear();
+		previousEntries().clear();
+		s_iNumPriority = 0;
+		s_iNumPriorityPrevious = 0;
+		s_bPriority = false;
+		if (szData.empty())
+		{
+			return;
+		}
+		CvWString aszSection[4];
+		size_t iPos = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			size_t iEnd = szData.find(SEP_SECTION, iPos);
+			if (iEnd == CvWString::npos)
+			{
+				aszSection[i] = szData.substr(iPos);
+				break;
+			}
+			aszSection[i] = szData.substr(iPos, iEnd - iPos);
+			iPos = iEnd + 1;
+		}
+		parseEntries(aszSection[2], entries());
+		parseEntries(aszSection[3], previousEntries());
+		s_iNumPriority = std::min((int)wcstol(aszSection[0].c_str(), NULL, 10), (int)entries().size());
+		s_iNumPriorityPrevious = std::min((int)wcstol(aszSection[1].c_str(), NULL, 10), (int)previousEntries().size());
+	}
 	int getNum()
 	{
 		return (int)entries().size();

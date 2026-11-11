@@ -441,6 +441,9 @@ namespace WtpHudMessages
 	const CvWString& getPreviousText(int i);
 	int getPreviousX(int i);
 	int getPreviousY(int i);
+	// for the savegame: the messages are kept over a save / load
+	CvWString serialize();
+	void deserialize(const CvWString& szData);
 }
 
 

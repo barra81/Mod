@@ -114,6 +114,7 @@ enum SavegameVariableTypes
 	GameSave_AsyncRand,
 	GameSave_LogGameStart,
 	GameSave_FatherCostPosition,
+	GameSave_HudMessages,
 
 	NUM_SAVE_ENUM_VALUES,
 };
@@ -187,6 +188,7 @@ const char* getSavedEnumNameGame(SavegameVariableTypes eType)
 	case GameSave_AsyncRand: return "GameSave_AsyncRand";
 	case GameSave_LogGameStart: return "GameSave_LogGameStart";
 	case GameSave_FatherCostPosition: return "GameSave_FatherCostPosition";
+	case GameSave_HudMessages: return "GameSave_HudMessages";
 	}
 	FAssertMsg(0, "Missing case");
 	return "";
@@ -244,6 +246,7 @@ void CvGame::resetSavedData(HandicapTypes eHandicap, bool bConstructorCall)
 	m_em_eFatherTeam.reset();
 	m_em_iFatherGameTurn.reset();
 	m_em_iFatherCostPosition.reset();
+	WtpHudMessages::deserialize(CvWString()); // WTP: no messages in the panel until the savegame brings them
 	m_em_bSpecialUnitValid.reset();
 	m_em_bSpecialBuildingValid.reset();
 	m_em_bUniqueGoodyValid.reset();
@@ -350,6 +353,7 @@ void CvGame::read(CvSavegameReader reader)
 		case GameSave_AsyncRand: reader.Read(m_em_AsyncRand); break;
 		case GameSave_LogGameStart: reader.Read(m_iLogGameStart); break;
 		case GameSave_FatherCostPosition: reader.Read(m_em_iFatherCostPosition); break;
+		case GameSave_HudMessages: { CvWString szHudMessages; reader.Read(szHudMessages); WtpHudMessages::deserialize(szHudMessages); break; }
 		}
 
 	}
@@ -470,6 +474,7 @@ void CvGame::write(CvSavegameWriter writer)
 	writer.Write(GameSave_AsyncRand, m_em_AsyncRand);
 	writer.Write(GameSave_LogGameStart, m_iLogGameStart, defaultLogGameStart);
 	writer.Write(GameSave_FatherCostPosition, m_em_iFatherCostPosition);
+	writer.Write(GameSave_HudMessages, WtpHudMessages::serialize()); // WTP: the messages of the message panel
 
 	writer.Write(GameSave_END);
 }
