@@ -3393,4 +3393,9 @@
 		<English>Ask me again at the end of the turn</English>
 		<German>Zum Ende der Runde noch einmal fragen</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_BUILDING_UPGRADE_HEADER</Tag>
+		<English>[COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT][NEWLINE][NEWLINE]Upgrade %s1_building to:</English>
+		<German>[COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT][NEWLINE][NEWLINE]%s1_building ausbauen zu:</German>
+	</TEXT>
 </Civ4GameText>
