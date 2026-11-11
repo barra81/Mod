@@ -204,6 +204,8 @@ BUILDING_AREA_HEIGHT = -1
 # PANEL TOGGLE CONTROLS
 BUILDING_MANAGMENT_TOGGLE = 1000
 AUTOMATION_MANAGMENT_TOGGLE = 1001
+# WTP: message panel: 1 = one label per message (the mouse over highlight covers all lines of a message, needs line breaks inside a label), 0 = one label per line
+MESSAGE_PANEL_ONE_LABEL_PER_MESSAGE = 1
 MAP_MANAGMENT_TOGGLE = 1002
 GO_TO_CITY = 1003
 
@@ -4259,30 +4261,43 @@ class CvMainInterface:
 			fRow = 0.0
 			for i in aiShow:
 				iTargetX, iTargetY, eContact = atTargets[i]
-				for iPart in range(len(aatLines[i])):
-					szLine = aatLines[i][iPart]
-					if iPart == 0:
-						szLine = szBullet + szLine
-						iLineX = iX + iPad
-					else:
-						iLineX = iX + iPad + iIndent
+				if eContact >= 0:
+					# a native tribe: contact (diplomacy), the click also centers its main settlement (handleInput)
+					eWidget = WidgetTypes.WIDGET_CONTACT_CIV
+					iData1 = eContact
+					iData2 = -1
+					self.dMessageCapitals[eContact] = (iTargetX, iTargetY)
+				else:
+					eWidget = WidgetTypes.WIDGET_GENERAL
+					iData1 = self.BUTTON_MESSAGE_LINE
+					iData2 = i
+				if MESSAGE_PANEL_ONE_LABEL_PER_MESSAGE:
+					# one label for all lines of a message: the mouse over highlight covers the whole message
+					szText = szBullet + aatLines[i][0]
+					for iPart in range(1, len(aatLines[i])):
+						szText += u"\n" + u"    " + aatLines[i][iPart]
 					szName = "HudMsgLine%d" % iLabel
 					iLabel += 1
-					if eContact >= 0:
-						# a native tribe: contact (diplomacy), the click also centers its main settlement (handleInput)
-						eWidget = WidgetTypes.WIDGET_CONTACT_CIV
-						iData1 = eContact
-						iData2 = -1
-						self.dMessageCapitals[eContact] = (iTargetX, iTargetY)
-					else:
-						eWidget = WidgetTypes.WIDGET_GENERAL
-						iData1 = self.BUTTON_MESSAGE_LINE
-						iData2 = i
-					screen.setText(szName, "Background", self.setFontSize(szLine, -1), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+					screen.setText(szName, "Background", self.setFontSize(szText, -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
 					screen.show(szName)
 					screen.moveToFront(szName)
 					self.aszMessageLines.append(szName)
-					fRow += 1.0
+					fRow += len(aatLines[i])
+				else:
+					for iPart in range(len(aatLines[i])):
+						szLine = aatLines[i][iPart]
+						if iPart == 0:
+							szLine = szBullet + szLine
+							iLineX = iX + iPad
+						else:
+							iLineX = iX + iPad + iIndent
+						szName = "HudMsgLine%d" % iLabel
+						iLabel += 1
+						screen.setText(szName, "Background", self.setFontSize(szLine, -1), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+						screen.show(szName)
+						screen.moveToFront(szName)
+						self.aszMessageLines.append(szName)
+						fRow += 1.0
 				fRow += fMessageGap
 
 			# footer: further (older) messages, the messages of the turn before
