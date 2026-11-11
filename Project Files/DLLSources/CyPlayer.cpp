@@ -1286,7 +1286,7 @@ void CyPlayer::setNativeWaypoint(int iPlotIndex, int iCityId)
 {
 	if (m_pPlayer)
 	{
-		m_pPlayer->setNativeWaypoint(iPlotIndex, iCityId);
+		pointer(CREATE_ASSERT_DATA)->setNativeWaypoint(iPlotIndex, iCityId);
 	}
 }
 int CyPlayer::missionaryThreshold(int /*PlayerTypes*/ ePlayer) const
