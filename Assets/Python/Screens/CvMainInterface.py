@@ -3806,7 +3806,8 @@ class CvMainInterface:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
 			game = gc.getGame()
 			iNum = game.getNumHudMessages()
-			bShow = (iNum > 0 and gc.getDefineINT("MESSAGE_PANEL_ENABLED") != 0
+			# (MESSAGE_PANEL_ENABLED = 0: the DLL collects no messages, so there is nothing to show)
+			bShow = (iNum > 0
 				and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW and not CyInterface().isCityScreenUp())
 			if iNum == 0:
 				self.bMessagePanelExpanded = False
