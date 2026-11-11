@@ -205,7 +205,7 @@ BUILDING_AREA_HEIGHT = -1
 BUILDING_MANAGMENT_TOGGLE = 1000
 AUTOMATION_MANAGMENT_TOGGLE = 1001
 # WTP: message panel: 1 = one label per message (the mouse over highlight covers all lines of a message, needs line breaks inside a label), 0 = one label per line
-MESSAGE_PANEL_ONE_LABEL_PER_MESSAGE = 1
+MESSAGE_PANEL_ONE_LABEL_PER_MESSAGE = 0
 MAP_MANAGMENT_TOGGLE = 1002
 GO_TO_CITY = 1003
 
