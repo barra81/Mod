@@ -1813,7 +1813,7 @@ class CvMainInterface:
 					if (pUnit.getUnitTravelState() == eState and not pUnit.isCargo() and not pUnit.isDelayedDeath()):
 						bFound = True
 				(pUnit, iter) = pPlayer.nextUnit(iter)
-			self.logPort("action %d button %s command %d -> state %d, found %s, own ships: %s" % (iAction, szButton, iCommand, eState, bFound, szSeaUnits))
+			self.logPort("action %d button %s -> state %d, found %s" % (iAction, szButton, eState, bFound))
 			return bFound
 		except:
 			self.logPort("isOwnShipInPort failed: " + str(sys.exc_info()[1]))
@@ -2131,11 +2131,19 @@ class CvMainInterface:
 						ACTION_BUTTON_X_STEP = ACTION_BUTTON_X_STEP * iMaxSpace / iSpaceNeeded
 
 					ActionButtonList = []
+					for iRing in range(8):
+						screen.deleteWidget("WtpPortRing" + str(iRing))
 					for i in actions:
 						if CyInterface().canHandleAction(i, True):
 							Xcord = ACTION_BUTTON_X_BEGIN - iCount * ACTION_BUTTON_X_STEP - LARGE_BUTTON_SIZE
 							Ycord = yResolution - SADDLE_HEIGHT / 8
 							szName = "ActionButton" + str(iCount)
+							if iCount < 8 and CyInterface().canHandleAction(i, False) and self.isOwnShipInPort(i):
+								# WTP: a ring behind the sail buttons (Europe / Africa / Port Royal) whose port has an own ship, a bit larger than the button
+								szRing = "WtpPortRing" + str(iCount)
+								iRingPad = LARGE_BUTTON_SIZE / 5
+								screen.addDDSGFC(szRing, ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath(), int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)
+								ActionButtonList.append(szRing)
 							screen.setImageButton(szName, gc.getActionInfo(i).getButton(), int(Xcord) - LARGE_BUTTON_SIZE, int(Ycord) - LARGE_BUTTON_SIZE, LARGE_BUTTON_SIZE * 2, LARGE_BUTTON_SIZE * 2, WidgetTypes.WIDGET_ACTION, i, -1)
 							screen.setImageShape(szName, ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 							screen.setHitMargins(szName, 18, 18)
