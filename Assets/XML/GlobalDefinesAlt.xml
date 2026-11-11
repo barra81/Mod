@@ -2111,6 +2111,11 @@
 		<DefineName>WAREHOUSE_STORAGE_PERCENT</DefineName>
 		<iDefineIntVal>130</iDefineIntVal>
 	</Define>
+	<!-- WTP: factor for the map scroll speed (edge scrolling) while the shift key is held. 1.0 = no change, 2.0 = twice as fast -->
+	<Define>
+		<DefineName>SHIFT_SCROLL_SPEED_MULTIPLIER</DefineName>
+		<fDefineFloatVal>2.0</fDefineFloatVal>
+	</Define>
 	<!-- WTP: message panel of the turn (top center). 1 = the messages of the turn stay in a panel that is clicked to expand it, 0 = the game's own message area only -->
 	<Define>
 		<DefineName>MESSAGE_PANEL_ENABLED</DefineName>
