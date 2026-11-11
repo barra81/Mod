@@ -1804,15 +1804,29 @@ class CvMainInterface:
 				return False
 			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
 			(pUnit, iter) = pPlayer.firstUnit()
+			bFound = False
+			szSeaUnits = ""
 			while (pUnit):
 				# the ships in a port have this travel state (the docks list of the player only holds the colonists)
-				if (pUnit.getUnitTravelState() == eState and not pUnit.isCargo() and not pUnit.isDelayedDeath()
-					and gc.getUnitInfo(pUnit.getUnitType()).getDomainType() == DomainTypes.DOMAIN_SEA):
-					return True
+				if gc.getUnitInfo(pUnit.getUnitType()).getDomainType() == DomainTypes.DOMAIN_SEA:
+					szSeaUnits += "%d:state=%d cargo=%d dying=%d; " % (pUnit.getID(), pUnit.getUnitTravelState(), pUnit.isCargo(), pUnit.isDelayedDeath())
+					if (pUnit.getUnitTravelState() == eState and not pUnit.isCargo() and not pUnit.isDelayedDeath()):
+						bFound = True
 				(pUnit, iter) = pPlayer.nextUnit(iter)
+			self.logPort("action %d button %s command %d -> state %d, found %s, own ships: %s" % (iAction, szButton, iCommand, eState, bFound, szSeaUnits))
+			return bFound
+		except:
+			self.logPort("isOwnShipInPort failed: " + str(sys.exc_info()[1]))
+		return False
+
+	# WTP: temporary debug output for the port ring (WTP_PortDebug.log in the game folder)
+	def logPort(self, szText):
+		try:
+			f = open("WTP_PortDebug.log", "a")
+			f.write(szText + "\n")
+			f.close()
 		except:
 			pass
-		return False
 
 	def updateSelectionButtons( self ):
 		global g_pSelectedUnit
@@ -2097,6 +2111,7 @@ class CvMainInterface:
 					g_pSelectedUnit = pHeadSelectedUnit
 					iCount = 0
 					actions = CyInterface().getActionsToShow()
+					self.logPort("action buttons built for unit %d, %d actions" % (pHeadSelectedUnit.getID(), len(actions)))
 					self.SADDLE_BUTTON_SIZE = LARGE_BUTTON_SIZE * 2
 
 					iTotalActions = 0
