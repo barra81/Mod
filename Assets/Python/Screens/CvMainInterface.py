@@ -292,6 +292,7 @@ class CvMainInterface:
 	BUTTON_PRIVATE_BUILD = 754 # WTP: private pioneer
 	BUTTON_AUTO_ASSIGN_TARGET = 755 # WTP: city screen: the colony takes colonists of the job automation
 	BUTTON_MESSAGE_PANEL = 756 # WTP: the message panel of the turn (click: expand / collapse)
+	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
 	PRIVATE_BUILD_RANGE = 3 # WTP: as CvPlayer::startPrivateBuild
 
@@ -578,6 +579,9 @@ class CvMainInterface:
 		# WTP: message panel (the messages of the turn, click to expand)
 		self.bMessagePanelExpanded = False
 		self.tMessagePanelKey = None
+		self.aszMessageLines = []
+		self.atMessageTargets = []
+		self.dMessageCapitals = {}
 
 		self.TableYields = []
 		for iYield in range(YieldTypes.NUM_YIELD_TYPES):
@@ -3785,6 +3789,16 @@ class CvMainInterface:
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_PANEL):
 				self.bMessagePanelExpanded = not self.bMessagePanelExpanded
 				self.updateMessagePanel()
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_LINE):
+				self.clickMessageLine(inputClass.getData2())
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_CONTACT_CIV and inputClass.getData1() in self.dMessageCapitals):
+				# a message of the panel that names a native tribe: its main settlement is centered (the game opens the diplomacy)
+				try:
+					if inputClass.getFunctionName().startswith("HudMsgLine"):
+						iPX, iPY = self.dMessageCapitals[inputClass.getData1()]
+						CyCamera().JustLookAtPlot(gc.getMap().plot(iPX, iPY))
+				except:
+					pass
 
 			# WTP: pioneer plan: the improvement and the priority chosen
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_PIONEER_PLAN_BUILD):
@@ -3799,7 +3813,105 @@ class CvMainInterface:
 
 	# WTP: the message panel. The game's own message area (top center) shows the messages of a turn only for a few seconds and ignores the
 	# mouse. The DLL keeps the messages of the turn (CyGame.getNumHudMessages, MESSAGE_PANEL_ENABLED in GlobalDefinesAlt.xml) and this panel
-	# shows them as long as the turn lasts: the newest ones when collapsed, all of them after a click on the panel (it grows downwards).
+	# shows them as long as the turn lasts: the newest ones when collapsed, all of them after a click on the header (it grows downwards).
+	# Every line of a message is a clickable label (the game does not pass clicks on a multiline text): a click centers the map on the place
+	# of the message (colony, battle, unit ...) or on the named colony / native settlement. A message that names a native tribe or its chief
+	# and has no place of its own also opens the diplomacy with the tribe (and centers its main settlement).
+	def wrapMessage(self, szMessage, iCharsPerLine):
+		# splits a message with color markup into lines of about iCharsPerLine visible characters; the colors that are open at the end of
+		# a line are closed there and opened again at the start of the next line
+		aszLines = []
+		aszOpen = []
+		szLine = u""
+		iVisible = 0
+		for szToken in re.split(u"(<[^>]*>)", szMessage):
+			if not szToken:
+				continue
+			if szToken[0] == u"<" and szToken[-1] == u">":
+				szLower = szToken.lower()
+				if szLower.startswith(u"<color"):
+					aszOpen.append(szToken)
+				elif szLower == u"</color>":
+					if aszOpen:
+						aszOpen.pop()
+				szLine += szToken
+				continue
+			szLead = szToken[:len(szToken) - len(szToken.lstrip())]
+			szLine += szLead
+			iVisible += len(szLead)
+			for szWord in re.findall(u"\\S+\\s*", szToken, re.UNICODE):
+				iWord = len(szWord.rstrip())
+				if iVisible > 0 and iVisible + iWord > iCharsPerLine:
+					aszLines.append(szLine + u"</color>" * len(aszOpen))
+					szLine = u"".join(aszOpen)
+					iVisible = 0
+				szLine += szWord
+				iVisible += len(szWord)
+		aszLines.append(szLine)
+		return aszLines
+
+	def getMessageTargets(self, aszMessages, aiX, aiY):
+		# for every message: (x, y, ePlayer) - the plot to center (x < 0: none) and the native player to contact (-1: none)
+		atTargets = []
+		pMap = gc.getMap()
+		iTeam = gc.getGame().getActiveTeam()
+		aNatives = [] # (name, ePlayer, x, y)
+		aCities = [] # (name, x, y)
+		for ePlayer in range(gc.getMAX_PLAYERS()):
+			pPlayer = gc.getPlayer(ePlayer)
+			if not pPlayer.isAlive():
+				continue
+			pCapital = None
+			for iCity in range(pPlayer.getNumCities()):
+				pCity = pPlayer.getCity(iCity)
+				if pCity is None or pCity.isNone() or not pCity.isRevealed(iTeam, False):
+					continue
+				if pCapital is None:
+					pCapital = pCity
+				aCities.append((pCity.getName(), pCity.getX(), pCity.getY()))
+			if pPlayer.isNative() and pCapital is not None:
+				try:
+					pBest = pPlayer.getCapitalCity()
+					if pBest is not None and not pBest.isNone() and pBest.isRevealed(iTeam, False):
+						pCapital = pBest
+				except:
+					pass
+				for szName in (pPlayer.getName(), pPlayer.getCivilizationShortDescription(0)):
+					if szName and len(szName) >= 3:
+						aNatives.append((szName, ePlayer, pCapital.getX(), pCapital.getY()))
+		aCities.sort(key = lambda t: -len(t[0]))
+
+		for i in range(len(aszMessages)):
+			szPlain = re.sub(u"<[^>]*>", u"", aszMessages[i])
+			iX = aiX[i]
+			iY = aiY[i]
+			if iX >= 0 and iY >= 0 and iX < pMap.getGridWidth() and iY < pMap.getGridHeight() and not pMap.plot(iX, iY).isNone():
+				atTargets.append((iX, iY, -1))
+				continue
+			tTarget = None
+			for (szName, ePlayer, iPX, iPY) in aNatives:
+				if szName in szPlain:
+					tTarget = (iPX, iPY, ePlayer)
+					break
+			if tTarget is None:
+				for (szName, iPX, iPY) in aCities:
+					if szName and szName in szPlain:
+						tTarget = (iPX, iPY, -1)
+						break
+			if tTarget is None:
+				tTarget = (-1, -1, -1)
+			atTargets.append(tTarget)
+		return atTargets
+
+	def hideMessagePanel(self, screen):
+		for szName in self.aszMessageLines:
+			screen.hide(szName)
+		self.aszMessageLines = []
+		screen.deleteWidget("HudMsgPanel")
+		screen.deleteWidget("HudMsgPanelBack1")
+		screen.deleteWidget("HudMsgPanelBack2")
+		screen.hide("HudMsgHeader")
+
 	def updateMessagePanel(self):
 
 		try:
@@ -3815,9 +3927,7 @@ class CvMainInterface:
 			if not bShow:
 				if self.tMessagePanelKey is not None:
 					self.tMessagePanelKey = None
-					screen.deleteWidget("HudMsgText")
-					screen.deleteWidget("HudMsgPanel")
-					screen.hide("HudMsgHeader")
+					self.hideMessagePanel(screen)
 				return
 
 			xRes = screen.getXResolution()
@@ -3832,59 +3942,98 @@ class CvMainInterface:
 			iPad = max(6, iLine / 2)
 			iWidth = max(380, int(xRes * 0.23))
 			iX = (xRes - iWidth) / 2
-			iY = int(yRes * 0.053) # just below the round buttons of the top HUD
+			iY = int(yRes * 0.058) # just below the round buttons of the top HUD
 			iHeaderHeight = int(max(14, int(yRes * 0.0135)) * 0.85)
 			iGap = int(iLine * 0.8) # a blank line between the header and the messages
-			# characters per line (measured: about 6.6 pixels per character at 22 pixels line distance, the bullet takes a line height)
-			iCharsPerLine = max(20, int((iWidth - 2 * iPad - iLine) / (iLine * 0.31)))
+			iIndent = int(iLine * 0.95) # the lines after the first one of a message
+			# characters per line (measured: about 6.6 pixels per character at 22 pixels line distance)
+			iCharsPerLine = max(20, int((iWidth - 2 * iPad - iIndent) / (iLine * 0.32)))
 
 			aszMessages = []
-			aiLines = []
+			aiX = []
+			aiY = []
 			for i in range(iNum):
-				szMessage = game.getHudMessageText(i)
-				aszMessages.append(szMessage)
-				# estimated number of lines (the markup of colors does not take room)
-				iLen = len(re.sub(u"<[^>]*>", u"", szMessage))
-				aiLines.append(max(1, (iLen + iCharsPerLine - 1) / iCharsPerLine))
+				aszMessages.append(game.getHudMessageText(i))
+				aiX.append(game.getHudMessageX(i))
+				aiY.append(game.getHudMessageY(i))
+			aatLines = [self.wrapMessage(szMessage, iCharsPerLine) for szMessage in aszMessages]
+			atTargets = self.getMessageTargets(aszMessages, aiX, aiY)
+			self.atMessageTargets = atTargets
 
-			iFirst = 0
-			if not self.bMessagePanelExpanded:
-				# collapsed: the newest messages that fill the fixed space of the panel as far as possible
-				iMaxLines = 6
-				iSum = 0
-				iFirst = iNum
-				while iFirst > 0 and (iSum + aiLines[iFirst - 1] <= iMaxLines or iFirst == iNum):
-					iFirst -= 1
-					iSum += aiLines[iFirst]
-				if iFirst > 0:
-					iTextLines = iMaxLines # more messages than room: the panel keeps its full size
-				else:
-					iTextLines = iSum
+			# which messages: the newest ones that fit
+			if self.bMessagePanelExpanded:
+				iMaxLines = max(6, (int(yRes * 0.80) - iY - iHeaderHeight - iGap - 2 * iPad) / iLine)
 			else:
-				iTextLines = sum(aiLines)
-
-			iMaxHeight = int(yRes * 0.60) - iY
-			iTextHeight = min(iTextLines * iLine + iPad / 2, iMaxHeight - iHeaderHeight - iGap - iPad)
+				iMaxLines = 6
+			iFirst = iNum
+			iSum = 0
+			while iFirst > 0 and (iSum + len(aatLines[iFirst - 1]) <= iMaxLines or iFirst == iNum):
+				iFirst -= 1
+				iSum += len(aatLines[iFirst])
+			iTextLines = iSum
+			if iFirst > 0 and not self.bMessagePanelExpanded:
+				iTextLines = iMaxLines # more messages than room: the panel keeps its full size
+			iTextHeight = iTextLines * iLine + iPad / 2
 			iHeight = iHeaderHeight + iGap + iTextHeight + iPad
 
-			szBullet = u"%c " % game.getSymbolID(FontSymbols.BULLET_CHAR)
-			szText = u"\n".join([szBullet + aszMessages[i] for i in range(iFirst, iNum)])
-			szText = self.setFontSize(szText, -1)
 			if self.bMessagePanelExpanded:
 				szHeader = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_COLLAPSE", (iNum,))
 			else:
 				szHeader = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_EXPAND", (iNum,))
 
-			screen.deleteWidget("HudMsgText")
+			# the old labels are hidden, the ones that are needed again are shown by setText
+			for szName in self.aszMessageLines:
+				screen.hide(szName)
+			self.aszMessageLines = []
+			self.dMessageCapitals = {}
+
+			# a denser background: the panel style is semi-transparent, three of them on top of each other are better to read
 			screen.deleteWidget("HudMsgPanel")
+			screen.deleteWidget("HudMsgPanelBack1")
+			screen.deleteWidget("HudMsgPanelBack2")
+			screen.addPanel("HudMsgPanelBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			screen.addPanel("HudMsgPanelBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			screen.addPanel("HudMsgPanel", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
-			screen.addMultilineText("HudMsgText", szText, iX + iPad, iY + iHeaderHeight + iGap, iWidth - 2 * iPad, iTextHeight, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1, CvUtil.FONT_LEFT_JUSTIFY)
-			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
+			screen.show("HudMsgPanelBack1")
+			screen.show("HudMsgPanelBack2")
 			screen.show("HudMsgPanel")
-			screen.show("HudMsgText")
-			screen.show("HudMsgHeader")
+			screen.moveToFront("HudMsgPanelBack1")
+			screen.moveToFront("HudMsgPanelBack2")
 			screen.moveToFront("HudMsgPanel")
-			screen.moveToFront("HudMsgText")
+
+			szBullet = u"%c " % game.getSymbolID(FontSymbols.BULLET_CHAR)
+			iLabel = 0
+			iTextY = iY + iHeaderHeight + iGap
+			iRow = 0
+			for i in range(iFirst, iNum):
+				iTargetX, iTargetY, eContact = atTargets[i]
+				for iPart in range(len(aatLines[i])):
+					szLine = aatLines[i][iPart]
+					if iPart == 0:
+						szLine = szBullet + szLine
+						iLineX = iX + iPad
+					else:
+						iLineX = iX + iPad + iIndent
+					szName = "HudMsgLine%d" % iLabel
+					iLabel += 1
+					if eContact >= 0:
+						# a native tribe: contact (diplomacy), the click also centers its main settlement (handleInput)
+						eWidget = WidgetTypes.WIDGET_CONTACT_CIV
+						iData1 = eContact
+						iData2 = -1
+						self.dMessageCapitals[eContact] = (iTargetX, iTargetY)
+					else:
+						eWidget = WidgetTypes.WIDGET_GENERAL
+						iData1 = self.BUTTON_MESSAGE_LINE
+						iData2 = i
+					screen.setText(szName, "Background", self.setFontSize(szLine, -1), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + iRow * iLine, -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+					screen.show(szName)
+					screen.moveToFront(szName)
+					self.aszMessageLines.append(szName)
+					iRow += 1
+
+			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
+			screen.show("HudMsgHeader")
 			screen.moveToFront("HudMsgHeader")
 		except:
 			# the panel must never break the main interface
@@ -3892,6 +4041,15 @@ class CvMainInterface:
 			if not getattr(self, "bMessagePanelErrorShown", False):
 				self.bMessagePanelErrorShown = True
 				CvUtil.pyPrint("Message panel failed: " + str(sys.exc_info()[1]))
+
+	def clickMessageLine(self, iMessage):
+		# centers the map on the place of the message
+		try:
+			iX, iY, eContact = self.atMessageTargets[iMessage]
+			if iX >= 0:
+				CyCamera().JustLookAtPlot(gc.getMap().plot(iX, iY))
+		except:
+			pass
 
 	# WTP: pioneer plan mode: choose an improvement and a priority, left click marks a plot, right click removes the mark
 	def togglePioneerPlan(self):
