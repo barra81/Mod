@@ -720,11 +720,11 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 			const HurryTypes eBuyHurry = (HurryTypes)GC.getInfoTypeForString("HURRY_GOLD");
 			if (eBuyHurry != NO_HURRY)
 			{
-				if (info.getData2() == ORDER_TRAIN)
+				if ((OrderTypes)info.getData2() == ORDER_TRAIN)
 				{
 					gDLL->sendDoTask(info.getData1(), TASK_PUSH_TRAIN_UNIT, info.getData3(), NO_UNITAI, false, false, false, false);
 				}
-				else if (info.getData2() == ORDER_CONSTRUCT)
+				else if ((OrderTypes)info.getData2() == ORDER_CONSTRUCT)
 				{
 					gDLL->sendDoTask(info.getData1(), TASK_PUSH_CONSTRUCT_BUILDING, info.getData3(), -1, false, false, false, false);
 				}
