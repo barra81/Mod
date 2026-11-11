@@ -80,12 +80,19 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 			return True
 		return False
 
-	def openWaypointPopup(self, iRow):
+	def openWaypointPopup(self, iRow, iPlotIndex = -1):
 		try:
-			citylist = self.getKnownSettlementList()
-			if iRow < 0 or iRow >= len(citylist):
-				return False
-			pNative = citylist[iRow]
+			# the table can be sorted: the row is not the index of the list, so the plot index of the cell is used
+			pNative = None
+			if iPlotIndex >= 0:
+				pPlot = gc.getMap().plotByIndex(iPlotIndex)
+				if pPlot is not None and not pPlot.isNone() and pPlot.isCity():
+					pNative = pPlot.getPlotCity()
+			if pNative is None:
+				citylist = self.getKnownSettlementList()
+				if iRow < 0 or iRow >= len(citylist):
+					return False
+				pNative = citylist[iRow]
 			player = gc.getPlayer(gc.getGame().getActivePlayer())
 			if not self.hasOwnPresence(pNative, player):
 				logWaypoint("no own presence in row %d" % iRow)
@@ -168,9 +175,9 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 					if iWaypoint >= 0:
 						pWaypointCity = player.getCity(iWaypoint)
 					if pWaypointCity is not None and not pWaypointCity.isNone():
-						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.MOVES_CHAR) + pWaypointCity.getName())
+						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.MOVES_CHAR) + pWaypointCity.getName(), pLoopCity.plot().getIndex())
 					else:
-						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.OPEN_BORDERS_CHAR) + localText.getText("TXT_KEY_WTP_WAYPOINT_COLUMN", ()))
+						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.OPEN_BORDERS_CHAR) + localText.getText("TXT_KEY_WTP_WAYPOINT_COLUMN", ()), pLoopCity.plot().getIndex())
 				else:
 					self.tableManager.skipCell()
 	
@@ -195,9 +202,9 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 				if self.contactNation(inputClass.getMouseY()):
 					return 0
 			# WTP: waypoint column
-			logWaypoint("click: column %d row %d" % (inputClass.getMouseX(), inputClass.getMouseY()))
+			logWaypoint("click: column %d row %d data1 %d data2 %d" % (inputClass.getMouseX(), inputClass.getMouseY(), inputClass.getData1(), inputClass.getData2()))
 			if (inputClass.getMouseX() == 8):
-				if self.openWaypointPopup(inputClass.getMouseY()):
+				if self.openWaypointPopup(inputClass.getMouseY(), inputClass.getData1()):
 					return 0
 			return -1
 
