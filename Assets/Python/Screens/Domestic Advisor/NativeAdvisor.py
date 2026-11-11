@@ -47,6 +47,21 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 				knownList.append(pLoopCity)
 		return knownList
 
+	def contactNation(self, iRow):
+		try:
+			citylist = self.getKnownSettlementList()
+			if iRow < 0 or iRow >= len(citylist):
+				return False
+			iNative = citylist[iRow].getOwner()
+			player = gc.getPlayer(gc.getGame().getActivePlayer())
+			if not player.canContact(iNative):
+				return False
+			self.parent.getScreen().hideScreen()
+			player.contact(iNative)
+			return True
+		except:
+			return False
+
 	def lookAtSettlement(self, iPlotID):
 		plot = gc.getMap().plotByIndex(iPlotID)
 		if plot is None or plot.isNone():
@@ -120,6 +135,10 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 			if (inputClass.getMouseX() == 0):
 				self.lookAtSettlement(inputClass.getData1())
 				return 0
+			# WTP: a click on the civ column opens the diplomacy screen of this nation
+			if (inputClass.getMouseX() == 2):
+				if self.contactNation(inputClass.getMouseY()):
+					return 0
 			return -1
 
 		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED):
