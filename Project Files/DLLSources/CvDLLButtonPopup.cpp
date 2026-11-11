@@ -1543,6 +1543,11 @@ void CvDLLButtonPopup::OnFocus(CvPopup* pPopup, CvPopupInfo &info)
 	switch (info.getButtonPopupType())
 	{
 	case BUTTONPOPUP_CHOOSEPRODUCTION:
+		// WTP: the upgrade popup (right click on a building) is wanted while the city is producing something
+		if (info.getData2() == WTP_BUILDING_UPGRADE_POPUP)
+		{
+			break;
+		}
 		{
 			PlayerTypes ePlayer = GC.getGameINLINE().getActivePlayer();
 			CvCity* pCity = GET_PLAYER(ePlayer).getCity(info.getData1());
