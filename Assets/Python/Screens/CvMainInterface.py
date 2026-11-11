@@ -3832,8 +3832,8 @@ class CvMainInterface:
 			iPad = max(6, iLine / 2)
 			iWidth = max(380, int(xRes * 0.23))
 			iX = (xRes - iWidth) / 2
-			iY = int(yRes * 0.061) # just below the round buttons of the top HUD
-			iHeaderHeight = iLine + iPad
+			iY = int(yRes * 0.053) # just below the round buttons of the top HUD
+			iHeaderHeight = int(iLine * 0.85)
 			iCharsPerLine = max(20, int((iWidth - 2 * iPad) / (iLine * 0.45)))
 
 			aszMessages = []
@@ -3860,7 +3860,7 @@ class CvMainInterface:
 
 			iMaxHeight = int(yRes * 0.60) - iY
 			iTextHeight = min(iTextLines * iLine + iPad, iMaxHeight - iHeaderHeight - 2 * iPad)
-			iHeight = iHeaderHeight + iTextHeight + 2 * iPad
+			iHeight = iHeaderHeight + iTextHeight + iPad + iPad / 2
 
 			szBullet = u"%c " % game.getSymbolID(FontSymbols.BULLET_CHAR)
 			szText = u"\n".join([szBullet + aszMessages[i] for i in range(iFirst, iNum)])
@@ -3873,8 +3873,8 @@ class CvMainInterface:
 			screen.deleteWidget("HudMsgText")
 			screen.deleteWidget("HudMsgPanel")
 			screen.addPanel("HudMsgPanel", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
-			screen.addMultilineText("HudMsgText", szText, iX + iPad, iY + iHeaderHeight + iPad, iWidth - 2 * iPad, iTextHeight, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1, CvUtil.FONT_LEFT_JUSTIFY)
-			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
+			screen.addMultilineText("HudMsgText", szText, iX + iPad, iY + iHeaderHeight + iPad / 2, iWidth - 2 * iPad, iTextHeight, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1, CvUtil.FONT_LEFT_JUSTIFY)
+			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
 			screen.show("HudMsgPanel")
 			screen.show("HudMsgText")
 			screen.show("HudMsgHeader")
