@@ -1847,7 +1847,17 @@ static void wtpGetUpgradeBuildings(const CvCity& kCity, BuildingTypes eCurrent, 
 	}
 }
 
+static bool wtpOpenBuildingUpgrade(int iSpecialBuilding, int iBuildingOfSlot);
 bool WtpBuildingUpgrade::open(int iSpecialBuilding, int iBuildingOfSlot)
+{
+	const bool bOpened = wtpOpenBuildingUpgrade(iSpecialBuilding, iBuildingOfSlot);
+	char szLog[128];
+	sprintf(szLog, "building upgrade popup: special %d building %d: %s", iSpecialBuilding, iBuildingOfSlot, bOpened ? "opened" : "nothing to upgrade or no city");
+	gDLL->logMsg("WTP_BuildingUpgrade.log", szLog);
+	return bOpened;
+}
+
+static bool wtpOpenBuildingUpgrade(int iSpecialBuilding, int iBuildingOfSlot)
 {
 	CvCity* pCity = gDLL->getInterfaceIFace()->getHeadSelectedCity();
 	if (pCity == NULL || pCity->getOwnerINLINE() != GC.getGameINLINE().getActivePlayer())

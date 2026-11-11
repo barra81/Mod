@@ -918,6 +918,11 @@ bool CvDLLWidgetData::executeAltAction(const CvWidgetDataStruct &widgetDataStruc
 	}
 
 	CvWidgetDataStruct widgetData = widgetDataStruct;
+	{
+		char szLog[128];
+		sprintf(szLog, "right click: widget %d data1 %d data2 %d", (int)widgetDataStruct.m_eWidgetType, widgetDataStruct.m_iData1, widgetDataStruct.m_iData2);
+		gDLL->logMsg("WTP_BuildingUpgrade.log", szLog);
+	}
 
 	bool bHandled = true;
 	switch (widgetDataStruct.m_eWidgetType)
