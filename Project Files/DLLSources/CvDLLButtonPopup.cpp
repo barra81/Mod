@@ -1826,8 +1826,106 @@ bool CvDLLButtonPopup::launchTextPopup(CvPopup* pPopup, CvPopupInfo &info)
 }
 
 
+// WTP: the buildings of the special building slot of eBuilding (one slot of the city screen) that the city can construct now,
+// the same test as the construction list on the right side of the city screen
+static void wtpGetUpgradeBuildings(const CvCity& kCity, BuildingTypes eCurrent, std::vector<BuildingClassTypes>& aClasses)
+{
+	const int iSpecial = GC.getBuildingInfo(eCurrent).getSpecialBuildingType();
+	if (iSpecial == NO_SPECIALBUILDING)
+	{
+		return;
+	}
+	for (BuildingClassTypes eBuildingClass = FIRST_BUILDINGCLASS; eBuildingClass < NUM_BUILDINGCLASS_TYPES; ++eBuildingClass)
+	{
+		const BuildingTypes eLoopBuilding = GC.getCivilizationInfo(kCity.getCivilizationType()).getCivilizationBuildings(eBuildingClass);
+		if (eLoopBuilding != NO_BUILDING && eLoopBuilding != eCurrent
+			&& GC.getBuildingInfo(eLoopBuilding).getSpecialBuildingType() == iSpecial
+			&& kCity.canConstruct(eLoopBuilding))
+		{
+			aClasses.push_back(eBuildingClass);
+		}
+	}
+}
+
+bool WtpBuildingUpgrade::open(int iSpecialBuilding, int iBuildingOfSlot)
+{
+	CvCity* pCity = gDLL->getInterfaceIFace()->getHeadSelectedCity();
+	if (pCity == NULL || pCity->getOwnerINLINE() != GC.getGameINLINE().getActivePlayer())
+	{
+		return false;
+	}
+	if (iSpecialBuilding < 0 && iBuildingOfSlot >= 0 && iBuildingOfSlot < GC.getNumBuildingInfos())
+	{
+		iSpecialBuilding = GC.getBuildingInfo((BuildingTypes) iBuildingOfSlot).getSpecialBuildingType();
+	}
+	if (iSpecialBuilding < 0)
+	{
+		return false;
+	}
+	// the building that stands in this slot
+	BuildingTypes eCurrent = NO_BUILDING;
+	for (BuildingClassTypes eBuildingClass = FIRST_BUILDINGCLASS; eBuildingClass < NUM_BUILDINGCLASS_TYPES; ++eBuildingClass)
+	{
+		const BuildingTypes eLoopBuilding = GC.getCivilizationInfo(pCity->getCivilizationType()).getCivilizationBuildings(eBuildingClass);
+		if (eLoopBuilding != NO_BUILDING && GC.getBuildingInfo(eLoopBuilding).getSpecialBuildingType() == iSpecialBuilding && pCity->isHasBuilding(eLoopBuilding))
+		{
+			eCurrent = eLoopBuilding;
+			break;
+		}
+	}
+	if (eCurrent == NO_BUILDING)
+	{
+		return false;
+	}
+	std::vector<BuildingClassTypes> aClasses;
+	wtpGetUpgradeBuildings(*pCity, eCurrent, aClasses);
+	if (aClasses.empty())
+	{
+		return false;
+	}
+	CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSEPRODUCTION, pCity->getID(), WTP_BUILDING_UPGRADE_POPUP, eCurrent);
+	gDLL->getInterfaceIFace()->addPopup(pInfo, GC.getGameINLINE().getActivePlayer(), false, true);
+	return true;
+}
+
+static bool launchBuildingUpgradePopup(CvPopup* pPopup, CvPopupInfo& info)
+{
+	CvCity* pCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getCity(info.getData1());
+	const BuildingTypes eCurrent = (BuildingTypes) info.getData3();
+	if (pCity == NULL || eCurrent == NO_BUILDING)
+	{
+		return false;
+	}
+	std::vector<BuildingClassTypes> aClasses;
+	wtpGetUpgradeBuildings(*pCity, eCurrent, aClasses);
+	if (aClasses.empty())
+	{
+		return false;
+	}
+
+	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, gDLL->getText("TXT_KEY_WTP_BUILDING_UPGRADE_HEADER", GC.getBuildingInfo(eCurrent).getTextKeyWide(), pCity->getNameKey()), DLL_FONT_LEFT_JUSTIFY);
+
+	// the buttons start a construction order like the construction list of the city screen (WIDGET_CONSTRUCT) and show the help of the building
+	for (size_t i = 0; i < aClasses.size(); ++i)
+	{
+		const BuildingTypes eBuilding = GC.getCivilizationInfo(pCity->getCivilizationType()).getCivilizationBuildings(aClasses[i]);
+		const int iHammers = pCity->getYieldProductionNeeded(eBuilding, YIELD_HAMMERS);
+		CvWString szText = CvWString::format(L"%s (%d%c)", GC.getBuildingInfo(eBuilding).getDescription(), iHammers, GC.getYieldInfo(YIELD_HAMMERS).getChar());
+		gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, szText, GC.getBuildingInfo(eBuilding).getButton(), aClasses[i], WIDGET_CONSTRUCT, aClasses[i], pCity->getID(), true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+	}
+	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_NEVER_MIND"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL")->getPath(), GC.getNumUnitInfos() + GC.getNumBuildingInfos() + 10, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+	gDLL->getInterfaceIFace()->popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
+	return true;
+}
+
 bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 {
+	// WTP: upgrade of a building (right click on a building of the city screen)
+	if (info.getData2() == WTP_BUILDING_UPGRADE_POPUP)
+	{
+		return launchBuildingUpgradePopup(pPopup, info);
+	}
+
 	CvWString szBuffer;
 	CvString szArtFilename;
 
