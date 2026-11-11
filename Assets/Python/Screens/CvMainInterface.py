@@ -2149,7 +2149,7 @@ class CvMainInterface:
 							if CyInterface().canHandleAction(i, False) and self.isOwnShipInPort(i):
 								# WTP: a ring above the sail buttons (Europe / Africa / Port Royal) whose port has an own ship, a bit larger than the button
 								szRing = "WtpPortRing" + str(iCount)
-								iRingPad = -(LARGE_BUTTON_SIZE / 9)
+								iRingPad = -(LARGE_BUTTON_SIZE / 4)
 								screen.addDDSGFC(szRing, "Art/Interface/Game Hud/Actions/port_ring.dds", int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)
 								screen.setHitTest(szRing, HitTestTypes.HITTEST_NOHIT)
 								ActionButtonList.append(szRing)
