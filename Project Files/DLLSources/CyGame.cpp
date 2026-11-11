@@ -4,6 +4,7 @@
 
 #include "CvGameCoreDLL.h"
 #include "CyGame.h"
+#include "CvPopupInfo.h"
 #include "CvDLLInterfaceIFaceBase.h"
 #include "CvGameAI.h"
 #include "CyGlobalContext.h"
@@ -662,6 +663,16 @@ std::wstring CyGame::getReplayMessageText(int i) const
 {
 	return (NULL != m_pGame ? m_pGame->getReplayMessageText(i) : L"");
 }
+void CyGame::openDomesticMarket(int iCityID) const
+{
+	CvCity* pCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getCity(iCityID);
+	if (pCity != NULL)
+	{
+		CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_DOMESTIC_MARKET, iCityID);
+		gDLL->getInterfaceIFace()->addPopup(pInfo, NO_PLAYER, true);
+	}
+}
+
 static bool wtpGetCursor(POINT& pt)
 {
 	if (!GetCursorPos(&pt)) return false;

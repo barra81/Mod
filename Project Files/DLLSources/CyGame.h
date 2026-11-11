@@ -169,6 +169,7 @@ public:
 	uint getNumReplayMessages() const;
 	// WTP: the messages of the turn for the message panel of the main interface
 	int getNumHudMessages() const;
+	void openDomesticMarket(int iCityID) const; // WTP: opens the domestic market popup of a city
 	int getCursorClientX() const; // WTP: mouse position in the game window (-1 if unknown)
 	int getCursorClientY() const;
 	std::wstring getHudMessageText(int i) const;

@@ -4,6 +4,7 @@ from CvPythonExtensions import *
 import CvUtil
 import ScreenInput
 import CvScreenEnums
+import time
 
 import BuildingAdvisor
 import DomesticDemandAdvisor
@@ -980,21 +981,28 @@ class CvDomesticAdvisor:
 				gc.setGameFontDebug(inputClass.getData()+8483)
 			elif self.CurrentState != self.TRADEROUTE_STATE and self.CurrentState != self.NATIVE_STATE:
 			## R&R, Robert Surcouf,  Domestic Advisor Screen END
-				if (inputClass.getMouseX() == 0):
-					screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
-					screen.hideScreen()
+				if self.CurrentState == self.TRADE_COUNT_STATE:
+					# WTP: exported goods: a click on the Europe / Africa / Port Royal row opens the trade screen
+					self.openTradeLocation(inputClass.getMouseY())
+				elif (inputClass.getMouseX() == 0):
+					if self.CurrentState == self.TOTAL_PRODUCTION_STATE:
+						# unchanged original behavior
+						screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+						screen.hideScreen()
 
-					CyInterface().selectCity(gc.getPlayer(inputClass.getData1()).getCity(inputClass.getData2()), True);
+						CyInterface().selectCity(gc.getPlayer(inputClass.getData1()).getCity(inputClass.getData2()), True);
 
-					popupInfo = CyPopupInfo()
-					popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
-					popupInfo.setText(u"showDomesticAdvisor")
-					popupInfo.addPopup(inputClass.getData1())
+						popupInfo = CyPopupInfo()
+						popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+						popupInfo.setText(u"showDomesticAdvisor")
+						popupInfo.addPopup(inputClass.getData1())
+					else:
+						self.openCity(gc.getPlayer(inputClass.getData1()).getCity(inputClass.getData2()))
 				else:
 					# WTP: a click on any cell of a city row opens the city (ctrl/shift keeps the multi selection)
 					iRow = inputClass.getMouseY()
-					if (not inputClass.isCtrlKeyDown() and not inputClass.isShiftKeyDown() and iRow >= 0 and iRow < len(self.Cities)):
-						self.openCityFromRow(iRow)
+					if (self.CurrentState != self.TOTAL_PRODUCTION_STATE and not inputClass.isCtrlKeyDown() and not inputClass.isShiftKeyDown() and iRow >= 0 and iRow < len(self.Cities)):
+						self.openCity(self.Cities[iRow])
 					else:
 						self.updateAppropriateCitySelection()
 
@@ -1041,12 +1049,40 @@ class CvDomesticAdvisor:
 						self.drawContents()
 		return 0
 
-	def openCityFromRow(self, iRow):
-		pCity = self.Cities[iRow]
+	def openTradeLocation(self, iRow):
+		# rows of the exported goods tab: 0 Europe, 1 Africa, 2 Port Royal
+		szScreen = {0: "showEuropeScreen", 1: "showAfricaScreen", 2: "showPortRoyalScreen"}.get(iRow)
+		if szScreen is None:
+			return
+		try:
+			import CvScreensInterface
+			screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+			screen.hideScreen()
+			getattr(CvScreensInterface, szScreen)((-1,))
+		except:
+			pass
+
+	def openCity(self, pCity):
 		screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
 		screen.hideScreen()
 
 		CyInterface().selectCity(pCity, True)
+
+		# route planning tab: open the governor tab of the city
+		if self.CurrentState == self.IMPORTEXPORT_STATE:
+			try:
+				import CvMainInterface
+				CvMainInterface.AUTOMATION_MANAGMENT_PANEL_UP = True
+				CvMainInterface.BUILDING_MANAGMENT_PANEL_UP = False
+				CvMainInterface.MAP_MANAGMENT_PANEL_UP = False
+			except:
+				pass
+		# domestic market tab: open the domestic market of the city (needs the new DLL, otherwise only the city opens)
+		elif self.CurrentState == self.DOMESTIC_DEMAND_STATE:
+			try:
+				CyGame().openDomesticMarket(pCity.getID())
+			except:
+				pass
 
 		# the advisor opens again when the city screen is left (same as the zoom button of the first column)
 		popupInfo = CyPopupInfo()
@@ -1063,6 +1099,14 @@ class CvDomesticAdvisor:
 			screen.hideScreen()
 			CyInterface().selectUnit(pUnit, True, False, True)
 			pUnit.centerCamera()
+			# trade routes tab: open the assign trade routes screen (R); it returns to the advisor when closed
+			if self.CurrentState == self.TRADEROUTE_STATE:
+				import CvScreensInterface
+				CvScreensInterface.tradeRoutesAdvisor.fReturnToDomesticTime = time.time()
+				popupInfo = CyPopupInfo()
+				popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+				popupInfo.setText(u"showTradeRoutesAdvisor")
+				popupInfo.addPopup(pUnit.getOwner())
 			return True
 		except:
 			return False
