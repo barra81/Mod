@@ -2003,7 +2003,7 @@ static bool launchBuildingUpgradePopup(CvPopup* pPopup, CvPopupInfo& info)
 // WTP: one turn before a project is finished: the materials that will be missing can be bought
 static bool launchNativeWaypointPopup(CvPopup* pPopup, CvPopupInfo& info)
 {
-	CvPlot* pPlot = GC.getMapINLINE().plotByIndexINLINE(info.getData1());
+	CvPlot* pPlot = GC.getMap().plotByIndexINLINE(info.getData1());
 	CvPlayer& kPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
 	if (pPlot == NULL || !pPlot->isCity())
 	{
