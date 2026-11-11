@@ -326,7 +326,20 @@ class CvMilitaryAdvisor:
 			if unitIndex < 0 or unitIndex >= len(self.unitList):
 				return
 			pUnit = self.unitList[unitIndex]
-			if pUnit is None or pUnit.isNone() or pUnit.plot().isNone():
+			if pUnit is None or pUnit.isNone():
+				return
+			# a citizen working in a city: open the city screen
+			if pUnit.getOwner() == self.iActivePlayer:
+				(pCity, iter) = self.pActivePlayer.firstCity(True)
+				while (pCity):
+					for iCitizen in range(pCity.getPopulation()):
+						pCitizen = pCity.getPopulationUnitByIndex(iCitizen)
+						if (not pCitizen.isNone()) and pCitizen.getID() == pUnit.getID():
+							self.hideScreen()
+							CyInterface().selectCity(pCity, True)
+							return
+					(pCity, iter) = self.pActivePlayer.nextCity(iter, True)
+			if pUnit.plot().isNone():
 				return
 			self.hideScreen()
 			if pUnit.getOwner() == self.iActivePlayer:
