@@ -3353,4 +3353,34 @@
 		<Russian>Испанским</Russian>
 		<Hungarian>Spanyol Királyi:Spanyol Királyi</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_SURPLUS_SOLD</Tag>
+		<English>%s1_city : Due to limited storage capacity a surplus was sold: %s2_yields for a total of %d3[ICON_GOLD].</English>
+		<German>%s1_city : Wegen begrenzter Lagerkapazität wurde ein Überschuss verkauft: %s2_yields für insgesamt %d3[ICON_GOLD].</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_SURPLUS_LOST</Tag>
+		<English>[COLOR_RED]%s1_city[COLOR_REVERT] : Lost due to limited storage capacity: %s2_yields</English>
+		<German>[COLOR_RED]%s1_city[COLOR_REVERT] : Wegen begrenzter Lagerkapazität verloren gegangen: %s2_yields</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_NO_RAW_AMOUNT</Tag>
+		<English>[COLOR_RED]%s1_city[COLOR_REVERT] : Production stopped, [COLOR_RED]%d4%F2_yield_icon per turn[COLOR_REVERT] missing to produce %F3_yield_icon</English>
+		<German>[COLOR_RED]%s1_city[COLOR_REVERT] : Produktion steht still, es fehlen [COLOR_RED]%d4%F2_yield_icon pro Runde[COLOR_REVERT] für die Produktion von %F3_yield_icon</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_PREVIOUS</Tag>
+		<English>[COLOR_FONT_CREAM]Show the messages of the previous turn[COLOR_REVERT]</English>
+		<German>[COLOR_FONT_CREAM]Meldungen der vorherigen Runde anzeigen[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_CURRENT</Tag>
+		<English>[COLOR_FONT_CREAM]Back to the messages of this turn[COLOR_REVERT]</English>
+		<German>[COLOR_FONT_CREAM]Zurück zu den Meldungen dieser Runde[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_PREVIOUS_HEADER</Tag>
+		<English>[COLOR_FONT_CREAM]Messages of the previous turn: %d1_Num[COLOR_REVERT]</English>
+		<German>[COLOR_FONT_CREAM]Meldungen der vorherigen Runde: %d1_Num[COLOR_REVERT]</German>
+	</TEXT>
 </Civ4GameText>

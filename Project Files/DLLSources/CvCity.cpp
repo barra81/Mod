@@ -5758,7 +5758,10 @@ void CvCity::calculateNetYields(int aiYields[NUM_YIELD_TYPES], int* aiProducedYi
 						 eYieldConsumed = eYieldConsumed2;
 					}
 				}
-				CvWString szBuffer = gDLL->getText("TXT_KEY_NO_RAW", getNameKey(),GC.getYieldInfo(eYieldConsumed).getChar(), GC.getYieldInfo(eYieldProduced).getChar());
+				// WTP: the message names the amount that is missing per turn (consumption minus what is produced and stored)
+				int iMissing = aiConsumedYields[eYieldConsumed] - aiProducedYields[eYieldConsumed] * getBaseYieldRateModifier(eYieldConsumed) / 100 - getYieldStored(eYieldConsumed);
+				iMissing = std::max(1, iMissing);
+				CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_NO_RAW_AMOUNT", getNameKey(), GC.getYieldInfo(eYieldConsumed).getChar(), GC.getYieldInfo(eYieldProduced).getChar(), iMissing);
 				gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(eYieldConsumed).getButton(), COLOR_RED, true, true);
 			}
 		}
@@ -8215,6 +8218,10 @@ void CvCity::doYields()
 
 	// R&R, ray, adjustment for less Custom House messages
 	int iCustomHouseProfit = 0;
+	// WTP: the messages about the storage surplus (sold / lost) of one city are merged to one message each: all yield icons, then the sum
+	CvWString szSurplusSoldYields;
+	int iSurplusSoldGold = 0;
+	CvWString szSurplusLostYields;
 	bool bPrintOnce = false;
 
 	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
@@ -8376,15 +8383,14 @@ void CvCity::doYields()
 						}
 						else
 						{
-							CvWString szBuffer = gDLL->getText("TXT_KEY_GOODS_LOST_SOLD", iLoss, GC.getYieldInfo(eYield).getChar(), getNameKey(), iProfit);
-							gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), NULL, MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(eYield).getButton(), COLOR_WHITE, true, true);
+							szSurplusSoldYields.append(CvWString::format(L"%c", GC.getYieldInfo(eYield).getChar()));
+							iSurplusSoldGold += iProfit;
 						}
 						// R&R, ray , Changes to Custom House - END
 					}
 					else
 					{
-						CvWString szBuffer = gDLL->getText("TXT_KEY_GOODS_LOST", iLoss, GC.getYieldInfo(eYield).getChar(), getNameKey());
-						gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(eYield).getButton(), COLOR_RED, true, true);
+						szSurplusLostYields.append(CvWString::format(L"%c", GC.getYieldInfo(eYield).getChar()));
 					}
 				}
 				else if (!bPrintOnce && (iMaxCapacity - iTotalYields) > 0 && (iMaxCapacity - iTotalYields) < (iMaxCapacity / 10)) //only do this message once
@@ -8407,6 +8413,17 @@ void CvCity::doYields()
 			}
 		}
 		doAutoExport(eYield); // auto traderoute - Nightinggale
+	}
+
+	if (!szSurplusSoldYields.empty())
+	{
+		CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_SURPLUS_SOLD", getNameKey(), szSurplusSoldYields.GetCString(), iSurplusSoldGold);
+		gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), NULL, MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
+	}
+	if (!szSurplusLostYields.empty())
+	{
+		CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_SURPLUS_LOST", getNameKey(), szSurplusLostYields.GetCString());
+		gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_RED, true, true);
 	}
 
 	// R&R, ray, adjustment for less Custom House messages
