@@ -1546,6 +1546,7 @@ void CvDLLButtonPopup::OnFocus(CvPopup* pPopup, CvPopupInfo &info)
 		// WTP: the upgrade popup (right click on a building) is wanted while the city is producing something
 		if (info.getData2() == WTP_BUILDING_UPGRADE_POPUP)
 		{
+			gDLL->logMsg("WTP_BuildingUpgrade.log", "upgrade popup: OnFocus");
 			break;
 		}
 		{
@@ -1938,7 +1939,9 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 	// WTP: upgrade of a building (right click on a building of the city screen)
 	if (info.getData2() == WTP_BUILDING_UPGRADE_POPUP)
 	{
-		return launchBuildingUpgradePopup(pPopup, info);
+		const bool bUpgradeLaunched = launchBuildingUpgradePopup(pPopup, info);
+		gDLL->logMsg("WTP_BuildingUpgrade.log", bUpgradeLaunched ? "upgrade popup launched" : "upgrade popup NOT launched (no city or nothing to build)");
+		return bUpgradeLaunched;
 	}
 
 	CvWString szBuffer;
