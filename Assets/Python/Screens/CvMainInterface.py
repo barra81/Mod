@@ -3828,13 +3828,15 @@ class CvMainInterface:
 			self.tMessagePanelKey = tKey
 
 			# geometry: centered below the top HUD, about as wide as the game's own message area
-			iLine = max(14, int(yRes * 0.0135))
+			iLine = max(16, int(yRes * 0.0153)) # distance of the text lines (measured: 22 pixels at 1440)
 			iPad = max(6, iLine / 2)
 			iWidth = max(380, int(xRes * 0.23))
 			iX = (xRes - iWidth) / 2
 			iY = int(yRes * 0.053) # just below the round buttons of the top HUD
-			iHeaderHeight = int(iLine * 0.85)
-			iCharsPerLine = max(20, int((iWidth - 2 * iPad) / (iLine * 0.45)))
+			iHeaderHeight = int(max(14, int(yRes * 0.0135)) * 0.85)
+			iGap = int(iLine * 0.8) # a blank line between the header and the messages
+			# characters per line (measured: about 6.6 pixels per character at 22 pixels line distance, the bullet takes a line height)
+			iCharsPerLine = max(20, int((iWidth - 2 * iPad - iLine) / (iLine * 0.31)))
 
 			aszMessages = []
 			aiLines = []
@@ -3847,20 +3849,23 @@ class CvMainInterface:
 
 			iFirst = 0
 			if not self.bMessagePanelExpanded:
-				# collapsed: the newest messages that fit in a few lines
-				iMaxLines = 7
+				# collapsed: the newest messages that fill the fixed space of the panel as far as possible
+				iMaxLines = 6
 				iSum = 0
 				iFirst = iNum
 				while iFirst > 0 and (iSum + aiLines[iFirst - 1] <= iMaxLines or iFirst == iNum):
 					iFirst -= 1
 					iSum += aiLines[iFirst]
-				iTextLines = iSum
+				if iFirst > 0:
+					iTextLines = iMaxLines # more messages than room: the panel keeps its full size
+				else:
+					iTextLines = iSum
 			else:
 				iTextLines = sum(aiLines)
 
 			iMaxHeight = int(yRes * 0.60) - iY
-			iTextHeight = min(iTextLines * iLine + iPad, iMaxHeight - iHeaderHeight - 2 * iPad)
-			iHeight = iHeaderHeight + iTextHeight + iPad + iPad / 2
+			iTextHeight = min(iTextLines * iLine + iPad / 2, iMaxHeight - iHeaderHeight - iGap - iPad)
+			iHeight = iHeaderHeight + iGap + iTextHeight + iPad
 
 			szBullet = u"%c " % game.getSymbolID(FontSymbols.BULLET_CHAR)
 			szText = u"\n".join([szBullet + aszMessages[i] for i in range(iFirst, iNum)])
@@ -3873,7 +3878,7 @@ class CvMainInterface:
 			screen.deleteWidget("HudMsgText")
 			screen.deleteWidget("HudMsgPanel")
 			screen.addPanel("HudMsgPanel", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
-			screen.addMultilineText("HudMsgText", szText, iX + iPad, iY + iHeaderHeight + iPad / 2, iWidth - 2 * iPad, iTextHeight, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1, CvUtil.FONT_LEFT_JUSTIFY)
+			screen.addMultilineText("HudMsgText", szText, iX + iPad, iY + iHeaderHeight + iGap, iWidth - 2 * iPad, iTextHeight, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1, CvUtil.FONT_LEFT_JUSTIFY)
 			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
 			screen.show("HudMsgPanel")
 			screen.show("HudMsgText")
