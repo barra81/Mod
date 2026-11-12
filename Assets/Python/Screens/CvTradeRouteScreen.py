@@ -20,7 +20,9 @@ BTN_FAV_IMP = 41020 # (the favorite checkbox of a row: 41020 + slot)
 BTN_FAV_EXP = 41100 # + slot
 BTN_VIEW = 41200 # the drop down: default view / favorites
 BTN_ROW = 42000 # + slot * 16 + field
-FAV_FILE = "WTP_TradeRouteFavorites.txt"
+VIEW_ALL = 0
+VIEW_FAV = 1
+VIEW_MARKED = 2
 
 # fields of a row
 F_IMP_MINUS = 0
@@ -48,28 +50,50 @@ def logTrade(szText):
 	except:
 		pass
 
-# the favorite goods are stored in a text file in the game folder (one yield type per line): they are a setting of the player's screen
+# the favorite goods are stored in the script data of the player (saved with the game, valid for all cities): a marker
+# [[WTPFAV:TYPE_1,TYPE_2]] in the text (the random events keep their own markers in the same text, they are left alone)
+FAV_PREFIX = "[[WTPFAV:"
+FAV_SUFFIX = "]]"
+
+def getActivePlayer():
+	return gc.getPlayer(gc.getGame().getActivePlayer())
+
 def loadFavorites():
 	aFav = []
 	try:
-		f = open(FAV_FILE, "r")
-		for szLine in f.readlines():
-			szLine = szLine.strip()
-			if len(szLine) > 0:
-				aFav.append(szLine)
-		f.close()
+		szData = getActivePlayer().getScriptData()
+		if szData == None:
+			szData = ""
+		iStart = szData.find(FAV_PREFIX)
+		if iStart != -1:
+			iStart += len(FAV_PREFIX)
+			iEnd = szData.find(FAV_SUFFIX, iStart)
+			if iEnd != -1:
+				for szType in szData[iStart:iEnd].split(","):
+					szType = szType.strip()
+					if len(szType) > 0:
+						aFav.append(szType)
 	except:
 		pass
 	return aFav
 
 def saveFavorites(aFav):
 	try:
-		f = open(FAV_FILE, "w")
-		for szType in aFav:
-			f.write(szType + "\n")
-		f.close()
+		pPlayer = getActivePlayer()
+		szData = pPlayer.getScriptData()
+		if szData == None:
+			szData = ""
+		iStart = szData.find(FAV_PREFIX)
+		if iStart != -1:
+			iEnd = szData.find(FAV_SUFFIX, iStart)
+			if iEnd != -1:
+				szData = szData[:iStart] + szData[iEnd + len(FAV_SUFFIX):]
+		if len(aFav) > 0:
+			szData = szData + FAV_PREFIX + ",".join(aFav) + FAV_SUFFIX
+		pPlayer.setScriptData(szData)
 	except:
-		pass
+		import traceback
+		logTrade(traceback.format_exc())
 
 class CvTradeRouteScreen:
 	"Import / export settings of a city"
@@ -98,7 +122,7 @@ class CvTradeRouteScreen:
 		self.iViewX = 0
 		self.aAllYields = [] # all goods of the default view
 		self.aFav = [] # the favorite goods (yield types)
-		self.bFavView = False
+		self.iView = VIEW_ALL
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
 
 	def isOpen(self):
@@ -129,7 +153,7 @@ class CvTradeRouteScreen:
 		else:
 			self.aFav.append(szType)
 		saveFavorites(self.aFav)
-		if self.bFavView:
+		if self.iView == VIEW_FAV:
 			self.buildView()
 			self.drawRows()
 			self.drawPage()
@@ -138,16 +162,19 @@ class CvTradeRouteScreen:
 
 	# the goods of the view: all of them (default) or the favorites
 	def buildView(self):
-		if self.bFavView:
+		if self.iView == VIEW_FAV:
 			self.aYields = [i for i in self.aAllYields if self.isFav(i)]
+		elif self.iView == VIEW_MARKED:
+			# the goods with any mark (import, feeder, export or auto export)
+			self.aYields = [i for i in self.aAllYields if (self.dData[i]["imp"] or self.dData[i]["feeder"] or self.dData[i]["exp"] or self.dData[i]["auto"])]
 		else:
 			self.aYields = list(self.aAllYields)
 		self.iFirst = 0
 
-	def setView(self, bFav):
-		if bFav == self.bFavView:
+	def setView(self, iView):
+		if iView == self.iView:
 			return
-		self.bFavView = bFav
+		self.iView = iView
 		self.buildView()
 		self.drawRows()
 		self.drawPage()
@@ -171,6 +198,9 @@ class CvTradeRouteScreen:
 			return
 		for iYield in self.aAllYields:
 			self.loadYield(pCity, iYield)
+		if self.iView == VIEW_MARKED:
+			self.buildView()
+			self.drawPage()
 		self.drawMarketButton(pCity)
 		self.drawRows()
 
@@ -193,7 +223,7 @@ class CvTradeRouteScreen:
 		self.aYields = []
 		self.dData = {}
 		self.aFav = loadFavorites()
-		self.bFavView = False
+		self.iView = VIEW_ALL
 		for iYield in range(YieldTypes.NUM_YIELD_TYPES):
 			if not gc.getYieldInfo(iYield).isCargo():
 				continue
@@ -259,6 +289,7 @@ class CvTradeRouteScreen:
 		screen.addDropDownBoxGFC("TRSView", self.OX + self.iViewX, self.OY + self.H - 44, 160, WidgetTypes.WIDGET_GENERAL, BTN_VIEW, -1, FontTypes.GAME_FONT)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()), 0, 0, True)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_FAV", ()), 1, 1, False)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_MARKED", ()), 2, 2, False)
 		self.aDrawn.append("TRSView")
 		self.drawRows()
 		self.drawPage()
@@ -518,7 +549,7 @@ class CvTradeRouteScreen:
 	def handleEmbeddedInput(self, inputClass):
 		if int(inputClass.getNotifyCode()) == int(NotifyCode.NOTIFY_LISTBOX_ITEM_SELECTED) and inputClass.getFunctionName() == "TRSView":
 			iIndex = self.pHost.getSelectedPullDownID("TRSView")
-			self.setView(self.pHost.getPullDownData("TRSView", iIndex) == 1)
+			self.setView(self.pHost.getPullDownData("TRSView", iIndex))
 			return 1
 		if int(inputClass.getNotifyCode()) != int(NotifyCode.NOTIFY_CLICKED) or inputClass.getButtonType() != WidgetTypes.WIDGET_GENERAL:
 			return 0

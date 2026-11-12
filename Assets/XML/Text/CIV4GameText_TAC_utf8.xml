@@ -3540,8 +3540,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_FAVORITE_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Favorite[COLOR_REVERT][PARAGRAPH:2]Marks this good as a favorite. The favorites view (drop down at the bottom right) lists only the favorite goods.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Favorit[COLOR_REVERT][PARAGRAPH:2]Markiert diese Ware als Favorit. Die Favoritenansicht (Auswahlmenü unten rechts) zeigt nur die Favoriten.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Favorite[COLOR_REVERT][PARAGRAPH:2]Marks this good as a favorite. The favorites view (drop down at the bottom right) lists only the favorite goods. Favorites apply to all cities and are saved with the game.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Favorit[COLOR_REVERT][PARAGRAPH:2]Markiert diese Ware als Favorit. Die Favoritenansicht (Auswahlmenü unten rechts) zeigt nur die Favoriten. Favoriten gelten für alle Städte und werden mit dem Spielstand gespeichert.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_VIEW_ALL</Tag>
@@ -3555,8 +3555,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_VIEW_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]View[COLOR_REVERT][PARAGRAPH:2]Switches between the list of all goods and the list of your favorite goods.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Ansicht[COLOR_REVERT][PARAGRAPH:2]Wechselt zwischen der Liste aller Waren und der Liste deiner Favoriten.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]View[COLOR_REVERT][PARAGRAPH:2]Switches between all goods, your favorite goods and only the goods that are marked (import, feeder, export or auto export) in this city.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Ansicht[COLOR_REVERT][PARAGRAPH:2]Wechselt zwischen allen Waren, deinen Favoriten und nur den Waren, die in dieser Stadt markiert sind (Import, Feeder, Export oder Auto-Export).</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PAGE_PREV_HELP</Tag>
@@ -3592,5 +3592,10 @@
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET4_HELP</Tag>
 		<English>[COLOR_HIGHLIGHT_TEXT]Market automatic[COLOR_REVERT][PARAGRAPH:2]Switches the automatic import of the goods the domestic market asks for on or off. The levels follow the demand.</English>
 		<German>[COLOR_HIGHLIGHT_TEXT]Markt-Automatik[COLOR_REVERT][PARAGRAPH:2]Schaltet den automatischen Import der Waren, die der Heimatmarkt verlangt, ein oder aus. Die Mengen folgen dem Bedarf.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_VIEW_MARKED</Tag>
+		<English>Marked only</English>
+		<German>Nur markierte</German>
 	</TEXT>
 </Civ4GameText>
