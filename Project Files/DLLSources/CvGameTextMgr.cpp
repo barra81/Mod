@@ -9675,7 +9675,7 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 	{
 		if (GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getNativeWaypoint(GC.getMap().plotNumINLINE(pCity->getX_INLINE(), pCity->getY_INLINE())) >= 0)
 		{
-			szBuffer.append(gDLL->getText("TXT_KEY_WTP_WAYPOINT_BANNER"));
+			szBuffer.append(CvWString::format(L" %c", GC.getYieldInfo(YIELD_HORSES).getChar()));
 		}
 	}
 
