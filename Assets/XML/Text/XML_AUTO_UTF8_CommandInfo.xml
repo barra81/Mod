@@ -74,10 +74,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMMAND_CHOOSE_TRADE_ROUTES_HELP</Tag>
-		<English>Automate this transport by selecting the transport routes it should follow.</English>
+		<English>Automate this transport by selecting the transport routes it should follow.[NEWLINE][NEWLINE]Trade Route Manager: [COLOR:140:255:40:255]Shift+Alt+T[COLOR_REVERT]</English>
 		<Portuguese>Automatizar esse transporte selecionando as rotas de transporte que ele deverá seguir.</Portuguese>
 		<French>Automatiser ce transport en sélectionnant les routes commerciales qu'il devrait suivre.</French>
-		<German>Routenverwaltung aufrufen, um Transportrouten einzurichten und zuzuweisen.</German>
+		<German>Routenverwaltung aufrufen, um Transportrouten einzurichten und zuzuweisen.[NEWLINE][NEWLINE]Handelsrouten-Manager: [COLOR:140:255:40:255]Shift+Alt+T[COLOR_REVERT]</German>
 		<Italian>Automatizza questo trasporto scegliendo le rotte commerciali che dovrebbe seguire.</Italian>
 		<Spanish>Automatizar este transporte seleccionando las rutas comerciales que debe seguir.</Spanish>
 		<Russian>Автоматизируйте этот транспорт, выбрав транспортные маршруты, по которым он должен следовать</Russian>

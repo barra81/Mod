@@ -227,6 +227,17 @@ class CvEventManager:
 		if ( eventType == self.EventKeyDown ):
 			theKey=int(key)
 
+			# WTP: Shift+Alt+T opens the Trade Route Manager (the overview of all transports)
+			if (theKey == int(InputTypes.KB_T) and self.bShift and self.bAlt and not self.bCtrl):
+				try:
+					popupInfo = CyPopupInfo()
+					popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+					popupInfo.setText(u"showTransportRoutesOverview")
+					popupInfo.addPopup(gc.getGame().getActivePlayer())
+					return 1
+				except:
+					pass
+
 			if (theKey == int(InputTypes.KB_I) and self.bCtrl and not self.bShift and not self.bAlt):
 				CvScreensInterface.mainInterface.toggleTerritorialInfluence()
 				return 1

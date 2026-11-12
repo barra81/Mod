@@ -1970,4 +1970,9 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_68</Tag>
+		<English>Press [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT] to open the Trade Route Manager: the trade routes, automation and names of all your transports at a glance.</English>
+		<German>Drücken Sie [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT], um den Handelsrouten-Manager zu öffnen: Handelsrouten, Automatisierung und Namen aller Transporter auf einen Blick.</German>
+	</TEXT>
 </Civ4GameText>
