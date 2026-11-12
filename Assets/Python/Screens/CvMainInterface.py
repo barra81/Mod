@@ -2703,7 +2703,7 @@ class CvMainInterface:
 				# WTP: the gold pile icon follows the amount: 5 digits or less keep its place, every digit more moves it to the right
 				try:
 					iDigits = len([c for c in unicode(szText) if c.isdigit()])
-					screen.moveItem("GoldPile", 60 + max(0, iDigits - 5) * 10, 8, -0.3)
+					screen.moveItem("GoldPile", 60 + max(0, iDigits - 5) * 10 + (16 if iDigits > 5 else 0), 8, -0.3)
 				except:
 					pass
 				# WTP: below the gold the military upkeep, below that the domestic market income of the last turn
