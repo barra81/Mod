@@ -249,6 +249,12 @@ class CvTradeRouteScreen:
 				aTerms.append(szTerm)
 		return aTerms
 
+	def hasExactName(self, szTerm):
+		for iYield in self.dNames.keys():
+			if self.dNames[iYield].lower() == szTerm:
+				return True
+		return False
+
 	# the completion of the last name: the first good (alphabetically) that starts with it and is not typed yet
 	def findSuggestion(self):
 		self.szSuggestion = u""
@@ -302,6 +308,9 @@ class CvTradeRouteScreen:
 		elif iKey in self.aKeyConfirm:
 			# Enter: keep the typed term as it is (without the completion) and start the next one
 			if len(self.getTerms()) > 0 and self.szQuery[-3:] != u" & " and self.szQuery.strip()[-1:] != u"&":
+				szLast = self.getTerms()[-1]
+				if not self.hasExactName(szLast) and len(self.szSuggestion) > len(self.szQuery):
+					self.szQuery = self.szSuggestion # no good has exactly this name: take the nearest one
 				self.szQuery = self.szQuery.rstrip() + u" & "
 				bChanged = True
 		elif iKey in self.aKeyAccept:
@@ -353,13 +362,26 @@ class CvTradeRouteScreen:
 			self.aYields = list(self.aAllYields)
 		aTerms = self.getTerms()
 		if len(aTerms) > 0:
+			# confirmed terms (all but the last one) match exactly if a good has that name, the last one is still being typed (contains)
+			aExact = []
+			for szTerm in aTerms[:-1]:
+				aExact.append(szTerm)
+			if self.szQuery.rstrip()[-1:] == u"&":
+				aExact.append(aTerms[-1])
 			aKept = []
 			for iYield in self.aYields:
 				szName = self.dNames[iYield].lower()
+				bHit = False
 				for szTerm in aTerms:
-					if szName.find(szTerm) >= 0:
-						aKept.append(iYield)
+					bIsExact = szTerm in aExact
+					if bIsExact and self.hasExactName(szTerm):
+						bHit = (szName == szTerm)
+					else:
+						bHit = (szName.find(szTerm) >= 0)
+					if bHit:
 						break
+				if bHit:
+					aKept.append(iYield)
 			self.aYields = aKept
 		self.iFirst = 0
 
