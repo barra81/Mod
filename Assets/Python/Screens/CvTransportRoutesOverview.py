@@ -50,6 +50,7 @@ class CvTransportRoutesOverview:
 		self.iNumVisible = 1
 		self.iUsedSlots = 0
 		self.aColumnX = []
+		self.iKeyLog = 0
 		self.aShownRoutes = {} # slot -> the routes in the order of the rows
 		self.aVisible = [] # indices of the transports that pass the filters
 		self.iDomainFilter = 0 # 0 land and sea, 1 land, 2 sea
@@ -97,8 +98,8 @@ class CvTransportRoutesOverview:
 		self.iNumVisible = max(1, (self.XResolution - 2 * self.MARGIN + self.GAP) / (self.COL_WIDTH + self.GAP))
 		self.iFirst = 0
 		self.iUsedSlots = 0
-		self.TOOLBAR_Y = 42
-		self.HEAD_Y = 88
+		self.TOOLBAR_Y = 62
+		self.HEAD_Y = 108
 		self.TABLE_Y = self.HEAD_Y + self.HEADER_HEIGHT - 6
 		self.EXIT_Y = self.YResolution - 45
 		self.NAV_Y = self.EXIT_Y - 42
@@ -109,7 +110,7 @@ class CvTransportRoutesOverview:
 		screen.setDimensions(0, 0, self.XResolution, self.YResolution)
 		screen.showWindowBackground(False)
 		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, 0, 0, self.XResolution, self.YResolution, PanelStyles.PANEL_STYLE_MAIN, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		screen.setLabelAt("TROTitle", self.BACKGROUND_ID, u"<font=4b>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_TITLE", ()).upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.XResolution / 2, 12, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabelAt("TROTitle", self.BACKGROUND_ID, u"<font=4b>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_TITLE", ()).upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.XResolution / 2, 26, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		# navigation row (scrolling to the side) and the exit button at the very bottom
 		iButtonW = 60
@@ -126,6 +127,10 @@ class CvTransportRoutesOverview:
 		self.applyFilters()
 		self.drawColumns()
 		return 0
+
+	# the game cuts digits off the end of a widget name in the events, so the slot is a letter
+	def getTableName(self, iSlot):
+		return "TROTable" + chr(65 + iSlot)
 
 	def getKeyId(self, szName):
 		iKey = getattr(InputTypes, szName, None)
@@ -286,7 +291,7 @@ class CvTransportRoutesOverview:
 			screen.hide("TROUnit" + str(iSlot))
 			screen.hide("TROName" + str(iSlot))
 			screen.hide("TROInfo" + str(iSlot))
-			screen.hide("TROTable" + str(iSlot))
+			screen.hide(self.getTableName(iSlot))
 		self.iUsedSlots = iShown
 
 		# the position label between the navigation buttons
@@ -324,7 +329,7 @@ class CvTransportRoutesOverview:
 
 	def drawTable(self, iSlot, dTransport, iX):
 		screen = self.getScreen()
-		szTable = "TROTable" + str(iSlot)
+		szTable = self.getTableName(iSlot)
 		screen.addTableControlGFC(szTable, 6, iX, self.TABLE_Y, self.COL_WIDTH, self.TABLE_HEIGHT, True, False, 32, 32, TableStyles.TABLE_STYLE_STANDARD)
 		screen.setStyle(szTable, "Table_StandardCiv_Style")
 		screen.enableSort(szTable)
@@ -376,7 +381,7 @@ class CvTransportRoutesOverview:
 		if iIndex < 0 or iIndex >= len(self.aVisible):
 			return
 		screen = self.getScreen()
-		szTable = "TROTable" + str(iSlot)
+		szTable = self.getTableName(iSlot)
 		iRoute = -1
 		try:
 			iRoute = int(screen.getTableText(szTable, 0, iRow))
@@ -402,8 +407,15 @@ class CvTransportRoutesOverview:
 		if iCode != NotifyCode.NOTIFY_CHARACTER and iCode != NotifyCode.NOTIFY_CURSOR_MOVE_ON and iCode != NotifyCode.NOTIFY_CURSOR_MOVE_OFF:
 			logOverview("event code %d name '%s' button %d data %d/%d x %d y %d" % (int(iCode), inputClass.getFunctionName(), int(inputClass.getButtonType()), inputClass.getData1(), inputClass.getData2(), inputClass.getMouseX(), inputClass.getMouseY()))
 		if inputClass.getNotifyCode() == NotifyCode.NOTIFY_CHARACTER:
+			self.iKeyLog += 1
+			if self.iKeyLog <= 40:
+				logOverview("key %d id %d" % (inputClass.getData(), inputClass.getID()))
 			if inputClass.getID() != 0:
-				self.handleKey(inputClass.getData())
+				try:
+					self.handleKey(inputClass.getData())
+				except:
+					import traceback
+					logOverview(traceback.format_exc())
 			return 0
 		if inputClass.getNotifyCode() == NotifyCode.NOTIFY_LISTBOX_ITEM_SELECTED:
 			szName = inputClass.getFunctionName()
@@ -415,10 +427,9 @@ class CvTransportRoutesOverview:
 				else:
 					self.iAssignFilter = iValue
 				self.refresh()
-			elif szName[:8] == "TROTable":
+			elif szName[:8] == "TROTable" and len(szName) == 9:
 				try:
-					logOverview("click %s column %d row %d" % (szName, inputClass.getMouseX(), inputClass.getMouseY()))
-					self.toggleRoute(int(szName[8:]), inputClass.getMouseY())
+					self.toggleRoute(ord(szName[8]) - 65, inputClass.getMouseY())
 				except:
 					import traceback
 					logOverview(traceback.format_exc())
