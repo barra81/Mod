@@ -918,15 +918,24 @@ int CvSelectionGroupAI::getPartialYieldSpace(YieldTypes eYield) const
 
 // a detour only counts as worth it if at least this share of a slot is missing in a full transport's partly filled slots
 static const int WTP_DETOUR_MIN_SLOT_PERCENT = 20;
-// a detour of a transport to load more is only worth it if it has a free slot, or if at least 20% of a slot (of the game speed dependent
-// capacity) is still missing in its partly filled slots
-bool CvSelectionGroupAI::isDetourWorthwhile() const
+// a detour of a transport to load more is only worth it if it has a free slot, or if the yields that are available on the detour can fill at
+// least 20% of a slot (of the game speed dependent capacity) in total in its partly filled slots: a single slot that needs less does not
+// justify a detour, several slots that are all filled further by the detour do
+bool CvSelectionGroupAI::isDetourWorthwhile(const int* aiAvailable) const
 {
 	if (!isFull())
 	{
 		return true;
 	}
-	return getPartialYieldSpace(NO_YIELD) * 100 >= WTP_DETOUR_MIN_SLOT_PERCENT * GC.getGameINLINE().getCargoYieldCapacity();
+	int iFillable = 0;
+	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+	{
+		if (aiAvailable[eYield] > 0)
+		{
+			iFillable += std::min(aiAvailable[eYield], getPartialYieldSpace(eYield));
+		}
+	}
+	return iFillable * 100 >= WTP_DETOUR_MIN_SLOT_PERCENT * GC.getGameINLINE().getCargoYieldCapacity();
 }
 
 bool CvSelectionGroupAI::canLoadYieldHere(YieldTypes eYield) const
@@ -1743,8 +1752,18 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					aGroupToDestPaths[kFillDestination] = std::make_pair(bFillOk, iToFill);
 				}
 				int iFillToBest = 0;
+				// the yields that the current city has for this destination
+				int aiFillAvailable[NUM_YIELD_TYPES];
+				std::fill(aiFillAvailable, aiFillAvailable + NUM_YIELD_TYPES, 0);
+				for (uint j = 0; j < routes.size(); ++j)
+				{
+					if (routes[j]->getDestinationCity() == kFillDestination && ::getCity(routes[j]->getSourceCity()) == pPlotCity)
+					{
+						aiFillAvailable[routes[j]->getYield()] += std::max(0, pPlotCity->getYieldStored(routes[j]->getYield()) - pPlotCity->getAutoMaintainThreshold(routes[j]->getYield()));
+					}
+				}
 				if (bFillOk && WTP_getRoutePathCached(this, pFillCity, pBestCity, iFillFlags, bIgnoreDanger, &iFillToBest)
-					&& (iToFill + iFillToBest <= iToBest || (iToFill + iFillToBest <= iToBest + WTP_FILL_HOLD_MAX_DETOUR_TURNS && isDetourWorthwhile())))
+					&& (iToFill + iFillToBest <= iToBest || (iToFill + iFillToBest <= iToBest + WTP_FILL_HOLD_MAX_DETOUR_TURNS && isDetourWorthwhile(aiFillAvailable))))
 				{
 					aFillDestinations.insert(kFillDestination);
 				}
@@ -1919,6 +1938,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				const int iFreeCapacity = iFreeSlotCapacity + getPartialYieldSpace(NO_YIELD);
 				const int iMinPickup = std::max(1, iSlotCapacity / WTP_PICKUP_STOP_MIN_SLOT_DIVISOR);
 				std::map<int, int> aPickupAmounts; // source city ID -> units that could be loaded for the target
+				std::map<int, std::vector<int> > aPickupByYield; // source city ID -> the same per yield
 				for (uint i = 0; i < routes.size(); ++i)
 				{
 					if (routes[i]->getDestinationCity() != kBestDestination)
@@ -1941,6 +1961,9 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					if (iPickupAmount > 0)
 					{
 						aPickupAmounts[pPickupCity->getID()] += iPickupAmount;
+						std::vector<int>& aiByYield = aPickupByYield[pPickupCity->getID()];
+						aiByYield.resize(NUM_YIELD_TYPES, 0);
+						aiByYield[ePickupYield] += iPickupAmount;
 					}
 				}
 				// the detours of all stops on the way to the priority target together stay within the limit
@@ -1981,7 +2004,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 						const int iDetour = std::max(0, iToCandidate + iCandidateToTarget - iToTarget);
 						// the shorter detour wins, with the same detour the larger load
 						// without a detour every amount counts, with a detour it has to be a quarter of a slot and the detour has to be worth it
-						if (iDetour > 0 && (iCandidateAmount < iMinPickup || !isDetourWorthwhile()))
+						if (iDetour > 0 && (iCandidateAmount < iMinPickup || !isDetourWorthwhile(&aPickupByYield[itPickup->first][0])))
 						{
 							continue;
 						}
