@@ -3625,8 +3625,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_SEARCH_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Search goods[COLOR_REVERT][NEWLINE]Type the name of a good: only the goods that contain it are listed. Tab, Enter or the right arrow completes the grey suggestion. Several goods: separate them with &amp; (the shift key of the 6 or the 7 depending on your keyboard, or the comma); the completion works after every &amp;.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Ware suchen[COLOR_REVERT][NEWLINE]Name einer Ware tippen: es werden nur die Waren angezeigt, die ihn enthalten. Tab, Enter oder die Pfeiltaste nach rechts übernimmt den grauen Vorschlag. Mehrere Waren: mit &amp; trennen (Umschalt-Taste mit der 6 oder der 7, je nach Tastaturlayout, oder das Komma); die Vervollständigung funktioniert nach jedem &amp;.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Search goods[COLOR_REVERT][NEWLINE]Type the name of a good: only the goods that contain it are listed. Tab or the right arrow completes the grey suggestion, Enter keeps the term exactly as typed and starts the next one. Several goods: separate them with &amp; (the shift key of the 6 or the 7 depending on your keyboard, or the comma); the completion works after every &amp;.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Ware suchen[COLOR_REVERT][NEWLINE]Name einer Ware tippen: es werden nur die Waren angezeigt, die ihn enthalten. Tab oder Pfeiltaste nach rechts übernimmt den grauen Vorschlag, Enter behält den Begriff genau wie getippt und beginnt den nächsten. Mehrere Waren: mit &amp; trennen (Umschalt-Taste mit der 6 oder der 7, je nach Tastaturlayout, oder das Komma); die Vervollständigung funktioniert nach jedem &amp;.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_SEARCH_CLEAR_HELP</Tag>

@@ -294,8 +294,16 @@ class CvTradeRouteScreen:
 			self.szQuery = self.szQuery + unicode(szChar)
 			bChanged = True
 		elif iKey == self.iKeyBack:
-			self.szQuery = self.szQuery[:-1]
+			if self.szQuery[-3:] == u" & ":
+				self.szQuery = self.szQuery[:-3]
+			else:
+				self.szQuery = self.szQuery[:-1]
 			bChanged = True
+		elif iKey in self.aKeyConfirm:
+			# Enter: keep the typed term as it is (without the completion) and start the next one
+			if len(self.getTerms()) > 0 and self.szQuery[-3:] != u" & " and self.szQuery.strip()[-1:] != u"&":
+				self.szQuery = self.szQuery.rstrip() + u" & "
+				bChanged = True
 		elif iKey in self.aKeyAccept:
 			if len(self.szSuggestion) > len(self.szQuery):
 				self.szQuery = self.szSuggestion
@@ -492,7 +500,8 @@ class CvTradeRouteScreen:
 			if iKey != None:
 				self.dKeys[int(iKey)] = SEARCH_KEY_NAMES[szKey]
 		self.iKeyBack = self.getKeyId("KB_BACKSPACE")
-		self.aKeyAccept = [self.getKeyId("KB_TAB"), self.getKeyId("KB_RETURN"), self.getKeyId("KB_NUMPADENTER"), self.getKeyId("KB_RIGHT")]
+		self.aKeyAccept = [self.getKeyId("KB_TAB"), self.getKeyId("KB_RIGHT")]
+		self.aKeyConfirm = [self.getKeyId("KB_RETURN"), self.getKeyId("KB_NUMPADENTER")]
 		self.iKey6 = self.getKeyId("KB_6")
 		self.iKey7 = self.getKeyId("KB_7")
 		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
