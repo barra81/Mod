@@ -45,6 +45,7 @@ class CvYieldAmountScreen:
 		self.bSelected = True
 		self.bFinished = True
 		self.iLog = 0
+		self.szReturnScreen = None
 
 	def getScreen(self):
 		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.YIELD_AMOUNT)
@@ -75,6 +76,20 @@ class CvYieldAmountScreen:
 		self.bSelected = True
 		self.bFinished = False
 		self.iLog = 0
+
+		# a harbor screen (Europe / Africa / Port Royal) that is open is closed by the game when this screen opens: it is opened
+		# again when the dialog is closed
+		self.szReturnScreen = None
+		try:
+			import CvScreensInterface
+			if CvScreensInterface.europeScreen.getScreen().isActive():
+				self.szReturnScreen = u"showEuropeScreen"
+			elif CvScreensInterface.africaScreen.getScreen().isActive():
+				self.szReturnScreen = u"showAfricaScreen"
+			elif CvScreensInterface.portroyalScreen.getScreen().isActive():
+				self.szReturnScreen = u"showPortRoyalScreen"
+		except:
+			pass
 
 		self.dDigits = {}
 		for i in range(10):
@@ -172,6 +187,15 @@ class CvYieldAmountScreen:
 				import traceback
 				logYield(traceback.format_exc())
 		self.getScreen().hideScreen()
+		if self.szReturnScreen != None:
+			try:
+				popupInfo = CyPopupInfo()
+				popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+				popupInfo.setText(self.szReturnScreen)
+				popupInfo.addPopup(gc.getGame().getActivePlayer())
+			except:
+				pass
+			self.szReturnScreen = None
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
 	def handleKey(self, iKey, bCtrl):
