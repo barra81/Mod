@@ -741,6 +741,18 @@ bool CyGame::isCtrlKeyPressed() const
 	return (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
 }
 
+// WTP: the amount of goods of a diplomacy deal (the same as CvDLLButtonPopup::handleSelectYieldAmountPopup does)
+void CyGame::sendDiploYieldAmount(int iYield, int iAmount, int iFromPlayer) const
+{
+	const PlayerTypes ePlayer = GC.getGameINLINE().getActivePlayer();
+	if (ePlayer == NO_PLAYER || iAmount <= 0 || iYield < 0 || iYield >= NUM_YIELD_TYPES || iFromPlayer < 0 || iFromPlayer >= MAX_PLAYERS)
+	{
+		return;
+	}
+	gDLL->sendPlayerAction(ePlayer, PLAYER_ACTION_SET_DIPLO_YIELD_AMOUNT, iYield, iAmount, iFromPlayer);
+	gDLL->updateDiplomacyAttitude(true);
+}
+
 // WTP: the amount dialog (python, CvYieldAmountScreen) replaces the spin box popup of the transfer with the shift key: the same actions
 // as CvDLLButtonPopup::handleSelectYieldAmountPopup (iData3: the command, or the player action in Europe / Africa / Port Royal)
 void CyGame::sendYieldTransfer(int iUnitID, int iData3, int iYield, int iAmount, bool bPlayerAction) const

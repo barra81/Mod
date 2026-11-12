@@ -41,6 +41,7 @@ class CvYieldAmountScreen:
 		self.iMax = 0
 		self.iData3 = -1
 		self.bPlayerAction = False
+		self.iFromPlayer = -1
 		self.szValue = u""
 		self.bSelected = True
 		self.bFinished = True
@@ -65,7 +66,7 @@ class CvYieldAmountScreen:
 		return int(iCode)
 
 	# opens the dialog (1: it is open, 0: the DLL shows its own popup instead)
-	def open(self, iYield, iUnit, iMax, iData3, bPlayerAction):
+	def open(self, iYield, iUnit, iMax, iData3, bPlayerAction, iFromPlayer):
 		screen = self.getScreen()
 		if screen.isActive():
 			return 0
@@ -74,6 +75,7 @@ class CvYieldAmountScreen:
 		self.iMax = iMax
 		self.iData3 = iData3
 		self.bPlayerAction = bPlayerAction
+		self.iFromPlayer = iFromPlayer # diplomacy: the player whose goods are traded, otherwise -1
 		self.szValue = unicode(iMax)
 		self.bSelected = True
 		self.bFinished = False
@@ -199,7 +201,10 @@ class CvYieldAmountScreen:
 		if bOk:
 			iAmount = max(1, min(self.iMax, self.getValue()))
 			try:
-				CyGame().sendYieldTransfer(self.iUnit, self.iData3, self.iYield, iAmount, self.bPlayerAction)
+				if self.iFromPlayer >= 0:
+					CyGame().sendDiploYieldAmount(self.iYield, iAmount, self.iFromPlayer)
+				else:
+					CyGame().sendYieldTransfer(self.iUnit, self.iData3, self.iYield, iAmount, self.bPlayerAction)
 			except:
 				import traceback
 				logYield(traceback.format_exc())

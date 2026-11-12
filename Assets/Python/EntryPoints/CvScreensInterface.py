@@ -131,7 +131,7 @@ def askTransportName(argsList):
 yieldAmountScreen = CvYieldAmountScreen.CvYieldAmountScreen()
 def askYieldAmount(argsList):
 	try:
-		return yieldAmountScreen.open(argsList[0], argsList[1], argsList[2], argsList[3], argsList[4] != 0)
+		return yieldAmountScreen.open(argsList[0], argsList[1], argsList[2], argsList[3], argsList[4] != 0, argsList[5])
 	except:
 		import traceback
 		CvYieldAmountScreen.logYield(traceback.format_exc())
