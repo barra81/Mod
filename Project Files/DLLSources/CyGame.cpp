@@ -673,6 +673,74 @@ void CyGame::openDomesticMarket(int iCityID) const
 	}
 }
 
+// WTP: the mouse wheel for the amount dialog: the window procedure of the game window is replaced while the dialog is open,
+// the wheel messages are counted (and not passed on: the map does not zoom), everything else goes to the original procedure
+#ifndef WM_MOUSEWHEEL
+#define WM_MOUSEWHEEL 0x020A
+#endif
+#ifndef WHEEL_DELTA
+#define WHEEL_DELTA 120
+#endif
+static HWND s_hWheelWnd = NULL;
+static WNDPROC s_pOldWheelProc = NULL;
+static LONG s_iWheelDelta = 0;
+
+static LRESULT CALLBACK wtpWheelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (uMsg == WM_MOUSEWHEEL)
+	{
+		s_iWheelDelta += (short)HIWORD(wParam);
+		return 0;
+	}
+	return CallWindowProc(s_pOldWheelProc, hWnd, uMsg, wParam, lParam);
+}
+
+void CyGame::setWheelCapture(bool bOn) const
+{
+	if (bOn)
+	{
+		if (s_hWheelWnd != NULL)
+		{
+			return;
+		}
+		HWND hWnd = GetForegroundWindow();
+		DWORD iProcess = 0;
+		if (hWnd == NULL || GetWindowThreadProcessId(hWnd, &iProcess) == 0 || iProcess != GetCurrentProcessId())
+		{
+			return;
+		}
+		s_iWheelDelta = 0;
+		s_pOldWheelProc = (WNDPROC)SetWindowLong(hWnd, GWL_WNDPROC, (LONG)wtpWheelProc);
+		if (s_pOldWheelProc != NULL)
+		{
+			s_hWheelWnd = hWnd;
+		}
+	}
+	else if (s_hWheelWnd != NULL)
+	{
+		// (only given back if nobody else has replaced the procedure meanwhile)
+		if ((WNDPROC)GetWindowLong(s_hWheelWnd, GWL_WNDPROC) == wtpWheelProc)
+		{
+			SetWindowLong(s_hWheelWnd, GWL_WNDPROC, (LONG)s_pOldWheelProc);
+		}
+		s_hWheelWnd = NULL;
+		s_pOldWheelProc = NULL;
+		s_iWheelDelta = 0;
+	}
+}
+
+int CyGame::takeWheelNotches() const
+{
+	const int iNotches = s_iWheelDelta / WHEEL_DELTA;
+	s_iWheelDelta -= iNotches * WHEEL_DELTA;
+	return iNotches;
+}
+
+bool CyGame::isCtrlKeyPressed() const
+{
+	return (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+}
+
 // WTP: the amount dialog (python, CvYieldAmountScreen) replaces the spin box popup of the transfer with the shift key: the same actions
 // as CvDLLButtonPopup::handleSelectYieldAmountPopup (iData3: the command, or the player action in Europe / Africa / Port Royal)
 void CyGame::sendYieldTransfer(int iUnitID, int iData3, int iYield, int iAmount, bool bPlayerAction) const

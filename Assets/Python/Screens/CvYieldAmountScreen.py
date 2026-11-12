@@ -96,7 +96,7 @@ class CvYieldAmountScreen:
 		iYRes = screen.getYResolution()
 		iX = (iXRes - self.W) / 2
 		iY = (iYRes - self.H) / 2
-		screen.setRenderInterfaceOnly(True) # (as the screens that get keyboard input)
+		# (no setRenderInterfaceOnly: it would switch off the 3d views of the city screen; the keys come from CvEventManager.onKbdEvent)
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
 		screen.setDimensions(iX, iY, self.W, self.H)
 		screen.showWindowBackground(False)
@@ -118,6 +118,10 @@ class CvYieldAmountScreen:
 		screen.setButtonGFC("YAMOk", u"<font=3b>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.W / 2 - 210, self.H - 62, 200, 36, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		screen.setButtonGFC("YAMCancel", u"<font=3b>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.W / 2 + 10, self.H - 62, 200, 36, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		self.drawValue()
+		try:
+			CyGame().setWheelCapture(True)
+		except:
+			pass
 		return 1
 
 	def drawValue(self):
@@ -146,10 +150,20 @@ class CvYieldAmountScreen:
 			iStep = STEP_CTRL
 		self.setValue(self.getValue() + iDirection * iStep)
 
+	def isOpen(self):
+		return not self.bFinished
+
+	def releaseWheel(self):
+		try:
+			CyGame().setWheelCapture(False)
+		except:
+			pass
+
 	def finish(self, bOk):
 		if self.bFinished:
 			return
 		self.bFinished = True
+		self.releaseWheel()
 		if bOk:
 			iAmount = max(1, min(self.iMax, self.getValue()))
 			try:
@@ -159,6 +173,7 @@ class CvYieldAmountScreen:
 				logYield(traceback.format_exc())
 		self.getScreen().hideScreen()
 
+	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
 	def handleKey(self, iKey, bCtrl):
 		if self.dDigits.has_key(iKey):
 			if self.bSelected:
@@ -195,13 +210,7 @@ class CvYieldAmountScreen:
 	def handleInput(self, inputClass):
 		iCode = int(inputClass.getNotifyCode())
 		if iCode == int(NotifyCode.NOTIFY_CHARACTER):
-			if inputClass.getID() != 0:
-				try:
-					self.handleKey(inputClass.getData(), inputClass.isCtrlKeyDown())
-				except:
-					import traceback
-					logYield(traceback.format_exc())
-			return 0
+			return 0 # (the keys are handled in CvEventManager.onKbdEvent)
 		if iCode in self.aWheelUp:
 			self.step(1, inputClass.isCtrlKeyDown())
 			return 0
@@ -229,9 +238,27 @@ class CvYieldAmountScreen:
 			logYield("event code %d name '%s' button %d data %d/%d" % (iCode, inputClass.getFunctionName(), int(inputClass.getButtonType()), inputClass.getData1(), inputClass.getData2()))
 		return 0
 
+	# the mouse wheel (collected by the DLL while the dialog is open)
 	def update(self, fDelta):
+		if self.bFinished:
+			return 0
+		try:
+			iNotches = CyGame().takeWheelNotches()
+			if iNotches != 0:
+				bCtrl = CyGame().isCtrlKeyPressed()
+				if self.iLog < 60:
+					self.iLog += 1
+					logYield("wheel notches %d" % iNotches)
+				for i in range(abs(iNotches)):
+					if iNotches > 0:
+						self.step(1, bCtrl)
+					else:
+						self.step(-1, bCtrl)
+		except:
+			pass
 		return 0
 
 	def onClose(self):
 		self.bFinished = True
+		self.releaseWheel()
 		return 0

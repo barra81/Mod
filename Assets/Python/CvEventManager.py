@@ -218,6 +218,15 @@ class CvEventManager:
 		eventType,key,mx,my,px,py = argsList
 		game = gc.getGame()
 
+		# WTP: the amount dialog of the transfers (shift + transfer) takes all keys while it is open
+		if (CvScreensInterface.yieldAmountScreen.isOpen()):
+			if (eventType == self.EventKeyDown):
+				try:
+					CvScreensInterface.yieldAmountScreen.handleKey(int(key), self.bCtrl)
+				except:
+					pass
+			return 1
+
 		if (self.bAllowCheats):
 			# notify debug tools of input to allow it to override the control
 			argsList = (eventType,key,self.bCtrl,self.bShift,self.bAlt,mx,my,px,py,gc.getGame().isNetworkMultiPlayer())

@@ -170,6 +170,9 @@ public:
 	// WTP: the messages of the turn for the message panel of the main interface
 	int getNumHudMessages() const;
 	void openDomesticMarket(int iCityID) const; // WTP: opens the domestic market popup of a city
+	void setWheelCapture(bool bOn) const; // WTP: the mouse wheel is collected for the amount dialog (python) instead of zooming the map
+	int takeWheelNotches() const; // WTP: the notches of the wheel since the last call (positive: away from the user)
+	bool isCtrlKeyPressed() const;
 	void sendYieldTransfer(int iUnitID, int iData3, int iYield, int iAmount, bool bPlayerAction) const; // WTP: the amount dialog (python) sends the transfer of goods
 	int getCursorClientX() const; // WTP: mouse position in the game window (-1 if unknown)
 	int getCursorClientY() const;

@@ -4727,6 +4727,10 @@ class CvMainInterface:
 		self.updateTerritorialInfluenceEditor()
 		self.updatePioneerPlanEditor()
 		self.updateAutomatedFollow()
+		try:
+			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
+		except:
+			pass
 		return
 
 	# WTP: the game selects the next unit when a transport gets automated: the transport stays selected (the game does its
