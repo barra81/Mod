@@ -121,6 +121,7 @@ public:
 	std::vector<WtpTradeOrder> m_aTradeOrders;
 	// WTP: the priority target of an automated transport that makes a pick-up stop on its way (not saved: after loading a savegame it decides anew)
 	IDInfo m_kPriorityTarget;
+	int m_iPriorityDetour; // turns of detour already used by the pick-up stops on the way to this target
 
 private:
 	// R&R mod, vetiarvind, max yield import limit - start

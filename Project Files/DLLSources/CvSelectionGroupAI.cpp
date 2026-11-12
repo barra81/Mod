@@ -49,6 +49,7 @@ void CvSelectionGroupAI::AI_reset()
 	AI_uninit();
 	AI_resetSavedData();
 	m_kPriorityTarget = IDInfo();
+	m_iPriorityDetour = 0;
 }
 
 
@@ -919,9 +920,9 @@ void CvSelectionGroupAI::processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo
 static const bool WTP_TRADE_ROUTE_FILL_HOLD = true;
 // a colony counts as on the way if the trip over it takes at most this many turns more than the direct trip
 static const int WTP_FILL_HOLD_MAX_DETOUR_TURNS = 2;
-// WTP: pick-up stop: with free cargo slots the transport stops at a colony on its way that has yields for its destination, if there are at least
-// this many units to load
-static const int WTP_PICKUP_STOP_MIN_AMOUNT = 25;
+// WTP: pick-up stop: with free cargo slots the transport stops at a colony on its way that has yields for its destination, if it can load at least
+// a quarter of a cargo slot (game speed dependent: the capacity of a slot is 100 on the normal speed, 200 on epic)
+static const int WTP_PICKUP_STOP_MIN_SLOT_DIVISOR = 4;
 
 // WTP: the path of a transport of this unit type from a source city to a destination city, kept for the turn.
 // Every transport of every yield of every route asked for the same long coastal paths again and again.
@@ -1601,6 +1602,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 		if (!bFillHold || pPriorityCity == NULL || pPriorityCity == pPlotCity || cityValues[m_kPriorityTarget] <= 0)
 		{
 			m_kPriorityTarget = IDInfo();
+			m_iPriorityDetour = 0;
 		}
 		else
 		{
@@ -1623,6 +1625,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			else
 			{
 				m_kPriorityTarget = IDInfo();
+				m_iPriorityDetour = 0;
 			}
 		}
 	}
@@ -1867,10 +1870,31 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 						aPickupAmounts[pPickupCity->getID()] += iPickupAmount;
 					}
 				}
+				// free cargo space of the group in units of yield (the free slots times the capacity of a slot)
+				int iFreeSlots = 0;
+				CLLNode<IDInfo>* pFreeNode = headUnitNode();
+				while (pFreeNode != NULL)
+				{
+					CvUnit* const pFreeUnit = ::getUnit(pFreeNode->m_data);
+					pFreeNode = nextUnitNode(pFreeNode);
+					if (pFreeUnit != NULL && !pFreeUnit->isCargo() && pFreeUnit->cargoSpace() > pFreeUnit->getCargo())
+					{
+						iFreeSlots += pFreeUnit->cargoSpace() - pFreeUnit->getCargo();
+					}
+				}
+				const int iSlotCapacity = GC.getGameINLINE().getCargoYieldCapacity();
+				const int iFreeCapacity = iFreeSlots * iSlotCapacity;
+				const int iMinPickup = std::max(1, iSlotCapacity / WTP_PICKUP_STOP_MIN_SLOT_DIVISOR);
+				// the detours of all stops on the way to the priority target together stay within the limit
+				const int iDetourLeft = WTP_FILL_HOLD_MAX_DETOUR_TURNS - m_iPriorityDetour;
 				int iBestPickupAmount = 0;
+				int iBestPickupDetour = MAX_INT;
+				int iBestPickupTotal = 0;
 				for (std::map<int, int>::const_iterator itPickup = aPickupAmounts.begin(); itPickup != aPickupAmounts.end(); ++itPickup)
 				{
-					if (itPickup->second < WTP_PICKUP_STOP_MIN_AMOUNT || itPickup->second <= iBestPickupAmount)
+					// not more than the free space can be loaded
+					const int iCandidateAmount = std::min(itPickup->second, iFreeCapacity);
+					if (iCandidateAmount < iMinPickup)
 					{
 						continue;
 					}
@@ -1894,12 +1918,22 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 						aGroupToDestPaths[kCandidate] = std::make_pair(bCandidateOk, iToCandidate);
 					}
 					int iCandidateToTarget = 0;
-					if (bCandidateOk && WTP_getRoutePathCached(this, pCandidate, pTargetCity, iPickupFlags, bIgnoreDanger, &iCandidateToTarget)
-						&& iToCandidate + iCandidateToTarget <= iToTarget + WTP_FILL_HOLD_MAX_DETOUR_TURNS)
+					if (bCandidateOk && WTP_getRoutePathCached(this, pCandidate, pTargetCity, iPickupFlags, bIgnoreDanger, &iCandidateToTarget))
 					{
-						iBestPickupAmount = itPickup->second;
-						pPickupStop = pCandidate;
+						const int iDetour = std::max(0, iToCandidate + iCandidateToTarget - iToTarget);
+						// the shorter detour wins, with the same detour the larger load
+						if (iDetour <= iDetourLeft && (iDetour < iBestPickupDetour || (iDetour == iBestPickupDetour && iCandidateAmount > iBestPickupAmount)))
+						{
+							iBestPickupDetour = iDetour;
+							iBestPickupAmount = iCandidateAmount;
+							iBestPickupTotal = iDetour;
+							pPickupStop = pCandidate;
+						}
 					}
+				}
+				if (pPickupStop != NULL)
+				{
+					m_iPriorityDetour += iBestPickupTotal;
 				}
 			}
 		}
@@ -1907,6 +1941,10 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 
 	// the priority target is remembered while the transport goes to a pick-up stop
 	m_kPriorityTarget = (pPickupStop != NULL) ? kBestDestination : IDInfo();
+	if (pPickupStop == NULL)
+	{
+		m_iPriorityDetour = 0;
+	}
 
 	// WTP: the orders shown in the tooltip of the transport (human player only)
 	if (isHuman())
