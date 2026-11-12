@@ -20,6 +20,7 @@ BTN_SEARCH = 30006
 BTN_RENAME = 31000 # + the slot of the column
 
 BTN_MANUAL = 32000 # + the slot of the column
+BTN_UNIT = 33000 # + the slot of the column (the unit icon: show the transport on the map)
 
 # transports that were asked for a name lately (unit id -> time), and the numbers of the names that are offered but not answered yet
 g_RenameAsked = {}
@@ -45,7 +46,9 @@ def openNamePopup(iUnit, szBody, szDefault):
 	popup.setBodyString(szBody, CvUtil.FONT_CENTER_JUSTIFY)
 	popup.createEditBox(szDefault, 0)
 	popup.setEditBoxMaxCharCount(20, 20, 0)
-	popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
+	popup.addButton(localText.getText("TXT_KEY_MAIN_MENU_OK", ()))
+	popup.addButton(localText.getText("TXT_KEY_POPUP_CANCEL", ()))
+	popup.launch(False, PopupStates.POPUPSTATE_IMMEDIATE)
 
 # a transport was set to full automation (bAuto) or got its first trade route: the player may take a numbered name
 # (called by the DLL and when the overview is closed, a transport is asked once in a while only)
@@ -154,6 +157,7 @@ class CvTransportRoutesOverview:
 		self.iTypeFilter = 0
 		self.bSearchSelected = False
 		self.bRenameWatch = False
+		self.bNoReturn = False
 		self.iDomainFilter = 0 # standard filters: land and sea, only transports with trade routes
 		self.iAssignFilter = 1
 		self.szQuery = u""
@@ -403,7 +407,7 @@ class CvTransportRoutesOverview:
 	def drawHeader(self, iSlot, dTransport, iX):
 		screen = self.getScreen()
 		szUnit = "TROUnit" + str(iSlot)
-		screen.setImageButton(szUnit, dTransport["button"], iX, self.HEAD_Y, 48, 48, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setImageButton(szUnit, dTransport["button"], iX, self.HEAD_Y, 48, 48, WidgetTypes.WIDGET_GENERAL, BTN_UNIT + iSlot, -1)
 		screen.show(szUnit)
 		szName = dTransport["name"]
 		if dTransport["size"] > 1:
@@ -564,6 +568,9 @@ class CvTransportRoutesOverview:
 				elif iData >= BTN_MANUAL and iData < BTN_MANUAL + 100:
 					self.setManual(iData - BTN_MANUAL)
 					return 0
+				elif iData >= BTN_UNIT and iData < BTN_UNIT + 100:
+					self.showOnMap(iData - BTN_UNIT)
+					return 0
 				elif iData >= BTN_RENAME and iData < BTN_RENAME + 100:
 					self.renameTransport(iData - BTN_RENAME)
 					return 0
@@ -658,8 +665,7 @@ class CvTransportRoutesOverview:
 		except:
 			pass
 
-	def onClose(self):
-		# the changes are sent when the screen is closed (as the R screen does), then the advisor opens again
+	def sendChanges(self):
 		for dTransport in self.Transports:
 			for iRoute in dTransport["assigned"].keys():
 				if dTransport["assigned"][iRoute] != dTransport["original"][iRoute]:
@@ -672,6 +678,35 @@ class CvTransportRoutesOverview:
 			import traceback
 			logOverview(traceback.format_exc())
 		self.Transports = []
+
+	# a click on the unit icon: the overview closes, the transport is selected and centered on the map
+	# (ESC without any other action opens the overview again, see CvEventManager.onKbdEvent)
+	def showOnMap(self, iSlot):
+		try:
+			iIndex = self.iFirst + iSlot
+			if iIndex < 0 or iIndex >= len(self.aVisible):
+				return
+			iUnit = self.Transports[self.aVisible[iIndex]]["unit"]
+			pUnit = self.player.getUnit(iUnit)
+			if pUnit == None or pUnit.isNone():
+				return
+			self.sendChanges()
+			self.bNoReturn = True
+			self.getScreen().hideScreen()
+			CyInterface().selectUnit(pUnit, True, False, True)
+			pUnit.centerCamera()
+			import CvScreensInterface
+			CvScreensInterface.tOverviewMapReturn = (iUnit, pUnit.getX(), pUnit.getY())
+		except:
+			import traceback
+			logOverview(traceback.format_exc())
+
+	def onClose(self):
+		# the changes are sent when the screen is closed (as the R screen does), then the advisor opens again
+		self.sendChanges()
+		if self.bNoReturn:
+			self.bNoReturn = False
+			return 0
 		self.returnToDomestic()
 		return 0
 

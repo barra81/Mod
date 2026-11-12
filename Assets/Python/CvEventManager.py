@@ -227,6 +227,21 @@ class CvEventManager:
 		if ( eventType == self.EventKeyDown ):
 			theKey=int(key)
 
+			# WTP: ESC right after a transport was shown on the map from the transport overview: the overview opens again
+			if (CvScreensInterface.tOverviewMapReturn != None and theKey == int(InputTypes.KB_ESCAPE)):
+				tReturn = CvScreensInterface.tOverviewMapReturn
+				CvScreensInterface.tOverviewMapReturn = None
+				try:
+					pSel = CyInterface().getHeadSelectedUnit()
+					if (pSel != None and not pSel.isNone() and pSel.getID() == tReturn[0] and pSel.getX() == tReturn[1] and pSel.getY() == tReturn[2]):
+						popupInfo = CyPopupInfo()
+						popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+						popupInfo.setText(u"showTransportRoutesOverview")
+						popupInfo.addPopup(gc.getGame().getActivePlayer())
+						return 1
+				except:
+					pass
+
 			if (theKey == int(InputTypes.KB_I) and self.bCtrl and not self.bShift and not self.bAlt):
 				CvScreensInterface.mainInterface.toggleTerritorialInfluence()
 				return 1
@@ -1209,6 +1224,8 @@ class CvEventManager:
 		iUnitID = userData[0]
 		unit = gc.getPlayer(playerID).getUnit(iUnitID)
 		if unit is None or unit.isNone():
+			return
+		if popupReturn.getButtonClicked() != 0: # Cancel: the old name stays
 			return
 		newName = popupReturn.getEditBoxString(0).strip()
 		if (len(newName) > 25):
