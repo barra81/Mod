@@ -1759,7 +1759,13 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				{
 					if (routes[j]->getDestinationCity() == kFillDestination && ::getCity(routes[j]->getSourceCity()) == pPlotCity)
 					{
-						aiFillAvailable[routes[j]->getYield()] += std::max(0, pPlotCity->getYieldStored(routes[j]->getYield()) - pPlotCity->getAutoMaintainThreshold(routes[j]->getYield()));
+						int iFillAmount = std::max(0, pPlotCity->getYieldStored(routes[j]->getYield()) - pPlotCity->getAutoMaintainThreshold(routes[j]->getYield()));
+						// the import limit of the receiving colony (what is on board of this yield counts already)
+						if (iFillAmount > 0 && pFillCity->getMaxImportAmount(routes[j]->getYield()) > 0 && !routes[j]->isPrivate())
+						{
+							iFillAmount = estimateYieldsToLoad(pFillCity, iFillAmount, routes[j]->getYield(), iToFill, aiYieldsLoaded[routes[j]->getYield()]);
+						}
+						aiFillAvailable[routes[j]->getYield()] += iFillAmount;
 					}
 				}
 				if (bFillOk && WTP_getRoutePathCached(this, pFillCity, pBestCity, iFillFlags, bIgnoreDanger, &iFillToBest)
@@ -2195,7 +2201,14 @@ void CvSelectionGroupAI::unloadToCity(CvCity* pCity, CvUnit* unit, UnloadMode um
 	if (um == UnloadMode::NoForce && pCity->getImportsLimit(unit->getYield()) > 0)
 	{
 		const int totalStored = unit->getYieldStored();
-		const int toUnload = estimateYieldsToLoad(pCity, totalStored, unit->getYield(), 0, 0);
+		int toUnload = estimateYieldsToLoad(pCity, totalStored, unit->getYield(), 0, 0);
+
+		// WTP: a slight excess of the import limit is allowed if the slot of the transport becomes free by it (a rest of at most
+		// WTP_DETOUR_MIN_SLOT_PERCENT of a slot would keep the whole slot occupied)
+		if (toUnload < totalStored && (totalStored - toUnload) * 100 <= WTP_DETOUR_MIN_SLOT_PERCENT * GC.getGameINLINE().getCargoYieldCapacity())
+		{
+			toUnload = totalStored;
+		}
 
 		if (toUnload <= 0)
 		{
