@@ -12,6 +12,7 @@ import CvAchieveAdvisor
 import CvTradeRoutesAdvisor
 import CvTransportRoutesOverview
 import CvYieldAmountScreen
+import CvTradeRouteScreen
 # TAC - Trade Route Advisor - koma13 - END
 
 import CvRevolutionAdvisor
@@ -135,6 +136,16 @@ def askYieldAmount(argsList):
 	except:
 		import traceback
 		CvYieldAmountScreen.logYield(traceback.format_exc())
+		return 0
+
+# WTP: the DLL asks for the import / export settings of a city (instead of its popup); returns 1 if the window is open
+tradeRouteScreen = CvTradeRouteScreen.CvTradeRouteScreen()
+def askTradeRouteSetup(argsList):
+	try:
+		return tradeRouteScreen.open(argsList[0], argsList[1] != 0)
+	except:
+		import traceback
+		CvTradeRouteScreen.logTrade(traceback.format_exc())
 		return 0
 
 def showTransportRoutesOverview(argsList):
@@ -609,6 +620,11 @@ def handleInput (argsList):
 		if (yieldAmountScreen.handleEmbeddedInput(inputClass)):
 			return 0
 
+	# WTP: the buttons of the import / export window of the city screen
+	if (tradeRouteScreen.isOpen()):
+		if (tradeRouteScreen.handleEmbeddedInput(inputClass)):
+			return 0
+
 	# allows overides for mods
 	ret = CvScreenUtilsInterface.getScreenUtils().handleInput( (inputClass.getPythonFile(),inputClass) )
 
@@ -632,6 +648,10 @@ def update (argsList):
 	# WTP: the mouse wheel of the amount dialog when it is drawn on a harbor screen
 	if (yieldAmountScreen.isOpen() and yieldAmountScreen.isEmbedded() and argsList[0] != YIELD_AMOUNT):
 		yieldAmountScreen.update(argsList[1])
+
+	# WTP: the mouse wheel of the import / export window of the city screen
+	if (tradeRouteScreen.isOpen()):
+		tradeRouteScreen.update(argsList[1])
 
 # WTP: diplomacy opened from the native info tab of the domestic advisor
 bReturnToDomesticAfterDiplomacy = False

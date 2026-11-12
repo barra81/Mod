@@ -4146,6 +4146,21 @@ bool CvDLLButtonPopup::launchYieldImportExportPopup(CvPopup* pPopup, CvPopupInfo
 	{
 		return false;
 	}
+
+	// WTP: the settings are made in an own window (python: wider, with the land / sea checkboxes and the mouse wheel); if it cannot
+	// be opened the popup of the game is used as before
+	{
+		CyArgsList argsList;
+		argsList.add(pCity->getID());
+		argsList.add(info.getOption1() ? 1 : 0);
+		long lOpened = 0;
+		gDLL->getPythonIFace()->callFunction(PYScreensModule, "askTradeRouteSetup", argsList.makeFunctionArgs(), &lOpened);
+		if (lOpened != 0)
+		{
+			return false;
+		}
+	}
+
 	gDLL->getInterfaceIFace()->popupSetBodyString(pPopup, gDLL->getText("TXT_KEY_POPUP_IMPORT_TITLE", pCity->getNameKey()));
 
 	// auto traderoute - start - Nightinggale
@@ -4179,7 +4194,7 @@ bool CvDLLButtonPopup::launchYieldImportExportPopup(CvPopup* pPopup, CvPopupInfo
 
 			gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, L"", kYield.getButton(), -1, WIDGET_HELP_YIELD, eYield);
 			gDLL->getInterfaceIFace()->popupCreateSpinBox(pPopup, eYield, L"", pCity->getImportsLimit(eYield), 10, 0xFFFF, 0);
-gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 2, eYield, WIDGET_GENERAL, POPUP_LAYOUT_TOP);
+			gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 2, eYield, WIDGET_GENERAL, POPUP_LAYOUT_TOP);
 			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 0, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_IMPORT") + L"</font>", eYield, gDLL->getText("TXT_KEY_POPUP_IMPORT_IMPORT_HELP").getWithoutFormatting());
 			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 0, pCity->isImport(eYield), eYield);
 			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 1, pCity->getImportsMaintain(eYield), eYield);

@@ -382,6 +382,12 @@ public:
 	int getImportsLimit(int /*YieldTypes*/ eYield) const;	// R&R mod, vetiarvind, max yield import limit
 	// transport feeder - start - Nightinggale
 	bool isImportFeeder(int /*YieldTypes*/ eYield) const;
+	// WTP: for the trade route screen (python)
+	bool isAutoExport(int /*YieldTypes*/ eYield) const;
+	int getImportDomains(int /*YieldTypes*/ eYield) const;
+	int getExportDomains(int /*YieldTypes*/ eYield) const;
+	bool isAutoMarketImport() const;
+	bool isYieldInTradeRouteCondensedList(int /*YieldTypes*/ eYield) const;
 	bool isAutoImportStopped(int /*YieldTypes*/ eYield) const;
 	int getAutoMaintainThreshold(int /*YieldTypes*/ eYield) const;
 	// transport feeder - end - Nightinggale

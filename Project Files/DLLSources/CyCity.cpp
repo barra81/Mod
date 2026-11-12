@@ -1694,6 +1694,37 @@ bool CyCity::isImportFeeder(int /*YieldTypes*/ eYield) const
 	return m_pCity ? m_pCity->getImportsMaintain((YieldTypes) eYield) : false;
 }
 
+bool CyCity::isAutoExport(int /*YieldTypes*/ eYield) const
+{
+	return m_pCity ? m_pCity->isAutoExport((YieldTypes) eYield) : false;
+}
+
+int CyCity::getImportDomains(int /*YieldTypes*/ eYield) const
+{
+	return m_pCity ? m_pCity->getImportDomains((YieldTypes) eYield) : 0;
+}
+
+int CyCity::getExportDomains(int /*YieldTypes*/ eYield) const
+{
+	return m_pCity ? m_pCity->getExportDomains((YieldTypes) eYield) : 0;
+}
+
+bool CyCity::isAutoMarketImport() const
+{
+	return m_pCity ? m_pCity->isAutoMarketImport() : false;
+}
+
+// same condition as CvDLLButtonPopup::isYieldSupportedInExportPanelForCity
+bool CyCity::isYieldInTradeRouteCondensedList(int /*YieldTypes*/ eYield) const
+{
+	if (m_pCity == NULL)
+	{
+		return false;
+	}
+	const YieldTypes e = (YieldTypes) eYield;
+	return !(m_pCity->getYieldRate(e) == 0 && !m_pCity->isImport(e) && !m_pCity->getImportsMaintain(e) && !m_pCity->isExport(e));
+}
+
 bool CyCity::isAutoImportStopped(int /*YieldTypes*/ eYield) const
 {
 	return m_pCity ? m_pCity->isAutoImportStopped((YieldTypes) eYield) : false;

@@ -1347,6 +1347,8 @@ class CvMainInterface:
 		try:
 			if CvScreensInterface.yieldAmountScreen.isHostMain():
 				return 0
+			if CvScreensInterface.tradeRouteScreen.isHostMain():
+				return 0
 		except:
 			pass
 

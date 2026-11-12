@@ -218,6 +218,15 @@ class CvEventManager:
 		eventType,key,mx,my,px,py = argsList
 		game = gc.getGame()
 
+		# WTP: the import / export window of the city screen takes all keys while it is open (Esc closes it)
+		if (CvScreensInterface.tradeRouteScreen.isOpen()):
+			if (eventType == self.EventKeyDown):
+				try:
+					CvScreensInterface.tradeRouteScreen.handleKey(int(key), self.bCtrl)
+				except:
+					pass
+			return 1
+
 		# WTP: the amount dialog of the transfers (shift + transfer) takes all keys while it is open
 		if (CvScreensInterface.yieldAmountScreen.isOpen()):
 			if (eventType == self.EventKeyDown):

@@ -127,6 +127,11 @@ void CyCityPythonInterface5(python::class_<CyCity>& x)
 		// R&R mod, vetiarvind, max yield import limit - end
 		// transport feeder - start - Nightinggale
 		.def("isImportFeeder", &CyCity::isImportFeeder, "bool isImportFeeder(int /*YieldTypes*/ eYield) const")
+		.def("isAutoExport", &CyCity::isAutoExport, "bool isAutoExport(int /*YieldTypes*/ eYield) const")
+		.def("getImportDomains", &CyCity::getImportDomains, "int getImportDomains(int /*YieldTypes*/ eYield) const")
+		.def("getExportDomains", &CyCity::getExportDomains, "int getExportDomains(int /*YieldTypes*/ eYield) const")
+		.def("isAutoMarketImport", &CyCity::isAutoMarketImport, "bool isAutoMarketImport() const")
+		.def("isYieldInTradeRouteCondensedList", &CyCity::isYieldInTradeRouteCondensedList, "bool isYieldInTradeRouteCondensedList(int /*YieldTypes*/ eYield) const")
 		.def("isAutoImportStopped", &CyCity::isAutoImportStopped, "bool isAutoImportStopped(int /*YieldTypes*/ eYield) const")
 		.def("getAutoMaintainThreshold", &CyCity::getAutoMaintainThreshold, "int getAutoMaintainThreshold(int /*YieldTypes*/ eYield) const")
 		// transport feeder - end - Nightinggale

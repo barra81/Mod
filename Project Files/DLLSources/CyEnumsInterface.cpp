@@ -587,6 +587,7 @@ void CyEnumsPythonInterface()
 		.value("TASK_YIELD_LEVEL", TASK_YIELD_LEVEL)
 		.value("TASK_YIELD_TRADEROUTE", TASK_YIELD_TRADEROUTE) // transport feeder - Nightinggale
 		.value("TASK_TRADEROUTE_PRESET", TASK_TRADEROUTE_PRESET) // WTP
+		.value("TASK_AUTO_TRADEROUTE", TASK_AUTO_TRADEROUTE) // WTP: for the trade route screen (python)
 		.value("TASK_CLEAR_SPECIALTY", TASK_CLEAR_SPECIALTY)
 		.value("TASK_EDUCATE", TASK_EDUCATE)
 		.value("TASK_PUSH_TRAIN_UNIT", TASK_PUSH_TRAIN_UNIT)
