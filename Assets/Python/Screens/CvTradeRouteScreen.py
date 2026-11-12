@@ -182,8 +182,8 @@ class CvTradeRouteScreen:
 		self.aDrawn.append("TRSOk")
 		self.aDrawn.append("TRSCancel")
 		if len(self.aYields) > self.iVisible:
-			screen.setButtonGFC("TRSUp", u"<font=3b><</font>", "", self.OX + 24, self.OY + self.H - 44, 36, 28, WidgetTypes.WIDGET_GENERAL, BTN_UP, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-			screen.setButtonGFC("TRSDown", u"<font=3b>></font>", "", self.OX + 24 + 36 + 150, self.OY + self.H - 44, 36, 28, WidgetTypes.WIDGET_GENERAL, BTN_DOWN, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			screen.setButtonGFC("TRSUp", u"<font=3b>\u00ab</font>", "", self.OX + 24, self.OY + self.H - 44, 36, 28, WidgetTypes.WIDGET_GENERAL, BTN_UP, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			screen.setButtonGFC("TRSDown", u"<font=3b>\u00bb</font>", "", self.OX + 24 + 36 + 150, self.OY + self.H - 44, 36, 28, WidgetTypes.WIDGET_GENERAL, BTN_DOWN, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 			self.aDrawn.append("TRSUp")
 			self.aDrawn.append("TRSDown")
 			self.aDrawn.append("TRSPage")
@@ -208,7 +208,7 @@ class CvTradeRouteScreen:
 		if bOn:
 			szShown = u"<font=3b><color=255,220,100>[x] " + szText + u"</color></font>"
 		else:
-			szShown = u"<font=3b><color=255,255,255>[   ] " + szText + u"</color></font>"
+			szShown = u"<font=3b>[   ] " + szText + u"</font>"
 		screen.setButtonGFC(szName, szShown, "", iX, iY, self.CHECK_W, 24, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 
 	def drawRows(self):
