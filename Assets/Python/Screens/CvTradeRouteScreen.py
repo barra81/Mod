@@ -38,8 +38,15 @@ F_EXP_AUTO = 9
 F_EXP_LAND = 10
 F_EXP_SEA = 11
 
-# the style of the translucent panel that makes a marked button a little lighter (try PANEL_STYLE_MAIN_TAN15 / PANEL_STYLE_MAIN_WHITE ...)
+# the translucent panel that makes a marked button lighter (HILITE_LAYERS of them on top of each other) and the one that is drawn
+# on the button under the mouse (the hover effect of the game is lost because the texts lie on the buttons)
 HILITE_PANEL = "PANEL_STYLE_MAIN_TAN15"
+HILITE_LAYERS = 3
+HOVER_PANEL = "PANEL_STYLE_MAIN_SELECT"
+# texts of the buttons: color of a text that is not marked, the offset of the text top to the middle of the button (font 3b: the
+# letters from the top of the I to the bottom of the p are centered in the button)
+TEXT_COLOR = "45,32,18"
+TEXT_DY = -14
 
 STEP = 10
 STEP_CTRL = 50
@@ -128,6 +135,8 @@ class CvTradeRouteScreen:
 		self.aFav = [] # the favorite goods (yield types)
 		self.iView = VIEW_ALL
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
+		self.dBtn = {} # the buttons (name: [x, y, w, h, code, text, marked, font, dy, panels])
+		self.sHover = ""
 
 	def isOpen(self):
 		return not self.bFinished
@@ -213,8 +222,7 @@ class CvTradeRouteScreen:
 		if pCity.isAutoMarketImport():
 			szMarket = "TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT_ON"
 		iHalf = (self.W - 40 - 10) / 2
-		self.drop("TRSPreset4")
-		self.pHost.setButtonGFC("TRSPreset4", u"<font=3b>" + localText.getText(szMarket, ()) + u"</font>", "", self.OX + 20 + iHalf + 10, self.OY + 96, iHalf, 28, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 4, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		self.addButton("TRSPreset4", localText.getText(szMarket, ()), False, self.OX + 20 + iHalf + 10, self.OY + 96, iHalf, 28, BTN_PRESET + 4)
 
 	# opens the window (1: it is open, 0: the DLL shows its own popup instead)
 	def open(self, iCity, bCondensed):
@@ -229,6 +237,8 @@ class CvTradeRouteScreen:
 		self.dData = {}
 		self.aFav = loadFavorites()
 		self.iView = VIEW_ALL
+		self.dBtn = {}
+		self.sHover = ""
 		for iYield in range(YieldTypes.NUM_YIELD_TYPES):
 			if not gc.getYieldInfo(iYield).isCargo():
 				continue
@@ -270,25 +280,16 @@ class CvTradeRouteScreen:
 		iBW = (self.W - 40 - 20) / 3
 		aszPreset = [localText.getText("TXT_KEY_POPUP_IMPORT_CLEAR_ALL", ()), localText.getText("TXT_KEY_POPUP_IMPORT_ALL", ()), localText.getText("TXT_KEY_POPUP_IMPORT_EXPORT_ALL", ())]
 		for i in range(3):
-			szName = "TRSPreset" + str(i)
-			screen.setButtonGFC(szName, u"<font=3b>" + aszPreset[i] + u"</font>", "", self.OX + 20 + i * (iBW + 10), self.OY + 62, iBW, 28, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-			self.aDrawn.append(szName)
-		szName = "TRSPreset3"
+			self.addButton("TRSPreset" + str(i), aszPreset[i], False, self.OX + 20 + i * (iBW + 10), self.OY + 62, iBW, 28, BTN_PRESET + i)
 		iHalf = (self.W - 40 - 10) / 2
-		screen.setButtonGFC(szName, u"<font=3b>" + localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT", ()) + u"</font>", "", self.OX + 20, self.OY + 96, iHalf, 28, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 3, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		self.aDrawn.append(szName)
+		self.addButton("TRSPreset3", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT", ()), False, self.OX + 20, self.OY + 96, iHalf, 28, BTN_PRESET + 3)
 		self.drawMarketButton(pCity)
-		self.aDrawn.append("TRSPreset4")
 
-		screen.setButtonGFC("TRSOk", u"<font=3b>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 44, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC("TRSCancel", u"<font=3b>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 44, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		self.aDrawn.append("TRSOk")
-		self.aDrawn.append("TRSCancel")
+		self.addButton("TRSOk", localText.getText("TXT_KEY_MAIN_MENU_OK", ()), False, self.OX + self.W / 2 - 105, self.OY + self.H - 44, 100, 28, BTN_OK)
+		self.addButton("TRSCancel", localText.getText("TXT_KEY_POPUP_CANCEL", ()), False, self.OX + self.W / 2 + 5, self.OY + self.H - 44, 100, 28, BTN_CANCEL)
 		if len(self.aYields) > self.iVisible:
-			screen.setButtonGFC("TRSUp", u"<font=3b>\u00ab</font>", "", self.OX + 24, self.OY + self.H - 44, 36, 28, WidgetTypes.WIDGET_GENERAL, BTN_UP, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-			screen.setButtonGFC("TRSDown", u"<font=3b>\u00bb</font>", "", self.OX + 24 + 36 + 150, self.OY + self.H - 44, 36, 28, WidgetTypes.WIDGET_GENERAL, BTN_DOWN, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-			self.aDrawn.append("TRSUp")
-			self.aDrawn.append("TRSDown")
+			self.addButton("TRSUp", u"\u00ab", False, self.OX + 24, self.OY + self.H - 44, 36, 28, BTN_UP)
+			self.addButton("TRSDown", u"\u00bb", False, self.OX + 24 + 36 + 150, self.OY + self.H - 44, 36, 28, BTN_DOWN)
 			self.aDrawn.append("TRSPage")
 
 		self.iViewX = self.W - 20 - 160
@@ -311,26 +312,69 @@ class CvTradeRouteScreen:
 		except:
 			pass
 
-	def drawCheck(self, szName, szText, bOn, iX, iY, iCode):
+	# a button: blank button of the game, on it the text of the game (placed exactly, yellow when marked); a marked button is lighter
+	def addButton(self, szName, szText, bMark, iX, iY, iW, iH, iCode, szFont = "3b", iDy = 0):
 		screen = self.pHost
-		szTag = szName[4:]
-		szLabel = "TRSt" + szTag
-		szLight = "TRSb" + szTag
-		self.drop(szName)
+		self.removeButton(szName)
+		screen.setButtonGFC(szName, u"", "", iX, iY, iW, iH, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		aLights = []
+		if bMark:
+			for i in range(HILITE_LAYERS):
+				szLight = "TRSb" + str(i) + "_" + szName
+				screen.addPanel(szLight, u"", u"", False, False, iX + 2, iY + 3, iW - 4, iH - 6, getattr(PanelStyles, HILITE_PANEL), WidgetTypes.WIDGET_GENERAL, iCode, -1)
+				aLights.append(szLight)
+		self.dBtn[szName] = [iX, iY, iW, iH, iCode, szText, bMark, szFont, iDy, aLights]
+		self.drawButtonText(szName)
+
+	def drawButtonText(self, szName):
+		b = self.dBtn[szName]
+		szLabel = "TRSL" + szName
 		self.drop(szLabel)
-		self.drop(szLight)
-		if bOn:
-			# marked: a blank button, a translucent panel that makes it lighter, and on it the text of the game in yellow (black
-			# shadow); button, panel and text have the same code
-			screen.setButtonGFC(szName, u"", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-			screen.addPanel(szLight, u"", u"", False, False, iX + 2, iY + 2, self.CHECK_W - 4, self.CHECK_H - 4, getattr(PanelStyles, HILITE_PANEL), WidgetTypes.WIDGET_GENERAL, iCode, -1)
-			screen.setText(szLabel, "", u"<font=3b><color=255,220,100>" + szText + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + (self.CHECK_H - 20) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
-		else:
-			# not marked: the text of the button itself (like OK / Cancel), centered by the game
-			screen.setButtonGFC(szName, u"<font=3b>" + szText + u"</font>", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		szColor = TEXT_COLOR
+		if b[6]:
+			szColor = "255,220,100"
+		szShown = u"<font=" + b[7] + u"><color=" + szColor + u">" + b[5] + u"</color></font>"
+		self.pHost.setText(szLabel, "", szShown, CvUtil.FONT_CENTER_JUSTIFY, b[0] + b[2] / 2, b[1] + b[3] / 2 + TEXT_DY + b[8], 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, b[4], -1)
+
+	def removeButton(self, szName):
+		self.drop(szName)
+		self.drop("TRSL" + szName)
+		for i in range(HILITE_LAYERS):
+			self.drop("TRSb" + str(i) + "_" + szName)
+		if self.dBtn.has_key(szName):
+			if self.sHover == szName:
+				self.clearHover()
+			del self.dBtn[szName]
+
+	def clearHover(self):
+		self.drop("TRSHover")
+		self.sHover = ""
+
+	# the button under the mouse gets a lighter / orange panel (called every frame)
+	def updateHover(self):
+		iX = CyGame().getCursorClientX()
+		iY = CyGame().getCursorClientY()
+		szNew = ""
+		for szName in self.dBtn.keys():
+			b = self.dBtn[szName]
+			if iX >= b[0] and iX < b[0] + b[2] and iY >= b[1] + 3 and iY < b[1] + b[3] - 3:
+				szNew = szName
+				break
+		if szNew == self.sHover:
+			return
+		self.clearHover()
+		if szNew != "":
+			b = self.dBtn[szNew]
+			self.pHost.addPanel("TRSHover", u"", u"", False, False, b[0] + 2, b[1] + 3, b[2] - 4, b[3] - 6, getattr(PanelStyles, HOVER_PANEL), WidgetTypes.WIDGET_GENERAL, b[4], -1)
+			self.sHover = szNew
+			self.drawButtonText(szNew) # (the text on top of the panel)
+
+	def drawCheck(self, szName, szText, bOn, iX, iY, iCode):
+		self.addButton(szName, szText, bOn, iX, iY, self.CHECK_W, self.CHECK_H, iCode)
 
 	def drawRows(self):
 		screen = self.pHost
+		self.clearHover()
 		szImport = localText.getText("TXT_KEY_POPUP_IMPORT_IMPORT", ())
 		szFeeder = localText.getText("TXT_KEY_POPUP_IMPORT_FEEDER", ())
 		szLand = localText.getText("TXT_KEY_POPUP_IMPORT_LAND", ())
@@ -375,13 +419,9 @@ class CvTradeRouteScreen:
 		szTag = str(iSlot) + "_" + str(iBlock)
 		iBH = 30
 		iBY = iY + (self.ROW_H - iBH) / 2
-		for szName in ("TRSm" + szTag, "TRSM" + szTag, "TRSp" + szTag, "TRSP" + szTag, "TRSv" + szTag):
-			self.drop(szName)
-		# the signs are texts of the game on blank buttons (the signs of the button font look odd)
-		screen.setButtonGFC("TRSm" + szTag, u"", "", iX, iBY, 28, iBH, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setText("TRSM" + szTag, "", u"<font=4b><color=60,45,30>-</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + 14, iBY + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1)
-		screen.setButtonGFC("TRSp" + szTag, u"", "", iX + self.BLOCK_SPIN_W - 28, iBY, 28, iBH, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setText("TRSP" + szTag, "", u"<font=4b><color=60,45,30>+</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + self.BLOCK_SPIN_W - 14, iBY + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1)
+		self.drop("TRSv" + szTag)
+		self.addButton("TRSm" + szTag, u"-", False, iX, iBY, 28, iBH, iMinusCode, "4b", -3)
+		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28, iBY, 28, iBH, iPlusCode, "4b", -3)
 		screen.setLabelAt("TRSv" + szTag, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + (self.ROW_H - 22) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 	def refreshRow(self, iSlot):
@@ -391,17 +431,11 @@ class CvTradeRouteScreen:
 	def clearSlot(self, iSlot):
 		self.drop("TRSIcon" + str(iSlot))
 		for iBlock in range(2):
-			self.drop("TRSm" + str(iSlot) + "_" + str(iBlock))
-			self.drop("TRSM" + str(iSlot) + "_" + str(iBlock))
-			self.drop("TRSp" + str(iSlot) + "_" + str(iBlock))
-			self.drop("TRSP" + str(iSlot) + "_" + str(iBlock))
+			self.removeButton("TRSm" + str(iSlot) + "_" + str(iBlock))
+			self.removeButton("TRSp" + str(iSlot) + "_" + str(iBlock))
 			self.drop("TRSv" + str(iSlot) + "_" + str(iBlock))
-		for iField in (2, 3, 4, 5, 8, 9, 10, 11):
-			self.drop("TRSc" + str(iSlot) + "_" + str(iField))
-			self.drop("TRSt" + str(iSlot) + "_" + str(iField))
-			self.drop("TRSb" + str(iSlot) + "_" + str(iField))
-		for szName in ("TRSc%d_fe" % iSlot, "TRSt%d_fe" % iSlot, "TRSb%d_fe" % iSlot):
-			self.drop(szName)
+		for szTag in ("2", "3", "4", "5", "8", "9", "10", "11", "fe"):
+			self.removeButton("TRSc" + str(iSlot) + "_" + szTag)
 
 	def clearRows(self):
 		for iSlot in range(self.iVisible):
@@ -541,6 +575,9 @@ class CvTradeRouteScreen:
 			pass
 		try:
 			self.clearRows()
+			self.clearHover()
+			for szName in self.dBtn.keys():
+				self.removeButton(szName)
 			for szName in self.aDrawn:
 				self.drop(szName)
 			for szName in ("TRSOk", "TRSCancel", "TRSUp", "TRSDown", "TRSPage", "TRSHeadImp", "TRSHeadExp", "TRSTitle", "TRSHint", self.BACKGROUND_ID):
@@ -614,6 +651,7 @@ class CvTradeRouteScreen:
 		if self.bFinished:
 			return 0
 		try:
+			self.updateHover()
 			if self.iReload > 0:
 				self.iReload -= 1
 				if self.iReload % 10 == 0:
