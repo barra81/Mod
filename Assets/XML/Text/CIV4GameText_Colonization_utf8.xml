@@ -2869,7 +2869,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MILITARY_UPKEEP_GOLD_STR</Tag>
-		<English>Military upkeep: -%d1 per turn</English>
+		<English>Military upkeep:   -%d1 per turn</English>
 		<Portuguese>Manutenção militar: -%d1 por turno</Portuguese>
 		<French>Entretien militaire : -%d1 par tour</French>
 		<German>Militärunterhalt: -%d1 pro Runde</German>

@@ -2714,7 +2714,7 @@ class CvMainInterface:
 				iUpkeep = pPlayer.getMilitaryUpkeep()
 				if (iUpkeep > 0):
 					szText = localText.getText("TXT_KEY_MILITARY_UPKEEP_GOLD_STR", (iUpkeep,))
-					screen.setLabel("MilitaryUpkeepText", "Background", self.setFontSize(szText, 0), CvUtil.FONT_LEFT_JUSTIFY, 25, 42, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 ) # 25: the minus sign is in line with the plus sign of the domestic market
+					screen.setLabel("MilitaryUpkeepText", "Background", self.setFontSize(szText, 0), CvUtil.FONT_LEFT_JUSTIFY, 17, 42, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 				else:
 					screen.hide("MilitaryUpkeepText")
 				szText = localText.getText("TXT_KEY_DOMESTIC_MARKET_INCOME_STR", (pPlayer.getDomesticMarketIncome(),))
