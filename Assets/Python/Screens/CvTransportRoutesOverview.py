@@ -279,15 +279,19 @@ class CvTransportRoutesOverview:
 		szQuery = self.szQuery.lower()
 		for iIndex in range(len(self.Transports)):
 			dTransport = self.Transports[iIndex]
-			if self.iTypeFilter == 0 and dTransport["auto"]:
+			bAuto = dTransport["auto"]
+			iAssigned = self.getAssignedCount(dTransport)
+			if dTransport.get("manualSet", False):
+				bAuto = dTransport["frozenAuto"]
+				iAssigned = dTransport["frozenAssigned"]
+			if self.iTypeFilter == 0 and bAuto:
 				continue
-			if self.iTypeFilter == 1 and not dTransport["auto"]:
+			if self.iTypeFilter == 1 and not bAuto:
 				continue
 			if self.iDomainFilter == 1 and not dTransport["land"]:
 				continue
 			if self.iDomainFilter == 2 and dTransport["land"]:
 				continue
-			iAssigned = self.getAssignedCount(dTransport)
 			if self.iTypeFilter == 0:
 				if self.iAssignFilter == 1 and iAssigned == 0:
 					continue
@@ -378,6 +382,7 @@ class CvTransportRoutesOverview:
 			screen.hide("TROName" + str(iSlot))
 			screen.hide("TROInfo" + str(iSlot))
 			screen.hide("TROManual" + str(iSlot))
+			screen.hide("TROManualDone" + str(iSlot))
 			screen.hide(self.getTableName(iSlot))
 		self.iUsedSlots = iShown
 
@@ -414,13 +419,20 @@ class CvTransportRoutesOverview:
 		szInfo = dTransport["where"] + u"   " + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_ASSIGNED", (self.getAssignedCount(dTransport), len(dTransport["routes"])))
 		screen.setLabelAt("TROInfo" + str(iSlot), self.BACKGROUND_ID, u"<font=2>" + szInfo + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, iX + 56, self.HEAD_Y + 28, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.show("TROInfo" + str(iSlot))
-		# a transport with an automation (full automation or trade routes) can be set back to manual here
+		# a transport with an automation (full automation or trade routes) can be set back to manual here; afterwards a red text says so
 		szManual = "TROManual" + str(iSlot)
-		if dTransport["auto"] or self.getAssignedCount(dTransport) > 0:
+		szDone = "TROManualDone" + str(iSlot)
+		if dTransport.get("manualSet", False):
+			screen.hide(szManual)
+			screen.setLabelAt(szDone, self.BACKGROUND_ID, u"<font=3b><color=255,60,60>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_MANUAL_DONE", ()) + u"</color></font>", CvUtil.FONT_LEFT_JUSTIFY, iX + 56, self.HEAD_Y + 50, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			screen.show(szDone)
+		elif dTransport["auto"] or self.getAssignedCount(dTransport) > 0:
+			screen.hide(szDone)
 			screen.setButtonGFC(szManual, u"<font=2>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_MANUAL", ()) + u"</font>", "", iX + 56, self.HEAD_Y + 46, 170, 26, WidgetTypes.WIDGET_GENERAL, BTN_MANUAL + iSlot, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 			screen.show(szManual)
 		else:
 			screen.hide(szManual)
+			screen.hide(szDone)
 
 	def drawTable(self, iSlot, dTransport, iX):
 		screen = self.getScreen()
@@ -490,6 +502,7 @@ class CvTransportRoutesOverview:
 			logOverview("route %d of row %d unknown" % (iRoute, iRow))
 			return
 		dTransport["assigned"][iRoute] = not dTransport["assigned"][iRoute]
+		dTransport["manualSet"] = False
 		for tRoute in dTransport["routes"]:
 			if tRoute[4] == iRoute:
 				self.fillRow(szTable, iRow, tRoute, dTransport["assigned"][iRoute])
@@ -602,11 +615,15 @@ class CvTransportRoutesOverview:
 			return
 		dTransport = self.Transports[self.aVisible[iIndex]]
 		CyMessageControl().sendDoCommand(dTransport["unit"], CommandTypes.COMMAND_AUTOMATE, -1, -1, False)
+		# it stays in the list (and in its filter) while this screen is open
+		dTransport["frozenAuto"] = dTransport["auto"]
+		dTransport["frozenAssigned"] = self.getAssignedCount(dTransport)
+		dTransport["manualSet"] = True
 		dTransport["auto"] = False
 		for iRoute in dTransport["assigned"].keys():
 			dTransport["assigned"][iRoute] = False
 			dTransport["original"][iRoute] = False
-		self.refresh()
+		self.drawColumns()
 
 	# the popup that renames a transport (the same one as for the name suggestion, with the current name)
 	def renameTransport(self, iSlot):
