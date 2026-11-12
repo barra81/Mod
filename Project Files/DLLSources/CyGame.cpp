@@ -673,6 +673,29 @@ void CyGame::openDomesticMarket(int iCityID) const
 	}
 }
 
+// WTP: the amount dialog (python, CvYieldAmountScreen) replaces the spin box popup of the transfer with the shift key: the same actions
+// as CvDLLButtonPopup::handleSelectYieldAmountPopup (iData3: the command, or the player action in Europe / Africa / Port Royal)
+void CyGame::sendYieldTransfer(int iUnitID, int iData3, int iYield, int iAmount, bool bPlayerAction) const
+{
+	const PlayerTypes ePlayer = GC.getGameINLINE().getActivePlayer();
+	if (ePlayer == NO_PLAYER || iAmount <= 0 || iYield < 0 || iYield >= NUM_YIELD_TYPES)
+	{
+		return;
+	}
+	if (GET_PLAYER(ePlayer).getUnit(iUnitID) == NULL)
+	{
+		return;
+	}
+	if (bPlayerAction)
+	{
+		gDLL->sendPlayerAction(ePlayer, (PlayerActionTypes)iData3, iYield, iAmount, iUnitID);
+	}
+	else
+	{
+		gDLL->sendDoCommand(iUnitID, (CommandTypes)iData3, iYield, iAmount, false);
+	}
+}
+
 static bool wtpGetCursor(POINT& pt)
 {
 	if (!GetCursorPos(&pt)) return false;

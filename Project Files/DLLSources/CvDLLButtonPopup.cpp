@@ -4474,6 +4474,7 @@ bool CvDLLButtonPopup::launchSelectYieldAmountPopup(CvPopup* pPopup, CvPopupInfo
 	}
 
 	int iMaxAmount = 0;
+	bool bPlayerAction = false; // WTP: Europe / Africa / Port Royal: the transfer is a player action, otherwise a command of the unit
 	if ((PlayerActionTypes)info.getData3() == PLAYER_ACTION_SET_DIPLO_YIELD_AMOUNT)
 	{
 		const PlayerTypes eFromPlayer = (PlayerTypes)info.getFlags();
@@ -4488,6 +4489,7 @@ bool CvDLLButtonPopup::launchSelectYieldAmountPopup(CvPopup* pPopup, CvPopupInfo
 	{
 		//R&R, vetiarvind, bug fix for shift-key trading in africa and PR - start
 		UnitTravelStates uts = pUnit->getUnitTravelState();
+		bPlayerAction = (uts == UNIT_TRAVEL_STATE_IN_EUROPE || uts == UNIT_TRAVEL_STATE_IN_AFRICA || uts == UNIT_TRAVEL_STATE_IN_PORT_ROYAL);
 		// WTP, ray, refixing SHIFT-KEY
 		// if (uts != UNIT_TRAVEL_STATE_IN_EUROPE && uts != UNIT_TRAVEL_STATE_IN_AFRICA && uts != UNIT_TRAVEL_STATE_FROM_PORT_ROYAL)
 		if (uts != UNIT_TRAVEL_STATE_IN_EUROPE && uts != UNIT_TRAVEL_STATE_IN_AFRICA && uts != UNIT_TRAVEL_STATE_IN_PORT_ROYAL)
@@ -4507,6 +4509,24 @@ bool CvDLLButtonPopup::launchSelectYieldAmountPopup(CvPopup* pPopup, CvPopupInfo
 	if (iMaxAmount <= 0)
 	{
 		return false;
+	}
+
+	// WTP: the transfers (not the amounts of the diplomacy) are asked in an own dialog (python: keys and mouse wheel); if it cannot be
+	// opened the spin box popup of the game is used as before
+	if ((PlayerActionTypes)info.getData3() != PLAYER_ACTION_SET_DIPLO_YIELD_AMOUNT)
+	{
+		CyArgsList argsList;
+		argsList.add((int)eYield);
+		argsList.add(pUnit->getID());
+		argsList.add(iMaxAmount);
+		argsList.add(info.getData3());
+		argsList.add(bPlayerAction ? 1 : 0);
+		long lOpened = 0;
+		gDLL->getPythonIFace()->callFunction(PYScreensModule, "askYieldAmount", argsList.makeFunctionArgs(), &lOpened);
+		if (lOpened != 0)
+		{
+			return false;
+		}
 	}
 
 	gDLL->getInterfaceIFace()->popupSetBodyString(pPopup, gDLL->getText("TXT_KEY_SELECT_YIELD_POPUP", GC.getYieldInfo(eYield).getTextKeyWide()));

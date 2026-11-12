@@ -3498,4 +3498,19 @@
 		<English>[COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT][NEWLINE][NEWLINE]Upgrade %s1_building to:</English>
 		<German>[COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT][NEWLINE][NEWLINE]%s1_building ausbauen zu:</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_YIELD_AMOUNT_MAX</Tag>
+		<English>Max</English>
+		<German>Max</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_YIELD_AMOUNT_HINT1</Tag>
+		<English>[COLOR:140:255:40:255]Page Up[COLOR_REVERT] / [COLOR:140:255:40:255]Page Down[COLOR_REVERT] or [COLOR:140:255:40:255]mouse wheel[COLOR_REVERT]: +/- 25   ([COLOR:140:255:40:255]Ctrl[COLOR_REVERT]: +/- 50)</English>
+		<German>[COLOR:140:255:40:255]Bild auf[COLOR_REVERT] / [COLOR:140:255:40:255]Bild ab[COLOR_REVERT] oder [COLOR:140:255:40:255]Mausrad[COLOR_REVERT]: +/- 25   ([COLOR:140:255:40:255]Strg[COLOR_REVERT]: +/- 50)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_YIELD_AMOUNT_HINT2</Tag>
+		<English>[COLOR:140:255:40:255]Digits[COLOR_REVERT]: type an amount    [COLOR:140:255:40:255]Enter[COLOR_REVERT]: OK    [COLOR:140:255:40:255]Esc[COLOR_REVERT]: cancel</English>
+		<German>[COLOR:140:255:40:255]Ziffern[COLOR_REVERT]: Betrag eintippen    [COLOR:140:255:40:255]Enter[COLOR_REVERT]: OK    [COLOR:140:255:40:255]Esc[COLOR_REVERT]: Abbrechen</German>
+	</TEXT>
 </Civ4GameText>

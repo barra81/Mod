@@ -11,6 +11,7 @@ import CvAchieveAdvisor
 # TAC - Trade Route Advisor - koma13 - START
 import CvTradeRoutesAdvisor
 import CvTransportRoutesOverview
+import CvYieldAmountScreen
 # TAC - Trade Route Advisor - koma13 - END
 
 import CvRevolutionAdvisor
@@ -125,6 +126,16 @@ transportRoutesOverview = CvTransportRoutesOverview.CvTransportRoutesOverview()
 # WTP: the DLL offers a numbered name for a transport that was just automated / got its first trade route
 def askTransportName(argsList):
 	CvTransportRoutesOverview.offerTransportName(argsList[0], argsList[1])
+
+# WTP: the DLL asks for the amount of goods to transfer (instead of the spin box popup of the game); returns 1 if the dialog is open
+yieldAmountScreen = CvYieldAmountScreen.CvYieldAmountScreen()
+def askYieldAmount(argsList):
+	try:
+		return yieldAmountScreen.open(argsList[0], argsList[1], argsList[2], argsList[3], argsList[4] != 0)
+	except:
+		import traceback
+		CvYieldAmountScreen.logYield(traceback.format_exc())
+		return 0
 
 def showTransportRoutesOverview(argsList):
 	DesyncDetectorInstance = gc.startDesyncMonitor()
@@ -810,6 +821,7 @@ HandleCloseMap = {  DAWN_OF_MAN : dawnOfMan,
 					TRADE_ROUTES_ADVISOR : tradeRoutesAdvisor,
 				# TAC - Trade Routes Advisor - koma13 - END
 					TRANSPORT_ROUTES_OVERVIEW : transportRoutesOverview,
+					YIELD_AMOUNT : yieldAmountScreen,
 				}
 #######################################################################################
 ## Handle Mouseover Map
@@ -885,6 +897,7 @@ HandleInputMap = {  MAIN_INTERFACE : mainInterface,
 					TRADE_ROUTES_ADVISOR : tradeRoutesAdvisor,
 				# TAC - Trade Routes Advisor - koma13 - END
 					TRANSPORT_ROUTES_OVERVIEW : transportRoutesOverview,
+					YIELD_AMOUNT : yieldAmountScreen,
 					XML_EDITOR : xmlEditor,
 				}
 

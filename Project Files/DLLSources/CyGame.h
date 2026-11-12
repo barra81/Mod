@@ -170,6 +170,7 @@ public:
 	// WTP: the messages of the turn for the message panel of the main interface
 	int getNumHudMessages() const;
 	void openDomesticMarket(int iCityID) const; // WTP: opens the domestic market popup of a city
+	void sendYieldTransfer(int iUnitID, int iData3, int iYield, int iAmount, bool bPlayerAction) const; // WTP: the amount dialog (python) sends the transfer of goods
 	int getCursorClientX() const; // WTP: mouse position in the game window (-1 if unknown)
 	int getCursorClientY() const;
 	std::wstring getHudMessageText(int i) const;
