@@ -16,7 +16,11 @@ BTN_CANCEL = 41002
 BTN_UP = 41003
 BTN_DOWN = 41004
 BTN_PRESET = 41010 # + 0..4
+BTN_FAV_IMP = 41020 # (the favorite checkbox of a row: 41020 + slot)
+BTN_FAV_EXP = 41100 # + slot
+BTN_VIEW = 41200 # the drop down: default view / favorites
 BTN_ROW = 42000 # + slot * 16 + field
+FAV_FILE = "WTP_TradeRouteFavorites.txt"
 
 # fields of a row
 F_IMP_MINUS = 0
@@ -40,6 +44,29 @@ def logTrade(szText):
 	try:
 		f = open("WTP_TradeRoutes.log", "a")
 		f.write(szText + "\n")
+		f.close()
+	except:
+		pass
+
+# the favorite goods are stored in a text file in the game folder (one yield type per line): they are a setting of the player's screen
+def loadFavorites():
+	aFav = []
+	try:
+		f = open(FAV_FILE, "r")
+		for szLine in f.readlines():
+			szLine = szLine.strip()
+			if len(szLine) > 0:
+				aFav.append(szLine)
+		f.close()
+	except:
+		pass
+	return aFav
+
+def saveFavorites(aFav):
+	try:
+		f = open(FAV_FILE, "w")
+		for szType in aFav:
+			f.write(szType + "\n")
 		f.close()
 	except:
 		pass
@@ -68,6 +95,10 @@ class CvTradeRouteScreen:
 		self.iFirst = 0
 		self.iVisible = 0
 		self.iReload = 0
+		self.iViewX = 0
+		self.aAllYields = [] # all goods of the default view
+		self.aFav = [] # the favorite goods (yield types)
+		self.bFavView = False
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
 
 	def isOpen(self):
@@ -88,6 +119,39 @@ class CvTradeRouteScreen:
 			return -12345
 		return int(iKey)
 
+	def isFav(self, iYield):
+		return gc.getYieldInfo(iYield).getType() in self.aFav
+
+	def toggleFav(self, iYield):
+		szType = gc.getYieldInfo(iYield).getType()
+		if szType in self.aFav:
+			self.aFav.remove(szType)
+		else:
+			self.aFav.append(szType)
+		saveFavorites(self.aFav)
+		if self.bFavView:
+			self.buildView()
+			self.drawRows()
+			self.drawPage()
+		else:
+			self.drawRows()
+
+	# the goods of the view: all of them (default) or the favorites
+	def buildView(self):
+		if self.bFavView:
+			self.aYields = [i for i in self.aAllYields if self.isFav(i)]
+		else:
+			self.aYields = list(self.aAllYields)
+		self.iFirst = 0
+
+	def setView(self, bFav):
+		if bFav == self.bFavView:
+			return
+		self.bFavView = bFav
+		self.buildView()
+		self.drawRows()
+		self.drawPage()
+
 	def loadYield(self, pCity, iYield):
 		d = {}
 		d["imp"] = pCity.isImport(iYield)
@@ -105,7 +169,7 @@ class CvTradeRouteScreen:
 		pCity = self.getCity()
 		if pCity == None or pCity.isNone():
 			return
-		for iYield in self.aYields:
+		for iYield in self.aAllYields:
 			self.loadYield(pCity, iYield)
 		self.drawMarketButton(pCity)
 		self.drawRows()
@@ -128,6 +192,8 @@ class CvTradeRouteScreen:
 		self.bCondensed = bCondensed
 		self.aYields = []
 		self.dData = {}
+		self.aFav = loadFavorites()
+		self.bFavView = False
 		for iYield in range(YieldTypes.NUM_YIELD_TYPES):
 			if not gc.getYieldInfo(iYield).isCargo():
 				continue
@@ -136,6 +202,7 @@ class CvTradeRouteScreen:
 			self.aYields.append(iYield)
 			self.loadYield(pCity, iYield)
 
+		self.aAllYields = list(self.aYields)
 		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
 		self.pHost = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 		screen = self.pHost
@@ -188,6 +255,11 @@ class CvTradeRouteScreen:
 			self.aDrawn.append("TRSDown")
 			self.aDrawn.append("TRSPage")
 
+		self.iViewX = self.BLOCK_EXP_X + self.BLOCK_SPIN_W + 8 + 2 * self.CHECK_W + 4 + 20
+		screen.addDropDownBoxGFC("TRSView", self.OX + self.iViewX, self.OY + self.H - 44, 160, WidgetTypes.WIDGET_GENERAL, BTN_VIEW, -1, FontTypes.GAME_FONT)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()), 0, 0, True)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_FAV", ()), 1, 1, False)
+		self.aDrawn.append("TRSView")
 		self.drawRows()
 		self.drawPage()
 		try:
@@ -204,12 +276,17 @@ class CvTradeRouteScreen:
 
 	def drawCheck(self, szName, szText, bOn, iX, iY, iCode):
 		screen = self.pHost
+		szLabel = "TRSt" + szName[4:]
 		self.drop(szName)
+		self.drop(szLabel)
+		# the button is the background, the text on it is a clickable text of the game (in the style of the other texts of the game,
+		# yellow when checked); both have the same code
+		screen.setButtonGFC(szName, u"", "", iX, iY, self.CHECK_W, 24, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		if bOn:
 			szShown = u"<font=3b><color=255,220,100>[x] " + szText + u"</color></font>"
 		else:
-			szShown = u"<font=3b>[   ] " + szText + u"</font>"
-		screen.setButtonGFC(szName, szShown, "", iX, iY, self.CHECK_W, 24, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			szShown = u"<font=3b><color=255,255,255>[   ] " + szText + u"</color></font>"
+		screen.setText(szLabel, "", szShown, CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + 3, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
 
 	def drawRows(self):
 		screen = self.pHost
@@ -219,6 +296,7 @@ class CvTradeRouteScreen:
 		szSea = localText.getText("TXT_KEY_POPUP_IMPORT_SEA", ())
 		szExport = localText.getText("TXT_KEY_POPUP_IMPORT_EXPORT", ())
 		szAuto = localText.getText("TXT_KEY_POPUP_IMPORT_AUTO_EXPORT", ())
+		szFav = localText.getText("TXT_KEY_WTP_TRADEROUTE_FAVORITE", ())
 		for iSlot in range(self.iVisible):
 			iIndex = self.iFirst + iSlot
 			if iIndex >= len(self.aYields):
@@ -247,6 +325,10 @@ class CvTradeRouteScreen:
 			self.drawCheck("TRSc" + str(iSlot) + "_9", szAuto, d["auto"], iCX + self.CHECK_W + 4, iY + 3, iBase + F_EXP_AUTO)
 			self.drawCheck("TRSc" + str(iSlot) + "_10", szLand, (d["expDom"] & 1) != 0, iCX, iY + 28, iBase + F_EXP_LAND)
 			self.drawCheck("TRSc" + str(iSlot) + "_11", szSea, (d["expDom"] & 2) != 0, iCX + self.CHECK_W + 4, iY + 28, iBase + F_EXP_SEA)
+			# the favorite checkbox at the end of each block (one setting per good, both show it)
+			bFav = self.isFav(iYield)
+			self.drawCheck("TRSc" + str(iSlot) + "_fi", szFav, bFav, self.OX + self.BLOCK_IMP_X + self.BLOCK_SPIN_W + 8 + 2 * self.CHECK_W + 4 + 20, iY + 15, BTN_FAV_IMP + iSlot)
+			self.drawCheck("TRSc" + str(iSlot) + "_fe", szFav, bFav, self.OX + self.iViewX, iY + 15, BTN_FAV_EXP + iSlot)
 
 	def drawSpin(self, iSlot, iBlock, iValue, iX, iY, iMinusCode, iPlusCode):
 		screen = self.pHost
@@ -272,6 +354,9 @@ class CvTradeRouteScreen:
 			self.drop("TRSv" + str(iSlot) + "_" + str(iBlock))
 		for iField in (2, 3, 4, 5, 8, 9, 10, 11):
 			self.drop("TRSc" + str(iSlot) + "_" + str(iField))
+			self.drop("TRSt" + str(iSlot) + "_" + str(iField))
+		for szName in ("TRSc%d_fi" % iSlot, "TRSt%d_fi" % iSlot, "TRSc%d_fe" % iSlot, "TRSt%d_fe" % iSlot):
+			self.drop(szName)
 
 	def clearRows(self):
 		for iSlot in range(self.iVisible):
@@ -281,7 +366,7 @@ class CvTradeRouteScreen:
 		return max(1, (len(self.aYields) + self.iVisible - 1) / self.iVisible)
 
 	def drawPage(self):
-		if len(self.aYields) <= self.iVisible:
+		if len(self.aAllYields) <= self.iVisible:
 			return
 		szText = u"<font=3b>" + localText.getText("TXT_KEY_WTP_TRADEROUTE_PAGE", (self.iFirst / self.iVisible + 1, self.getNumPages())) + u"</font>"
 		self.pHost.setLabelAt("TRSPage", self.BACKGROUND_ID, szText, CvUtil.FONT_CENTER_JUSTIFY, 24 + 36 + 75, self.H - 40, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
@@ -332,7 +417,7 @@ class CvTradeRouteScreen:
 		pCity = self.getCity()
 		if pCity == None or pCity.isNone():
 			return
-		for iYield in self.aYields:
+		for iYield in self.aAllYields:
 			d = self.dData[iYield]
 			if (d["imp"] != pCity.isImport(iYield) or d["exp"] != pCity.isExport(iYield) or d["feeder"] != pCity.isImportFeeder(iYield)
 				or d["auto"] != pCity.isAutoExport(iYield) or d["impDom"] != pCity.getImportDomains(iYield)
@@ -344,6 +429,33 @@ class CvTradeRouteScreen:
 				if iData2 >= 2147483648L:
 					iData2 = iData2 - 4294967296L
 				CyMessageControl().sendDoTask(self.iCity, TaskTypes.TASK_YIELD_TRADEROUTE, iData1, int(iData2), d["imp"], d["exp"], d["feeder"], d["auto"])
+
+	def favClicked(self, iSlot):
+		iIndex = self.iFirst + iSlot
+		if iIndex < len(self.aYields):
+			self.toggleFav(self.aYields[iIndex])
+
+	# the tooltip of a widget of the window (CvScreensInterface.getWidgetHelp); empty text: none
+	def getHelp(self, iCode):
+		if iCode == BTN_VIEW:
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_HELP", ())
+		if iCode >= BTN_FAV_IMP and iCode < BTN_FAV_IMP + 80:
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_FAVORITE_HELP", ())
+		if iCode >= BTN_FAV_EXP and iCode < BTN_FAV_EXP + 80:
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_FAVORITE_HELP", ())
+		if iCode == BTN_UP:
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_PAGE_PREV_HELP", ())
+		if iCode == BTN_DOWN:
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_PAGE_NEXT_HELP", ())
+		if iCode >= BTN_ROW:
+			iField = (iCode - BTN_ROW) % 16
+			aszKey = {F_IMP_MINUS: "TXT_KEY_POPUP_IMPORT_IMPORT_HELP", F_IMP_PLUS: "TXT_KEY_POPUP_IMPORT_IMPORT_HELP", F_IMP_CHECK: "TXT_KEY_POPUP_IMPORT_IMPORT_HELP", F_IMP_FEEDER: "TXT_KEY_POPUP_IMPORT_FEEDER_HELP", F_IMP_LAND: "TXT_KEY_POPUP_IMPORT_LAND_HELP", F_IMP_SEA: "TXT_KEY_POPUP_IMPORT_SEA_HELP", F_EXP_MINUS: "TXT_KEY_POPUP_IMPORT_EXPORT_HELP", F_EXP_PLUS: "TXT_KEY_POPUP_IMPORT_EXPORT_HELP", F_EXP_CHECK: "TXT_KEY_POPUP_IMPORT_EXPORT_HELP", F_EXP_AUTO: "TXT_KEY_POPUP_IMPORT_AUTO_EXPORT_HELP", F_EXP_LAND: "TXT_KEY_POPUP_EXPORT_LAND_HELP", F_EXP_SEA: "TXT_KEY_POPUP_EXPORT_SEA_HELP"}
+			if aszKey.has_key(iField):
+				return localText.getText(aszKey[iField], ())
+		if iCode >= BTN_PRESET and iCode < BTN_PRESET + 5:
+			aszKey = ["TXT_KEY_WTP_TRADEROUTE_PRESET0_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET1_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET2_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET3_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET4_HELP"]
+			return localText.getText(aszKey[iCode - BTN_PRESET], ())
+		return u""
 
 	# a preset: the changes of the window are sent first, the window stays open and shows the result a moment later
 	def runPreset(self, iPreset):
@@ -404,6 +516,10 @@ class CvTradeRouteScreen:
 
 	# the clicks on the buttons of the window; returns 1 if the event was for it
 	def handleEmbeddedInput(self, inputClass):
+		if int(inputClass.getNotifyCode()) == int(NotifyCode.NOTIFY_LISTBOX_ITEM_SELECTED) and inputClass.getFunctionName() == "TRSView":
+			iIndex = self.pHost.getSelectedPullDownID("TRSView")
+			self.setView(self.pHost.getPullDownData("TRSView", iIndex) == 1)
+			return 1
 		if int(inputClass.getNotifyCode()) != int(NotifyCode.NOTIFY_CLICKED) or inputClass.getButtonType() != WidgetTypes.WIDGET_GENERAL:
 			return 0
 		iData = inputClass.getData1()
@@ -423,6 +539,10 @@ class CvTradeRouteScreen:
 			self.scroll(1)
 		elif iData >= BTN_PRESET and iData < BTN_PRESET + 5:
 			self.runPreset(iData - BTN_PRESET)
+		elif iData >= BTN_FAV_IMP and iData < BTN_FAV_IMP + 80:
+			self.favClicked(iData - BTN_FAV_IMP)
+		elif iData >= BTN_FAV_EXP and iData < BTN_FAV_EXP + 80:
+			self.favClicked(iData - BTN_FAV_EXP)
 		elif iData >= BTN_ROW:
 			iSlot = (iData - BTN_ROW) / 16
 			iField = (iData - BTN_ROW) % 16

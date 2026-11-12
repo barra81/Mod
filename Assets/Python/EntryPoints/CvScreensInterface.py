@@ -738,6 +738,9 @@ def handleForward(screens):
 
 def getWidgetHelp(argsList):
 	iScreen = argsList[0]
+	# WTP: the tooltips of the import / export window of the city screen
+	if (tradeRouteScreen.isOpen() and argsList[1] == WidgetTypes.WIDGET_GENERAL and argsList[2] >= 41001 and argsList[2] < 43000):
+		return tradeRouteScreen.getHelp(argsList[2])
 	if (HandleMouseoverMap.has_key(iScreen)):
 		screen = HandleMouseoverMap.get(iScreen)
 		return screen.getWidgetHelp(argsList)
