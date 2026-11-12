@@ -1819,6 +1819,20 @@ class CvMainInterface:
 			self.logPort("isOwnShipInPort failed: " + str(sys.exc_info()[1]))
 		return False
 
+	# WTP: is the selected transport automated the way this button does it? R button (trade routes) / Shift+Alt+C button (full automation)
+	def isAutomateMarked(self, iAction, pUnit):
+		try:
+			szButton = gc.getActionInfo(iAction).getButton().lower()
+			if "automate_city_high_res" in szButton:
+				iType = int(AutomateTypes.AUTOMATE_TRANSPORT_ROUTES)
+			elif "automate_transport_high_res" in szButton:
+				iType = int(AutomateTypes.AUTOMATE_TRANSPORT_FULL)
+			else:
+				return False
+			return int(pUnit.getGroup().getAutomateType()) == iType
+		except:
+			return False
+
 	# WTP: temporary debug output for the port ring (WTP_PortDebug.log in the game folder)
 	def logPort(self, szText):
 		try:
@@ -2146,8 +2160,9 @@ class CvMainInterface:
 							elif pHeadSelectedUnit.isActionRecommended(i) and not self.isOwnShipInPort(i):
 								# (WTP: the buttons to sail to Europe / Africa / Port Royal are marked when an own ship is in that port)
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath())
-							if CyInterface().canHandleAction(i, False) and self.isOwnShipInPort(i):
-								# WTP: a ring above the sail buttons (Europe / Africa / Port Royal) whose port has an own ship, a bit larger than the button
+							if (CyInterface().canHandleAction(i, False) and self.isOwnShipInPort(i)) or self.isAutomateMarked(i, pHeadSelectedUnit):
+								# WTP: a ring above the sail buttons (Europe / Africa / Port Royal) whose port has an own ship, a bit larger than the button;
+								# the same ring marks the R button / full automation button of an automated transport
 								szRing = "WtpPortRing" + str(iCount)
 								iRingPad = -(LARGE_BUTTON_SIZE / 4)
 								screen.addDDSGFC(szRing, "Art/Interface/Game Hud/Actions/port_ring.dds", int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)

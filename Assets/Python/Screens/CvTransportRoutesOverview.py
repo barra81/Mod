@@ -20,6 +20,9 @@ BTN_SEARCH = 30006
 BTN_RENAME = 31000 # + the slot of the column
 
 BTN_MANUAL = 32000 # + the slot of the column
+# the overview was opened with Shift+Alt+T: closing it does not open the domestic advisor (stays set while the R screen of a transport is shown from here)
+g_FromHotkey = False
+
 BTN_UNIT = 33000 # + the slot of the column (the unit icon: show the transport on the map)
 
 # transports that were asked for a name lately (unit id -> time), and the numbers of the names that are offered but not answered yet
@@ -143,7 +146,11 @@ class CvTransportRoutesOverview:
 			SelectionGroup, Iterator = self.player.nextSelectionGroup(Iterator, False)
 
 		if len(self.Transports) == 0:
-			self.returnToDomestic()
+			global g_FromHotkey
+			if g_FromHotkey:
+				g_FromHotkey = False
+			else:
+				self.returnToDomestic()
 			return
 
 		self.buildSearchData()
@@ -213,6 +220,14 @@ class CvTransportRoutesOverview:
 		self.dCandidates = {}
 		self.dYieldNames = {}
 		for dTransport in self.Transports:
+			szTransportName = dTransport["rawName"]
+			if len(szTransportName) == 0:
+				szTransportName = dTransport["name"]
+			szTransportLower = szTransportName.lower()
+			if self.dCandidates.has_key(szTransportLower):
+				self.dCandidates[szTransportLower][1] += 1
+			else:
+				self.dCandidates[szTransportLower] = [szTransportName, 1]
 			for tRoute in dTransport["routes"]:
 				if not self.dYieldNames.has_key(tRoute[2]):
 					self.dYieldNames[tRoute[2]] = gc.getYieldInfo(tRoute[2]).getDescription()
@@ -301,9 +316,18 @@ class CvTransportRoutesOverview:
 					continue
 				if self.iAssignFilter == 2 and iAssigned > 0:
 					continue
+			dTransport["nameMatch"] = False
 			if len(szQuery) > 0:
 				bFound = False
+				szOwnName = dTransport["rawName"]
+				if len(szOwnName) == 0:
+					szOwnName = dTransport["name"]
+				if szOwnName.lower().find(szQuery) >= 0:
+					bFound = True
+					dTransport["nameMatch"] = True # the transport itself was searched: all its routes are shown
 				for tRoute in dTransport["routes"]:
+					if bFound:
+						break
 					if self.routeMatches(tRoute, szQuery):
 						bFound = True
 						break
@@ -454,7 +478,7 @@ class CvTransportRoutesOverview:
 		aRoutes = []
 		szQuery = self.szQuery.lower()
 		for tRoute in dTransport["routes"]:
-			if self.routeMatches(tRoute, szQuery):
+			if dTransport.get("nameMatch", False) or self.routeMatches(tRoute, szQuery):
 				aRoutes.append(tRoute)
 		self.aShownRoutes[iSlot] = aRoutes
 		for iRow in range(len(aRoutes)):
@@ -710,6 +734,10 @@ class CvTransportRoutesOverview:
 		self.sendChanges()
 		if self.bNoReturn:
 			self.bNoReturn = False
+			return 0
+		global g_FromHotkey
+		if g_FromHotkey:
+			g_FromHotkey = False
 			return 0
 		self.returnToDomestic()
 		return 0

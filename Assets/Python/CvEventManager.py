@@ -230,6 +230,8 @@ class CvEventManager:
 			# WTP: Shift+Alt+T opens the Trade Route Manager (the overview of all transports)
 			if (theKey == int(InputTypes.KB_T) and self.bShift and self.bAlt and not self.bCtrl):
 				try:
+					import CvTransportRoutesOverview
+					CvTransportRoutesOverview.g_FromHotkey = True
 					popupInfo = CyPopupInfo()
 					popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
 					popupInfo.setText(u"showTransportRoutesOverview")
