@@ -1684,7 +1684,7 @@
 		<English>%s1 : %D2%F3 (next to river)</English>
 		<Portuguese>%s1 : %D2%F3 (próximo ao rio)</Portuguese>
 		<French>%s1 : %D2%F3 (près des fleuves)</French>
-		<German>%s1 : %D2%F3 (an einem Fluß)</German>
+		<German>%s1 : %D2%F3 (an einem Fluss)</German>
 		<Italian>%s1 : %D2%F3 (vicino a un fiume)</Italian>
 		<Spanish>%s1 : %D2%F3 (junto a un río)</Spanish>
 		<Russian>%s1 : %D2%F3 (рядом с рекой)</Russian>
@@ -7274,7 +7274,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_INIT_SAVE_TRANSFER_ERROR_DESC</Tag>
-		<English>Failed to initialize tranfer of the game data file.</English>
+		<English>Failed to initialize transfer of the game data file.</English>
 		<Portuguese>Falha ao inicializar a transferência do arquivo de dados do jogo.</Portuguese>
 		<French>Echec de l'initialisation du transfert du fichier de données du jeu.</French>
 		<German>Die Spieldaten-Datei konnte nicht übertragen werden.</German>
@@ -7394,7 +7394,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUDDYLIST_SERVER_ERROR_DESC</Tag>
-		<English>An error has occured on the buddy list server.</English>
+		<English>An error has occurred on the buddy list server.</English>
 		<Portuguese>Ocorreu um erro no servidor da lista de amigos.</Portuguese>
 		<French>Une erreur est survenue sur la liste d'amis du serveur.</French>
 		<German>Auf dem Freundeslisten-Server ist ein Fehler aufgetreten.</German>
@@ -13966,7 +13966,7 @@
 		<English>(River attack : %D1%%)</English>
 		<Portuguese>(Ataque no rio: %D1%%)</Portuguese>
 		<French>(Attaque rivière : %D1%%)</French>
-		<German>(Angriff über Fluß : %D1%%)</German>
+		<German>(Angriff über Fluss : %D1%%)</German>
 		<Italian>(Attacco fiume : %D1%%)</Italian>
 		<Spanish>(Ataque por río : %D1%%)</Spanish>
 		<Russian>(Речная атака : %D1%%)</Russian>
@@ -14235,7 +14235,7 @@
 		<English>%s1_CityName : Artillery fire by [COLOR_HIGHLIGHT_TEXT]%s3_player[COLOR_REVERT] has reduced your defenses to %d2_NewVal%%!</English>
 		<Portuguese>%s1_CityName : O fogo de artilharia de [COLOR_HIGHLIGHT_TEXT]%s3_player[COLOR_REVERT] reduziu suas defesas para %d2_NewVal%%!</Portuguese>
 		<French>[COLOR_HIGHLIGHT_TEXT]%s3_player[COLOR_REVERT] a réduit les défenses de %s1_CityName à %d2_NewVal%% !</French>
-		<German>%s1_CityName : Artilleriebeschuß durch [COLOR_HIGHLIGHT_TEXT]%s3_player[COLOR_REVERT] hat den Verteidigungsbonus auf %d2_NewVal%% gesenkt!</German>
+		<German>%s1_CityName : Artilleriebeschuss durch [COLOR_HIGHLIGHT_TEXT]%s3_player[COLOR_REVERT] hat den Verteidigungsbonus auf %d2_NewVal%% gesenkt!</German>
 		<Italian>Le tue difese a %s1_CityName sono state ridotte a %d2_NewVal%% ([COLOR_HIGHLIGHT_TEXT]%s3_player[COLOR_REVERT])!</Italian>
 		<Spanish>Vuestras defensas en %s1_CityName han quedado reducidas al %d2_NewVal%% ([COLOR_HIGHLIGHT_TEXT]%s3_player[COLOR_REVERT]).</Spanish>
 		<Russian>[COLOR_WARNING_TEXT]%s1_CityName[COLOR_REVERT] : Артиллерийский обстрел [COLOR_HIGHLIGHT_TEXT]%s3_player[COLOR_REVERT] уменьшил нашу защиту до %d2_NewVal%%!</Russian>
@@ -14246,7 +14246,7 @@
 		<English>Your [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] reports: Bombardment of [COLOR_SELECTED_TEXT]%s2_CityName[COLOR_REVERT] successful! The defence bonus has been reduced to %d3_NewVal%%!</English>
 		<Portuguese>Seus relatórios [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT]: Bombardeio de [COLOR_SELECTED_TEXT]%s2_CityName[COLOR_REVERT] bem-sucedido! O bônus de defesa foi reduzido para %d3_NewVal%%!</Portuguese>
 		<French>Votre %s1_UnitName a réduit les défenses de %s2_CityName à %d3_NewVal%% !</French>
-		<German>[COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] meldet: Artilleriebeschuß von [COLOR_SELECTED_TEXT]%s2_CityName[COLOR_REVERT] erfolgreich! Der Verteidigungsbonus wurde auf %d3_NewVal%% gesenkt.</German>
+		<German>[COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] meldet: Artilleriebeschuss von [COLOR_SELECTED_TEXT]%s2_CityName[COLOR_REVERT] erfolgreich! Der Verteidigungsbonus wurde auf %d3_NewVal%% gesenkt.</German>
 		<Italian>La tua unitù %s1_UnitName ha ridotto le difese di %s2_CityName a %d3_NewVal%%!</Italian>
 		<Spanish>[NUM1:Vuestro:Vuestra:Vuestros:Vuestras] %s1_UnitName [NUM1:ha:ha:han:han] reducido las defensas de %s2_CityName al %d3_NewVal%%.</Spanish>
 		<Russian>Наш [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] докладывает: Бомбардировка [COLOR_SELECTED_TEXT]%s2_CityName[COLOR_REVERT] проходит успешно! Уровень защиты снижен до %d3_NewVal%%!</Russian>

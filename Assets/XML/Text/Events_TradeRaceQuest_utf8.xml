@@ -5316,7 +5316,7 @@
 		<Tag>TXT_KEY_EVENT_AFRICA_TRADE_QUEST_DONE_2</Tag>
 		<English>For the glory and wealth of our colonies! The African natives are said to be hard workers!</English>
 		<Portuguese>Pela glória e riqueza de nossas colônias! Diz-se que os nativos africanos são trabalhadores esforçados!</Portuguese>
-		<German>Für Ruhm und Reichtum unserer Kolonien! Die afikanischen Eingeborenen sollen sehr fleißig sein!</German>
+		<German>Für Ruhm und Reichtum unserer Kolonien! Die afrikanischen Eingeborenen sollen sehr fleißig sein!</German>
 		<Russian>Во славу и богатство наших колоний! Говорят, что аборигены Африки очень трудолюбивы. Мы проверим это на практике.</Russian>
 		<Hungarian>Gyarmataink dicsőségéért és gazdagságáért! Az afrikai bennszülöttekről azt mondják, hogy szorgalmasak!</Hungarian>
 	</TEXT>
@@ -5740,7 +5740,7 @@
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_AFRICA_TRADE_QUEST_GUNS_START</Tag>
 		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]guns[COLOR_REVERT] with Africa has begun.</English>
 		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]armas[COLOR_REVERT] com África já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in den Kolonien für [COLOR_FONT_GOLD]Schußwaffen[COLOR_REVERT] mit Afrika hat begonnen.</German>
+		<German>Das Rennen zur Beherrschung des Marktes in den Kolonien für [COLOR_FONT_GOLD]Schusswaffen[COLOR_REVERT] mit Afrika hat begonnen.</German>
 		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]мушкетов[COLOR_REVERT] в Африку.</Russian>
 		<Hungarian>Megkezdődött a verseny az Afrikai [COLOR_FONT_GOLD]puska[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
@@ -5748,7 +5748,7 @@
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_AFRICA_TRADE_QUEST_GUNS_DONE</Tag>
 		<English>One nation is now the top trader of [COLOR_FONT_GOLD]guns[COLOR_REVERT] with Africa.</English>
 		<Portuguese>Uma nação é hoje o maior comerciante de [COLOR_FONT_GOLD]armas[COLOR_REVERT] com a África.</Portuguese>
-		<German>Es ist einer Nation gelungen, der Marktführer im Handel mit [COLOR_FONT_GOLD]Schußwaffen[COLOR_REVERT] in Afrika zu werden.</German>
+		<German>Es ist einer Nation gelungen, der Marktführer im Handel mit [COLOR_FONT_GOLD]Schusswaffen[COLOR_REVERT] in Afrika zu werden.</German>
 		<Russian>Одна из европейских наций стала лидером на рынке поставок [COLOR_FONT_GOLD]мушкетов[COLOR_REVERT] в Африку!</Russian>
 		<Hungarian>Egy ország az Afrikai [COLOR_FONT_GOLD]puska[COLOR_REVERT] piac vezetője lett.</Hungarian>
 	</TEXT>
@@ -5756,7 +5756,7 @@
 		<Tag>TXT_KEY_EVENT_TRIGGER_AFRICA_TRADE_QUEST_GUNS_START</Tag>
 		<English>Our colonists are thrilled with the first shipments of African [COLOR_FONT_GOLD]guns[COLOR_REVERT].</English>
 		<Portuguese>Nossos colonos estão entusiasmados com os primeiros carregamentos de [COLOR_FONT_GOLD]armas[COLOR_REVERT] africanas.</Portuguese>
-		<German>Die Bürger unserer Kolonien sind von den ersten Lieferungen von [COLOR_FONT_GOLD]Schußwaffen[COLOR_REVERT] mit Afrika begeistert.</German>
+		<German>Die Bürger unserer Kolonien sind von den ersten Lieferungen von [COLOR_FONT_GOLD]Schusswaffen[COLOR_REVERT] mit Afrika begeistert.</German>
 		<Russian>Жители наших колоний в восторге от первых поставок [COLOR_FONT_GOLD]мушкетов[COLOR_REVERT] на рынки Африки.</Russian>
 		<Hungarian>Gyarmatosítóink izgatottak az első Afrikával kereskedett [COLOR_FONT_GOLD]puska[COLOR_REVERT] szállítmánytól.</Hungarian>
 	</TEXT>
@@ -5764,7 +5764,7 @@
 		<Tag>TXT_KEY_EVENT_AFRICA_TRADE_QUEST_GUNS_FAILED</Tag>
 		<English>Milord, another colonial nation has cornered the market in the colonies for African [COLOR_FONT_GOLD]guns[COLOR_REVERT].</English>
 		<Portuguese>Milorde, outra nação colonial monopolizou o mercado nas colônias de [COLOR_FONT_GOLD]armas[COLOR_REVERT] africanas.</Portuguese>
-		<German>Milord, dem Gouverneur einer anderen Kolonialmacht ist es zuerst gelungen, den Markt in den Kolonien für [COLOR_FONT_GOLD]Schußwaffen[COLOR_REVERT] mit Afrika zu beherrschen.</German>
+		<German>Milord, dem Gouverneur einer anderen Kolonialmacht ist es zuerst gelungen, den Markt in den Kolonien für [COLOR_FONT_GOLD]Schusswaffen[COLOR_REVERT] mit Afrika zu beherrschen.</German>
 		<Russian>Милорд, другая колониальная нация первой доминировала на рынке поставок [COLOR_FONT_GOLD]мушкетов[COLOR_REVERT] в Африку.</Russian>
 		<Hungarian>Uram, egy másik gyarmati nemzet lett az Afrikai [COLOR_FONT_GOLD]puska[COLOR_REVERT] piac vezetője.</Hungarian>
 	</TEXT>
@@ -5772,7 +5772,7 @@
 		<Tag>TXT_KEY_EVENT_TRIGGER_AFRICA_TRADE_QUEST_GUNS_DONE</Tag>
 		<English>Milord, we have managed to become the leader trading [COLOR_FONT_GOLD]guns[COLOR_REVERT] with Africa.</English>
 		<Portuguese>Milorde, conseguimos nos tornar o líder no comércio de [COLOR_FONT_GOLD]armas[COLOR_REVERT] com a África.</Portuguese>
-		<German>Es ist einer Nation gelungen, der Marktführer im Handel mit [COLOR_FONT_GOLD]Schußwaffen[COLOR_REVERT] in Afrika zu werden.</German>
+		<German>Es ist einer Nation gelungen, der Marktführer im Handel mit [COLOR_FONT_GOLD]Schusswaffen[COLOR_REVERT] in Afrika zu werden.</German>
 		<Russian>Милорд, нам удалось стать лидером на рынке поставок [COLOR_FONT_GOLD]мушкетов[COLOR_REVERT] в Африку!</Russian>
 		<Hungarian>Uram, sikerült elérnünk, hogy az Afrikai [COLOR_FONT_GOLD]puska[COLOR_REVERT] kereskedelem vezetők legyünk.</Hungarian>
 	</TEXT>

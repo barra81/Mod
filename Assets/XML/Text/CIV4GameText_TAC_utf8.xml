@@ -1840,7 +1840,7 @@
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRANSPORT_OVERVIEW_RENAME</Tag>
 		<English>Rename %s1_name? OK takes the name below (you can change it), Cancel keeps the old name.</English>
-		<German>%s1_name umbenennen? OK uebernimmt den Namen unten (du kannst ihn aendern), Abbrechen behaelt den alten Namen.</German>
+		<German>%s1_name umbenennen? OK uebernimmt den Namen unten (du kannst ihn ändern), Abbrechen behält den alten Namen.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRANSPORT_OVERVIEW_MANUAL</Tag>

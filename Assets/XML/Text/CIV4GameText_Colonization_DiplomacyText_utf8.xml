@@ -1286,7 +1286,7 @@
 		<English>I'm afraid that your offer is not acceptable to the [COLOR_HIGHLIGHT_TEXT][OUR_CIV_ADJ][COLOR_REVERT] people.</English>
 		<Portuguese>Receio que sua oferta não seja aceitável para [COLOR_HIGHLIGHT_TEXT][OUR_CIV_ADJ][COLOR_REVERT] pessoas.</Portuguese>
 		<French>Je crains que votre offre ne soit pas acceptable pour les [COLOR_HIGHLIGHT_TEXT][OUR_CIV_ADJ][COLOR_REVERT].</French>
-		<German>Ich fürchte, daß Euer Angebot nicht akzeptabel für das [COLOR_HIGHLIGHT_TEXT][OUR_CIV_ADJ][COLOR_REVERT] Volk ist.</German>
+		<German>Ich fürchte, dass Euer Angebot nicht akzeptabel für das [COLOR_HIGHLIGHT_TEXT][OUR_CIV_ADJ][COLOR_REVERT] Volk ist.</German>
 		<Italian>Mi spiace comunicarti che il popolo [COLOR_HIGHLIGHT_TEXT][OUR_CIV_ADJ:1][COLOR_REVERT] non può accettare la tua offerta.</Italian>
 		<Spanish>Me temo que vuestra oferta no resulta aceptable para el pueblo [COLOR_HIGHLIGHT_TEXT][OUR_CIV_ADJ:1][COLOR_REVERT].</Spanish>
 		<Russian>Боюсь, ваше предложение неприемлемо для [COLOR_HIGHLIGHT_TEXT][OUR_CIV_ADJ][COLOR_REVERT].</Russian>
@@ -7405,7 +7405,7 @@
 		<English>Thank you, your Majesty. We appreciate your support and will gladly buy the ship.</English>
 		<Portuguese>Obrigado, Majestade. Compraremos o navio.</Portuguese>
 		<French>Sire, nous vous remercions. Nous apprécions votre aide et achèterons bien volontiers ce navire.</French>
-		<German>Danke Eure Majestät. Wir schätzen eure Unterstätzung und erwerben das Schiff gerne.</German>
+		<German>Danke Eure Majestät. Wir schätzen eure Unterstützung und erwerben das Schiff gerne.</German>
 		<Russian>Благодарю вас, Ваше Величество. Мы ценим Вашу поддержку и с радостью выкупим этот чудесный корабль.</Russian>
 		<Hungarian>Köszönöm, Felség! Nagyra értékelem a támogatását és szívesen megvásárolom a hajót.</Hungarian>
 	</TEXT>
@@ -7441,7 +7441,7 @@
 		<English>Thank you, your Majesty. We appreciate your support and will gladly hire the workers.</English>
 		<Portuguese>Obrigado, Majestade. Contrataremos os trabalhadores.</Portuguese>
 		<French>Sire, nous vous remercions. Nous apprécions votre aide et recruterons bien volontiers ces travailleurs.</French>
-		<German>Danke Eure Majestät. Wir schätzen eure Unterstätzung und werben die Arbeiter freudig an.</German>
+		<German>Danke Eure Majestät. Wir schätzen eure Unterstützung und werben die Arbeiter freudig an.</German>
 		<Russian>Спасибо, Ваше Величество. Мы ценим Вашу поддержку и с удовольствием наймем этого опытного работника.</Russian>
 		<Hungarian>Köszönöm, Felség! Nagyra értékelem a támogatását és örömmel alkalmazom a munkásokat.</Hungarian>
 	</TEXT>
@@ -7516,7 +7516,7 @@
 		<English>You have discovered rich booty. Leave it to Us. A Royal galleon will convey the treasure home. After deducting Our commission of %d1%%, you will receive half of its value, on which you still have to pay the taxes due to Us, so that you will thus be left with %d2[ICON_GOLD], a generous finder's fee.</English>
 		<Portuguese>Você descobriu um rico saque. Deixe isso conosco. Um galeão real levará o tesouro para casa. Após deduzir a Nossa comissão de %d1%%, você receberá metade do seu valor, sobre o qual ainda terá que pagar os impostos que nos são devidos, de modo que ficará com %d2[ICON_GOLD], uma generosa taxa de localizador.</Portuguese>
 		<French>Vous semblez avoir fait un riche butin. Laissez-nous faire. Un galion royal ramènera le trésor à la maison. Après déduction de notre commission de %d1%%, vous recevrez la moitié de sa valeur, soit %d2[ICON_GOLD], à titre de récompense d'invention.</French>
-		<German>Ihr scheint reiche Beute gemacht zu haben. Wohlan, überlasst sie Uns. Eine Königliche Galeone wird den Schatz in die Heimat bringen. Nach Abzug Unserer Provision von %d1%% erhaltet Ihr die Hälfte seines Wertes, auf den Ihr noch die Uns zustehenden Steuern zu entrichten habt, so daß Euch also %d2[ICON_GOLD] als Finderlohn verbleiben.</German>
+		<German>Ihr scheint reiche Beute gemacht zu haben. Wohlan, überlasst sie Uns. Eine Königliche Galeone wird den Schatz in die Heimat bringen. Nach Abzug Unserer Provision von %d1%% erhaltet Ihr die Hälfte seines Wertes, auf den Ihr noch die Uns zustehenden Steuern zu entrichten habt, so dass Euch also %d2[ICON_GOLD] als Finderlohn verbleiben.</German>
 		<Italian>Sembra che tu abbia fatto un ricco bottino. Lascia fare a noi. Un galeone reale porterà il tesoro a casa. Dopo aver dedotto la nostra commissione del %d1%%, riceverai la metà del suo valore, cioè %d2[ICON_GOLD], come compenso del cercatore.</Italian>
 		<Spanish>Parece que has hecho un buen botín. Déjalo en nuestras manos. Un galeón real llevará el tesoro a casa. Después de deducir nuestra comisión de %d1%%, recibirás la mitad de su valor, es decir, %d2[ICON_GOLD], como comisión de búsqueda.</Spanish>
 		<Russian>Вы обнаружили богатую добычу. Однако, предоставьте завершить это дело Нам. Королевский галеон отвезет сокровища домой. После вычета Нашей комиссии в размере %d1%% вы получите половину ее стоимости, с которой вам, кстати, еще нужно будет заплатить налоги, причитающиеся Нам. Таким образом, у вас останется %d2[ICON_GOLD], щедрая плата за поиск сокровищ.</Russian>
@@ -9444,7 +9444,7 @@
 		<English>We appreciate your offer to support us in these dire times, but escalating this war by involving Native allies on both sides would only cause more unnecessary bloodshed. (Refuse)</English>
 		<Portuguese>Agradecemos, mas recusamos a escalada. (Recusar)</Portuguese>
 		<French>Nous apprécions votre soutien en ces temps troublés, mais impliquer davantage de monde dans cette guerre en enrôlant nos alliés Indiens signifiera encore plus de victimes inutiles. (Refuser)</French>
-		<German>Wir schätzen euer Angebot uns in dieser schweren Stunde zu unterstützen, aber eine Eskalation dieses Krieges durch die Einbeziehung der verbündeten Stämme beider Seiten, würde nur zu noch mehr unnötigem Blutverießen führen. (Ablehnen) </German>
+		<German>Wir schätzen euer Angebot uns in dieser schweren Stunde zu unterstützen, aber eine Eskalation dieses Krieges durch die Einbeziehung der verbündeten Stämme beider Seiten, würde nur zu noch mehr unnötigem Blutvergießen führen. (Ablehnen) </German>
 		<Russian>Мы ценим ваше предложение поддержать нас в эти ужасные времена, но эскалация этой войны с привлечением союзников из коренных народов с обеих сторон приведет только к еще большему ненужному кровопролитию. (Отказаться)</Russian>
 		<Hungarian>Nagyra értékeljük az ajánlatotokat, hogy támogassatok bennünket ezekben a nehéz időkben, de a háború kiterjesztése az őslakos szövetségesek bevonásával mindkét oldalon csak még több felesleges vérontást okozna. (Visszautasítás)</Hungarian>
 	</TEXT>
@@ -9471,7 +9471,7 @@
 		<English>The war with [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] continues. Rumours say that the Natives get support from another colonial nation.</English>
 		<Portuguese>A guerra com [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] continua. Rumores dizem que os nativos recebem apoio de outra nação colonial.</Portuguese>
 		<French>La guerre avec [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] se poursuit. La rumeur veut qu'ils aient reçu du soutien d'une nation coloniale. </French>
-		<German>Der Krieg mit [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] geht weiter. Es heißt die Ureinwohner bekommen Unterstützung von einer anderen Kolnialmacht.</German>
+		<German>Der Krieg mit [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] geht weiter. Es heißt die Ureinwohner bekommen Unterstützung von einer anderen Kolonialmacht.</German>
 		<Russian>Война с [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] продолжается. Ходят слухи, что туземцы получили поддержку от другой колониальной нации.</Russian>
 		<Hungarian>[COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] elleni háború folytatódik. A pletykák szerint az őslakosok támogatást kaptak egy másik gyarmati nemzettől.</Hungarian>
 	</TEXT>
@@ -9561,7 +9561,7 @@
 		<English>Your nation has insulted us one time too often. Consider yourself officially at war! (declare war)</English>
 		<Portuguese>Considere-se em guerra! (Declarar Guerra)</Portuguese>
 		<French>Votre nation nous a insulté pour la dernière fois. Considérez ceci comme une déclaration de guerre officielle!</French>
-		<German>Eure Nation hat uns einmal zu oft beleidgt. Wir erklären euch hiermit den Krieg! (Krieg erklären)</German>
+		<German>Eure Nation hat uns einmal zu oft beleidigt. Wir erklären euch hiermit den Krieg! (Krieg erklären)</German>
 		<Russian>Ваш народ слишком часто оскорблял нас и теперь пришел час расплаты. Считайте это официальным объявлением войны!</Russian>
 		<Hungarian>A te nemzeted túl sokszor sértett meg minket. Tekintsd magad hivatalosan is háborúban állónak! (hadüzenet)</Hungarian>
 	</TEXT>

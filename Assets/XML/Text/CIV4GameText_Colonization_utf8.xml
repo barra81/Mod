@@ -1855,7 +1855,7 @@
 		<English>[ICON_BULLET]%D1%% chance for unfree to try to run away</English>
 		<Portuguese>[ICON_BULLET]%D1%% de chance de não livres tentarem fugir</Portuguese>
 		<French>[ICON_BULLET]%D1%% pour qu'un travailleur sous servitude tente de s'échapper</French>
-		<German>[ICON_BULLET]%D1%% Chance für Unfreie eine Flucht zu vesuchen</German>
+		<German>[ICON_BULLET]%D1%% Chance für Unfreie eine Flucht zu versuchen</German>
 		<Russian>[ICON_BULLET]%D1%% к шану побега несвободных колонистов</Russian>
 		<Hungarian>[ICON_BULLET]%D1%% esély, hogy a Nem Szabad munkások megpróbálnak megszökni</Hungarian>
 	</TEXT>
@@ -4375,7 +4375,7 @@
 		<English>[COLOR_WARNING_TEXT]Not enough food is produced here yet for another colonist to join the settlement[COLOR_REVERT]</English>
 		<Portuguese>[COLOR_WARNING_TEXT]Ainda não há produção suficiente de comida aqui para que outro colono se junte à colônia[COLOR_REVERT]</Portuguese>
 		<French>[COLOR_WARNING_TEXT]Impossible de se joindre à la colonie : nourriture insuffisante[COLOR_REVERT]</French>
-		<German>[COLOR_WARNING_TEXT]Es wird hier noch nicht genügend Nahrung produziert, damit sich ein weiterer Kolonist der Siedlung anschliessen kann[COLOR_REVERT]</German>
+		<German>[COLOR_WARNING_TEXT]Es wird hier noch nicht genügend Nahrung produziert, damit sich ein weiterer Kolonist der Siedlung anschließen kann[COLOR_REVERT]</German>
 		<Italian>[COLOR_WARNING_TEXT]Non c'è abbastanza cibo a disposizione per unirsi all'insediamento[COLOR_REVERT]</Italian>
 		<Spanish>[COLOR_WARNING_TEXT]No dispone de Alimentos suficientes para unirse al asentamiento.[COLOR_REVERT]</Spanish>
 		<Russian>[COLOR_WARNING_TEXT]Здесь производится недостаточно еды, чтобы еще один колонист мог присоединиться к поселению[COLOR_REVERT]</Russian>

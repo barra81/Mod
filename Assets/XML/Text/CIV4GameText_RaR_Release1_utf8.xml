@@ -826,7 +826,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CUSTOM_HOUSE_POPUP_TEXT</Tag>
-		<English>[COLOR_SELECTED_TEXT]%s1_city[COLOR_REVERT][NEWLINE][NEWLINE]Choose goods to be sold by the local Custom House, and select the mimimum amount of a specific yield to enable the Custom House to sell that yield in this city.</English>
+		<English>[COLOR_SELECTED_TEXT]%s1_city[COLOR_REVERT][NEWLINE][NEWLINE]Choose goods to be sold by the local Custom House, and select the minimum amount of a specific yield to enable the Custom House to sell that yield in this city.</English>
 		<Portuguese>[COLOR_SELECTED_TEXT]%s1_city[COLOR_REVERT][NEWLINE][NEWLINE]Escolha os produtos a serem vendidos pela Alfândega local e selecione o valor mínimo de um recurso específico para permitir que a Alfândega venda esse recurso nesta colônia.</Portuguese>
 		<French>[COLOR_SELECTED_TEXT]%s1_city[COLOR_REVERT][NEWLINE][NEWLINE]Sélectionner les biens que le poste de douane va vendre, ainsi que le seuil de marchandises qui déclenche la vente de celle-ci pour la colonie suivante: %s1_city</French>
 		<German>[COLOR_SELECTED_TEXT]%s1_city[COLOR_REVERT][NEWLINE][NEWLINE]Wählen Sie die Güter aus, die durch das Zollhaus auf dem heimischen Markt verkauft werden sollen, sowie eine Mindestschwelle, ab der das Zollhaus verkaufen darf.</German>
@@ -1234,7 +1234,7 @@
 		<English>Yields of goods sold in Europe and Africa (only %d6%% of the price is taken into account) : %d1/%d2%F3[NEWLINE][NEWLINE]There is a [COLOR_WARNING_TEXT]%d4.%d5%[COLOR_REVERT] chance that His Majesty will raise your taxes on the next turn.</English>
 		<Portuguese>Produtos vendidos na Europa e na África (apenas %d6%% do preço é levado em consideração): %d1/%d2%F3[NEWLINE][NEWLINE]Existe uma chance de [COLOR_WARNING_TEXT]%d4.%d5%[COLOR_REVERT] de que Sua Majestade aumente seus impostos no próximo turno.</Portuguese>
 		<French>Marchandises vendues en Europe et en Afrique (seul %d6%% du prix est pris en compte) (%d1/%d2%F3)[NEWLINE][NEWLINE]Il y a [COLOR_WARNING_TEXT]%d4,%d5[COLOR_REVERT] % de chance que le roi augmente les impôts au tour suivant.</French>
-		<German>Erträge aus dem Verkauf von Gütern in Europe and Africa (nur %d6%% des Preises werden berücksichtigt) : (%d1/%d2%F3)[NEWLINE][NEWLINE]Es besteht eine [COLOR_WARNING_TEXT]%d4.%d5%[COLOR_REVERT] Chance darauf, daß Seine Majestät Eure Steuern im nächsten Zug erhöht.</German>
+		<German>Erträge aus dem Verkauf von Gütern in Europe and Africa (nur %d6%% des Preises werden berücksichtigt) : (%d1/%d2%F3)[NEWLINE][NEWLINE]Es besteht eine [COLOR_WARNING_TEXT]%d4.%d5%[COLOR_REVERT] Chance darauf, dass Seine Majestät Eure Steuern im nächsten Zug erhöht.</German>
 		<Russian>Товары, проданные в Европе и Африке (учитывается только %d6%% от цены) : %d1/%d2%F3[NEWLINE][NEWLINE]Есть [COLOR_WARNING_TEXT]%d4.%d5%[COLOR_REVERT] шанс, что Его Величество увеличит ставку налога в следующем ходу.</Russian>
 		<Hungarian>Az Európában és Afrikában értékesített áruk hozama (csak az árak %d6%%-a van figyelembe véve) : %d1/%d2%F3[NEWLINE][NEWLINE][COLOR_WARNING_TEXT]%d4.%d5%[COLOR_REVERT] esélye van, hogy Őfelsége a következő körben megemeli az adót.</Hungarian>
 	</TEXT>
@@ -1471,7 +1471,7 @@
 		<English>[ICON_BULLET]Protects an area against raiding Natives, wild animals and other enemies</English>
 		<Portuguese>[ICON_BULLET]Protege uma área contra ataques de nativos, animais selvagens e outros inimigos</Portuguese>
 		<French>[ICON_BULLET]Protège une zone des raids indigènes, des animaux sauvages et des autres ennemis</French>
-		<German>[ICON_BULLET]Schützt ein Gebiet vor Überfallen der Ureinwohner, Wilden Tiere und anderen Gegnern</German>
+		<German>[ICON_BULLET]Schützt ein Gebiet vor Überfällen der Ureinwohner, Wilden Tiere und anderen Gegnern</German>
 		<Russian>[ICON_BULLET]Позволяет защитить территорию от набегов туземцев, диких животных и других врагов.</Russian>
 		<Hungarian>[ICON_BULLET]Megvédi a területet a portyázó Indiánok, vadállatok és más ellenségek ellen.</Hungarian>
 	</TEXT>
@@ -1731,7 +1731,7 @@
 		<English>Word about your generous donation to the Mother Church has spread.</English>
 		<Portuguese>A notícia da sua generosa doação à Igreja Matriz se espalhou.</Portuguese>
 		<French>L'information concernant votre généreuse donation à l'Église se répand.</French>
-		<German>Die Kunde über Eure grosszügige Spende an die Heilige Mutter Kirche verbreitet sich.</German>
+		<German>Die Kunde über Eure großzügige Spende an die Heilige Mutter Kirche verbreitet sich.</German>
 		<Russian>Все только и говорят о вашем щедром пожертвовании Матери-Церкви.</Russian>
 		<Hungarian>Az Anyaszentegyháznak tett nagylelkű adományod híre elterjedt.</Hungarian>
 	</TEXT>
@@ -1767,7 +1767,7 @@
 		<English>[NEWLINE]A missionary hearing those words has spontaneously decided to join your cause.</English>
 		<Portuguese>[NEWLINE]Um missionário ao ouvir essas palavras decidiu espontaneamente se juntar à sua causa.</Portuguese>
 		<French>[NEWLINE]Un missionnaire ayant eu échos de la nouvelle a décidé de se joindre à votre cause.</French>
-		<German>[NEWLINE]Ein Missionar, der diese Worte hörte, hat spontan entschieden, sich Eurer Sache anzuschliessen.</German>
+		<German>[NEWLINE]Ein Missionar, der diese Worte hörte, hat spontan entschieden, sich Eurer Sache anzuschließen.</German>
 		<Russian>[NEWLINE]Услышав об этом, миссионер решил присоединиться к нашему делу.</Russian>
 		<Hungarian>[NEWLINE]Egy misszionárius ezeket a szavakat hallva spontán úgy döntött, hogy csatlakozik hozzád.</Hungarian>
 	</TEXT>
@@ -1776,7 +1776,7 @@
 		<English>[NEWLINE]A preacher hearing those words has spontaneously decided to join your cause.</English>
 		<Portuguese>[NEWLINE]Um pregador ao ouvir essas palavras decidiu espontaneamente se juntar à sua causa.</Portuguese>
 		<French>[NEWLINE]Un prêtre ayant eu échos de la nouvelle a décidé de se joindre à votre cause.</French>
-		<German>[NEWLINE]Ein Prediger, der diese Worte hörte, hat spontan entschieden, sich Eurer Sache anzuschliessen.</German>
+		<German>[NEWLINE]Ein Prediger, der diese Worte hörte, hat spontan entschieden, sich Eurer Sache anzuschließen.</German>
 		<Russian>[NEWLINE]Услышав об этом, проповедник решил присоединиться к нашему делу.</Russian>
 		<Hungarian>[NEWLINE]Egy pap e szavak hallatán spontán úgy döntött, hogy csatlakozik hozzád.</Hungarian>
 	</TEXT>
@@ -1812,7 +1812,7 @@
 		<English>[NEWLINE]Faithful Christians are marching in the streets of your capitol.</English>
 		<Portuguese>[NEWLINE]Cristãos fiéis estão marchando nas ruas de sua capital.</Portuguese>
 		<French>[NEWLINE]Les chrétiens fidèles de votre capitale marchent dans les rues.</French>
-		<German>[NEWLINE]Gläubige Christen demonstrieren auf den Strassen der Hauptstadt gegen Euer Handeln.</German>
+		<German>[NEWLINE]Gläubige Christen demonstrieren auf den Straßen der Hauptstadt gegen Euer Handeln.</German>
 		<Russian>[NEWLINE]Верные христиане маршируют по улицам столицы.</Russian>
 		<Hungarian>[NEWLINE]Hívő Keresztények vonulnak a fővárosuk utcáin.</Hungarian>
 	</TEXT>
