@@ -4200,7 +4200,7 @@ class CvMainInterface:
 				iMaxLines = max(6, (int(yRes * 0.80) - iY - iHeaderHeight - iGap - 2 * iPad) / iLine - 2 * iFooterLines)
 			else:
 				iFooterLines = 0
-				iMaxLines = 6
+				iMaxLines = 7 # collapsed: three priority messages of two lines each (3 * 2.2 lines)
 			# the priority messages (the first iNumPriority ones) are always at the top of the newest page; on the other pages the others
 			iNumPriority = min(iNumPriority, iNum)
 			fMessageGap = 0.2 # extra space after every message (in lines), better to read
