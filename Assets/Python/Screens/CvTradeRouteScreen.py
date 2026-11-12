@@ -38,6 +38,9 @@ F_EXP_AUTO = 9
 F_EXP_LAND = 10
 F_EXP_SEA = 11
 
+# the style of the translucent panel that makes a marked button a little lighter (try PANEL_STYLE_MAIN_TAN15 / PANEL_STYLE_MAIN_WHITE ...)
+HILITE_PANEL = "PANEL_STYLE_MAIN_TAN15"
+
 STEP = 10
 STEP_CTRL = 50
 MAX_VALUE = 0xFFFF
@@ -310,16 +313,21 @@ class CvTradeRouteScreen:
 
 	def drawCheck(self, szName, szText, bOn, iX, iY, iCode):
 		screen = self.pHost
-		szLabel = "TRSt" + szName[4:]
+		szTag = szName[4:]
+		szLabel = "TRSt" + szTag
+		szLight = "TRSb" + szTag
 		self.drop(szName)
 		self.drop(szLabel)
+		self.drop(szLight)
 		if bOn:
-			# checked: the button is blank and the text on it is a clickable text of the game in yellow (black shadow); both have the same code
+			# marked: a blank button, a translucent panel that makes it lighter, and on it the text of the game in yellow (black
+			# shadow); button, panel and text have the same code
 			screen.setButtonGFC(szName, u"", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-			screen.setText(szLabel, "", u"<font=3b><color=255,220,100>[x] " + szText + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + (self.CHECK_H - 20) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
+			screen.addPanel(szLight, u"", u"", False, False, iX + 2, iY + 2, self.CHECK_W - 4, self.CHECK_H - 4, getattr(PanelStyles, HILITE_PANEL), WidgetTypes.WIDGET_GENERAL, iCode, -1)
+			screen.setText(szLabel, "", u"<font=3b><color=255,220,100>" + szText + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + (self.CHECK_H - 20) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
 		else:
-			# not checked: the text of the button itself (like OK / Cancel), centered by the game
-			screen.setButtonGFC(szName, u"<font=3b>[   ] " + szText + u"</font>", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			# not marked: the text of the button itself (like OK / Cancel), centered by the game
+			screen.setButtonGFC(szName, u"<font=3b>" + szText + u"</font>", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 
 	def drawRows(self):
 		screen = self.pHost
@@ -391,7 +399,8 @@ class CvTradeRouteScreen:
 		for iField in (2, 3, 4, 5, 8, 9, 10, 11):
 			self.drop("TRSc" + str(iSlot) + "_" + str(iField))
 			self.drop("TRSt" + str(iSlot) + "_" + str(iField))
-		for szName in ("TRSc%d_fi" % iSlot, "TRSt%d_fi" % iSlot, "TRSc%d_fe" % iSlot, "TRSt%d_fe" % iSlot):
+			self.drop("TRSb" + str(iSlot) + "_" + str(iField))
+		for szName in ("TRSc%d_fe" % iSlot, "TRSt%d_fe" % iSlot, "TRSb%d_fe" % iSlot):
 			self.drop(szName)
 
 	def clearRows(self):
