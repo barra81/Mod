@@ -10,6 +10,7 @@ import CvAchieveAdvisor
 # Achievements END
 # TAC - Trade Route Advisor - koma13 - START
 import CvTradeRoutesAdvisor
+import CvTransportRoutesOverview
 # TAC - Trade Route Advisor - koma13 - END
 
 import CvRevolutionAdvisor
@@ -118,6 +119,13 @@ def showTradeRoutesAdvisor(argsList):
 	if (-1 != CyGame().getActivePlayer()):
 		tradeRoutesAdvisor.interfaceScreen()
 # TAC - Trade Routes Advisor - koma13 - END
+
+# WTP: overview of the trade route assignments of all transports (button of the trade routes tab of the domestic advisor)
+transportRoutesOverview = CvTransportRoutesOverview.CvTransportRoutesOverview()
+def showTransportRoutesOverview(argsList):
+	DesyncDetectorInstance = gc.startDesyncMonitor()
+	if (-1 != CyGame().getActivePlayer()):
+		transportRoutesOverview.interfaceScreen()
 
 revolutionAdvisor = CvRevolutionAdvisor.CvRevolutionAdvisor()
 def showRevolutionAdvisorScreen(argsList):
@@ -797,6 +805,7 @@ HandleCloseMap = {  DAWN_OF_MAN : dawnOfMan,
 				# TAC - Trade Routes Advisor - koma13 - START
 					TRADE_ROUTES_ADVISOR : tradeRoutesAdvisor,
 				# TAC - Trade Routes Advisor - koma13 - END
+					TRANSPORT_ROUTES_OVERVIEW : transportRoutesOverview,
 				}
 #######################################################################################
 ## Handle Mouseover Map
@@ -871,6 +880,7 @@ HandleInputMap = {  MAIN_INTERFACE : mainInterface,
 				# TAC - Trade Routes Advisor - koma13 - START
 					TRADE_ROUTES_ADVISOR : tradeRoutesAdvisor,
 				# TAC - Trade Routes Advisor - koma13 - END
+					TRANSPORT_ROUTES_OVERVIEW : transportRoutesOverview,
 					XML_EDITOR : xmlEditor,
 				}
 
