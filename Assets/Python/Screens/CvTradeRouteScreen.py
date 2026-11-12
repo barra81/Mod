@@ -19,6 +19,8 @@ BTN_PRESET = 41010 # + 0..4
 BTN_FAV_IMP = 41020 # (the favorite checkbox of a row: 41020 + slot)
 BTN_FAV_EXP = 41100 # + slot
 BTN_VIEW = 41200 # the drop down: default view / favorites
+BTN_SEARCH = 41300 # the search field
+BTN_CLEAR_SEARCH = 41301
 BTN_ROW = 42000 # + slot * 16 + field
 VIEW_ALL = 0
 VIEW_FAV = 1
@@ -172,6 +174,16 @@ def saveBuild(dBuild):
 		import traceback
 		logTrade(traceback.format_exc())
 
+# the keys of the search field: key name -> character
+SEARCH_KEY_NAMES = {}
+for _c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+	SEARCH_KEY_NAMES["KB_" + _c] = _c.lower()
+for _c in "0123456789":
+	SEARCH_KEY_NAMES["KB_" + _c] = _c
+SEARCH_KEY_NAMES["KB_SPACE"] = " "
+SEARCH_KEY_NAMES["KB_MINUS"] = "-"
+SEARCH_KEY_NAMES["KB_COMMA"] = "&" # (a second way to type the separator, the & needs the shift key of the keyboard layout)
+
 class CvTradeRouteScreen:
 	"Import / export settings of a city"
 
@@ -203,6 +215,11 @@ class CvTradeRouteScreen:
 		self.iView = VIEW_ALL
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
 		self.dBtn = {} # the buttons (name: [x, y, w, h, code, text, marked, font, dy, panels])
+		self.szQuery = u""
+		self.szSuggestion = u""
+		self.bSearchSelected = False
+		self.dNames = {}
+		self.dKeys = {}
 		self.sHover = ""
 
 	def isOpen(self):
@@ -222,6 +239,76 @@ class CvTradeRouteScreen:
 		if iKey == None:
 			return -12345
 		return int(iKey)
+
+	# the typed names (the goods are separated by &)
+	def getTerms(self):
+		aTerms = []
+		for szTerm in self.szQuery.split(u"&"):
+			szTerm = szTerm.strip().lower()
+			if len(szTerm) > 0:
+				aTerms.append(szTerm)
+		return aTerms
+
+	# the completion of the last name: the first good (alphabetically) that starts with it and is not typed yet
+	def findSuggestion(self):
+		self.szSuggestion = u""
+		iAmp = self.szQuery.rfind(u"&")
+		szPrefix = self.szQuery[:iAmp + 1]
+		szRest = self.szQuery[iAmp + 1:]
+		szSpace = u""
+		while len(szRest) > 0 and szRest[0] == u" ":
+			szSpace += u" "
+			szRest = szRest[1:]
+		szLast = szRest.lower()
+		if len(szLast) == 0:
+			return
+		aDone = self.getTerms()[:-1]
+		aMatches = []
+		for iYield in self.dNames.keys():
+			szName = self.dNames[iYield]
+			szLower = szName.lower()
+			if szLower[:len(szLast)] == szLast and len(szLower) > len(szLast) and not szLower in aDone:
+				aMatches.append((szLower, szName))
+		if len(aMatches) > 0:
+			aMatches.sort()
+			self.szSuggestion = szPrefix + szSpace + aMatches[0][1]
+
+	def drawSearchText(self):
+		szCursor = u"<color=255,220,100>|</color>"
+		if len(self.szQuery) == 0:
+			szText = szCursor + u"<color=140,140,140> " + localText.getText("TXT_KEY_WTP_TRADEROUTE_SEARCH_HINT", ()) + u"</color>"
+		elif len(self.szSuggestion) > len(self.szQuery):
+			szText = u"<color=255,255,255>" + self.szSuggestion[:len(self.szQuery)] + u"</color>" + szCursor + u"<color=130,130,130>" + self.szSuggestion[len(self.szQuery):] + u"</color>"
+		else:
+			szText = u"<color=255,255,255>" + self.szQuery + u"</color>" + szCursor
+		self.pHost.setTextAt("TRSSearchText", "TRSSearchBG", u"<font=3>" + szText + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 8, 6, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, BTN_SEARCH, -1)
+		self.pHost.show("TRSSearchText")
+
+	# a key of the search field
+	def handleSearchKey(self, iKey, bShift):
+		bChanged = False
+		if self.dKeys.has_key(iKey):
+			szChar = self.dKeys[iKey]
+			if bShift and (iKey == self.iKey6 or iKey == self.iKey7):
+				szChar = u"&" # (the & is the shift key of the 6 or the 7, depending on the keyboard layout)
+			self.szQuery = self.szQuery + unicode(szChar)
+			bChanged = True
+		elif iKey == self.iKeyBack:
+			self.szQuery = self.szQuery[:-1]
+			bChanged = True
+		elif iKey in self.aKeyAccept:
+			if len(self.szSuggestion) > len(self.szQuery):
+				self.szQuery = self.szSuggestion
+				bChanged = True
+		if bChanged:
+			self.searchChanged()
+
+	def searchChanged(self):
+		self.findSuggestion()
+		self.drawSearchText()
+		self.buildView()
+		self.drawRows()
+		self.drawPage()
 
 	def isFav(self, iYield):
 		return gc.getYieldInfo(iYield).getType() in self.aFav
@@ -256,6 +343,16 @@ class CvTradeRouteScreen:
 				self.aYields = [i for i in self.getAllCargo() if pCity.isMarketDemandYield(i)]
 		else:
 			self.aYields = list(self.aAllYields)
+		aTerms = self.getTerms()
+		if len(aTerms) > 0:
+			aKept = []
+			for iYield in self.aYields:
+				szName = self.dNames[iYield].lower()
+				for szTerm in aTerms:
+					if szName.find(szTerm) >= 0:
+						aKept.append(iYield)
+						break
+			self.aYields = aKept
 		self.iFirst = 0
 
 	def getAllCargo(self):
@@ -383,6 +480,21 @@ class CvTradeRouteScreen:
 			self.aYields.append(iYield)
 
 		self.aAllYields = list(self.aYields)
+		self.szQuery = u""
+		self.szSuggestion = u""
+		self.bSearchSelected = False
+		self.dNames = {}
+		for iYield in self.dData.keys():
+			self.dNames[iYield] = gc.getYieldInfo(iYield).getDescription()
+		self.dKeys = {}
+		for szKey in SEARCH_KEY_NAMES.keys():
+			iKey = getattr(InputTypes, szKey, None)
+			if iKey != None:
+				self.dKeys[int(iKey)] = SEARCH_KEY_NAMES[szKey]
+		self.iKeyBack = self.getKeyId("KB_BACKSPACE")
+		self.aKeyAccept = [self.getKeyId("KB_TAB"), self.getKeyId("KB_RETURN"), self.getKeyId("KB_NUMPADENTER"), self.getKeyId("KB_RIGHT")]
+		self.iKey6 = self.getKeyId("KB_6")
+		self.iKey7 = self.getKeyId("KB_7")
 		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
 		self.pHost = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 		screen = self.pHost
@@ -427,6 +539,13 @@ class CvTradeRouteScreen:
 			self.addButton("TRSDown", u"\u00bb", False, self.OX + 24 + 36 + 150, self.OY + self.H - 44, 36, 28, BTN_DOWN)
 			self.aDrawn.append("TRSPage")
 
+		# the search field between Cancel and the drop down
+		self.iSearchX = self.W / 2 + 5 + 100 + 14
+		self.iSearchW = self.W - 20 - 160 - 14 - 34 - 6 - self.iSearchX
+		screen.addPanel("TRSSearchBG", u"", u"", False, False, self.OX + self.iSearchX, self.OY + self.H - 46, self.iSearchW, 32, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, BTN_SEARCH, -1)
+		self.aDrawn.append("TRSSearchBG")
+		self.addButton("TRSClearSearch", u"X", False, self.OX + self.iSearchX + self.iSearchW + 4, self.OY + self.H - 46, 34, 32, BTN_CLEAR_SEARCH)
+		self.drawSearchText()
 		self.iViewX = self.W - 20 - 160
 		screen.addDropDownBoxGFC("TRSView", self.OX + self.iViewX, self.OY + self.H - 44, 160, WidgetTypes.WIDGET_GENERAL, BTN_VIEW, -1, FontTypes.GAME_FONT)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()), 0, 0, True)
@@ -661,6 +780,10 @@ class CvTradeRouteScreen:
 	def getHelp(self, iCode):
 		if iCode == BTN_VIEW:
 			return localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_HELP", ())
+		if iCode == BTN_SEARCH:
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_SEARCH_HELP", ())
+		if iCode == BTN_CLEAR_SEARCH:
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_SEARCH_CLEAR_HELP", ())
 		if iCode >= BTN_FAV_IMP and iCode < BTN_FAV_IMP + 80:
 			return localText.getText("TXT_KEY_WTP_TRADEROUTE_FAVORITE_HELP", ())
 		if iCode >= BTN_FAV_EXP and iCode < BTN_FAV_EXP + 80:
@@ -726,7 +849,7 @@ class CvTradeRouteScreen:
 				self.removeButton(szName)
 			for szName in self.aDrawn:
 				self.drop(szName)
-			for szName in ("TRSOk", "TRSCancel", "TRSUp", "TRSDown", "TRSPage", "TRSHeadImp", "TRSHeadExp", "TRSTitle", "TRSHint", self.BACKGROUND_ID):
+			for szName in ("TRSOk", "TRSCancel", "TRSUp", "TRSDown", "TRSPage", "TRSSearchText", "TRSSearchBG", "TRSHeadImp", "TRSHeadExp", "TRSTitle", "TRSHint", self.BACKGROUND_ID):
 				self.drop(szName)
 			for i in range(5):
 				self.drop("TRSPreset" + str(i))
@@ -742,9 +865,11 @@ class CvTradeRouteScreen:
 		self.pHost = None
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the window while it is open)
-	def handleKey(self, iKey, bCtrl):
+	def handleKey(self, iKey, bCtrl, bShift = False):
 		if iKey == self.iKeyEsc:
 			self.finish(False, -1)
+		else:
+			self.handleSearchKey(iKey, bShift)
 
 	# the clicks on the buttons of the window; returns 1 if the event was for it
 	def handleEmbeddedInput(self, inputClass):
@@ -765,6 +890,11 @@ class CvTradeRouteScreen:
 			self.finish(True, -1)
 		elif iData == BTN_CANCEL:
 			self.finish(False, -1)
+		elif iData == BTN_CLEAR_SEARCH:
+			self.szQuery = u""
+			self.searchChanged()
+		elif iData == BTN_SEARCH:
+			self.drawSearchText()
 		elif iData == BTN_UP:
 			self.scroll(-1)
 		elif iData == BTN_DOWN:

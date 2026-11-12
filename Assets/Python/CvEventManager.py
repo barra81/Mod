@@ -222,7 +222,7 @@ class CvEventManager:
 		if (CvScreensInterface.tradeRouteScreen.isOpen()):
 			if (eventType == self.EventKeyDown):
 				try:
-					CvScreensInterface.tradeRouteScreen.handleKey(int(key), self.bCtrl)
+					CvScreensInterface.tradeRouteScreen.handleKey(int(key), self.bCtrl, self.bShift)
 				except:
 					pass
 			return 1
