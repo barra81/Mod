@@ -20310,38 +20310,38 @@ void CvPlayer::setNativeWaypoint(int iPlotIndex, int iCityId)
 	}
 }
 
-// a unit that was just created in a native settlement of this player's mission / trading post: it goes to the waypoint
-void CvPlayer::sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity)
+// a unit that was just created in a native settlement of this player's mission / trading post: it goes to the waypoint. The returned sentence
+// is added to the message of the settlement (which centers on the settlement, where the unit is)
+CvWString CvPlayer::sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity)
 {
+	CvWString szResult;
 	if (pUnit == NULL || pNativeCity == NULL || !isHuman())
 	{
-		return;
+		return szResult;
 	}
 	const int iCityId = getNativeWaypoint(GC.getMap().plotNum(pNativeCity->getX_INLINE(), pNativeCity->getY_INLINE()));
 	if (iCityId < 0)
 	{
-		return;
+		return szResult;
 	}
 	CvCity* pTarget = getCity(iCityId);
 	CvSelectionGroup* pGroup = pUnit->getGroup();
 	if (pTarget == NULL || pGroup == NULL)
 	{
-		return;
+		return szResult;
 	}
 	int iPathTurns = 0;
 	const bool bPath = pGroup->generatePath(pUnit->plot(), pTarget->plot(), 0, false, &iPathTurns);
 	pGroup->pushMission(MISSION_MOVE_TO, pTarget->getX_INLINE(), pTarget->getY_INLINE());
-	CvWString szBuffer;
 	if (bPath)
 	{
-		szBuffer = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT", pUnit->getNameKey(), pNativeCity->getNameKey(), pTarget->getNameKey(), std::max(1, iPathTurns));
+		szResult = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT", pUnit->getNameKey(), pTarget->getNameKey(), std::max(1, iPathTurns));
 	}
 	else
 	{
-		szBuffer = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT_NOPATH", pUnit->getNameKey(), pNativeCity->getNameKey(), pTarget->getNameKey());
+		szResult = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT_NOPATH", pUnit->getNameKey(), pTarget->getNameKey());
 	}
-	// the message centers on the unit
-	gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, pUnit->coord(), "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, pUnit->getButton(), COLOR_WHITE, true, true);
+	return szResult;
 }
 
 void CvPlayer::applyMissionaryPoints(CvCity* pCity)
@@ -20377,9 +20377,13 @@ void CvPlayer::applyMissionaryPoints(CvCity* pCity)
 								gDLL->getEventReporterIFace()->missionaryConvertedUnit(pUnit);
 
 								CvWString szBuffer = gDLL->getText("TXT_KEY_NATIVES_CONVERTED", pCity->getNameKey());
+								// WTP: the unit goes to the waypoint of the settlement, the message tells it
+								const CvWString szWaypoint = GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pUnit, pCity);
+								if (!szWaypoint.empty())
+								{
+									szBuffer += L" " + szWaypoint;
+								}
 								gDLL->UI().addPlayerMessage(ePlayer, true, GC.getEVENT_MESSAGE_TIME(), szBuffer, pCity, "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, GC.getUnitInfo(eUnit).getButton(), COLOR_UNIT_TEXT, true, true);
-
-								GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pUnit, pCity); // WTP
 
 								changeMissionaryPoints(ePlayer, -iThreshold);
 								setMissionaryThresholdMultiplier(ePlayer, (getMissionaryThresholdMultiplier(ePlayer) * (100 + GC.getDefineINT("MISSIONARY_THRESHOLD_INCREASE"))) / 100);
@@ -20518,9 +20522,13 @@ void CvPlayer::applyTradePostMestizoPoints(CvCity* pCity)
 							gDLL->getEventReporterIFace()->missionaryConvertedUnit(pUnit);
 
 							CvWString szBuffer = gDLL->getText("TXT_KEY_TRADE_POST_MESTIZO_CREATED", pCity->getNameKey());
+							// WTP: the unit goes to the waypoint of the settlement, the message tells it
+							const CvWString szWaypoint = GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pUnit, pCity);
+							if (!szWaypoint.empty())
+							{
+								szBuffer += L" " + szWaypoint;
+							}
 							gDLL->UI().addPlayerMessage(ePlayer, true, GC.getEVENT_MESSAGE_TIME(), szBuffer, pCity, "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, GC.getUnitInfo(eUnit).getButton(), COLOR_UNIT_TEXT, true, true);
-
-							GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pUnit, pCity); // WTP
 
 							changeTradePostMestizoPoints(ePlayer, -iThreshold);
 						}

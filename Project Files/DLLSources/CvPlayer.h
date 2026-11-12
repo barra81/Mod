@@ -866,7 +866,8 @@ public:
 	// WTP: waypoint of a native settlement: units that this player's mission / trading post creates there head for one of his cities
 	int getNativeWaypoint(int iPlotIndex) const; // id of the city, -1 if none
 	void setNativeWaypoint(int iPlotIndex, int iCityId); // -1 removes the waypoint
-	void sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity);
+	// sends the unit to the waypoint; returns the sentence about it for the message of the settlement (empty if there is no waypoint)
+	CvWString sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity);
 	int getTradePostMestizoPoints(PlayerTypes ePlayer) const;
 	void changeTradePostMestizoPoints(PlayerTypes ePlayer, int iChange);
 	int getTradePostMestizoThresholdMultiplier(PlayerTypes ePlayer) const;
