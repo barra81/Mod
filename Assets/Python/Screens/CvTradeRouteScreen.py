@@ -714,7 +714,7 @@ class CvTradeRouteScreen:
 
 	# iDelta pages forward / back
 	def scroll(self, iDelta):
-		iPage = max(0, min(self.getNumPages() - 1, self.iFirst / self.iVisible + iDelta))
+		iPage = (self.iFirst / self.iVisible + iDelta) % self.getNumPages() # (endless: after the last page the first one follows and vice versa)
 		if iPage * self.iVisible != self.iFirst:
 			self.iFirst = iPage * self.iVisible
 			self.drawRows()
