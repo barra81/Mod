@@ -182,7 +182,6 @@ for _c in "0123456789":
 	SEARCH_KEY_NAMES["KB_" + _c] = _c
 SEARCH_KEY_NAMES["KB_SPACE"] = " "
 SEARCH_KEY_NAMES["KB_MINUS"] = "-"
-SEARCH_KEY_NAMES["KB_COMMA"] = "&" # (a second way to type the separator, the & needs the shift key of the keyboard layout)
 
 class CvTradeRouteScreen:
 	"Import / export settings of a city"
@@ -216,6 +215,7 @@ class CvTradeRouteScreen:
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
 		self.dBtn = {} # the buttons (name: [x, y, w, h, code, text, marked, font, dy, panels])
 		self.szQuery = u""
+		self.aConfirmed = [] # the goods confirmed with Enter (lowercase names)
 		self.szSuggestion = u""
 		self.bSearchSelected = False
 		self.dNames = {}
@@ -240,44 +240,27 @@ class CvTradeRouteScreen:
 			return -12345
 		return int(iKey)
 
-	# the typed names (the goods are separated by &)
-	def getTerms(self):
-		aTerms = []
-		for szTerm in self.szQuery.split(u"&"):
-			szTerm = szTerm.strip().lower()
-			if len(szTerm) > 0:
-				aTerms.append(szTerm)
-		return aTerms
-
 	def hasExactName(self, szTerm):
 		for iYield in self.dNames.keys():
 			if self.dNames[iYield].lower() == szTerm:
 				return True
 		return False
 
-	# the completion of the last name: the first good (alphabetically) that starts with it and is not typed yet
+	# the completion of the typed text: the first good (alphabetically) that starts with it and is not confirmed yet
 	def findSuggestion(self):
 		self.szSuggestion = u""
-		iAmp = self.szQuery.rfind(u"&")
-		szPrefix = self.szQuery[:iAmp + 1]
-		szRest = self.szQuery[iAmp + 1:]
-		szSpace = u""
-		while len(szRest) > 0 and szRest[0] == u" ":
-			szSpace += u" "
-			szRest = szRest[1:]
-		szLast = szRest.lower()
+		szLast = self.szQuery.lstrip().lower()
 		if len(szLast) == 0:
 			return
-		aDone = self.getTerms()[:-1]
 		aMatches = []
 		for iYield in self.dNames.keys():
 			szName = self.dNames[iYield]
 			szLower = szName.lower()
-			if szLower[:len(szLast)] == szLast and len(szLower) > len(szLast) and not szLower in aDone:
+			if szLower[:len(szLast)] == szLast and len(szLower) > len(szLast) and not szLower in self.aConfirmed:
 				aMatches.append((szLower, szName))
 		if len(aMatches) > 0:
 			aMatches.sort()
-			self.szSuggestion = szPrefix + szSpace + aMatches[0][1]
+			self.szSuggestion = self.szQuery[:len(self.szQuery) - len(self.szQuery.lstrip())] + aMatches[0][1]
 
 	def drawSearchText(self):
 		szCursor = u"<color=255,220,100>|</color>"
@@ -294,24 +277,24 @@ class CvTradeRouteScreen:
 	def handleSearchKey(self, iKey, bShift):
 		bChanged = False
 		if self.dKeys.has_key(iKey):
-			szChar = self.dKeys[iKey]
-			if bShift and (iKey == self.iKey6 or iKey == self.iKey7):
-				szChar = u"&" # (the & is the shift key of the 6 or the 7, depending on the keyboard layout)
-			self.szQuery = self.szQuery + unicode(szChar)
+			self.szQuery = self.szQuery + unicode(self.dKeys[iKey])
 			bChanged = True
 		elif iKey == self.iKeyBack:
-			if self.szQuery[-3:] == u" & ":
-				self.szQuery = self.szQuery[:-3]
-			else:
+			if len(self.szQuery) > 0:
 				self.szQuery = self.szQuery[:-1]
-			bChanged = True
+				bChanged = True
+			elif len(self.aConfirmed) > 0:
+				self.aConfirmed.pop() # nothing typed: take back the last confirmed good
+				bChanged = True
 		elif iKey in self.aKeyConfirm:
-			# Enter: keep the typed term as it is (without the completion) and start the next one
-			if len(self.getTerms()) > 0 and self.szQuery[-3:] != u" & " and self.szQuery.strip()[-1:] != u"&":
-				szLast = self.getTerms()[-1]
-				if not self.hasExactName(szLast) and len(self.szSuggestion) > len(self.szQuery):
-					self.szQuery = self.szSuggestion # no good has exactly this name: take the nearest one
-				self.szQuery = self.szQuery.rstrip() + u" & "
+			# Enter: keep the typed term (the exact good, or the nearest one) and empty the field for the next one
+			szTerm = self.szQuery.strip().lower()
+			if len(szTerm) > 0:
+				if not self.hasExactName(szTerm) and len(self.szSuggestion) > len(self.szQuery):
+					szTerm = self.szSuggestion.strip().lower() # no good has exactly this name: take the nearest one
+				if not szTerm in self.aConfirmed:
+					self.aConfirmed.append(szTerm)
+				self.szQuery = u""
 				bChanged = True
 		elif iKey in self.aKeyAccept:
 			if len(self.szSuggestion) > len(self.szQuery):
@@ -360,27 +343,13 @@ class CvTradeRouteScreen:
 				self.aYields = [i for i in self.getAllCargo() if pCity.isMarketDemandYield(i)]
 		else:
 			self.aYields = list(self.aAllYields)
-		aTerms = self.getTerms()
-		if len(aTerms) > 0:
-			# confirmed terms (all but the last one) match exactly if a good has that name, the last one is still being typed (contains)
-			aExact = []
-			for szTerm in aTerms[:-1]:
-				aExact.append(szTerm)
-			if self.szQuery.rstrip()[-1:] == u"&":
-				aExact.append(aTerms[-1])
+		szTerm = self.szQuery.strip().lower()
+		if len(szTerm) > 0 or len(self.aConfirmed) > 0:
+			# the confirmed goods exactly, plus everything that contains the text just being typed
 			aKept = []
 			for iYield in self.aYields:
 				szName = self.dNames[iYield].lower()
-				bHit = False
-				for szTerm in aTerms:
-					bIsExact = szTerm in aExact
-					if bIsExact and self.hasExactName(szTerm):
-						bHit = (szName == szTerm)
-					else:
-						bHit = (szName.find(szTerm) >= 0)
-					if bHit:
-						break
-				if bHit:
+				if szName in self.aConfirmed or (len(szTerm) > 0 and szName.find(szTerm) >= 0):
 					aKept.append(iYield)
 			self.aYields = aKept
 		self.iFirst = 0
@@ -511,6 +480,7 @@ class CvTradeRouteScreen:
 
 		self.aAllYields = list(self.aYields)
 		self.szQuery = u""
+		self.aConfirmed = []
 		self.szSuggestion = u""
 		self.bSearchSelected = False
 		self.dNames = {}
@@ -923,6 +893,7 @@ class CvTradeRouteScreen:
 			self.finish(False, -1)
 		elif iData == BTN_CLEAR_SEARCH:
 			self.szQuery = u""
+			self.aConfirmed = []
 			self.searchChanged()
 		elif iData == BTN_SEARCH:
 			self.drawSearchText()
