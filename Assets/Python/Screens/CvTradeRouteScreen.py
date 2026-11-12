@@ -38,14 +38,15 @@ F_EXP_AUTO = 9
 F_EXP_LAND = 10
 F_EXP_SEA = 11
 
-# the lightening of a marked button and of the button under the mouse (the hover effect of the game is lost because the texts lie on
-# the buttons): layers of a translucent white pixel (the 1 x 1 picture of the trade route screen) stretched to the face of the button
-# (a rectangle, exactly); the margins are the border of the button picture that is left free
-PIXEL_ART = "Art/Interface/Screens/TradeRoutes/Pixel.dds"
-# switched off for now (True: lighter marked buttons and the own hover effect; the code is kept)
-USE_OVERLAY = False
-HILITE_LAYERS = 2
-HOVER_LAYERS = 3
+# the lightening of a marked button (a translucent orange rectangle, the picture WTPMark.dds stretched to the face of the button, dimmer
+# than the hover effect of the game) and, because that covers the hover effect of the game, our own one on marked buttons (WTPHover.dds,
+# brighter). The pictures are 1 x 1 pixel (orange, different transparency); the margins are the border of the button picture that is
+# left free. (Unmarked buttons keep the hover effect of the game.)
+USE_OVERLAY = True
+MARK_ART = "Art/Interface/Screens/TradeRoutes/WTPMark.dds"
+HOVER_ART = "Art/Interface/Screens/TradeRoutes/WTPHover.dds"
+HILITE_LAYERS = 1
+HOVER_LAYERS = 1
 MARGIN_X = 4
 MARGIN_Y = 3
 # the font of all texts
@@ -330,7 +331,7 @@ class CvTradeRouteScreen:
 		if bMark and USE_OVERLAY:
 			for i in range(HILITE_LAYERS):
 				szLight = "TRSb" + str(i) + "_" + szName
-				screen.addDDSGFC(szLight, PIXEL_ART, iX + MARGIN_X, iY + MARGIN_Y, iW - 2 * MARGIN_X, iH - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, iCode, -1)
+				screen.addDDSGFC(szLight, MARK_ART, iX + MARGIN_X, iY + MARGIN_Y, iW - 2 * MARGIN_X, iH - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, iCode, -1)
 				aLights.append(szLight)
 		self.dBtn[szName] = [iX, iY, iW, iH, iCode, szText, bMark, szFont, iDy, aLights]
 		self.drawButtonText(szName)
@@ -369,7 +370,7 @@ class CvTradeRouteScreen:
 		szNew = ""
 		for szName in self.dBtn.keys():
 			b = self.dBtn[szName]
-			if iX >= b[0] and iX < b[0] + b[2] and iY >= b[1] + 3 and iY < b[1] + b[3] - 3:
+			if b[6] and iX >= b[0] and iX < b[0] + b[2] and iY >= b[1] + 3 and iY < b[1] + b[3] - 3:
 				szNew = szName
 				break
 		if szNew == self.sHover:
@@ -378,7 +379,7 @@ class CvTradeRouteScreen:
 		if szNew != "":
 			b = self.dBtn[szNew]
 			for i in range(HOVER_LAYERS):
-				self.pHost.addDDSGFC("TRSHover" + str(i), PIXEL_ART, b[0] + MARGIN_X, b[1] + MARGIN_Y, b[2] - 2 * MARGIN_X, b[3] - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, b[4], -1)
+				self.pHost.addDDSGFC("TRSHover" + str(i), HOVER_ART, b[0] + MARGIN_X, b[1] + MARGIN_Y, b[2] - 2 * MARGIN_X, b[3] - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, b[4], -1)
 			self.sHover = szNew
 			self.drawButtonText(szNew) # (the text on top of the panel)
 
