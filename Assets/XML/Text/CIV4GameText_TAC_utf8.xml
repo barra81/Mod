@@ -3555,8 +3555,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_VIEW_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]View[COLOR_REVERT][NEWLINE]Switches between all goods, your favorite goods, only the goods that are marked (import, feeder, export or auto export) in this city, and the goods the presets Building material and Market automatic ask for.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Ansicht[COLOR_REVERT][NEWLINE]Wechselt zwischen allen Waren, deinen Favoriten, nur den Waren, die in dieser Stadt markiert sind (Import, Feeder, Export oder Auto-Export), und den Waren, die die Presets Baumaterial und Markt-Automatik anfordern.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]View[COLOR_REVERT][NEWLINE]Switches between all goods, your favorite goods, only the goods that are marked (import, feeder, export or auto export) in this city, the goods the presets Building material and Market automatic ask for, and the goods this city produces.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Ansicht[COLOR_REVERT][NEWLINE]Wechselt zwischen allen Waren, deinen Favoriten, nur den Waren, die in dieser Stadt markiert sind (Import, Feeder, Export oder Auto-Export), den Waren, die die Presets Baumaterial und Markt-Automatik anfordern, und den Waren, die diese Stadt produziert.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PAGE_PREV_HELP</Tag>
@@ -3632,5 +3632,10 @@
 		<Tag>TXT_KEY_WTP_TRADEROUTE_SEARCH_CLEAR_HELP</Tag>
 		<English>Clear the search</English>
 		<German>Suche löschen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_VIEW_PRODUCED</Tag>
+		<English>Produced goods</English>
+		<German>Produzierte Waren</German>
 	</TEXT>
 </Civ4GameText>
