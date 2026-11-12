@@ -237,9 +237,15 @@ void CvPlayerAI::AI_doTurnPre()
 
 	AI_invalidateCloseBordersAttitudeCache();
 
-	AI_doCounter();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOCOUNTER);
+		AI_doCounter();
+	}
 
-	AI_doEnemyUnitData();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOENEMYUNITDATA);
+		AI_doEnemyUnitData();
+	}
 
 	if (isHuman())
 	{
@@ -253,31 +259,70 @@ void CvPlayerAI::AI_doTurnPre()
 		pUnit->AI_setMovePriority(0);
 	}
 
-	AI_doEmotions();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOEMOTIONS);
+		AI_doEmotions();
+	}
 
-	AI_doUnitAIWeights();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOUNITAIWEIGHTS);
+		AI_doUnitAIWeights();
+	}
 
-	AI_doMilitary();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOMILITARY);
+		AI_doMilitary();
+	}
 
-	AI_doStrategy();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOSTRATEGY);
+		AI_doStrategy();
+	}
 
-	AI_updateYieldValues();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_UPDATEYIELDVALUES);
+		AI_updateYieldValues();
+	}
 
-	AI_doCitizenRelocation();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOCITIZENRELOCATION);
+		AI_doCitizenRelocation();
+	}
 
-	AI_doPeaceWarships();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOPEACEWARSHIPS);
+		AI_doPeaceWarships();
+	}
 
-	AI_updateFullStorage();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_UPDATEFULLSTORAGE);
+		AI_updateFullStorage();
+	}
 
-	AI_doWorkforcePlan();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOWORKFORCEPLAN);
+		AI_doWorkforcePlan();
+	}
 
-	AI_doReclaimTerritory();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DORECLAIMTERRITORY);
+		AI_doReclaimTerritory();
+	}
 
-	AI_doSurplusPioneers();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DOSURPLUSPIONEERS);
+		AI_doSurplusPioneers();
+	}
 
-	AI_doNativeMercDefense();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_DONATIVEMERCDEFENSE);
+		AI_doNativeMercDefense();
+	}
 
-	AI_logStatusSummary();
+	{
+		WtpTiming::Scope wtpSub(WtpTiming::SLOT_PRE_LOGSTATUSSUMMARY);
+		AI_logStatusSummary();
+	}
 }
 
 // WTP: per turn summary of a colonial AI, to find bad decisions (no expansion, no growth, ...) in BBAI.log

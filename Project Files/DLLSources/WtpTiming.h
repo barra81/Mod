@@ -37,6 +37,21 @@ namespace WtpTiming
 		SLOT_ASSIGN_WORKING_PLOTS,
 		SLOT_TRADE_ROUTES,
 		SLOT_PATH_GENERATE,
+		SLOT_PRE_DOCOUNTER,
+		SLOT_PRE_DOENEMYUNITDATA,
+		SLOT_PRE_DOEMOTIONS,
+		SLOT_PRE_DOUNITAIWEIGHTS,
+		SLOT_PRE_DOMILITARY,
+		SLOT_PRE_DOSTRATEGY,
+		SLOT_PRE_UPDATEYIELDVALUES,
+		SLOT_PRE_DOCITIZENRELOCATION,
+		SLOT_PRE_DOPEACEWARSHIPS,
+		SLOT_PRE_UPDATEFULLSTORAGE,
+		SLOT_PRE_DOWORKFORCEPLAN,
+		SLOT_PRE_DORECLAIMTERRITORY,
+		SLOT_PRE_DOSURPLUSPIONEERS,
+		SLOT_PRE_DONATIVEMERCDEFENSE,
+		SLOT_PRE_LOGSTATUSSUMMARY,
 		SLOT_COUNT
 	};
 
@@ -57,7 +72,22 @@ namespace WtpTiming
 		"CvCityAI::AI_doTurn",
 		"CvPlayerAI::AI_assignWorkingPlots",
 		"CvSelectionGroupAI::AI_tradeRoutes",
-		"KmodPathFinder::GeneratePath (all path searches)"
+		"KmodPathFinder::GeneratePath (all path searches)",
+		"  in AI_doTurnPre: AI_doCounter",
+		"  in AI_doTurnPre: AI_doEnemyUnitData",
+		"  in AI_doTurnPre: AI_doEmotions",
+		"  in AI_doTurnPre: AI_doUnitAIWeights",
+		"  in AI_doTurnPre: AI_doMilitary",
+		"  in AI_doTurnPre: AI_doStrategy",
+		"  in AI_doTurnPre: AI_updateYieldValues",
+		"  in AI_doTurnPre: AI_doCitizenRelocation",
+		"  in AI_doTurnPre: AI_doPeaceWarships",
+		"  in AI_doTurnPre: AI_updateFullStorage",
+		"  in AI_doTurnPre: AI_doWorkforcePlan",
+		"  in AI_doTurnPre: AI_doReclaimTerritory",
+		"  in AI_doTurnPre: AI_doSurplusPioneers",
+		"  in AI_doTurnPre: AI_doNativeMercDefense",
+		"  in AI_doTurnPre: AI_logStatusSummary"
 	};
 
 	struct Data
