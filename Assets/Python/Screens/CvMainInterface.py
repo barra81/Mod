@@ -2700,6 +2700,12 @@ class CvMainInterface:
 			if (gc.getPlayer(ePlayer).isAlive()):
 				szText = CyGameTextMgr().getGoldStr(ePlayer)
 				screen.setLabel("GoldText", "Background", self.setFontSize(szText, 1), CvUtil.FONT_LEFT_JUSTIFY, 17, 17, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TIMETEXT_ID, -1 )
+				# WTP: the gold pile icon follows the amount: 5 digits or less keep its place, every digit more moves it to the right
+				try:
+					iDigits = len([c for c in unicode(szText) if c.isdigit()])
+					screen.moveItem("GoldPile", 60 + max(0, iDigits - 5) * 10, 8, -0.3)
+				except:
+					pass
 				# WTP: below the gold the military upkeep, below that the domestic market income of the last turn
 				pPlayer = gc.getPlayer(ePlayer)
 				iUpkeep = pPlayer.getMilitaryUpkeep()
