@@ -3515,7 +3515,22 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_HINT</Tag>
-		<English>[COLOR:140:255:40:255]Mouse wheel[COLOR_REVERT] over a number: +/- 10 ([COLOR:140:255:40:255]Ctrl[COLOR_REVERT]: +/- 50), elsewhere it scrolls the list    [COLOR:140:255:40:255]Esc[COLOR_REVERT]: cancel</English>
-		<German>[COLOR:140:255:40:255]Mausrad[COLOR_REVERT] über einer Zahl: +/- 10 ([COLOR:140:255:40:255]Strg[COLOR_REVERT]: +/- 50), sonst scrollt es die Liste    [COLOR:140:255:40:255]Esc[COLOR_REVERT]: Abbrechen</German>
+		<English>[COLOR:140:255:40:255]Mouse wheel[COLOR_REVERT] over a number: +/- 10 ([COLOR:140:255:40:255]Ctrl[COLOR_REVERT]: +/- 50), elsewhere it turns the page    [COLOR:140:255:40:255]Esc[COLOR_REVERT]: cancel</English>
+		<German>[COLOR:140:255:40:255]Mausrad[COLOR_REVERT] über einer Zahl: +/- 10 ([COLOR:140:255:40:255]Strg[COLOR_REVERT]: +/- 50), sonst blättert es um    [COLOR:140:255:40:255]Esc[COLOR_REVERT]: Abbrechen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_IMPORT_OPTIONS</Tag>
+		<English>Import options</English>
+		<German>Import-Optionen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_EXPORT_OPTIONS</Tag>
+		<English>Export options</English>
+		<German>Export-Optionen</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_PAGE</Tag>
+		<English>Page %d1 / %d2</English>
+		<German>Seite %d1 / %d2</German>
 	</TEXT>
 </Civ4GameText>

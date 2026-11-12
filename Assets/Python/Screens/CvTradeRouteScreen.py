@@ -49,14 +49,15 @@ class CvTradeRouteScreen:
 
 	def __init__(self):
 		self.BACKGROUND_ID = "TRSBackground"
-		self.W = 900
+		self.W = 1200
 		self.H = 600
 		self.OX = 0
 		self.OY = 0
-		self.ROW_H = 52
-		self.LIST_Y = 168
-		self.BLOCK_IMP_X = 70
-		self.BLOCK_EXP_X = 470
+		self.ROW_H = 54
+		self.LIST_Y = 194
+		self.BLOCK_IMP_X = 90
+		self.BLOCK_EXP_X = 640
+		self.CHECK_W = 124
 		self.BLOCK_SPIN_W = 116
 		self.iCity = -1
 		self.bCondensed = False
@@ -66,6 +67,7 @@ class CvTradeRouteScreen:
 		self.dData = {}
 		self.iFirst = 0
 		self.iVisible = 0
+		self.iReload = 0
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
 
 	def isOpen(self):
@@ -86,6 +88,35 @@ class CvTradeRouteScreen:
 			return -12345
 		return int(iKey)
 
+	def loadYield(self, pCity, iYield):
+		d = {}
+		d["imp"] = pCity.isImport(iYield)
+		d["feeder"] = pCity.isImportFeeder(iYield)
+		d["impLimit"] = pCity.getImportsLimit(iYield)
+		d["impDom"] = pCity.getImportDomains(iYield)
+		d["exp"] = pCity.isExport(iYield)
+		d["auto"] = pCity.isAutoExport(iYield)
+		d["maintain"] = pCity.getMaintainLevel(iYield)
+		d["expDom"] = pCity.getExportDomains(iYield)
+		self.dData[iYield] = d
+
+	# the settings of the city are read again (after a preset: the city changes a moment after the command was sent)
+	def reloadFromCity(self):
+		pCity = self.getCity()
+		if pCity == None or pCity.isNone():
+			return
+		for iYield in self.aYields:
+			self.loadYield(pCity, iYield)
+		self.drawMarketButton(pCity)
+		self.drawRows()
+
+	def drawMarketButton(self, pCity):
+		szMarket = "TXT_KEY_TRADEROUTE_PRESET_MARKET_AUTO"
+		if pCity.isAutoMarketImport():
+			szMarket = "TXT_KEY_TRADEROUTE_PRESET_MARKET_AUTO_OFF"
+		self.drop("TRSPreset4")
+		self.pHost.setButtonGFC("TRSPreset4", u"<font=2b>" + localText.getText(szMarket, ()) + u"</font>", "", self.OX + 20, self.OY + 96 + 30, self.W - 40, 26, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 4, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+
 	# opens the window (1: it is open, 0: the DLL shows its own popup instead)
 	def open(self, iCity, bCondensed):
 		if not self.bFinished:
@@ -103,26 +134,17 @@ class CvTradeRouteScreen:
 			if bCondensed and not pCity.isYieldInTradeRouteCondensedList(iYield):
 				continue
 			self.aYields.append(iYield)
-			d = {}
-			d["imp"] = pCity.isImport(iYield)
-			d["feeder"] = pCity.isImportFeeder(iYield)
-			d["impLimit"] = pCity.getImportsLimit(iYield)
-			d["impDom"] = pCity.getImportDomains(iYield)
-			d["exp"] = pCity.isExport(iYield)
-			d["auto"] = pCity.isAutoExport(iYield)
-			d["maintain"] = pCity.getMaintainLevel(iYield)
-			d["expDom"] = pCity.getExportDomains(iYield)
-			self.dData[iYield] = d
+			self.loadYield(pCity, iYield)
 
 		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
 		self.pHost = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 		screen = self.pHost
 		iXRes = screen.getXResolution()
 		iYRes = screen.getYResolution()
-		self.H = min(int(iYRes * 0.86), self.LIST_Y + len(self.aYields) * self.ROW_H + 64)
-		self.iVisible = max(1, (self.H - self.LIST_Y - 64) / self.ROW_H)
+		self.H = min(int(iYRes * 0.86), self.LIST_Y + len(self.aYields) * self.ROW_H + 70)
+		self.iVisible = max(1, (self.H - self.LIST_Y - 70) / self.ROW_H)
 		self.iVisible = min(self.iVisible, len(self.aYields))
-		self.H = self.LIST_Y + self.iVisible * self.ROW_H + 64
+		self.H = self.LIST_Y + self.iVisible * self.ROW_H + 70
 		self.OX = (iXRes - self.W) / 2
 		self.OY = (iYRes - self.H) / 2
 		self.iFirst = 0
@@ -136,34 +158,38 @@ class CvTradeRouteScreen:
 		screen.setLabelAt("TRSHint", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_TRADEROUTE_HINT", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 44, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		self.aDrawn.append("TRSTitle")
 		self.aDrawn.append("TRSHint")
+		iHeadW = self.BLOCK_SPIN_W + 8 + 2 * self.CHECK_W + 4
+		screen.setLabelAt("TRSHeadImp", self.BACKGROUND_ID, u"<font=3b><color=255,220,100>" + localText.getText("TXT_KEY_WTP_TRADEROUTE_IMPORT_OPTIONS", ()) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, self.BLOCK_IMP_X + iHeadW / 2, self.LIST_Y - 28, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabelAt("TRSHeadExp", self.BACKGROUND_ID, u"<font=3b><color=255,220,100>" + localText.getText("TXT_KEY_WTP_TRADEROUTE_EXPORT_OPTIONS", ()) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, self.BLOCK_EXP_X + iHeadW / 2, self.LIST_Y - 28, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		self.aDrawn.append("TRSHeadImp")
+		self.aDrawn.append("TRSHeadExp")
 
 		# the presets (the buttons of the old popup)
 		iBW = (self.W - 40 - 20) / 3
 		aszPreset = [localText.getText("TXT_KEY_POPUP_IMPORT_CLEAR_ALL", ()), localText.getText("TXT_KEY_POPUP_IMPORT_ALL", ()), localText.getText("TXT_KEY_POPUP_IMPORT_EXPORT_ALL", ())]
 		for i in range(3):
 			szName = "TRSPreset" + str(i)
-			screen.setButtonGFC(szName, u"<font=2>" + aszPreset[i] + u"</font>", "", self.OX + 20 + i * (iBW + 10), self.OY + 66, iBW, 26, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			screen.setButtonGFC(szName, u"<font=2b>" + aszPreset[i] + u"</font>", "", self.OX + 20 + i * (iBW + 10), self.OY + 66, iBW, 26, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 			self.aDrawn.append(szName)
-		szMarket = "TXT_KEY_TRADEROUTE_PRESET_MARKET_AUTO"
-		if pCity.isAutoMarketImport():
-			szMarket = "TXT_KEY_TRADEROUTE_PRESET_MARKET_AUTO_OFF"
-		aszPreset2 = [localText.getText("TXT_KEY_TRADEROUTE_PRESET_BUILD", ()), localText.getText(szMarket, ())]
-		for i in range(2):
-			szName = "TRSPreset" + str(3 + i)
-			screen.setButtonGFC(szName, u"<font=1>" + aszPreset2[i] + u"</font>", "", self.OX + 20, self.OY + 96 + i * 30, self.W - 40, 26, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 3 + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-			self.aDrawn.append(szName)
+		szName = "TRSPreset3"
+		screen.setButtonGFC(szName, u"<font=2b>" + localText.getText("TXT_KEY_TRADEROUTE_PRESET_BUILD", ()) + u"</font>", "", self.OX + 20, self.OY + 96, self.W - 40, 26, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 3, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		self.aDrawn.append(szName)
+		self.drawMarketButton(pCity)
+		self.aDrawn.append("TRSPreset4")
 
-		screen.setButtonGFC("TRSOk", u"<font=2>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 42, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC("TRSCancel", u"<font=2>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 42, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("TRSOk", u"<font=3b>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 44, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("TRSCancel", u"<font=3b>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 44, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		self.aDrawn.append("TRSOk")
 		self.aDrawn.append("TRSCancel")
 		if len(self.aYields) > self.iVisible:
-			screen.setButtonGFC("TRSUp", u"<font=2>^</font>", "", self.OX + self.W - 44, self.OY + self.LIST_Y, 28, 28, WidgetTypes.WIDGET_GENERAL, BTN_UP, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-			screen.setButtonGFC("TRSDown", u"<font=2>v</font>", "", self.OX + self.W - 44, self.OY + self.LIST_Y + self.iVisible * self.ROW_H - 28, 28, 28, WidgetTypes.WIDGET_GENERAL, BTN_DOWN, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			screen.setButtonGFC("TRSUp", u"<font=3b><</font>", "", self.OX + 24, self.OY + self.H - 44, 36, 28, WidgetTypes.WIDGET_GENERAL, BTN_UP, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			screen.setButtonGFC("TRSDown", u"<font=3b>></font>", "", self.OX + 24 + 36 + 150, self.OY + self.H - 44, 36, 28, WidgetTypes.WIDGET_GENERAL, BTN_DOWN, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 			self.aDrawn.append("TRSUp")
 			self.aDrawn.append("TRSDown")
+			self.aDrawn.append("TRSPage")
 
 		self.drawRows()
+		self.drawPage()
 		try:
 			CyGame().setWheelCapture(True)
 		except:
@@ -180,10 +206,10 @@ class CvTradeRouteScreen:
 		screen = self.pHost
 		self.drop(szName)
 		if bOn:
-			szShown = u"<font=2><color=255,220,100>[x] " + szText + u"</color></font>"
+			szShown = u"<font=3b><color=255,220,100>[x] " + szText + u"</color></font>"
 		else:
-			szShown = u"<font=2>[   ] " + szText + u"</font>"
-		screen.setButtonGFC(szName, szShown, "", iX, iY, 108, 22, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			szShown = u"<font=3b><color=255,255,255>[   ] " + szText + u"</color></font>"
+		screen.setButtonGFC(szName, szShown, "", iX, iY, self.CHECK_W, 24, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 
 	def drawRows(self):
 		screen = self.pHost
@@ -196,7 +222,8 @@ class CvTradeRouteScreen:
 		for iSlot in range(self.iVisible):
 			iIndex = self.iFirst + iSlot
 			if iIndex >= len(self.aYields):
-				break
+				self.clearSlot(iSlot)
+				continue
 			iYield = self.aYields[iIndex]
 			d = self.dData[iYield]
 			iY = self.OY + self.LIST_Y + iSlot * self.ROW_H
@@ -209,17 +236,17 @@ class CvTradeRouteScreen:
 			self.drawSpin(iSlot, 0, d["impLimit"], iX, iY, iBase + F_IMP_MINUS, iBase + F_IMP_PLUS)
 			iCX = iX + self.BLOCK_SPIN_W + 8
 			self.drawCheck("TRSc" + str(iSlot) + "_2", szImport, d["imp"], iCX, iY + 3, iBase + F_IMP_CHECK)
-			self.drawCheck("TRSc" + str(iSlot) + "_3", szFeeder, d["feeder"], iCX + 112, iY + 3, iBase + F_IMP_FEEDER)
-			self.drawCheck("TRSc" + str(iSlot) + "_4", szLand, (d["impDom"] & 1) != 0, iCX, iY + 27, iBase + F_IMP_LAND)
-			self.drawCheck("TRSc" + str(iSlot) + "_5", szSea, (d["impDom"] & 2) != 0, iCX + 112, iY + 27, iBase + F_IMP_SEA)
+			self.drawCheck("TRSc" + str(iSlot) + "_3", szFeeder, d["feeder"], iCX + self.CHECK_W + 4, iY + 3, iBase + F_IMP_FEEDER)
+			self.drawCheck("TRSc" + str(iSlot) + "_4", szLand, (d["impDom"] & 1) != 0, iCX, iY + 28, iBase + F_IMP_LAND)
+			self.drawCheck("TRSc" + str(iSlot) + "_5", szSea, (d["impDom"] & 2) != 0, iCX + self.CHECK_W + 4, iY + 28, iBase + F_IMP_SEA)
 			# export block
 			iX = self.OX + self.BLOCK_EXP_X
 			self.drawSpin(iSlot, 1, d["maintain"], iX, iY, iBase + F_EXP_MINUS, iBase + F_EXP_PLUS)
 			iCX = iX + self.BLOCK_SPIN_W + 8
 			self.drawCheck("TRSc" + str(iSlot) + "_8", szExport, d["exp"], iCX, iY + 3, iBase + F_EXP_CHECK)
-			self.drawCheck("TRSc" + str(iSlot) + "_9", szAuto, d["auto"], iCX + 112, iY + 3, iBase + F_EXP_AUTO)
-			self.drawCheck("TRSc" + str(iSlot) + "_10", szLand, (d["expDom"] & 1) != 0, iCX, iY + 27, iBase + F_EXP_LAND)
-			self.drawCheck("TRSc" + str(iSlot) + "_11", szSea, (d["expDom"] & 2) != 0, iCX + 112, iY + 27, iBase + F_EXP_SEA)
+			self.drawCheck("TRSc" + str(iSlot) + "_9", szAuto, d["auto"], iCX + self.CHECK_W + 4, iY + 3, iBase + F_EXP_AUTO)
+			self.drawCheck("TRSc" + str(iSlot) + "_10", szLand, (d["expDom"] & 1) != 0, iCX, iY + 28, iBase + F_EXP_LAND)
+			self.drawCheck("TRSc" + str(iSlot) + "_11", szSea, (d["expDom"] & 2) != 0, iCX + self.CHECK_W + 4, iY + 28, iBase + F_EXP_SEA)
 
 	def drawSpin(self, iSlot, iBlock, iValue, iX, iY, iMinusCode, iPlusCode):
 		screen = self.pHost
@@ -229,30 +256,43 @@ class CvTradeRouteScreen:
 		self.drop(szMinus)
 		self.drop(szPlus)
 		self.drop(szValue)
-		screen.setButtonGFC(szMinus, u"<font=2>-</font>", "", iX, iY + 13, 24, 26, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC(szPlus, u"<font=2>+</font>", "", iX + self.BLOCK_SPIN_W - 24, iY + 13, 24, 26, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC(szMinus, u"<font=3b>-</font>", "", iX, iY + 13, 24, 26, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC(szPlus, u"<font=3b>+</font>", "", iX + self.BLOCK_SPIN_W - 24, iY + 13, 24, 26, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		screen.setLabelAt(szValue, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + 16, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 	def refreshRow(self, iSlot):
 		# only the changed row is drawn again: all of them (cheap enough, the list is short)
 		self.drawRows()
 
+	def clearSlot(self, iSlot):
+		self.drop("TRSIcon" + str(iSlot))
+		for iBlock in range(2):
+			self.drop("TRSm" + str(iSlot) + "_" + str(iBlock))
+			self.drop("TRSp" + str(iSlot) + "_" + str(iBlock))
+			self.drop("TRSv" + str(iSlot) + "_" + str(iBlock))
+		for iField in (2, 3, 4, 5, 8, 9, 10, 11):
+			self.drop("TRSc" + str(iSlot) + "_" + str(iField))
+
 	def clearRows(self):
 		for iSlot in range(self.iVisible):
-			self.drop("TRSIcon" + str(iSlot))
-			for iBlock in range(2):
-				self.drop("TRSm" + str(iSlot) + "_" + str(iBlock))
-				self.drop("TRSp" + str(iSlot) + "_" + str(iBlock))
-				self.drop("TRSv" + str(iSlot) + "_" + str(iBlock))
-			for iField in (2, 3, 4, 5, 8, 9, 10, 11):
-				self.drop("TRSc" + str(iSlot) + "_" + str(iField))
+			self.clearSlot(iSlot)
 
+	def getNumPages(self):
+		return max(1, (len(self.aYields) + self.iVisible - 1) / self.iVisible)
+
+	def drawPage(self):
+		if len(self.aYields) <= self.iVisible:
+			return
+		szText = u"<font=3b>" + localText.getText("TXT_KEY_WTP_TRADEROUTE_PAGE", (self.iFirst / self.iVisible + 1, self.getNumPages())) + u"</font>"
+		self.pHost.setLabelAt("TRSPage", self.BACKGROUND_ID, szText, CvUtil.FONT_CENTER_JUSTIFY, 24 + 36 + 75, self.H - 40, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+	# iDelta pages forward / back
 	def scroll(self, iDelta):
-		iMax = max(0, len(self.aYields) - self.iVisible)
-		iNew = max(0, min(iMax, self.iFirst + iDelta))
-		if iNew != self.iFirst:
-			self.iFirst = iNew
+		iPage = max(0, min(self.getNumPages() - 1, self.iFirst / self.iVisible + iDelta))
+		if iPage * self.iVisible != self.iFirst:
+			self.iFirst = iPage * self.iVisible
 			self.drawRows()
+			self.drawPage()
 
 	def changeValue(self, iSlot, iBlock, iDelta):
 		iIndex = self.iFirst + iSlot
@@ -305,6 +345,20 @@ class CvTradeRouteScreen:
 					iData2 = iData2 - 4294967296L
 				CyMessageControl().sendDoTask(self.iCity, TaskTypes.TASK_YIELD_TRADEROUTE, iData1, int(iData2), d["imp"], d["exp"], d["feeder"], d["auto"])
 
+	# a preset: the changes of the window are sent first, the window stays open and shows the result a moment later
+	def runPreset(self, iPreset):
+		try:
+			self.apply()
+			if iPreset <= 2:
+				# 0: clear all, 1: import all, 2: auto export all
+				CyMessageControl().sendDoTask(self.iCity, TaskTypes.TASK_AUTO_TRADEROUTE, 0, 0, iPreset == 0, iPreset == 1, iPreset == 2, False)
+			else:
+				CyMessageControl().sendDoTask(self.iCity, TaskTypes.TASK_TRADEROUTE_PRESET, iPreset - 3, 0, False, False, False, False)
+		except:
+			import traceback
+			logTrade(traceback.format_exc())
+		self.iReload = 60
+
 	def finish(self, bOk, iPreset):
 		if self.bFinished:
 			return
@@ -328,7 +382,7 @@ class CvTradeRouteScreen:
 			self.clearRows()
 			for szName in self.aDrawn:
 				self.drop(szName)
-			for szName in ("TRSOk", "TRSCancel", "TRSUp", "TRSDown", "TRSTitle", "TRSHint", self.BACKGROUND_ID):
+			for szName in ("TRSOk", "TRSCancel", "TRSUp", "TRSDown", "TRSPage", "TRSHeadImp", "TRSHeadExp", "TRSTitle", "TRSHint", self.BACKGROUND_ID):
 				self.drop(szName)
 			for i in range(5):
 				self.drop("TRSPreset" + str(i))
@@ -368,7 +422,7 @@ class CvTradeRouteScreen:
 		elif iData == BTN_DOWN:
 			self.scroll(1)
 		elif iData >= BTN_PRESET and iData < BTN_PRESET + 5:
-			self.finish(True, iData - BTN_PRESET)
+			self.runPreset(iData - BTN_PRESET)
 		elif iData >= BTN_ROW:
 			iSlot = (iData - BTN_ROW) / 16
 			iField = (iData - BTN_ROW) % 16
@@ -391,6 +445,10 @@ class CvTradeRouteScreen:
 		if self.bFinished:
 			return 0
 		try:
+			if self.iReload > 0:
+				self.iReload -= 1
+				if self.iReload % 10 == 0:
+					self.reloadFromCity()
 			iNotches = CyGame().takeWheelNotches()
 			if iNotches == 0:
 				return 0
