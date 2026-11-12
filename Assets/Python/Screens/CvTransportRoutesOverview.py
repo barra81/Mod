@@ -16,6 +16,7 @@ BTN_PREV_PAGE = 30003
 BTN_NEXT_PAGE = 30004
 BTN_CLEAR_SEARCH = 30005
 BTN_SEARCH = 30006
+BTN_RENAME = 31000 # + the slot of the column
 
 # transports that were already asked for a name in this game session
 g_RenameAsked = {}
@@ -55,6 +56,7 @@ class CvTransportRoutesOverview:
 		self.iUsedSlots = 0
 		self.aColumnX = []
 		self.iKeyLog = 0
+		self.bRenameWatch = False
 		self.aShownRoutes = {} # slot -> the routes in the order of the rows
 		self.aVisible = [] # indices of the transports that pass the filters
 		self.iTypeFilter = 0 # 0 trade routes (R), 1 fully automatic (Shift+Alt+C)
@@ -96,6 +98,7 @@ class CvTransportRoutesOverview:
 		self.aKeyAccept = [self.getKeyId("KB_TAB"), self.getKeyId("KB_RETURN"), self.getKeyId("KB_RIGHT")]
 		self.iTypeFilter = 0
 		self.bSearchSelected = False
+		self.bRenameWatch = False
 		self.iDomainFilter = 0 # standard filters: land and sea, only transports with trade routes
 		self.iAssignFilter = 1
 		self.szQuery = u""
@@ -344,7 +347,8 @@ class CvTransportRoutesOverview:
 		szName = dTransport["name"]
 		if dTransport["size"] > 1:
 			szName = szName + u" (%d)" % dTransport["size"]
-		screen.setLabelAt("TROName" + str(iSlot), self.BACKGROUND_ID, u"<font=3b>" + szName + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, iX + 56, self.HEAD_Y + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		# a click on the name renames the transport
+		screen.setTextAt("TROName" + str(iSlot), self.BACKGROUND_ID, u"<font=3b>" + szName + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, iX + 56, self.HEAD_Y + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, BTN_RENAME + iSlot, -1)
 		screen.show("TROName" + str(iSlot))
 		self.drawInfo(iSlot, dTransport, iX)
 
@@ -481,6 +485,9 @@ class CvTransportRoutesOverview:
 					self.bSearchSelected = False
 					self.refresh()
 					return 0
+				elif iData >= BTN_RENAME and iData < BTN_RENAME + 100:
+					self.renameTransport(iData - BTN_RENAME)
+					return 0
 				elif iData == BTN_SEARCH:
 					self.bSearchSelected = True
 					self.drawSearchText()
@@ -521,7 +528,34 @@ class CvTransportRoutesOverview:
 		self.iFirst = 0
 		self.drawColumns()
 
+	# the popup that renames a transport (the same one as for the name suggestion, with the current name)
+	def renameTransport(self, iSlot):
+		iIndex = self.iFirst + iSlot
+		if iIndex < 0 or iIndex >= len(self.aVisible):
+			return
+		dTransport = self.Transports[self.aVisible[iIndex]]
+		g_RenameAsked[dTransport["unit"]] = 1
+		popup = CyPopup(CvUtil.EventRenameTransport, EventContextTypes.EVENTCONTEXT_ALL, True)
+		popup.setUserData((dTransport["unit"],))
+		popup.setBodyString(localText.getText("TXT_KEY_RENAME_UNIT", ()), CvUtil.FONT_CENTER_JUSTIFY)
+		popup.createEditBox(dTransport["rawName"], 0)
+		popup.setEditBoxMaxCharCount(20, 20, 0)
+		popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
+		self.bRenameWatch = True
+
+	# after a rename the new name is shown in the column header (the popup is answered while this screen is open)
 	def update(self, fDelta):
+		if self.bRenameWatch:
+			try:
+				for iSlot in range(self.iUsedSlots):
+					dTransport = self.Transports[self.aVisible[self.iFirst + iSlot]]
+					pUnit = self.player.getUnit(dTransport["unit"])
+					if pUnit != None and not pUnit.isNone() and pUnit.getNameNoDesc() != dTransport["rawName"]:
+						dTransport["rawName"] = pUnit.getNameNoDesc()
+						dTransport["name"] = pUnit.getName()
+						self.drawHeader(iSlot, dTransport, self.aColumnX[iSlot])
+			except:
+				pass
 		return 0
 
 	def returnToDomestic(self):
