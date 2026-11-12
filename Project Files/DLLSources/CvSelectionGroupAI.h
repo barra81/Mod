@@ -119,6 +119,8 @@ public:
 	};
 	const std::vector<WtpTradeOrder>& getTradeOrders() const { return m_aTradeOrders; }
 	std::vector<WtpTradeOrder> m_aTradeOrders;
+	// WTP: the priority target of an automated transport that makes a pick-up stop on its way (not saved: after loading a savegame it decides anew)
+	IDInfo m_kPriorityTarget;
 
 private:
 	// R&R mod, vetiarvind, max yield import limit - start

@@ -48,6 +48,7 @@ void CvSelectionGroupAI::AI_reset()
 {
 	AI_uninit();
 	AI_resetSavedData();
+	m_kPriorityTarget = IDInfo();
 }
 
 
@@ -1592,6 +1593,40 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 		}
 	}
 
+	// WTP: the priority target stays: a transport that stopped at a colony on its way continues to the target it had decided on
+	// (the stops on the way are secondary). The target is dropped when it is reached, or when it has nothing to deliver or fetch any more
+	if (m_kPriorityTarget.eOwner != NO_PLAYER)
+	{
+		CvCity* const pPriorityCity = ::getCity(m_kPriorityTarget);
+		if (!bFillHold || pPriorityCity == NULL || pPriorityCity == pPlotCity || cityValues[m_kPriorityTarget] <= 0)
+		{
+			m_kPriorityTarget = IDInfo();
+		}
+		else
+		{
+			std::map<IDInfo, std::pair<bool, int> >::const_iterator itPriorityPath = aGroupToDestPaths.find(m_kPriorityTarget);
+			bool bPriorityOk;
+			if (itPriorityPath != aGroupToDestPaths.end())
+			{
+				bPriorityOk = itPriorityPath->second.first;
+			}
+			else
+			{
+				int iPriorityTurns = 0;
+				bPriorityOk = generatePath(plot(), pPriorityCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iPriorityTurns);
+				aGroupToDestPaths[m_kPriorityTarget] = std::make_pair(bPriorityOk, iPriorityTurns);
+			}
+			if (bPriorityOk)
+			{
+				kBestDestination = m_kPriorityTarget;
+			}
+			else
+			{
+				m_kPriorityTarget = IDInfo();
+			}
+		}
+	}
+
 	if ((pPlotCity != NULL) && (kBestDestination.eOwner != NO_PLAYER))
 	{
 		//We need to keep looping and recalculating
@@ -1869,6 +1904,9 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 		}
 	}
+
+	// the priority target is remembered while the transport goes to a pick-up stop
+	m_kPriorityTarget = (pPickupStop != NULL) ? kBestDestination : IDInfo();
 
 	// WTP: the orders shown in the tooltip of the transport (human player only)
 	if (isHuman())
