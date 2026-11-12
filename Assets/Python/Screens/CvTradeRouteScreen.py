@@ -42,10 +42,13 @@ F_EXP_SEA = 11
 # on the button under the mouse (the hover effect of the game is lost because the texts lie on the buttons)
 HILITE_PANEL = "PANEL_STYLE_MAIN_TAN15"
 HILITE_LAYERS = 3
-HOVER_PANEL = "PANEL_STYLE_MAIN_SELECT"
+HOVER_PANEL = "PANEL_STYLE_MAIN_TAN15"
+HOVER_LAYERS = 6
+# the panels are drawn smaller than the rectangle they get (border of the style): they get the rectangle of the button face enlarged by this
+PANEL_PAD = 2
 # texts of the buttons: color of a text that is not marked, the offset of the text top to the middle of the button (font 3b: the
 # letters from the top of the I to the bottom of the p are centered in the button)
-TEXT_COLOR = "45,32,18"
+TEXT_COLOR = "0,0,0"
 TEXT_DY = -14
 
 STEP = 10
@@ -321,7 +324,7 @@ class CvTradeRouteScreen:
 		if bMark:
 			for i in range(HILITE_LAYERS):
 				szLight = "TRSb" + str(i) + "_" + szName
-				screen.addPanel(szLight, u"", u"", False, False, iX + 2, iY + 3, iW - 4, iH - 6, getattr(PanelStyles, HILITE_PANEL), WidgetTypes.WIDGET_GENERAL, iCode, -1)
+				screen.addPanel(szLight, u"", u"", False, False, iX + 3 - PANEL_PAD, iY + 3 - PANEL_PAD, iW - 6 + 2 * PANEL_PAD, iH - 6 + 2 * PANEL_PAD, getattr(PanelStyles, HILITE_PANEL), WidgetTypes.WIDGET_GENERAL, iCode, -1)
 				aLights.append(szLight)
 		self.dBtn[szName] = [iX, iY, iW, iH, iCode, szText, bMark, szFont, iDy, aLights]
 		self.drawButtonText(szName)
@@ -347,7 +350,8 @@ class CvTradeRouteScreen:
 			del self.dBtn[szName]
 
 	def clearHover(self):
-		self.drop("TRSHover")
+		for i in range(HOVER_LAYERS):
+			self.drop("TRSHover" + str(i))
 		self.sHover = ""
 
 	# the button under the mouse gets a lighter / orange panel (called every frame)
@@ -365,7 +369,8 @@ class CvTradeRouteScreen:
 		self.clearHover()
 		if szNew != "":
 			b = self.dBtn[szNew]
-			self.pHost.addPanel("TRSHover", u"", u"", False, False, b[0] + 2, b[1] + 3, b[2] - 4, b[3] - 6, getattr(PanelStyles, HOVER_PANEL), WidgetTypes.WIDGET_GENERAL, b[4], -1)
+			for i in range(HOVER_LAYERS):
+				self.pHost.addPanel("TRSHover" + str(i), u"", u"", False, False, b[0] + 3 - PANEL_PAD, b[1] + 3 - PANEL_PAD, b[2] - 6 + 2 * PANEL_PAD, b[3] - 6 + 2 * PANEL_PAD, getattr(PanelStyles, HOVER_PANEL), WidgetTypes.WIDGET_GENERAL, b[4], -1)
 			self.sHover = szNew
 			self.drawButtonText(szNew) # (the text on top of the panel)
 
@@ -420,8 +425,8 @@ class CvTradeRouteScreen:
 		iBH = 30
 		iBY = iY + (self.ROW_H - iBH) / 2
 		self.drop("TRSv" + szTag)
-		self.addButton("TRSm" + szTag, u"-", False, iX, iBY, 28, iBH, iMinusCode, "4b", -3)
-		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28, iBY, 28, iBH, iPlusCode, "4b", -3)
+		self.addButton("TRSm" + szTag, u"\u2013", False, iX, iBY, 28, iBH, iMinusCode, "3b", 1)
+		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28, iBY, 28, iBH, iPlusCode, "3b", 1)
 		screen.setLabelAt("TRSv" + szTag, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + (self.ROW_H - 22) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 	def refreshRow(self, iSlot):
