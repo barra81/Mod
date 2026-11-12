@@ -46,6 +46,11 @@ HOVER_PANEL = "PANEL_STYLE_MAIN_TAN15"
 HOVER_LAYERS = 6
 # the panels are drawn smaller than the rectangle they get (border of the style): they get the rectangle of the button face enlarged by this
 PANEL_PAD = 2
+# ... wider by PANEL_PAD_X more and lower edge raised by PANEL_CUT_BOTTOM
+PANEL_PAD_X = 3
+PANEL_CUT_BOTTOM = 2
+# the font of all texts (3b = bold; 3: no bold, hopefully with less shadow)
+TEXT_FONT = "3"
 # texts of the buttons: color of a text that is not marked, the offset of the text top to the middle of the button (font 3b: the
 # letters from the top of the I to the bottom of the p are centered in the button)
 TEXT_COLOR = "45,32,18"
@@ -297,9 +302,9 @@ class CvTradeRouteScreen:
 
 		self.iViewX = self.W - 20 - 160
 		screen.addDropDownBoxGFC("TRSView", self.OX + self.iViewX, self.OY + self.H - 44, 160, WidgetTypes.WIDGET_GENERAL, BTN_VIEW, -1, FontTypes.GAME_FONT)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()), 0, 0, True)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_FAV", ()), 1, 1, False)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_MARKED", ()), 2, 2, False)
+		screen.addPullDownString("TRSView", u"<font=" + TEXT_FONT + u">" + localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()) + u"</font>", 0, 0, True)
+		screen.addPullDownString("TRSView", u"<font=" + TEXT_FONT + u">" + localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_FAV", ()) + u"</font>", 1, 1, False)
+		screen.addPullDownString("TRSView", u"<font=" + TEXT_FONT + u">" + localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_MARKED", ()) + u"</font>", 2, 2, False)
 		self.aDrawn.append("TRSView")
 		self.drawRows()
 		self.drawPage()
@@ -316,15 +321,17 @@ class CvTradeRouteScreen:
 			pass
 
 	# a button: blank button of the game, on it the text of the game (placed exactly, yellow when marked); a marked button is lighter
-	def addButton(self, szName, szText, bMark, iX, iY, iW, iH, iCode, szFont = "3b", iDy = 0):
+	def addButton(self, szName, szText, bMark, iX, iY, iW, iH, iCode, szFont = "", iDy = 0):
 		screen = self.pHost
+		if szFont == "":
+			szFont = TEXT_FONT
 		self.removeButton(szName)
 		screen.setButtonGFC(szName, u"", "", iX, iY, iW, iH, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		aLights = []
 		if bMark:
 			for i in range(HILITE_LAYERS):
 				szLight = "TRSb" + str(i) + "_" + szName
-				screen.addPanel(szLight, u"", u"", False, False, iX + 3 - PANEL_PAD, iY + 3 - PANEL_PAD, iW - 6 + 2 * PANEL_PAD, iH - 6 + 2 * PANEL_PAD, getattr(PanelStyles, HILITE_PANEL), WidgetTypes.WIDGET_GENERAL, iCode, -1)
+				screen.addPanel(szLight, u"", u"", False, False, iX + 3 - PANEL_PAD_X, iY + 3 - PANEL_PAD, iW - 6 + 2 * PANEL_PAD_X, iH - 6 + 2 * PANEL_PAD - PANEL_CUT_BOTTOM, getattr(PanelStyles, HILITE_PANEL), WidgetTypes.WIDGET_GENERAL, iCode, -1)
 				aLights.append(szLight)
 		self.dBtn[szName] = [iX, iY, iW, iH, iCode, szText, bMark, szFont, iDy, aLights]
 		self.drawButtonText(szName)
@@ -370,7 +377,7 @@ class CvTradeRouteScreen:
 		if szNew != "":
 			b = self.dBtn[szNew]
 			for i in range(HOVER_LAYERS):
-				self.pHost.addPanel("TRSHover" + str(i), u"", u"", False, False, b[0] + 3 - PANEL_PAD, b[1] + 3 - PANEL_PAD, b[2] - 6 + 2 * PANEL_PAD, b[3] - 6 + 2 * PANEL_PAD, getattr(PanelStyles, HOVER_PANEL), WidgetTypes.WIDGET_GENERAL, b[4], -1)
+				self.pHost.addPanel("TRSHover" + str(i), u"", u"", False, False, b[0] + 3 - PANEL_PAD_X, b[1] + 3 - PANEL_PAD, b[2] - 6 + 2 * PANEL_PAD_X, b[3] - 6 + 2 * PANEL_PAD - PANEL_CUT_BOTTOM, getattr(PanelStyles, HOVER_PANEL), WidgetTypes.WIDGET_GENERAL, b[4], -1)
 			self.sHover = szNew
 			self.drawButtonText(szNew) # (the text on top of the panel)
 
@@ -425,8 +432,8 @@ class CvTradeRouteScreen:
 		iBH = 30
 		iBY = iY + (self.ROW_H - iBH) / 2
 		self.drop("TRSv" + szTag)
-		self.addButton("TRSm" + szTag, u"\u2013", False, iX, iBY, 28, iBH, iMinusCode, "3b", 1)
-		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28, iBY, 28, iBH, iPlusCode, "3b", 1)
+		self.addButton("TRSm" + szTag, u"-", False, iX, iBY, 28, iBH, iMinusCode, "", -1)
+		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28 - 1, iBY, 28, iBH, iPlusCode, "", -1)
 		screen.setLabelAt("TRSv" + szTag, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + (self.ROW_H - 22) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 	def refreshRow(self, iSlot):
