@@ -88,8 +88,8 @@ class CvTransportRoutesOverview:
 				self.dKeys[int(iKey)] = SEARCH_KEY_NAMES[szKey]
 		self.iKeyBack = self.getKeyId("KB_BACKSPACE")
 		self.aKeyAccept = [self.getKeyId("KB_TAB"), self.getKeyId("KB_RETURN"), self.getKeyId("KB_RIGHT")]
-		self.iDomainFilter = 0
-		self.iAssignFilter = 0
+		self.iDomainFilter = 0 # standard filters: land and sea, only transports with trade routes
+		self.iAssignFilter = 1
 		self.szQuery = u""
 		self.szSuggestion = u""
 
@@ -105,7 +105,7 @@ class CvTransportRoutesOverview:
 		self.NAV_Y = self.EXIT_Y - 42
 		self.TABLE_HEIGHT = self.NAV_Y - self.TABLE_Y - 8
 
-		screen.setRenderInterfaceOnly(False)
+		screen.setRenderInterfaceOnly(True) # as the screens that get keyboard input (the search field)
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
 		screen.setDimensions(0, 0, self.XResolution, self.YResolution)
 		screen.showWindowBackground(False)
@@ -161,8 +161,8 @@ class CvTransportRoutesOverview:
 		screen.addPullDownString("TRODomain", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_LAND", ()), 1, 1, False)
 		screen.addPullDownString("TRODomain", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_SEA", ()), 2, 2, False)
 		screen.addDropDownBoxGFC("TROAssign", self.MARGIN + 240, iY, 300, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
-		screen.addPullDownString("TROAssign", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_ALL", ()), 0, 0, True)
-		screen.addPullDownString("TROAssign", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_WITH_ROUTES", ()), 1, 1, False)
+		screen.addPullDownString("TROAssign", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_ALL", ()), 0, 0, False)
+		screen.addPullDownString("TROAssign", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_WITH_ROUTES", ()), 1, 1, True)
 		screen.addPullDownString("TROAssign", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_WITHOUT_ROUTES", ()), 2, 2, False)
 		# the search field (typed with the keyboard, the rest of the best match is suggested in grey)
 		self.iSearchX = self.MARGIN + 560

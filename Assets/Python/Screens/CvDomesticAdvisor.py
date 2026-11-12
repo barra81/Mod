@@ -984,12 +984,10 @@ class CvDomesticAdvisor:
 		screen.hide( szTableName )
 
 		# WTP: button for the overview of the trade route assignments of all transports (symbol of the automate trade routes command), in the lower row after the tab buttons
-		iOverviewSize = self.iButtonSize
-		iOverviewX = self.X_EXIT - 130 - iOverviewSize
-		screen.setImageButton("TransportOverviewButton", "Art/Interface/Game Hud/Actions/automate_city_high_res.dds", iOverviewX, self.Y_LOWER_ROW, iOverviewSize, iOverviewSize, WidgetTypes.WIDGET_GENERAL, 10002, -1)
+		iOverviewSize = self.iButtonSize * 4 / 3 # the symbol has more empty border than the round tab buttons
+		iOverviewX = self.nScreenWidth * 843 / 1000
+		screen.setImageButton("TransportOverviewButton", "Art/Interface/Game Hud/Actions/automate_city_high_res.dds", iOverviewX, self.Y_LOWER_ROW + self.iButtonSize / 2 - iOverviewSize / 2, iOverviewSize, iOverviewSize, WidgetTypes.WIDGET_GENERAL, 10002, -1)
 		screen.show("TransportOverviewButton")
-		screen.setLabel("TransportOverviewLabel", "Background", u"<font=3>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_BUTTON", ()) + u"</font>", CvUtil.FONT_RIGHT_JUSTIFY, iOverviewX - 10, self.Y_LOWER_ROW + 20, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, 10002, -1)
-		screen.show("TransportOverviewLabel")
 
 		screen.setTableColumnHeader( szTableName, 0, localText.getText("TXT_KEY_SOURCE", ()), (150 * self.nTableWidth) / self.nNormalizedTableWidth)
 		screen.setTableColumnHeader( szTableName, 1, localText.getText("TXT_KEY_DESTINATION", ()), (150 * self.nTableWidth) / self.nNormalizedTableWidth)
@@ -1056,7 +1054,6 @@ class CvDomesticAdvisor:
 						screen.hide(self.StatePages[self.CurrentState][self.CurrentPage] + "ListBackground")
 						if self.CurrentState == self.TRADEROUTE_STATE:
 							screen.hide("TransportOverviewButton")
-							screen.hide("TransportOverviewLabel")
 						if self.CurrentState not in self.YieldPages or iData not in self.YieldPages:
 							self.CurrentPage = 0
 						self.CurrentState = iData
@@ -1209,6 +1206,8 @@ class CvDomesticAdvisor:
 		iScreen, eWidgetType, iData1, iData2, bOption = argsList
 
 		if eWidgetType == WidgetTypes.WIDGET_GENERAL:
+			if iData1 == 10002:
+				return localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_BUTTON", ())
 			if iData1 == self.GENERAL_STATE:
 				return localText.getText("TXT_KEY_DOMESTIC_ADVISOR_STATE_GENERAL", ())
 			elif iData1 == self.DOMESTIC_DEMAND_STATE:
