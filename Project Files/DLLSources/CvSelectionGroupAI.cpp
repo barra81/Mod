@@ -916,6 +916,19 @@ int CvSelectionGroupAI::getPartialYieldSpace(YieldTypes eYield) const
 	return iSpace;
 }
 
+// a detour only counts as worth it if at least this share of a slot is missing in a full transport's partly filled slots
+static const int WTP_DETOUR_MIN_SLOT_PERCENT = 20;
+// a detour of a transport to load more is only worth it if it has a free slot, or if at least 20% of a slot (of the game speed dependent
+// capacity) is still missing in its partly filled slots
+bool CvSelectionGroupAI::isDetourWorthwhile() const
+{
+	if (!isFull())
+	{
+		return true;
+	}
+	return getPartialYieldSpace(NO_YIELD) * 100 >= WTP_DETOUR_MIN_SLOT_PERCENT * GC.getGameINLINE().getCargoYieldCapacity();
+}
+
 bool CvSelectionGroupAI::canLoadYieldHere(YieldTypes eYield) const
 {
 	CLLNode<IDInfo>* pUnitNode = headUnitNode();
@@ -1731,7 +1744,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				}
 				int iFillToBest = 0;
 				if (bFillOk && WTP_getRoutePathCached(this, pFillCity, pBestCity, iFillFlags, bIgnoreDanger, &iFillToBest)
-					&& iToFill + iFillToBest <= iToBest + WTP_FILL_HOLD_MAX_DETOUR_TURNS)
+					&& (iToFill + iFillToBest <= iToBest || (iToFill + iFillToBest <= iToBest + WTP_FILL_HOLD_MAX_DETOUR_TURNS && isDetourWorthwhile())))
 				{
 					aFillDestinations.insert(kFillDestination);
 				}
@@ -1939,7 +1952,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				{
 					// not more than the free space can be loaded
 					const int iCandidateAmount = std::min(itPickup->second, iFreeCapacity);
-					if (iCandidateAmount < iMinPickup)
+					if (iCandidateAmount < 1)
 					{
 						continue;
 					}
@@ -1967,6 +1980,11 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					{
 						const int iDetour = std::max(0, iToCandidate + iCandidateToTarget - iToTarget);
 						// the shorter detour wins, with the same detour the larger load
+						// without a detour every amount counts, with a detour it has to be a quarter of a slot and the detour has to be worth it
+						if (iDetour > 0 && (iCandidateAmount < iMinPickup || !isDetourWorthwhile()))
+						{
+							continue;
+						}
 						if (iDetour <= iDetourLeft && (iDetour < iBestPickupDetour || (iDetour == iBestPickupDetour && iCandidateAmount > iBestPickupAmount)))
 						{
 							iBestPickupDetour = iDetour;

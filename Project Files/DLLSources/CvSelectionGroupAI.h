@@ -71,6 +71,8 @@ public:
 	int getPartialYieldSpace(YieldTypes eYield) const;
 	// WTP: true if the group can load this yield here (free slot, or room in a partly filled slot of it)
 	bool canLoadYieldHere(YieldTypes eYield) const;
+	// WTP: a detour for loading is only worth it if a free slot is left or at least 20% of a slot is missing in the partly filled slots
+	bool isDetourWorthwhile() const;
 
 	bool AI_tradeRoutes();
 
