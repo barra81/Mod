@@ -34,8 +34,8 @@ class CvYieldAmountScreen:
 	def __init__(self):
 		self.SCREEN_NAME = "YieldAmountScreen"
 		self.BACKGROUND_ID = "YAMBackground"
-		self.W = 340
-		self.H = 190
+		self.W = 380
+		self.H = 200
 		self.iYield = -1
 		self.iUnit = -1
 		self.iMax = 0
@@ -115,6 +115,12 @@ class CvYieldAmountScreen:
 		iYRes = screen.getYResolution()
 		iX = (iXRes - self.W) / 2
 		iY = (iYRes - self.H) / 2
+		# where the dialog is drawn: in the diplomacy its bottom is at the lower edge of the portrait, in the cities (and on the map)
+		# just above the goods bar, in the harbors it is moved up by more than its height
+		if iFromPlayer >= 0:
+			iY = int(iYRes * 0.585) - self.H
+		else:
+			iY = int(iYRes * 0.84) - self.H
 		if self.pHost == None:
 			self.OX = 0
 			self.OY = 0
@@ -125,22 +131,22 @@ class CvYieldAmountScreen:
 		else:
 			screen = self.pHost
 			self.OX = (screen.getXResolution() - self.W) / 2
-			self.OY = (screen.getYResolution() - self.H) / 2
+			self.OY = max(0, (screen.getYResolution() - self.H) / 2 - self.H * 13 / 10)
 		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, self.OX, self.OY, self.W, self.H, PanelStyles.PANEL_STYLE_MAIN, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		szTitle = localText.getText("TXT_KEY_SELECT_YIELD_POPUP", (gc.getYieldInfo(iYield).getDescription(),))
-		screen.setLabelAt("YAMTitle", self.BACKGROUND_ID, u"<font=3>" + szTitle + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 14, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		screen.addPanel("YAMValueBG", u"", u"", False, False, self.OX + self.W / 2 - 70, self.OY + 36, 140, 36, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabelAt("YAMTitle", self.BACKGROUND_ID, u"<font=3>" + szTitle + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 24, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.addPanel("YAMValueBG", u"", u"", False, False, self.OX + self.W / 2 - 70, self.OY + 44, 140, 36, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		iButtonW = 86
 		iGap = 10
 		iRowX = (self.W - 3 * iButtonW - 2 * iGap) / 2
-		screen.setButtonGFC("YAMMinus", u"<font=2>-" + unicode(STEP) + u"</font>", "", self.OX + iRowX, self.OY + 84, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_MINUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC("YAMPlus", u"<font=2>+" + unicode(STEP) + u"</font>", "", self.OX + iRowX + iButtonW + iGap, self.OY + 84, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_PLUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC("YAMMax", u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_MAX", ()) + u"</font>", "", self.OX + iRowX + 2 * (iButtonW + iGap), self.OY + 84, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_MAX, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMMinus", u"<font=2>-" + unicode(STEP) + u"</font>", "", self.OX + iRowX, self.OY + 92, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_MINUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMPlus", u"<font=2>+" + unicode(STEP) + u"</font>", "", self.OX + iRowX + iButtonW + iGap, self.OY + 92, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_PLUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMMax", u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_MAX", ()) + u"</font>", "", self.OX + iRowX + 2 * (iButtonW + iGap), self.OY + 92, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_MAX, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 
-		screen.setLabelAt("YAMHintA", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_HINT1", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 120, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		screen.setLabelAt("YAMHintB", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_HINT2", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 138, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabelAt("YAMHintA", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_HINT1", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 130, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabelAt("YAMHintB", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_HINT2", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 148, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		screen.setButtonGFC("YAMOk", u"<font=2>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		screen.setButtonGFC("YAMCancel", u"<font=2>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
@@ -165,7 +171,7 @@ class CvYieldAmountScreen:
 			szText = u"<color=255,220,100>" + self.szValue + u"</color>"
 		else:
 			szText = u"<color=255,255,255>" + self.szValue + u"</color><color=255,220,100>|</color>"
-		screen.setLabelAt("YAMValue", self.BACKGROUND_ID, u"<font=3b>" + szText + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 42, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabelAt("YAMValue", self.BACKGROUND_ID, u"<font=3b>" + szText + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 50, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.show("YAMValue")
 
 	def getValue(self):
