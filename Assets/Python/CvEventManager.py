@@ -1049,6 +1049,12 @@ class CvEventManager:
 		iMax = argsList[2]
 		if iMax <= 0:
 			return
+		# WTP: the amount dialog with keys and mouse wheel (CvYieldAmountScreen), the popup below if it cannot be opened
+		try:
+			if CvScreensInterface.yieldAmountScreen.open(iYield, -1, iMax, -1, False, iFromPlayer) != 0:
+				return
+		except:
+			pass
 		popup = CyPopup(CvUtil.EventDiploYieldAmount, EventContextTypes.EVENTCONTEXT_ALL, True)
 		popup.setUserData((iFromPlayer, iYield))
 		popup.setBodyString(localText.getText("TXT_KEY_SELECT_YIELD_POPUP", (gc.getYieldInfo(iYield).getTextKey(),)), CvUtil.FONT_LEFT_JUSTIFY)

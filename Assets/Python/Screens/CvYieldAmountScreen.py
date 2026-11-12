@@ -202,7 +202,7 @@ class CvYieldAmountScreen:
 			iAmount = max(1, min(self.iMax, self.getValue()))
 			try:
 				if self.iFromPlayer >= 0:
-					CyGame().sendDiploYieldAmount(self.iYield, iAmount, self.iFromPlayer)
+					gc.getPlayer(self.iFromPlayer).setDiploYieldAmount(self.iYield, iAmount) # (as the popup of the diplomacy did)
 				else:
 					CyGame().sendYieldTransfer(self.iUnit, self.iData3, self.iYield, iAmount, self.bPlayerAction)
 			except:
