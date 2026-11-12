@@ -140,9 +140,9 @@ class CvYieldAmountScreen:
 				# just above the goods bar; in the city screen at the right, up to the golden frame of the panels there
 				self.OY = int(screen.getYResolution() * 0.84) - self.H
 				if CyInterface().isCityScreenUp():
-					self.OX = int(screen.getXResolution() * 0.59) - self.W
+					self.OX = int(screen.getXResolution() * 0.6) - self.W
 			else:
-				self.OY = int(screen.getYResolution() * 0.36) # the harbors: at the height of the landing stage
+				self.OY = int(screen.getYResolution() * 0.305) # the harbors: a little above the landing stage
 		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, self.OX, self.OY, self.W, self.H, PanelStyles.PANEL_STYLE_MAIN, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		szTitle = localText.getText("TXT_KEY_SELECT_YIELD_POPUP", (gc.getYieldInfo(iYield).getDescription(),))
@@ -162,11 +162,22 @@ class CvYieldAmountScreen:
 		screen.setButtonGFC("YAMOk", u"<font=2>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		screen.setButtonGFC("YAMCancel", u"<font=2>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		self.drawValue()
+		self.refreshView()
 		try:
 			CyGame().setWheelCapture(True)
 		except:
 			pass
 		return 1
+
+	def refreshView(self):
+		# ask the interface to redraw the parts that show artifacts (minimap, ovals) in the city screen
+		if not self.bHostMain:
+			return
+		for szBit in ("Minimap_Section_DIRTY_BIT", "MiscButtons_DIRTY_BIT", "Help_DIRTY_BIT", "InfoPane_DIRTY_BIT"):
+			try:
+				CyInterface().setDirty(getattr(InterfaceDirtyBits, szBit), True)
+			except:
+				pass
 
 	def getDrawScreen(self):
 		if self.pHost != None:
@@ -236,6 +247,7 @@ class CvYieldAmountScreen:
 			except:
 				import traceback
 				logYield(traceback.format_exc())
+			self.refreshView()
 			self.pHost = None
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
