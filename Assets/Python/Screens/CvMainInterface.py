@@ -211,6 +211,8 @@ GO_TO_CITY = 1003
 
 # Achievements START
 ACHIEVE_ADVISOR_SCREEN_MI = 4200
+WTP_CYCLE_PREV = 4300 # arrows above the R / C button: the previous / next automated transport (data2: the automate type)
+WTP_CYCLE_NEXT = 4301
 # Achievements END
 
 # R&R, Robert Surcouf VET NewCapacity Help - Start
@@ -1819,6 +1821,53 @@ class CvMainInterface:
 			self.logPort("isOwnShipInPort failed: " + str(sys.exc_info()[1]))
 		return False
 
+	# WTP: the automate type a HUD button stands for (R button: trade routes, C button: full automation), -1 for other buttons
+	def getAutomateTypeOfButton(self, iAction):
+		try:
+			szButton = gc.getActionInfo(iAction).getButton().lower()
+			if "automate_city_high_res" in szButton:
+				return int(AutomateTypes.AUTOMATE_TRANSPORT_ROUTES)
+			if "automate_transport_high_res" in szButton:
+				return int(AutomateTypes.AUTOMATE_TRANSPORT_FULL)
+		except:
+			pass
+		return -1
+
+	# WTP: the own units (not in a ship) automated with this type, sorted by id
+	def getAutomatedUnits(self, iType):
+		aUnits = []
+		try:
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			(pUnit, iter) = pPlayer.firstUnit()
+			while (pUnit):
+				if not pUnit.isCargo() and not pUnit.isDelayedDeath():
+					if int(pUnit.getGroup().getAutomateType()) == iType:
+						aUnits.append(pUnit.getID())
+				(pUnit, iter) = pPlayer.nextUnit(iter)
+		except:
+			pass
+		aUnits.sort()
+		return aUnits
+
+	# WTP: select and center the next / previous transport of the list (the arrows above the R / C button)
+	def cycleAutomated(self, iDirection, iType):
+		try:
+			aUnits = self.getAutomatedUnits(iType)
+			if len(aUnits) == 0:
+				return
+			pCurrent = CyInterface().getHeadSelectedUnit()
+			iIndex = -1
+			if pCurrent != None and not pCurrent.isNone() and pCurrent.getID() in aUnits:
+				iIndex = (aUnits.index(pCurrent.getID()) + iDirection) % len(aUnits)
+			else:
+				iIndex = 0
+			pUnit = gc.getPlayer(gc.getGame().getActivePlayer()).getUnit(aUnits[iIndex])
+			if pUnit != None and not pUnit.isNone():
+				CyInterface().selectUnit(pUnit, True, False, True)
+				pUnit.centerCamera()
+		except:
+			pass
+
 	# WTP: is the selected transport automated the way this button does it? R button (trade routes) / Shift+Alt+C button (full automation)
 	def isAutomateMarked(self, iAction, pUnit):
 		try:
@@ -2147,6 +2196,8 @@ class CvMainInterface:
 					ActionButtonList = []
 					for iRing in range(40):
 						screen.deleteWidget("WtpPortRing" + str(iRing))
+					screen.deleteWidget("WtpCycleLeft")
+					screen.deleteWidget("WtpCycleRight")
 					for i in actions:
 						if CyInterface().canHandleAction(i, True):
 							Xcord = ACTION_BUTTON_X_BEGIN - iCount * ACTION_BUTTON_X_STEP - LARGE_BUTTON_SIZE
@@ -2168,6 +2219,16 @@ class CvMainInterface:
 								screen.addDDSGFC(szRing, "Art/Interface/Game Hud/Actions/port_ring.dds", int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)
 								screen.setHitTest(szRing, HitTestTypes.HITTEST_NOHIT)
 								ActionButtonList.append(szRing)
+								if self.isAutomateMarked(i, pHeadSelectedUnit):
+									# arrows above the button: cycle through the other transports automated the same way (R: trade routes, C: full automation)
+									iCycleType = self.getAutomateTypeOfButton(i)
+									if len(self.getAutomatedUnits(iCycleType)) > 1:
+										iArrow = LARGE_BUTTON_SIZE * 3 / 4
+										iArrowY = int(Ycord) - LARGE_BUTTON_SIZE - iArrow
+										screen.setImageButton("WtpCycleLeft", ArtFileMgr.getInterfaceArtInfo("INTERFACE_CITY_LEFT_ARROW").getPath(), int(Xcord) - iArrow - 2, iArrowY, iArrow, iArrow, WidgetTypes.WIDGET_GENERAL, WTP_CYCLE_PREV, iCycleType)
+										screen.setImageButton("WtpCycleRight", ArtFileMgr.getInterfaceArtInfo("INTERFACE_CITY_RIGHT_ARROW").getPath(), int(Xcord) + 2, iArrowY, iArrow, iArrow, WidgetTypes.WIDGET_GENERAL, WTP_CYCLE_NEXT, iCycleType)
+										ActionButtonList.append("WtpCycleLeft")
+										ActionButtonList.append("WtpCycleRight")
 							ActionButtonList.append(szName)
 
 							iCount += 1
@@ -3840,6 +3901,12 @@ class CvMainInterface:
 				MAP_MANAGMENT_PANEL_UP = True
 				AUTOMATION_MANAGMENT_PANEL_UP, BUILDING_MANAGMENT_PANEL_UP = False, False
 				self.updateSelectionButtons()
+
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and (inputClass.getData1() == WTP_CYCLE_PREV or inputClass.getData1() == WTP_CYCLE_NEXT)):
+				if inputClass.getData1() == WTP_CYCLE_PREV:
+					self.cycleAutomated(-1, inputClass.getData2())
+				else:
+					self.cycleAutomated(1, inputClass.getData2())
 
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_CLOSE_SCREEN):
 				CyInterface().clearSelectedCities()
