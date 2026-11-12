@@ -3700,7 +3700,7 @@ void CvSelectionGroup::setAutomateType(AutomateTypes eNewValue, bool bImplicit)
 
 		// WTP: a transport automated by the player while selected stays selected (the game does not jump on to the next unit)
 		if ((eNewValue == AUTOMATE_TRANSPORT_FULL || eNewValue == AUTOMATE_TRANSPORT_ROUTES) && getHeadUnit() != NULL
-			&& isHuman() && getOwnerINLINE() == GC.getGameINLINE().getActivePlayer() && getHeadUnit()->IsSelected())
+			&& isHuman() && getOwnerINLINE() == GC.getGameINLINE().getActivePlayer() && IsSelected())
 		{
 			GC.getGameINLINE().keepSelectedAutomated(getHeadUnit()->getID());
 		}
