@@ -35,6 +35,46 @@
 		<Hungarian>Minden körben a kormányzó megvizsgálja, hogy mit lenne a legcélszerűbb előállítani. Könnyedén megváltoztathatja a termelést, hogy a lehető legjobbat hozza ki a helyzetből, ha valami megváltozik.[PARAGRAPH:2]Megjegyzés: a kéréseid csak irányelvek. Ha a jövőbeni változások miatt a kért áruk nem lesznek elérhetők, a kormányzó átállítja a termelést a lehető legjobbra. Ha a kérésed később újra teljesíthetővé válik, a kormányzó emlékezni fog rá és folytatja a termelést.</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_POPUP_IMPORT_LAND</Tag>
+		<English>Land</English>
+		<German>Land</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_IMPORT_LAND_HELP</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Land transports only[COLOR_REVERT][PARAGRAPH:2]The goods are requested by land transports only. The route is invisible for ships. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Nur Landtransporter[COLOR_REVERT][PARAGRAPH:2]Die Ware wird nur von Landtransportern angefordert. Für Schiffe ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_IMPORT_SEA</Tag>
+		<English>Sea</English>
+		<German>See</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_IMPORT_SEA_HELP</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Ships only[COLOR_REVERT][PARAGRAPH:2]The goods are requested by ships only. The route is invisible for land transports. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Nur Schiffe[COLOR_REVERT][PARAGRAPH:2]Die Ware wird nur von Schiffen angefordert. Für Landtransporter ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_EXPORT_LAND</Tag>
+		<English>Land</English>
+		<German>Land</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_EXPORT_LAND_HELP</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Land transports only[COLOR_REVERT][PARAGRAPH:2]The goods are offered to land transports only. The route is invisible for ships. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Nur Landtransporter[COLOR_REVERT][PARAGRAPH:2]Die Ware wird nur Landtransportern angeboten. Für Schiffe ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_EXPORT_SEA</Tag>
+		<English>Sea</English>
+		<German>See</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_EXPORT_SEA_HELP</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Ships only[COLOR_REVERT][PARAGRAPH:2]The goods are offered to ships only. The route is invisible for land transports. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Nur Schiffe[COLOR_REVERT][PARAGRAPH:2]Die Ware wird nur Schiffen angeboten. Für Landtransporter ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_TITLE</Tag>
 		<English>[COLOR_SELECTED_TEXT]%s1_city[COLOR_REVERT][PARAGRAPH:2]Select imports, exports, minimum and maximum goods stored (Read Colopedia's concept page [COLOR_HIGHLIGHT_TEXT]Transport Automation[COLOR_REVERT] to learn how to use this.) :[NEWLINE]</English>
 		<Portuguese>[COLOR_SELECTED_TEXT]%s1_city[COLOR_REVERT][PARAGRAPH:2]Selecione importações, exportações, mínimo e máximo de mercadorias armazenadas (leia a página conceitual da Colopedia [COLOR_HIGHLIGHT_TEXT]Automação de transporte[COLOR_REVERT] para aprender como usar isso.) :[NEWLINE]</Portuguese>

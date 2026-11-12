@@ -1053,6 +1053,10 @@ protected:
 	EnumMap<YieldTypes, bool> m_em_bTradeExports;
 	EnumMap<YieldTypes, bool> m_em_bTradeImportsMaintain;
 	EnumMap<YieldTypes, bool> m_em_bTradeAutoExport;
+	// WTP: the import / export of a yield only for land or only for sea transports: bit 1 = land only, bit 2 = sea only,
+	// none or both set = both kinds of transports (like before)
+	EnumMap<YieldTypes, unsigned short> m_em_iTradeImportDomains;
+	EnumMap<YieldTypes, unsigned short> m_em_iTradeExportDomains;
 	EnumMap<YieldTypes, unsigned short> m_em_iTradeMaxThreshold;// R&R mod, vetiarvind, max yield import limit
 	EnumMap<YieldTypes, unsigned short> m_em_iTradeThreshold;
 
@@ -1068,6 +1072,14 @@ protected:
 	// auto traderoute - start - Nightinggale
 public:
 	bool isAutoExport(YieldTypes eYield) const {return m_em_bTradeAutoExport.get(eYield);};
+	// WTP: land only / sea only imports and exports (see m_em_iTradeImportDomains)
+	int getImportDomains(YieldTypes eYield) const { return m_em_iTradeImportDomains.get(eYield); }
+	int getExportDomains(YieldTypes eYield) const { return m_em_iTradeExportDomains.get(eYield); }
+	void setImportDomains(YieldTypes eYield, int iDomains);
+	void setExportDomains(YieldTypes eYield, int iDomains);
+	bool isImportAllowedForDomain(YieldTypes eYield, DomainTypes eDomain) const;
+	bool isExportAllowedForDomain(YieldTypes eYield, DomainTypes eDomain) const;
+	int getTradeRouteTaskData(YieldTypes eYield) const; // the yield with the land / sea settings, for TASK_YIELD_TRADEROUTE
 protected:
 	void setAutoExport(YieldTypes eYield, bool bExport);
 	void doAutoExport(YieldTypes eYield);

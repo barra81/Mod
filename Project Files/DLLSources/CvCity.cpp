@@ -337,6 +337,8 @@ void CvCity::uninit()
 	// transport feeder - start - Nightinggale
 	m_em_bTradeImportsMaintain.reset();
 	// transport feeder - end - Nightinggale
+	m_em_iTradeImportDomains.reset(); // WTP
+	m_em_iTradeExportDomains.reset(); // WTP
 }
 
 // FUNCTION: reset()
@@ -966,6 +968,10 @@ void CvCity::doTask(TaskTypes eTask, int iData1, int iData2, bool bOption, bool 
 
 	// transport feeder - start - Nightinggale
 	case TASK_YIELD_TRADEROUTE:
+		// WTP: iData1 holds the yield (lowest 8 bits), the land / sea settings of the import (bits 8-9) and of the export (bits 10-11)
+		setImportDomains((YieldTypes)(iData1 & 0xFF), (iData1 >> 8) & 3);
+		setExportDomains((YieldTypes)(iData1 & 0xFF), (iData1 >> 10) & 3);
+		iData1 &= 0xFF;
 		setAutoExport((YieldTypes)iData1, bCtrl); // auto traderoute - Nightinggale
 
 		// change all traderoute settings for a single yield in one go as setImportsMaintain() needs to be called after updating the other settings
@@ -14597,6 +14603,52 @@ void CvCity::setAutoThresholdCache()
 // transport feeder - end - Nightinggale
 
 // auto traderoute - start - Nightinggale
+// WTP: land only / sea only imports and exports
+void CvCity::setImportDomains(YieldTypes eYield, int iDomains)
+{
+	m_em_iTradeImportDomains.set(eYield, (unsigned short)(iDomains & 3));
+}
+
+void CvCity::setExportDomains(YieldTypes eYield, int iDomains)
+{
+	m_em_iTradeExportDomains.set(eYield, (unsigned short)(iDomains & 3));
+}
+
+namespace
+{
+	bool isDomainAllowed(int iDomains, DomainTypes eDomain)
+	{
+		if (iDomains == 0 || iDomains == 3)
+		{
+			return true;
+		}
+		if (eDomain == DOMAIN_LAND)
+		{
+			return (iDomains & 1) != 0;
+		}
+		if (eDomain == DOMAIN_SEA)
+		{
+			return (iDomains & 2) != 0;
+		}
+		return true;
+	}
+}
+
+bool CvCity::isImportAllowedForDomain(YieldTypes eYield, DomainTypes eDomain) const
+{
+	return isDomainAllowed(m_em_iTradeImportDomains.get(eYield), eDomain);
+}
+
+bool CvCity::isExportAllowedForDomain(YieldTypes eYield, DomainTypes eDomain) const
+{
+	return isDomainAllowed(m_em_iTradeExportDomains.get(eYield), eDomain);
+}
+
+int CvCity::getTradeRouteTaskData(YieldTypes eYield) const
+{
+	return ((int)eYield & 0xFF) | ((m_em_iTradeImportDomains.get(eYield) & 3) << 8) | ((m_em_iTradeExportDomains.get(eYield) & 3) << 10);
+}
+
 void CvCity::setAutoExport(YieldTypes eYield, bool bExport)
 {
 	m_em_bTradeAutoExport.set(eYield, bExport);
@@ -14649,7 +14701,7 @@ void CvCity::handleAutoTraderouteSetup(bool bReset, bool bImportAll, bool bAutoE
 				int iBuffer = iMaintainLevel & 0xFFFF; // lowest 16 bits
 				iBuffer |= (iImportLimitLevel & 0xFFFF) << 16; // next 16 bits
 
-				doTask(TASK_YIELD_TRADEROUTE, eYield, iBuffer, bImport, bExport, bMaintainImport, bAutoExport);
+				doTask(TASK_YIELD_TRADEROUTE, getTradeRouteTaskData(eYield), iBuffer, bImport, bExport, bMaintainImport, bAutoExport);
 			}
 		}
 	}
@@ -16376,5 +16428,5 @@ void CvCity::setImportFeeder(YieldTypes eYield, int iMaintainLevel, int iImportL
 	NetworkDataTradeRouteInts buffer;
 	buffer.iImportLimitLevel = (unsigned short)iImportLimit;
 	buffer.iMaintainLevel = (unsigned short)iMaintainLevel;
-	doTask(TASK_YIELD_TRADEROUTE, eYield, buffer.iNetwork, true, isExport(eYield), true, isAutoExport(eYield));
+	doTask(TASK_YIELD_TRADEROUTE, getTradeRouteTaskData(eYield), buffer.iNetwork, true, isExport(eYield), true, isAutoExport(eYield));
 }

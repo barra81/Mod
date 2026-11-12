@@ -11523,6 +11523,10 @@ std::vector<CvTradeRoute*> CvPlayer::getViableTradeRoutesForUnit(const CvUnit& k
 		if (!pRoute)
 			continue;
 
+		// WTP: the colonies can restrict the import and export of a yield to land or to sea transports
+		if (!pRoute->isAllowedForDomain(kUnit.getDomainType()))
+			continue;
+
 		// Build key
 		IDInfo first, second;
 		canonicalizePair(pRoute->getSourceCity(), pRoute->getDestinationCity(), first, second);

@@ -974,6 +974,12 @@ bool CvSelectionGroupAI::canLoadYieldHere(YieldTypes eYield) const
 
 void CvSelectionGroupAI::processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo, int>& cityValues, std::vector<CvTradeRoute*>& routes, std::vector<int>& routeValues, std::vector<bool>& yieldsDelivered, std::vector<bool>& yieldsToUnload)
 {
+	// WTP: the colonies can restrict the import and export of a yield to land or to sea transports
+	if (!pRoute->isAllowedForDomain(getDomainType()))
+	{
+		return;
+	}
+
 	routes.push_back(pRoute);
 	routeValues.push_back(0);
 

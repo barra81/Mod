@@ -11852,6 +11852,10 @@ bool CvUnit::canAssignTradeRoute(int iRouteID, bool bReusePath) const
 	if (pRoute == NULL || pRoute->getYield() == NO_YIELD)
 		return false;
 
+	// WTP: the colonies can restrict the import and export of a yield to land or to sea transports
+	if (!pRoute->isAllowedForDomain(getDomainType()))
+		return false;
+
 	const IDInfo& kSrc = pRoute->getSourceCity();
 	const IDInfo& kDst = pRoute->getDestinationCity();
 
