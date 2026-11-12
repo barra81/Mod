@@ -67,6 +67,10 @@ public:
 	void AI_groupBombard();
 
 	int AI_getYieldsLoaded(short* piYields) const;
+	// WTP: free space in partly filled slots of a yield on board (a new load of the same yield is merged into them); NO_YIELD: of all yields
+	int getPartialYieldSpace(YieldTypes eYield) const;
+	// WTP: true if the group can load this yield here (free slot, or room in a partly filled slot of it)
+	bool canLoadYieldHere(YieldTypes eYield) const;
 
 	bool AI_tradeRoutes();
 
