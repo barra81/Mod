@@ -604,6 +604,11 @@ def handleInput (argsList):
 	' handle input is called when a screen is up '
 	inputClass = PyScreenInput.ScreenInput(argsList)
 
+	# WTP: the buttons of the amount dialog when it is drawn on a harbor screen
+	if (yieldAmountScreen.isOpen() and yieldAmountScreen.isEmbedded()):
+		if (yieldAmountScreen.handleEmbeddedInput(inputClass)):
+			return 0
+
 	# allows overides for mods
 	ret = CvScreenUtilsInterface.getScreenUtils().handleInput( (inputClass.getPythonFile(),inputClass) )
 
@@ -623,6 +628,10 @@ def update (argsList):
 	if (HandleInputMap.has_key(argsList[0])):
 		screen = HandleInputMap.get(argsList[0])
 		screen.update(argsList[1])
+
+	# WTP: the mouse wheel of the amount dialog when it is drawn on a harbor screen
+	if (yieldAmountScreen.isOpen() and yieldAmountScreen.isEmbedded() and argsList[0] != YIELD_AMOUNT):
+		yieldAmountScreen.update(argsList[1])
 
 # WTP: diplomacy opened from the native info tab of the domestic advisor
 bReturnToDomesticAfterDiplomacy = False

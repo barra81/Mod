@@ -45,7 +45,9 @@ class CvYieldAmountScreen:
 		self.bSelected = True
 		self.bFinished = True
 		self.iLog = 0
-		self.szReturnScreen = None
+		self.pHost = None # the harbor screen (Europe / Africa / Port Royal) the dialog is drawn on, none: an own screen
+		self.OX = 0
+		self.OY = 0
 
 	def getScreen(self):
 		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.YIELD_AMOUNT)
@@ -77,19 +79,19 @@ class CvYieldAmountScreen:
 		self.bFinished = False
 		self.iLog = 0
 
-		# a harbor screen (Europe / Africa / Port Royal) that is open is closed by the game when this screen opens: it is opened
-		# again when the dialog is closed
-		self.szReturnScreen = None
+		# a harbor screen (Europe / Africa / Port Royal) that is open would be closed by the game when another screen opens: the
+		# dialog is drawn on that screen then (a screen of its own is used everywhere else)
+		self.pHost = None
 		try:
 			import CvScreensInterface
 			if CvScreensInterface.europeScreen.getScreen().isActive():
-				self.szReturnScreen = u"showEuropeScreen"
+				self.pHost = CvScreensInterface.europeScreen.getScreen()
 			elif CvScreensInterface.africaScreen.getScreen().isActive():
-				self.szReturnScreen = u"showAfricaScreen"
+				self.pHost = CvScreensInterface.africaScreen.getScreen()
 			elif CvScreensInterface.portroyalScreen.getScreen().isActive():
-				self.szReturnScreen = u"showPortRoyalScreen"
+				self.pHost = CvScreensInterface.portroyalScreen.getScreen()
 		except:
-			pass
+			self.pHost = None
 
 		self.dDigits = {}
 		for i in range(10):
@@ -111,27 +113,34 @@ class CvYieldAmountScreen:
 		iYRes = screen.getYResolution()
 		iX = (iXRes - self.W) / 2
 		iY = (iYRes - self.H) / 2
-		# (no setRenderInterfaceOnly: it would switch off the 3d views of the city screen; the keys come from CvEventManager.onKbdEvent)
-		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
-		screen.setDimensions(iX, iY, self.W, self.H)
-		screen.showWindowBackground(False)
-		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, 0, 0, self.W, self.H, PanelStyles.PANEL_STYLE_MAIN, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		if self.pHost == None:
+			self.OX = 0
+			self.OY = 0
+			# (no setRenderInterfaceOnly: it would switch off the 3d views of the city screen; the keys come from CvEventManager.onKbdEvent)
+			screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
+			screen.setDimensions(iX, iY, self.W, self.H)
+			screen.showWindowBackground(False)
+		else:
+			screen = self.pHost
+			self.OX = (screen.getXResolution() - self.W) / 2
+			self.OY = (screen.getYResolution() - self.H) / 2
+		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, self.OX, self.OY, self.W, self.H, PanelStyles.PANEL_STYLE_MAIN, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		szTitle = localText.getText("TXT_KEY_SELECT_YIELD_POPUP", (gc.getYieldInfo(iYield).getDescription(),))
 		screen.setLabelAt("YAMTitle", self.BACKGROUND_ID, u"<font=3b>" + szTitle + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 28, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		screen.addPanel("YAMValueBG", u"", u"", False, False, self.W / 2 - 120, 62, 240, 60, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.addPanel("YAMValueBG", u"", u"", False, False, self.OX + self.W / 2 - 120, self.OY + 62, 240, 60, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		iButtonW = 130
 		iRowX = (self.W - 3 * iButtonW - 2 * 20) / 2
-		screen.setButtonGFC("YAMMinus", u"<font=3b>-" + unicode(STEP) + u"</font>", "", iRowX, 140, iButtonW, 34, WidgetTypes.WIDGET_GENERAL, BTN_MINUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC("YAMPlus", u"<font=3b>+" + unicode(STEP) + u"</font>", "", iRowX + iButtonW + 20, 140, iButtonW, 34, WidgetTypes.WIDGET_GENERAL, BTN_PLUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC("YAMMax", u"<font=3b>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_MAX", ()) + u"</font>", "", iRowX + 2 * (iButtonW + 20), 140, iButtonW, 34, WidgetTypes.WIDGET_GENERAL, BTN_MAX, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMMinus", u"<font=3b>-" + unicode(STEP) + u"</font>", "", self.OX + iRowX, self.OY + 140, iButtonW, 34, WidgetTypes.WIDGET_GENERAL, BTN_MINUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMPlus", u"<font=3b>+" + unicode(STEP) + u"</font>", "", self.OX + iRowX + iButtonW + 20, self.OY + 140, iButtonW, 34, WidgetTypes.WIDGET_GENERAL, BTN_PLUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMMax", u"<font=3b>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_MAX", ()) + u"</font>", "", self.OX + iRowX + 2 * (iButtonW + 20), self.OY + 140, iButtonW, 34, WidgetTypes.WIDGET_GENERAL, BTN_MAX, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 
 		screen.setLabelAt("YAMHintA", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_HINT1", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 196, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.setLabelAt("YAMHintB", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_HINT2", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 222, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
-		screen.setButtonGFC("YAMOk", u"<font=3b>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.W / 2 - 210, self.H - 62, 200, 36, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC("YAMCancel", u"<font=3b>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.W / 2 + 10, self.H - 62, 200, 36, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMOk", u"<font=3b>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 210, self.OY + self.H - 62, 200, 36, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMCancel", u"<font=3b>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 10, self.OY + self.H - 62, 200, 36, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		self.drawValue()
 		try:
 			CyGame().setWheelCapture(True)
@@ -139,8 +148,16 @@ class CvYieldAmountScreen:
 			pass
 		return 1
 
+	def getDrawScreen(self):
+		if self.pHost != None:
+			return self.pHost
+		return self.getScreen()
+
+	def isEmbedded(self):
+		return self.pHost != None
+
 	def drawValue(self):
-		screen = self.getScreen()
+		screen = self.getDrawScreen()
 		if self.bSelected:
 			szText = u"<color=255,220,100>" + self.szValue + u"</color>"
 		else:
@@ -186,16 +203,17 @@ class CvYieldAmountScreen:
 			except:
 				import traceback
 				logYield(traceback.format_exc())
-		self.getScreen().hideScreen()
-		if self.szReturnScreen != None:
+		if self.pHost == None:
+			self.getScreen().hideScreen()
+		else:
+			# drawn on a harbor screen: the widgets are removed again
 			try:
-				popupInfo = CyPopupInfo()
-				popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
-				popupInfo.setText(self.szReturnScreen)
-				popupInfo.addPopup(gc.getGame().getActivePlayer())
+				for szName in ("YAMValue", "YAMTitle", "YAMHintA", "YAMHintB", "YAMValueBG", "YAMMinus", "YAMPlus", "YAMMax", "YAMOk", "YAMCancel", self.BACKGROUND_ID):
+					self.pHost.deleteWidget(szName)
 			except:
-				pass
-			self.szReturnScreen = None
+				import traceback
+				logYield(traceback.format_exc())
+			self.pHost = None
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
 	def handleKey(self, iKey, bCtrl):
@@ -230,6 +248,17 @@ class CvYieldAmountScreen:
 				self.finish(True)
 		elif iKey == self.iKeyEsc:
 			self.finish(False)
+
+	# the clicks on the buttons of the dialog when it is drawn on a harbor screen (CvScreensInterface.handleInput gives them here);
+	# returns 1 if the event was for the dialog
+	def handleEmbeddedInput(self, inputClass):
+		if int(inputClass.getNotifyCode()) != int(NotifyCode.NOTIFY_CLICKED) or inputClass.getButtonType() != WidgetTypes.WIDGET_GENERAL:
+			return 0
+		iData = inputClass.getData1()
+		if iData < BTN_MINUS or iData > BTN_CANCEL:
+			return 0
+		self.handleInput(inputClass)
+		return 1
 
 	def handleInput(self, inputClass):
 		iCode = int(inputClass.getNotifyCode())
@@ -267,6 +296,9 @@ class CvYieldAmountScreen:
 		if self.bFinished:
 			return 0
 		try:
+			if self.pHost != None and not self.pHost.isActive():
+				self.finish(False) # the harbor screen was closed meanwhile
+				return 0
 			iNotches = CyGame().takeWheelNotches()
 			if iNotches != 0:
 				bCtrl = CyGame().isCtrlKeyPressed()
