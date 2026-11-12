@@ -2705,7 +2705,7 @@ class CvMainInterface:
 					iDigits = len([c for c in unicode(szText) if c.isdigit()])
 					iPileX = 60
 					if iDigits > 5:
-						iPileX = 76 + (iDigits - 6) * 10
+						iPileX = 86 + (iDigits - 6) * 10
 					screen.moveItem("GoldPile", iPileX, 8, -0.3)
 				except:
 					pass
@@ -2714,7 +2714,7 @@ class CvMainInterface:
 				iUpkeep = pPlayer.getMilitaryUpkeep()
 				if (iUpkeep > 0):
 					szText = localText.getText("TXT_KEY_MILITARY_UPKEEP_GOLD_STR", (iUpkeep,))
-					screen.setLabel("MilitaryUpkeepText", "Background", self.setFontSize(szText, 0), CvUtil.FONT_LEFT_JUSTIFY, 17, 42, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel("MilitaryUpkeepText", "Background", self.setFontSize(szText, 0), CvUtil.FONT_LEFT_JUSTIFY, 25, 42, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 ) # 25: the minus sign is in line with the plus sign of the domestic market
 				else:
 					screen.hide("MilitaryUpkeepText")
 				szText = localText.getText("TXT_KEY_DOMESTIC_MARKET_INCOME_STR", (pPlayer.getDomesticMarketIncome(),))
