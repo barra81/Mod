@@ -1814,8 +1814,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRANSPORT_OVERVIEW_SEARCH_HINT</Tag>
-		<English>Type to search a city or goods (Tab completes)</English>
-		<German>Tippen zum Suchen nach Stadt oder Ware (Tab vervollstaendigt)</German>
+		<English>Type to search a city, goods or transport (Tab completes)</English>
+		<German>Tippen zum Suchen nach Stadt, Ware oder Transporter (Tab vervollstaendigt)</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRANSPORT_OVERVIEW_TYPE_ROUTES</Tag>
