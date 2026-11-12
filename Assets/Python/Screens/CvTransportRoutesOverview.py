@@ -16,6 +16,15 @@ BTN_PREV_PAGE = 30003
 BTN_NEXT_PAGE = 30004
 BTN_CLEAR_SEARCH = 30005
 
+# diagnosis of the clicks (WTP_Overview.log in the game folder)
+def logOverview(szText):
+	try:
+		f = open("WTP_Overview.log", "a")
+		f.write(szText + "\n")
+		f.close()
+	except:
+		pass
+
 # the keys of the search field: key name -> character
 SEARCH_KEY_NAMES = {}
 for _c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
@@ -41,6 +50,7 @@ class CvTransportRoutesOverview:
 		self.iNumVisible = 1
 		self.iUsedSlots = 0
 		self.aColumnX = []
+		self.aShownRoutes = {} # slot -> the routes in the order of the rows
 		self.aVisible = [] # indices of the transports that pass the filters
 		self.iDomainFilter = 0 # 0 land and sea, 1 land, 2 sea
 		self.iAssignFilter = 0 # 0 all, 1 only transports with routes, 2 only transports without
@@ -317,6 +327,7 @@ class CvTransportRoutesOverview:
 		szTable = "TROTable" + str(iSlot)
 		screen.addTableControlGFC(szTable, 6, iX, self.TABLE_Y, self.COL_WIDTH, self.TABLE_HEIGHT, True, False, 32, 32, TableStyles.TABLE_STYLE_STANDARD)
 		screen.setStyle(szTable, "Table_StandardCiv_Style")
+		screen.enableSort(szTable)
 		screen.enableSelect(szTable, False)
 		iCityWidth = (self.COL_WIDTH - 32 - 32 - 44 - 24) / 2
 		screen.setTableColumnHeader(szTable, 0, u"id", 0)
@@ -330,6 +341,7 @@ class CvTransportRoutesOverview:
 		for tRoute in dTransport["routes"]:
 			if self.routeMatches(tRoute, szQuery):
 				aRoutes.append(tRoute)
+		self.aShownRoutes[iSlot] = aRoutes
 		for iRow in range(len(aRoutes)):
 			screen.appendTableRow(szTable)
 			screen.setTableRowHeight(szTable, iRow, self.ROW_HEIGHT)
@@ -365,12 +377,17 @@ class CvTransportRoutesOverview:
 			return
 		screen = self.getScreen()
 		szTable = "TROTable" + str(iSlot)
+		iRoute = -1
 		try:
 			iRoute = int(screen.getTableText(szTable, 0, iRow))
 		except:
-			return
+			logOverview("route id of row %d of %s not readable" % (iRow, szTable))
+			aShown = self.aShownRoutes.get(iSlot, [])
+			if iRow >= 0 and iRow < len(aShown):
+				iRoute = aShown[iRow][4]
 		dTransport = self.Transports[self.aVisible[iIndex]]
 		if not dTransport["assigned"].has_key(iRoute):
+			logOverview("route %d of row %d unknown" % (iRoute, iRow))
 			return
 		dTransport["assigned"][iRoute] = not dTransport["assigned"][iRoute]
 		for tRoute in dTransport["routes"]:
@@ -381,6 +398,9 @@ class CvTransportRoutesOverview:
 		self.drawInfo(iSlot, dTransport, iX)
 
 	def handleInput(self, inputClass):
+		iCode = inputClass.getNotifyCode()
+		if iCode != NotifyCode.NOTIFY_CHARACTER and iCode != NotifyCode.NOTIFY_CURSOR_MOVE_ON and iCode != NotifyCode.NOTIFY_CURSOR_MOVE_OFF:
+			logOverview("event code %d name '%s' button %d data %d/%d x %d y %d" % (int(iCode), inputClass.getFunctionName(), int(inputClass.getButtonType()), inputClass.getData1(), inputClass.getData2(), inputClass.getMouseX(), inputClass.getMouseY()))
 		if inputClass.getNotifyCode() == NotifyCode.NOTIFY_CHARACTER:
 			if inputClass.getID() != 0:
 				self.handleKey(inputClass.getData())
@@ -397,9 +417,13 @@ class CvTransportRoutesOverview:
 				self.refresh()
 			elif szName[:8] == "TROTable":
 				try:
+					logOverview("click %s column %d row %d" % (szName, inputClass.getMouseX(), inputClass.getMouseY()))
 					self.toggleRoute(int(szName[8:]), inputClass.getMouseY())
 				except:
-					pass
+					import traceback
+					logOverview(traceback.format_exc())
+			else:
+				logOverview("selected: '%s' x %d y %d" % (szName, inputClass.getMouseX(), inputClass.getMouseY()))
 		elif inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED:
 			if inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL:
 				iData = inputClass.getData1()
