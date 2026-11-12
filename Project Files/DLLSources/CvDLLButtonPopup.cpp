@@ -1260,8 +1260,8 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 						const bool bMaintainImport  = (pPopupReturn->getCheckboxBitfield(eYield)       & 0x02);
 						const bool bAutoExport      = (pPopupReturn->getCheckboxBitfield(eExportYield) & 0x02);
 						// WTP: land only / sea only (bit 1 = land, bit 2 = sea)
-						const int iImportDomains    = ((pPopupReturn->getCheckboxBitfield(eYield)       & 0x04) ? 1 : 0) | ((pPopupReturn->getCheckboxBitfield(eYield)       & 0x08) ? 2 : 0);
-						const int iExportDomains    = ((pPopupReturn->getCheckboxBitfield(eExportYield) & 0x04) ? 1 : 0) | ((pPopupReturn->getCheckboxBitfield(eExportYield) & 0x08) ? 2 : 0);
+						const int iImportDomains    = (pPopupReturn->getCheckboxBitfield(eYield + 2 * NUM_YIELD_TYPES) & 0x03);
+						const int iExportDomains    = (pPopupReturn->getCheckboxBitfield(eExportYield + 2 * NUM_YIELD_TYPES) & 0x03);
 						const int iImportLimitLevel =  pPopupReturn->getSpinnerWidgetValue(eYield);
 						const int iMaintainLevel    =  pPopupReturn->getSpinnerWidgetValue(eExportYield);
 
@@ -4147,8 +4147,6 @@ bool CvDLLButtonPopup::launchYieldImportExportPopup(CvPopup* pPopup, CvPopupInfo
 		return false;
 	}
 	gDLL->getInterfaceIFace()->popupSetBodyString(pPopup, gDLL->getText("TXT_KEY_POPUP_IMPORT_TITLE", pCity->getNameKey()));
-	// WTP: the Land / Sea checkboxes need a wider window: a blank (transparent) image of the wanted width keeps it from being narrower
-	gDLL->getInterfaceIFace()->popupAddDDS(pPopup, "Art/units/Ships_Transport/west_indiaman/ship_sail_emblem_sml_blank.dds", 640, 1);
 
 	// auto traderoute - start - Nightinggale
 	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_IMPORT_CLEAR_ALL").c_str(), NULL, 0);
@@ -4181,16 +4179,21 @@ bool CvDLLButtonPopup::launchYieldImportExportPopup(CvPopup* pPopup, CvPopupInfo
 
 			gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, L"", kYield.getButton(), -1, WIDGET_HELP_YIELD, eYield);
 			gDLL->getInterfaceIFace()->popupCreateSpinBox(pPopup, eYield, L"", pCity->getImportsLimit(eYield), 10, 0xFFFF, 0);
-			gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 4, eYield, WIDGET_GENERAL, POPUP_LAYOUT_TOP);
+gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 2, eYield, WIDGET_GENERAL, POPUP_LAYOUT_TOP);
 			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 0, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_IMPORT") + L"</font>", eYield, gDLL->getText("TXT_KEY_POPUP_IMPORT_IMPORT_HELP").getWithoutFormatting());
 			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 0, pCity->isImport(eYield), eYield);
 			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 1, pCity->getImportsMaintain(eYield), eYield);
 			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 1, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_FEEDER") + L"</font>", eYield, gDLL->getText("TXT_KEY_POPUP_IMPORT_FEEDER_HELP").getWithoutFormatting());
-			// WTP: only for land / only for sea transports
-			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 2, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_LAND") + L"</font>", eYield, gDLL->getText("TXT_KEY_POPUP_IMPORT_LAND_HELP").getWithoutFormatting());
-			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 2, (pCity->getImportDomains(eYield) & 1) != 0, eYield);
-			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 3, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_SEA") + L"</font>", eYield, gDLL->getText("TXT_KEY_POPUP_IMPORT_SEA_HELP").getWithoutFormatting());
-			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 3, (pCity->getImportDomains(eYield) & 2) != 0, eYield);
+			gDLL->getInterfaceIFace()->popupEndLayout(pPopup);
+
+			// WTP: only for land / only for sea transports (own line, the window is not wide enough for a 4th checkbox)
+			const int iImportDomainGroup = eYield + 2 * NUM_YIELD_TYPES;
+			gDLL->getInterfaceIFace()->popupStartHLayout(pPopup, 0);
+			gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 2, iImportDomainGroup, WIDGET_GENERAL, POPUP_LAYOUT_TOP);
+			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 0, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_LAND") + L"</font>", iImportDomainGroup, gDLL->getText("TXT_KEY_POPUP_IMPORT_LAND_HELP").getWithoutFormatting());
+			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 0, (pCity->getImportDomains(eYield) & 1) != 0, iImportDomainGroup);
+			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 1, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_SEA") + L"</font>", iImportDomainGroup, gDLL->getText("TXT_KEY_POPUP_IMPORT_SEA_HELP").getWithoutFormatting());
+			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 1, (pCity->getImportDomains(eYield) & 2) != 0, iImportDomainGroup);
 			gDLL->getInterfaceIFace()->popupEndLayout(pPopup);
 
 			// export
@@ -4200,16 +4203,21 @@ bool CvDLLButtonPopup::launchYieldImportExportPopup(CvPopup* pPopup, CvPopupInfo
 
 			gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, L"", kYield.getButton(), -1, WIDGET_HELP_YIELD, eYield);
 			gDLL->getInterfaceIFace()->popupCreateSpinBox(pPopup, eExportYield, L"", pCity->getMaintainLevel(eYield), 10, 0xFFFF, 0);
-			gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 4, eExportYield, WIDGET_GENERAL, POPUP_LAYOUT_TOP);
+			gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 2, eExportYield, WIDGET_GENERAL, POPUP_LAYOUT_TOP);
 			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 0, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_EXPORT") + L"</font>", eExportYield, gDLL->getText("TXT_KEY_POPUP_IMPORT_EXPORT_HELP").getWithoutFormatting());
 			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 0, pCity->isExport(eYield), eExportYield);
 			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 1, pCity->isAutoExport(eYield), eExportYield);
 			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 1, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_IMPORT_AUTO_EXPORT") + L"</font>", eExportYield, gDLL->getText("TXT_KEY_POPUP_IMPORT_AUTO_EXPORT_HELP").getWithoutFormatting());
-			// WTP: only for land / only for sea transports
-			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 2, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_EXPORT_LAND") + L"</font>", eExportYield, gDLL->getText("TXT_KEY_POPUP_EXPORT_LAND_HELP").getWithoutFormatting());
-			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 2, (pCity->getExportDomains(eYield) & 1) != 0, eExportYield);
-			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 3, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_EXPORT_SEA") + L"</font>", eExportYield, gDLL->getText("TXT_KEY_POPUP_EXPORT_SEA_HELP").getWithoutFormatting());
-			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 3, (pCity->getExportDomains(eYield) & 2) != 0, eExportYield);
+			gDLL->getInterfaceIFace()->popupEndLayout(pPopup);
+
+			// WTP: only for land / only for sea transports (own line)
+			const int iExportDomainGroup = eExportYield + 2 * NUM_YIELD_TYPES;
+			gDLL->getInterfaceIFace()->popupStartHLayout(pPopup, 0);
+			gDLL->getInterfaceIFace()->popupCreateCheckBoxes(pPopup, 2, iExportDomainGroup, WIDGET_GENERAL, POPUP_LAYOUT_TOP);
+			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 0, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_EXPORT_LAND") + L"</font>", iExportDomainGroup, gDLL->getText("TXT_KEY_POPUP_EXPORT_LAND_HELP").getWithoutFormatting());
+			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 0, (pCity->getExportDomains(eYield) & 1) != 0, iExportDomainGroup);
+			gDLL->getInterfaceIFace()->popupSetCheckBoxText(pPopup, 1, L"<font=1>" + gDLL->getText("TXT_KEY_POPUP_EXPORT_SEA") + L"</font>", iExportDomainGroup, gDLL->getText("TXT_KEY_POPUP_EXPORT_SEA_HELP").getWithoutFormatting());
+			gDLL->getInterfaceIFace()->popupSetCheckBoxState(pPopup, 1, (pCity->getExportDomains(eYield) & 2) != 0, iExportDomainGroup);
 			gDLL->getInterfaceIFace()->popupEndLayout(pPopup);
 			// R&R mod, vetiarvind, max yield import limit - end
 		}
