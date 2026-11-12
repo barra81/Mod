@@ -749,6 +749,22 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					szString.append(gDLL->getText(kOrder.bLoaded ? "TXT_KEY_WTP_TRADE_ORDER_BRING" : "TXT_KEY_WTP_TRADE_ORDER_FETCH",
 						GC.getYieldInfo(kOrder.eYield).getChar(), GC.getYieldInfo(kOrder.eYield).getDescription(), pSource->getName().GetCString(), pDestination->getName().GetCString()));
 				}
+				// the stop on the way (loads yields there) or the waiting for production
+				const CvCity* pStopCity = ::getCity(pGroupAI->getTooltipStop());
+				if (pStopCity != NULL)
+				{
+					CvWString szStopYields;
+					const std::vector<int>& aiStopYields = pGroupAI->getTooltipStopYields();
+					for (uint iStopYield = 0; iStopYield < aiStopYields.size() && iStopYield < (uint)NUM_YIELD_TYPES; ++iStopYield)
+					{
+						if (aiStopYields[iStopYield] > 0)
+						{
+							szStopYields += CvWString::format(L" %c", GC.getYieldInfo((YieldTypes)iStopYield).getChar());
+						}
+					}
+					szString.append(NEWLINE);
+					szString.append(gDLL->getText(pGroupAI->isTooltipWaiting() ? "TXT_KEY_WTP_TRADE_ORDER_WAIT" : "TXT_KEY_WTP_TRADE_ORDER_STOP", pStopCity->getName().GetCString(), szStopYields.GetCString()));
+				}
 			}
 		}
 

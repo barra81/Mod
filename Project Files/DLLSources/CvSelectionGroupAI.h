@@ -127,9 +127,16 @@ public:
 		bool bLoaded;
 	};
 	const std::vector<WtpTradeOrder>& getTradeOrders() const { return m_aTradeOrders; }
+	const IDInfo& getTooltipStop() const { return m_kTooltipStop; }
+	bool isTooltipWaiting() const { return m_bTooltipWaiting; }
+	const std::vector<int>& getTooltipStopYields() const { return m_aiTooltipStopYields; }
 	std::vector<WtpTradeOrder> m_aTradeOrders;
 	// WTP: the priority target of an automated transport that makes a pick-up stop on its way (not saved: after loading a savegame it decides anew)
 	IDInfo m_kPriorityTarget;
+	// WTP: the stop on the way or the waiting of an automated transport for its tooltip (rebuilt by every AI_tradeRoutes call, not saved)
+	IDInfo m_kTooltipStop;
+	bool m_bTooltipWaiting;
+	std::vector<int> m_aiTooltipStopYields;
 	int m_iPriorityDetour; // turns of detour already used by the pick-up stops on the way to this target
 
 private:

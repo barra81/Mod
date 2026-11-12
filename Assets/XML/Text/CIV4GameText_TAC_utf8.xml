@@ -1753,6 +1753,16 @@
 		<Hungarian>[COLOR_RED]%s1_city : Egy nem szabad telepes fellázadt. Úgy vélik, hogy a vadonba menekült.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADE_ORDER_STOP</Tag>
+		<English>[COLOR_CYAN]Stop on the way: %s1_city[NEWLINE]loads%s2_yields[COLOR_REVERT]</English>
+		<German>[COLOR_CYAN]Zwischenstopp: %s1_city[NEWLINE]lädt%s2_yields[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADE_ORDER_WAIT</Tag>
+		<English>[COLOR_CYAN]Waits in %s1_city[NEWLINE]for the production of%s2_yields[COLOR_REVERT]</English>
+		<German>[COLOR_CYAN]Wartet in %s1_city[NEWLINE]auf die Produktion von%s2_yields[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADE_ORDER_BRING</Tag>
 		<English>[COLOR_CYAN]Brings %F1_Icon %s2_yield[NEWLINE]from %s3_from to %s4_to[COLOR_REVERT]</English>
 		<German>[COLOR_CYAN]Bringt %F1_Icon %s2_yield[NEWLINE]von %s3_from nach %s4_to[COLOR_REVERT]</German>

@@ -50,6 +50,9 @@ void CvSelectionGroupAI::AI_reset()
 	AI_resetSavedData();
 	m_kPriorityTarget = IDInfo();
 	m_iPriorityDetour = 0;
+	m_kTooltipStop = IDInfo();
+	m_bTooltipWaiting = false;
+	m_aiTooltipStopYields.clear();
 }
 
 
@@ -1125,6 +1128,10 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_TRADE_ROUTES);
 	PROFILE_FUNC();
 
+	m_kTooltipStop = IDInfo();
+	m_bTooltipWaiting = false;
+	m_aiTooltipStopYields.clear();
+
 	const IDInfo kEurope(getOwnerINLINE(), CvTradeRoute::EUROPE_CITY_ID);
 
 	CvCity* pPlotCity = plot()->getPlotCity();
@@ -1995,6 +2002,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				int iBestPickupEfficiency = 0;
 				int iBestPickupDetour = MAX_INT;
 				int iBestPickupTotal = 0;
+				std::vector<int> aiBestPickupYields;
 				for (std::map<int, int>::const_iterator itPickup = aPickupAmounts.begin(); itPickup != aPickupAmounts.end(); ++itPickup)
 				{
 					// not more than the free space can be loaded
@@ -2053,6 +2061,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 							iBestPickupDetour = iDetour;
 							iBestPickupAmount = iCandidateAmount;
 							iBestPickupTotal = iDetour;
+							aiBestPickupYields = aiCandidateYields;
 							pPickupStop = pCandidate;
 						}
 					}
@@ -2060,6 +2069,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				if (pPickupStop != NULL)
 				{
 					m_iPriorityDetour += iBestPickupTotal;
+					m_kTooltipStop = pPickupStop->getIDInfo();
+					m_aiTooltipStopYields = aiBestPickupYields;
 				}
 			}
 		}
@@ -2109,6 +2120,9 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			{
 				m_kPriorityTarget = kBestDestination;
 				m_iPriorityDetour += 1;
+				m_kTooltipStop = pPlotCity->getIDInfo();
+				m_bTooltipWaiting = true;
+				m_aiTooltipStopYields.assign(aiExpected, aiExpected + NUM_YIELD_TYPES);
 				pushMission(MISSION_SKIP);
 				if (isHuman())
 				{
