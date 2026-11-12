@@ -291,7 +291,7 @@ g_pSelectedUnit = 0
 g_LastSelUnit = -1
 g_LastSelAuto = -1
 g_FollowUnit = -1
-g_FollowStart = 0.0
+g_FollowTicks = 0 # (time.time() of the game is far too coarse here, so the first updates are counted)
 g_FollowTurn = -1
 g_FollowX = -1
 g_FollowY = -1
@@ -4700,7 +4700,7 @@ class CvMainInterface:
 		return
 
 	# WTP: the game selects the next unit when a transport gets automated: the transport stays selected (the game does its
-	# selection change within a moment, so the transport is selected again for a second) and the camera follows it
+	# selection change within a moment, so the transport is selected again during the first updates) and the camera follows it
 	def logFollow(self, szText):
 		try:
 			f = open("WTP_Follow.log", "a")
@@ -4710,7 +4710,7 @@ class CvMainInterface:
 			pass
 
 	def updateAutomatedFollow(self):
-		global g_LastSelUnit, g_LastSelAuto, g_FollowUnit, g_FollowStart, g_FollowTurn, g_FollowX, g_FollowY
+		global g_LastSelUnit, g_LastSelAuto, g_FollowUnit, g_FollowTicks, g_FollowTurn, g_FollowX, g_FollowY
 		try:
 			iPlayer = gc.getGame().getActivePlayer()
 			if iPlayer == -1:
@@ -4733,7 +4733,7 @@ class CvMainInterface:
 					iNow = int(pPrev.getGroup().getAutomateType())
 					if iNow == iRoutes or iNow == iFull:
 						g_FollowUnit = g_LastSelUnit
-						g_FollowStart = fNow
+						g_FollowTicks = 0
 						g_FollowTurn = gc.getGame().getGameTurn()
 						g_FollowX = -1
 						g_FollowY = -1
@@ -4744,7 +4744,8 @@ class CvMainInterface:
 				if pFollow == None or pFollow.isNone() or g_FollowTurn != gc.getGame().getGameTurn():
 					self.logFollow("end: unit gone or turn changed")
 					g_FollowUnit = -1
-				elif fNow - g_FollowStart < 1.0:
+				elif g_FollowTicks < 8:
+					g_FollowTicks += 1
 					if iSel != g_FollowUnit:
 						self.logFollow("window: selected %d, selecting unit %d again" % (iSel, g_FollowUnit))
 						CyInterface().selectUnit(pFollow, True, False, True)
