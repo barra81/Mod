@@ -387,6 +387,7 @@ public:
 	int getImportDomains(int /*YieldTypes*/ eYield) const;
 	int getExportDomains(int /*YieldTypes*/ eYield) const;
 	bool isAutoMarketImport() const;
+	bool isMarketDemandYield(int /*YieldTypes*/ eYield) const;
 	bool isYieldInTradeRouteCondensedList(int /*YieldTypes*/ eYield) const;
 	bool isAutoImportStopped(int /*YieldTypes*/ eYield) const;
 	int getAutoMaintainThreshold(int /*YieldTypes*/ eYield) const;

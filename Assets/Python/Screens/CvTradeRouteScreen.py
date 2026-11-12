@@ -23,6 +23,8 @@ BTN_ROW = 42000 # + slot * 16 + field
 VIEW_ALL = 0
 VIEW_FAV = 1
 VIEW_MARKED = 2
+VIEW_BUILD = 3 # the goods of the building material preset
+VIEW_MARKET = 4 # the goods of the market automatic preset
 
 # fields of a row
 F_IMP_MINUS = 0
@@ -114,7 +116,8 @@ def saveFavorites(aFav):
 		logTrade(traceback.format_exc())
 
 # the building material preset is a switch: it remembers (per city, in the script data of the player like the favorites) which goods it
-# turned on, so that switching it off takes only those away again (not the ones that were set by hand before)
+# turned on (and their levels before), so that switching it off takes only those away again; the goods that were set by hand before are
+# not touched at all
 BLD_PREFIX = "[[WTPBLD:"
 BLD_SUFFIX = "]]"
 BLD_MATERIAL = ["YIELD_CLAY", "YIELD_STONE", "YIELD_TOOLS"] # feeder 100 / 150
@@ -137,9 +140,9 @@ def loadBuild():
 					szCity, szTypes = szEntry.split(":", 1)
 					aTypes = []
 					for szType in szTypes.split(","):
-						szType = szType.strip()
-						if len(szType) > 0:
-							aTypes.append(szType)
+						aPart = szType.strip().split("@")
+						if len(aPart) == 3:
+							aTypes.append([aPart[0], int(aPart[1]), int(aPart[2])]) # [type, the maintain level and the import limit before]
 					dBuild[int(szCity)] = aTypes
 	except:
 		pass
@@ -158,7 +161,10 @@ def saveBuild(dBuild):
 				szData = szData[:iStart] + szData[iEnd + len(BLD_SUFFIX):]
 		aEntries = []
 		for iCity in dBuild.keys():
-			aEntries.append(str(iCity) + ":" + ",".join(dBuild[iCity]))
+			aTypeEntries = []
+			for aType in dBuild[iCity]:
+				aTypeEntries.append("%s@%d@%d" % (aType[0], aType[1], aType[2]))
+			aEntries.append(str(iCity) + ":" + ",".join(aTypeEntries))
 		if len(aEntries) > 0:
 			szData = szData + BLD_PREFIX + ";".join(aEntries) + BLD_SUFFIX
 		pPlayer.setScriptData(szData)
@@ -241,9 +247,21 @@ class CvTradeRouteScreen:
 		elif self.iView == VIEW_MARKED:
 			# the goods with any mark (import, feeder, export or auto export)
 			self.aYields = [i for i in self.aAllYields if (self.dData[i]["imp"] or self.dData[i]["feeder"] or self.dData[i]["exp"] or self.dData[i]["auto"])]
+		elif self.iView == VIEW_BUILD:
+			self.aYields = [i for i in self.getAllCargo() if gc.getYieldInfo(i).getType() in BLD_MATERIAL + BLD_OTHER]
+		elif self.iView == VIEW_MARKET:
+			pCity = self.getCity()
+			self.aYields = []
+			if pCity != None and not pCity.isNone():
+				self.aYields = [i for i in self.getAllCargo() if pCity.isMarketDemandYield(i)]
 		else:
 			self.aYields = list(self.aAllYields)
 		self.iFirst = 0
+
+	def getAllCargo(self):
+		aKeys = self.dData.keys()
+		aKeys.sort()
+		return aKeys
 
 	def setView(self, iView):
 		if iView == self.iView:
@@ -301,11 +319,13 @@ class CvTradeRouteScreen:
 		dBuild = loadBuild()
 		if dBuild.has_key(self.iCity):
 			# off: only the goods the preset turned on are taken away again
-			for szType in dBuild[self.iCity]:
-				iYield = self.getYieldByType(szType)
+			for aType in dBuild[self.iCity]:
+				iYield = self.getYieldByType(aType[0])
 				if iYield >= 0:
 					self.dData[iYield]["imp"] = False
 					self.dData[iYield]["feeder"] = False
+					self.dData[iYield]["maintain"] = aType[1]
+					self.dData[iYield]["impLimit"] = aType[2]
 			del dBuild[self.iCity]
 		else:
 			aAdded = []
@@ -314,8 +334,9 @@ class CvTradeRouteScreen:
 				if iYield < 0:
 					continue
 				d = self.dData[iYield]
-				if not (d["imp"] or d["feeder"]):
-					aAdded.append(szType)
+				if d["imp"] or d["feeder"]:
+					continue # set by hand before: stays as it is
+				aAdded.append([szType, d["maintain"], d["impLimit"]])
 				d["imp"] = True
 				d["feeder"] = True
 				if szType in BLD_MATERIAL:
@@ -411,6 +432,8 @@ class CvTradeRouteScreen:
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()), 0, 0, True)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_FAV", ()), 1, 1, False)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_MARKED", ()), 2, 2, False)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT", ()), 3, 3, False)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT", ()), 4, 4, False)
 		self.aDrawn.append("TRSView")
 		self.drawRows()
 		self.drawPage()

@@ -1714,6 +1714,26 @@ bool CyCity::isAutoMarketImport() const
 	return m_pCity ? m_pCity->isAutoMarketImport() : false;
 }
 
+// the domestic market asks for the good (the goods of the preset 'market automatic', see CvCity::updateAutoMarketImport)
+bool CyCity::isMarketDemandYield(int /*YieldTypes*/ eYield) const
+{
+	if (m_pCity == NULL)
+	{
+		return false;
+	}
+	YieldCargoArray<int> aiDemand;
+	m_pCity->getYieldDemands(aiDemand);
+	const InfoArray<YieldTypes>& kYieldArray = GC.getDomesticDemandYieldTypes();
+	for (int i = 0; i < kYieldArray.getLength(); ++i)
+	{
+		if (kYieldArray.get(i) == (YieldTypes) eYield)
+		{
+			return aiDemand.get((YieldTypes) eYield) > 0 && GC.getYieldInfo((YieldTypes) eYield).isCargo();
+		}
+	}
+	return false;
+}
+
 // same condition as CvDLLButtonPopup::isYieldSupportedInExportPanelForCity
 bool CyCity::isYieldInTradeRouteCondensedList(int /*YieldTypes*/ eYield) const
 {
