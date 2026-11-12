@@ -984,11 +984,11 @@ class CvDomesticAdvisor:
 		screen.hide( szTableName )
 
 		# WTP: button for the overview of the trade route assignments of all transports (symbol of the automate trade routes command), in the lower row after the tab buttons
-		iOverviewSize = 3 * self.iButtonSize / 2
-		iOverviewX = self.iButtonSpacing * (len(self.StatePages) + 1)
-		screen.setImageButton("TransportOverviewButton", "Art/Interface/Game Hud/Actions/automate_city_high_res.dds", iOverviewX, self.Y_LOWER_ROW - 20, iOverviewSize, iOverviewSize, WidgetTypes.WIDGET_GENERAL, 10002, -1)
+		iOverviewSize = self.iButtonSize
+		iOverviewX = self.X_EXIT - 130 - iOverviewSize
+		screen.setImageButton("TransportOverviewButton", "Art/Interface/Game Hud/Actions/automate_city_high_res.dds", iOverviewX, self.Y_LOWER_ROW, iOverviewSize, iOverviewSize, WidgetTypes.WIDGET_GENERAL, 10002, -1)
 		screen.show("TransportOverviewButton")
-		screen.setLabel("TransportOverviewLabel", "Background", u"<font=3>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_BUTTON", ()) + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, iOverviewX + iOverviewSize + 10, self.Y_LOWER_ROW + 15, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, 10002, -1)
+		screen.setLabel("TransportOverviewLabel", "Background", u"<font=3>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_BUTTON", ()) + u"</font>", CvUtil.FONT_RIGHT_JUSTIFY, iOverviewX - 10, self.Y_LOWER_ROW + 20, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, 10002, -1)
 		screen.show("TransportOverviewLabel")
 
 		screen.setTableColumnHeader( szTableName, 0, localText.getText("TXT_KEY_SOURCE", ()), (150 * self.nTableWidth) / self.nNormalizedTableWidth)
