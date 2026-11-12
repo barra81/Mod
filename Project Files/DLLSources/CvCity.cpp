@@ -8655,12 +8655,16 @@ void CvCity::doYields()
 	if (!szSurplusSoldYields.empty())
 	{
 		CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_SURPLUS_SOLD", getNameKey(), szSurplusSoldYields.GetCString(), iSurplusSoldGold);
+		WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 		gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), NULL, MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
+		WtpHudMessages::setPriority(false);
 	}
 	if (!szSurplusLostYields.empty())
 	{
 		CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_SURPLUS_LOST", getNameKey(), szSurplusLostYields.GetCString());
+		WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 		gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_RED, true, true);
+		WtpHudMessages::setPriority(false);
 	}
 
 	// R&R, ray, adjustment for less Custom House messages
