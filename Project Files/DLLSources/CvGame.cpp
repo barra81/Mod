@@ -1716,6 +1716,17 @@ void CvGame::updateCitySight(bool bIncrement)
 }
 
 
+// WTP: the transport that was automated by the player while it was selected (unit id, turn): the selection stays on it until the
+// player selects another unit (the game would go on to the next unit that is ready to move as the automated group is not)
+static int g_iKeepSelectedUnit = -1;
+static int g_iKeepSelectedTurn = -1;
+
+void CvGame::keepSelectedAutomated(int iUnitId)
+{
+	g_iKeepSelectedUnit = iUnitId;
+	g_iKeepSelectedTurn = getGameTurn();
+}
+
 void CvGame::updateSelectionList()
 {
 	if (GET_PLAYER(getActivePlayer()).isOption(PLAYEROPTION_NO_UNIT_CYCLING))
@@ -1724,6 +1735,12 @@ void CvGame::updateSelectionList()
 	}
 
 	CvUnit* pHeadSelectedUnit = gDLL->getInterfaceIFace()->getHeadSelectedUnit();
+
+	if (pHeadSelectedUnit != NULL && pHeadSelectedUnit->getID() == g_iKeepSelectedUnit && g_iKeepSelectedTurn == getGameTurn()
+		&& pHeadSelectedUnit->getOwnerINLINE() == getActivePlayer() && pHeadSelectedUnit->getGroup()->isAutomated())
+	{
+		return;
+	}
 
 	if ((pHeadSelectedUnit == NULL) || !(pHeadSelectedUnit->getGroup()->readyToSelect(true)))
 	{

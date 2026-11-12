@@ -3698,6 +3698,13 @@ void CvSelectionGroup::setAutomateType(AutomateTypes eNewValue, bool bImplicit)
 			clearTradeRoutes();
 		}
 
+		// WTP: a transport automated by the player while selected stays selected (the game does not jump on to the next unit)
+		if ((eNewValue == AUTOMATE_TRANSPORT_FULL || eNewValue == AUTOMATE_TRANSPORT_ROUTES) && getHeadUnit() != NULL
+			&& isHuman() && getOwnerINLINE() == GC.getGameINLINE().getActivePlayer() && getHeadUnit()->IsSelected())
+		{
+			GC.getGameINLINE().keepSelectedAutomated(getHeadUnit()->getID());
+		}
+
 		// WTP: full transport automation switched on by the player: offer a name (Autoroute n)
 		if (eNewValue == AUTOMATE_TRANSPORT_FULL && !bImplicit)
 		{
