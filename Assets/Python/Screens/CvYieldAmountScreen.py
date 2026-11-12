@@ -164,24 +164,21 @@ class CvYieldAmountScreen:
 		screen.setButtonGFC("YAMOk", u"<font=2>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		screen.setButtonGFC("YAMCancel", u"<font=2>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		self.drawValue()
-		self.refreshView()
 		try:
 			CyGame().setWheelCapture(True)
 		except:
 			pass
 		return 1
 
+	def isHostMain(self):
+		return self.bHostMain and not self.bFinished
+
 	def refreshView(self):
 		# ask the interface to redraw the parts that show artifacts (minimap, ovals) in the city screen
 		if not self.bHostMain:
 			return
-		# the minimap and the yellow ovals of the city screen are hidden by the hide states of the main interface: apply them again
-		try:
-			import CvScreensInterface
-			CvScreensInterface.mainInterface.updateMiscButtons()
-		except:
-			pass
-		for szBit in ("Minimap_Section_DIRTY_BIT", "MiscButtons_DIRTY_BIT", "Help_DIRTY_BIT", "InfoPane_DIRTY_BIT"):
+		# (while the dialog is open CvMainInterface.redraw does nothing; afterwards the interface is redrawn completely)
+		for szBit in ("MiscButtons_DIRTY_BIT", "GameData_DIRTY_BIT", "ResourceTable_DIRTY_BIT", "Minimap_Section_DIRTY_BIT", "Help_DIRTY_BIT", "InfoPane_DIRTY_BIT", "SelectionButtons_DIRTY_BIT", "CityScreen_DIRTY_BIT"):
 			try:
 				CyInterface().setDirty(getattr(InterfaceDirtyBits, szBit), True)
 			except:
@@ -256,6 +253,7 @@ class CvYieldAmountScreen:
 				import traceback
 				logYield(traceback.format_exc())
 			self.refreshView()
+			self.bHostMain = False
 			self.pHost = None
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
@@ -342,10 +340,6 @@ class CvYieldAmountScreen:
 			if self.pHost != None and not self.bHostMain and not self.pHost.isActive():
 				self.finish(False) # the harbor screen was closed meanwhile
 				return 0
-			if self.bHostMain and self.iRefresh < 6:
-				# the engine shows the minimap again a moment after the dialog was drawn: hide it again for a few updates
-				self.iRefresh += 1
-				self.refreshView()
 			iNotches = CyGame().takeWheelNotches()
 			if iNotches != 0:
 				bCtrl = CyGame().isCtrlKeyPressed()
