@@ -173,12 +173,14 @@ class CvTransportRoutesOverview:
 
 	def drawSearchText(self):
 		screen = self.getScreen()
+		# the field is always active (every key goes to it): a cursor shows that, the hint stays grey behind it
+		szCursor = u"<color=255,220,100>|</color>"
 		if len(self.szQuery) == 0:
-			szText = u"<color=140,140,140>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_SEARCH_HINT", ()) + u"</color>"
+			szText = szCursor + u"<color=140,140,140> " + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_SEARCH_HINT", ()) + u"</color>"
 		elif len(self.szSuggestion) > len(self.szQuery):
-			szText = u"<color=255,255,255>" + self.szSuggestion[:len(self.szQuery)] + u"</color><color=130,130,130>" + self.szSuggestion[len(self.szQuery):] + u"</color>"
+			szText = u"<color=255,255,255>" + self.szSuggestion[:len(self.szQuery)] + u"</color>" + szCursor + u"<color=130,130,130>" + self.szSuggestion[len(self.szQuery):] + u"</color>"
 		else:
-			szText = u"<color=255,255,255>" + self.szQuery + u"</color>"
+			szText = u"<color=255,255,255>" + self.szQuery + u"</color>" + szCursor
 		screen.setLabelAt("TROSearchText", "TROSearchBG", u"<font=3>" + szText + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 10, 7, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.show("TROSearchText")
 
