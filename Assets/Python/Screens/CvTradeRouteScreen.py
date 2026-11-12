@@ -48,7 +48,7 @@ HOVER_LAYERS = 6
 PANEL_PAD = 2
 # texts of the buttons: color of a text that is not marked, the offset of the text top to the middle of the button (font 3b: the
 # letters from the top of the I to the bottom of the p are centered in the button)
-TEXT_COLOR = "0,0,0"
+TEXT_COLOR = "45,32,18"
 TEXT_DY = -14
 
 STEP = 10
