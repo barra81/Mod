@@ -4,6 +4,7 @@
 from CvPythonExtensions import *
 import CvUtil
 import CvScreenEnums
+import time
 
 gc = CyGlobalContext()
 localText = CyTranslator()
@@ -18,8 +19,62 @@ BTN_CLEAR_SEARCH = 30005
 BTN_SEARCH = 30006
 BTN_RENAME = 31000 # + the slot of the column
 
-# transports that were already asked for a name in this game session
+BTN_MANUAL = 32000 # + the slot of the column
+
+# transports that were asked for a name lately (unit id -> time), and the numbers of the names that are offered but not answered yet
 g_RenameAsked = {}
+g_PendingNumbers = []
+
+def isNamedLike(szName, szPrefix):
+	return szName[:len(szPrefix) + 1] == szPrefix + u" " and szName[len(szPrefix) + 1:].isdigit()
+
+def getUsedNumbers(player, szPrefix):
+	aUsed = []
+	(pUnit, iter) = player.firstUnit(False)
+	while (pUnit):
+		szName = pUnit.getNameNoDesc()
+		if isNamedLike(szName, szPrefix):
+			aUsed.append(int(szName[len(szPrefix) + 1:]))
+		(pUnit, iter) = player.nextUnit(iter, False)
+	return aUsed
+
+# the popup that renames a transport (the name is set by the event RenameTransport, see CvEventManager)
+def openNamePopup(iUnit, szBody, szDefault):
+	popup = CyPopup(CvUtil.EventRenameTransport, EventContextTypes.EVENTCONTEXT_ALL, True)
+	popup.setUserData((iUnit,))
+	popup.setBodyString(szBody, CvUtil.FONT_CENTER_JUSTIFY)
+	popup.createEditBox(szDefault, 0)
+	popup.setEditBoxMaxCharCount(20, 20, 0)
+	popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
+
+# a transport was set to full automation (bAuto) or got its first trade route: the player may take a numbered name
+# (called by the DLL and when the overview is closed, a transport is asked once in a while only)
+def offerTransportName(iUnit, bAuto):
+	global g_PendingNumbers
+	player = gc.getPlayer(gc.getGame().getActivePlayer())
+	pUnit = player.getUnit(iUnit)
+	if pUnit == None or pUnit.isNone():
+		return
+	fNow = time.time()
+	if fNow - g_RenameAsked.get(iUnit, -1000.0) < 10.0:
+		return
+	if bAuto:
+		szPrefix = localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_NAME_AUTO", ())
+	else:
+		szPrefix = localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_NAME_ROUTE", ())
+	if isNamedLike(pUnit.getNameNoDesc(), szPrefix):
+		return
+	g_RenameAsked[iUnit] = fNow
+	g_PendingNumbers = [t for t in g_PendingNumbers if fNow - t[2] < 120.0]
+	aUsed = getUsedNumbers(player, szPrefix)
+	for tPending in g_PendingNumbers:
+		if tPending[0] == szPrefix:
+			aUsed.append(tPending[1])
+	iNumber = 1
+	while iNumber in aUsed:
+		iNumber += 1
+	g_PendingNumbers.append((szPrefix, iNumber, fNow))
+	openNamePopup(iUnit, localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_RENAME", (pUnit.getName(),)), szPrefix + u" " + unicode(iNumber))
 
 # diagnosis of the clicks (WTP_Overview.log in the game folder)
 def logOverview(szText):
@@ -266,6 +321,7 @@ class CvTransportRoutesOverview:
 		iFull = gc.getInfoTypeForString("AUTOMATE_TRANSPORT_FULL")
 		dTransport["auto"] = (iFull != -1 and pGroup.getAutomateType() == iFull)
 		dTransport["rawName"] = pHead.getNameNoDesc()
+		logOverview("transport %d '%s' automate type %d" % (pHead.getID(), pHead.getNameNoDesc(), int(pGroup.getAutomateType())))
 		pPlot = pHead.plot()
 		szWhere = u"(%d, %d)" % (pHead.getX(), pHead.getY())
 		if pPlot != None and not pPlot.isNone() and pPlot.isCity():
@@ -321,6 +377,7 @@ class CvTransportRoutesOverview:
 			screen.hide("TROUnit" + str(iSlot))
 			screen.hide("TROName" + str(iSlot))
 			screen.hide("TROInfo" + str(iSlot))
+			screen.hide("TROManual" + str(iSlot))
 			screen.hide(self.getTableName(iSlot))
 		self.iUsedSlots = iShown
 
@@ -357,6 +414,13 @@ class CvTransportRoutesOverview:
 		szInfo = dTransport["where"] + u"   " + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_ASSIGNED", (self.getAssignedCount(dTransport), len(dTransport["routes"])))
 		screen.setLabelAt("TROInfo" + str(iSlot), self.BACKGROUND_ID, u"<font=2>" + szInfo + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, iX + 56, self.HEAD_Y + 28, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.show("TROInfo" + str(iSlot))
+		# a transport with an automation (full automation or trade routes) can be set back to manual here
+		szManual = "TROManual" + str(iSlot)
+		if dTransport["auto"] or self.getAssignedCount(dTransport) > 0:
+			screen.setButtonGFC(szManual, u"<font=2>" + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_MANUAL", ()) + u"</font>", "", iX + 56, self.HEAD_Y + 46, 170, 26, WidgetTypes.WIDGET_GENERAL, BTN_MANUAL + iSlot, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			screen.show(szManual)
+		else:
+			screen.hide(szManual)
 
 	def drawTable(self, iSlot, dTransport, iX):
 		screen = self.getScreen()
@@ -485,6 +549,9 @@ class CvTransportRoutesOverview:
 					self.bSearchSelected = False
 					self.refresh()
 					return 0
+				elif iData >= BTN_MANUAL and iData < BTN_MANUAL + 100:
+					self.setManual(iData - BTN_MANUAL)
+					return 0
 				elif iData >= BTN_RENAME and iData < BTN_RENAME + 100:
 					self.renameTransport(iData - BTN_RENAME)
 					return 0
@@ -528,19 +595,27 @@ class CvTransportRoutesOverview:
 		self.iFirst = 0
 		self.drawColumns()
 
+	# back to manual: the automation is switched off (that also takes the trade routes away)
+	def setManual(self, iSlot):
+		iIndex = self.iFirst + iSlot
+		if iIndex < 0 or iIndex >= len(self.aVisible):
+			return
+		dTransport = self.Transports[self.aVisible[iIndex]]
+		CyMessageControl().sendDoCommand(dTransport["unit"], CommandTypes.COMMAND_AUTOMATE, -1, -1, False)
+		dTransport["auto"] = False
+		for iRoute in dTransport["assigned"].keys():
+			dTransport["assigned"][iRoute] = False
+			dTransport["original"][iRoute] = False
+		self.refresh()
+
 	# the popup that renames a transport (the same one as for the name suggestion, with the current name)
 	def renameTransport(self, iSlot):
 		iIndex = self.iFirst + iSlot
 		if iIndex < 0 or iIndex >= len(self.aVisible):
 			return
 		dTransport = self.Transports[self.aVisible[iIndex]]
-		g_RenameAsked[dTransport["unit"]] = 1
-		popup = CyPopup(CvUtil.EventRenameTransport, EventContextTypes.EVENTCONTEXT_ALL, True)
-		popup.setUserData((dTransport["unit"],))
-		popup.setBodyString(localText.getText("TXT_KEY_RENAME_UNIT", ()), CvUtil.FONT_CENTER_JUSTIFY)
-		popup.createEditBox(dTransport["rawName"], 0)
-		popup.setEditBoxMaxCharCount(20, 20, 0)
-		popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
+		g_RenameAsked[dTransport["unit"]] = time.time()
+		openNamePopup(dTransport["unit"], localText.getText("TXT_KEY_RENAME_UNIT", ()), dTransport["rawName"])
 		self.bRenameWatch = True
 
 	# after a rename the new name is shown in the column header (the popup is answered while this screen is open)
@@ -584,52 +659,14 @@ class CvTransportRoutesOverview:
 		self.returnToDomestic()
 		return 0
 
-	# the numbers n of the units that are called "prefix n"
-	def getUsedNumbers(self, szPrefix):
-		aUsed = []
-		(pUnit, iter) = self.player.firstUnit(False)
-		while (pUnit):
-			szName = pUnit.getNameNoDesc()
-			if szName[:len(szPrefix) + 1] == szPrefix + u" " and szName[len(szPrefix) + 1:].isdigit():
-				aUsed.append(int(szName[len(szPrefix) + 1:]))
-			(pUnit, iter) = self.player.nextUnit(iter, False)
-		return aUsed
-
-	def isNamedLike(self, szName, szPrefix):
-		return szName[:len(szPrefix) + 1] == szPrefix + u" " and szName[len(szPrefix) + 1:].isdigit()
-
-	# transports that got their first trade route here (and the fully automatic ones, when they were shown) are offered a numbered name
+	# transports that got their first trade route here are offered a numbered name (the DLL does the same when a route is set outside this screen)
 	def askForNames(self):
-		szRoute = localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_NAME_ROUTE", ())
-		szAuto = localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_NAME_AUTO", ())
-		dUsed = {}
-		dUsed[szRoute] = self.getUsedNumbers(szRoute)
-		dUsed[szAuto] = self.getUsedNumbers(szAuto)
 		for dTransport in self.Transports:
-			iUnit = dTransport["unit"]
-			if g_RenameAsked.has_key(iUnit):
+			if dTransport["auto"]:
 				continue
-			iNow = self.getAssignedCount(dTransport)
 			iBefore = 0
 			for iRoute in dTransport["original"].keys():
 				if dTransport["original"][iRoute]:
 					iBefore += 1
-			if dTransport["auto"]:
-				szPrefix = szAuto
-				bAsk = (self.iTypeFilter == 1)
-			else:
-				szPrefix = szRoute
-				bAsk = (iBefore == 0 and iNow > 0)
-			if not bAsk or self.isNamedLike(dTransport["rawName"], szPrefix):
-				continue
-			iNumber = 1
-			while iNumber in dUsed[szPrefix]:
-				iNumber += 1
-			dUsed[szPrefix].append(iNumber)
-			g_RenameAsked[iUnit] = 1
-			popup = CyPopup(CvUtil.EventRenameTransport, EventContextTypes.EVENTCONTEXT_ALL, True)
-			popup.setUserData((iUnit,))
-			popup.setBodyString(localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_RENAME", (dTransport["name"],)), CvUtil.FONT_CENTER_JUSTIFY)
-			popup.createEditBox(szPrefix + u" " + unicode(iNumber), 0)
-			popup.setEditBoxMaxCharCount(20, 20, 0)
-			popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
+			if iBefore == 0 and self.getAssignedCount(dTransport) > 0:
+				offerTransportName(dTransport["unit"], False)

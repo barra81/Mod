@@ -122,6 +122,10 @@ def showTradeRoutesAdvisor(argsList):
 
 # WTP: overview of the trade route assignments of all transports (button of the trade routes tab of the domestic advisor)
 transportRoutesOverview = CvTransportRoutesOverview.CvTransportRoutesOverview()
+# WTP: the DLL offers a numbered name for a transport that was just automated / got its first trade route
+def askTransportName(argsList):
+	CvTransportRoutesOverview.offerTransportName(argsList[0], argsList[1])
+
 def showTransportRoutesOverview(argsList):
 	DesyncDetectorInstance = gc.startDesyncMonitor()
 	if (-1 != CyGame().getActivePlayer()):

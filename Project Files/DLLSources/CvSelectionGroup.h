@@ -203,6 +203,7 @@ public:
 
 	bool canAssignTradeRoute(int iRouteID, bool bReusePath = false) const;
 	void assignTradeRoute(int iRouteID, bool bAssign);
+	void offerTransportName(bool bAuto); // WTP: the human player may give a numbered name to a transport that was just automated / got its first trade route
 	bool isAssignedTradeRoute(int iRouteId) const;
 	void clearTradeRoutes();
 

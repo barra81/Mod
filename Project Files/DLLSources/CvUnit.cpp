@@ -2779,7 +2779,15 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2, bool bT
 		break;
 
 	case COMMAND_AUTOMATE:
-		if (canAutomate((AutomateTypes)iData1))
+		// WTP: NO_AUTOMATE switches the automation of an automated unit off (transport overview)
+		if ((AutomateTypes)iData1 == NO_AUTOMATE)
+		{
+			if (isAutomated())
+			{
+				return true;
+			}
+		}
+		else if (canAutomate((AutomateTypes)iData1))
 		{
 			return true;
 		}
@@ -3243,7 +3251,14 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 
 		case COMMAND_AUTOMATE:
-			automate((AutomateTypes)iData1);
+			if ((AutomateTypes)iData1 == NO_AUTOMATE)
+			{
+				getGroup()->setAutomateType(NO_AUTOMATE); // WTP: back to manual
+			}
+			else
+			{
+				automate((AutomateTypes)iData1);
+			}
 			bCycle = true;
 			break;
 
