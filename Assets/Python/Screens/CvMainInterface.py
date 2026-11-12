@@ -296,6 +296,10 @@ g_FollowTurn = -1
 g_FollowX = -1
 g_FollowY = -1
 
+# WTP: the transport the cycle arrows above the R / C button were last built for and their automate type
+g_CycleUnit = -1
+g_CycleType = -1
+
 class CvMainInterface:
 	"Main Interface Screen"
 
@@ -1869,6 +1873,20 @@ class CvMainInterface:
 			iIndex = -1
 			if pCurrent != None and not pCurrent.isNone() and pCurrent.getID() in aUnits:
 				iIndex = (aUnits.index(pCurrent.getID()) + iDirection) % len(aUnits)
+			elif pCurrent != None and not pCurrent.isNone():
+				# the selected transport is not automated (any more): go on from its place in the order of the ids
+				iIndex = 0
+				if iDirection > 0:
+					for iPos in range(len(aUnits)):
+						if aUnits[iPos] > pCurrent.getID():
+							iIndex = iPos
+							break
+				else:
+					iIndex = len(aUnits) - 1
+					for iPos in range(len(aUnits) - 1, -1, -1):
+						if aUnits[iPos] < pCurrent.getID():
+							iIndex = iPos
+							break
 			else:
 				iIndex = 0
 			pUnit = gc.getPlayer(gc.getGame().getActivePlayer()).getUnit(aUnits[iIndex])
@@ -1903,6 +1921,8 @@ class CvMainInterface:
 
 	def updateSelectionButtons( self ):
 		global g_pSelectedUnit
+		global g_CycleUnit
+		global g_CycleType
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
 
 		# Find out our resolution
@@ -2203,6 +2223,8 @@ class CvMainInterface:
 					if iSpaceNeeded > iMaxSpace:
 						ACTION_BUTTON_X_STEP = ACTION_BUTTON_X_STEP * iMaxSpace / iSpaceNeeded
 
+					if pHeadSelectedUnit.getID() != g_CycleUnit:
+						g_CycleUnit = -1 # the arrows stay only for the transport they were shown for
 					ActionButtonList = []
 					for iRing in range(40):
 						screen.deleteWidget("WtpPortRing" + str(iRing))
@@ -2229,16 +2251,24 @@ class CvMainInterface:
 								screen.addDDSGFC(szRing, "Art/Interface/Game Hud/Actions/port_ring.dds", int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)
 								screen.setHitTest(szRing, HitTestTypes.HITTEST_NOHIT)
 								ActionButtonList.append(szRing)
+							# arrows above the R / C button: cycle through the other transports automated the same way (R: trade routes, C: full
+							# automation). They stay while the transport is selected after its automation was switched off (to go on from there)
+							iCycleType = self.getAutomateTypeOfButton(i)
+							if iCycleType != -1:
+								bArrows = False
 								if self.isAutomateMarked(i, pHeadSelectedUnit):
-									# arrows above the button: cycle through the other transports automated the same way (R: trade routes, C: full automation)
-									iCycleType = self.getAutomateTypeOfButton(i)
-									if len(self.getAutomatedUnits(iCycleType)) > 1:
-										iArrow = LARGE_BUTTON_SIZE * 3 / 4
-										iArrowY = int(Ycord) - (LARGE_BUTTON_SIZE * 3 / 4) - iArrow + (LARGE_BUTTON_SIZE / 5) # just above the visible top of the ring (the ring art has a transparent margin)
-										screen.setImageButton("WtpCycleLeft", ArtFileMgr.getInterfaceArtInfo("INTERFACE_CITY_LEFT_ARROW").getPath(), int(Xcord) - iArrow - 2, iArrowY, iArrow, iArrow, WidgetTypes.WIDGET_GENERAL, WTP_CYCLE_PREV, iCycleType)
-										screen.setImageButton("WtpCycleRight", ArtFileMgr.getInterfaceArtInfo("INTERFACE_CITY_RIGHT_ARROW").getPath(), int(Xcord) + 2, iArrowY, iArrow, iArrow, WidgetTypes.WIDGET_GENERAL, WTP_CYCLE_NEXT, iCycleType)
-										ActionButtonList.append("WtpCycleLeft")
-										ActionButtonList.append("WtpCycleRight")
+									g_CycleUnit = pHeadSelectedUnit.getID()
+									g_CycleType = iCycleType
+									bArrows = len(self.getAutomatedUnits(iCycleType)) > 1
+								elif pHeadSelectedUnit.getID() == g_CycleUnit and iCycleType == g_CycleType:
+									bArrows = len(self.getAutomatedUnits(iCycleType)) > 0
+								if bArrows:
+									iArrow = LARGE_BUTTON_SIZE * 3 / 4
+									iArrowY = int(Ycord) - (LARGE_BUTTON_SIZE * 3 / 4) - iArrow + (LARGE_BUTTON_SIZE / 5) # just above the visible top of the ring (the ring art has a transparent margin)
+									screen.setImageButton("WtpCycleLeft", ArtFileMgr.getInterfaceArtInfo("INTERFACE_CITY_LEFT_ARROW").getPath(), int(Xcord) - iArrow - 2, iArrowY, iArrow, iArrow, WidgetTypes.WIDGET_GENERAL, WTP_CYCLE_PREV, iCycleType)
+									screen.setImageButton("WtpCycleRight", ArtFileMgr.getInterfaceArtInfo("INTERFACE_CITY_RIGHT_ARROW").getPath(), int(Xcord) + 2, iArrowY, iArrow, iArrow, WidgetTypes.WIDGET_GENERAL, WTP_CYCLE_NEXT, iCycleType)
+									ActionButtonList.append("WtpCycleLeft")
+									ActionButtonList.append("WtpCycleRight")
 							ActionButtonList.append(szName)
 
 							iCount += 1
