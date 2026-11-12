@@ -15,6 +15,10 @@ BTN_NEXT = 30002
 BTN_PREV_PAGE = 30003
 BTN_NEXT_PAGE = 30004
 BTN_CLEAR_SEARCH = 30005
+BTN_SEARCH = 30006
+
+# transports that were already asked for a name in this game session
+g_RenameAsked = {}
 
 # diagnosis of the clicks (WTP_Overview.log in the game folder)
 def logOverview(szText):
@@ -53,6 +57,8 @@ class CvTransportRoutesOverview:
 		self.iKeyLog = 0
 		self.aShownRoutes = {} # slot -> the routes in the order of the rows
 		self.aVisible = [] # indices of the transports that pass the filters
+		self.iTypeFilter = 0 # 0 trade routes (R), 1 fully automatic (Shift+Alt+C)
+		self.bSearchSelected = False # the field was clicked: the next key replaces the text
 		self.iDomainFilter = 0 # 0 land and sea, 1 land, 2 sea
 		self.iAssignFilter = 0 # 0 all, 1 only transports with routes, 2 only transports without
 		self.szQuery = u""
@@ -88,6 +94,8 @@ class CvTransportRoutesOverview:
 				self.dKeys[int(iKey)] = SEARCH_KEY_NAMES[szKey]
 		self.iKeyBack = self.getKeyId("KB_BACKSPACE")
 		self.aKeyAccept = [self.getKeyId("KB_TAB"), self.getKeyId("KB_RETURN"), self.getKeyId("KB_RIGHT")]
+		self.iTypeFilter = 0
+		self.bSearchSelected = False
 		self.iDomainFilter = 0 # standard filters: land and sea, only transports with trade routes
 		self.iAssignFilter = 1
 		self.szQuery = u""
@@ -156,32 +164,41 @@ class CvTransportRoutesOverview:
 	def drawToolbar(self):
 		screen = self.getScreen()
 		iY = self.TOOLBAR_Y
-		screen.addDropDownBoxGFC("TRODomain", self.MARGIN, iY, 230, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
+		screen.addDropDownBoxGFC("TROType", self.MARGIN, iY, 300, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
+		screen.addPullDownString("TROType", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_TYPE_ROUTES", ()), 0, 0, True)
+		screen.addPullDownString("TROType", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_TYPE_AUTO", ()), 1, 1, False)
+		screen.addDropDownBoxGFC("TRODomain", self.MARGIN + 310, iY, 230, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
 		screen.addPullDownString("TRODomain", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_LAND_SEA", ()), 0, 0, True)
 		screen.addPullDownString("TRODomain", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_LAND", ()), 1, 1, False)
 		screen.addPullDownString("TRODomain", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_SEA", ()), 2, 2, False)
-		screen.addDropDownBoxGFC("TROAssign", self.MARGIN + 240, iY, 300, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
+		screen.addDropDownBoxGFC("TROAssign", self.MARGIN + 550, iY, 300, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
 		screen.addPullDownString("TROAssign", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_ALL", ()), 0, 0, False)
 		screen.addPullDownString("TROAssign", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_WITH_ROUTES", ()), 1, 1, True)
 		screen.addPullDownString("TROAssign", localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_WITHOUT_ROUTES", ()), 2, 2, False)
 		# the search field (typed with the keyboard, the rest of the best match is suggested in grey)
-		self.iSearchX = self.MARGIN + 560
+		self.iSearchX = self.MARGIN + 870
 		self.iSearchW = 520
-		screen.addPanel("TROSearchBG", u"", u"", False, False, self.iSearchX, iY - 2, self.iSearchW, 34, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.addPanel("TROSearchBG", u"", u"", False, False, self.iSearchX, iY - 2, self.iSearchW, 34, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, BTN_SEARCH, -1)
 		screen.setButtonGFC("TROClearSearch", u"<font=3b>X</font>", "", self.iSearchX + self.iSearchW + 8, iY - 2, 40, 34, WidgetTypes.WIDGET_GENERAL, BTN_CLEAR_SEARCH, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		self.drawSearchText()
 
 	def drawSearchText(self):
 		screen = self.getScreen()
-		# the field is always active (every key goes to it): a cursor shows that, the hint stays grey behind it
+		# the field is always active (every key goes to it): a cursor shows that, the hint stays grey behind it.
+		# After a click the text is shown selected (gold): the next key replaces it
 		szCursor = u"<color=255,220,100>|</color>"
 		if len(self.szQuery) == 0:
-			szText = szCursor + u"<color=140,140,140> " + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_SEARCH_HINT", ()) + u"</color>"
+			if self.bSearchSelected:
+				szText = szCursor
+			else:
+				szText = szCursor + u"<color=140,140,140> " + localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_SEARCH_HINT", ()) + u"</color>"
+		elif self.bSearchSelected:
+			szText = u"<color=255,220,100>" + self.szQuery + u"</color>" + szCursor
 		elif len(self.szSuggestion) > len(self.szQuery):
 			szText = u"<color=255,255,255>" + self.szSuggestion[:len(self.szQuery)] + u"</color>" + szCursor + u"<color=130,130,130>" + self.szSuggestion[len(self.szQuery):] + u"</color>"
 		else:
 			szText = u"<color=255,255,255>" + self.szQuery + u"</color>" + szCursor
-		screen.setLabelAt("TROSearchText", "TROSearchBG", u"<font=3>" + szText + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 10, 7, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setTextAt("TROSearchText", "TROSearchBG", u"<font=3>" + szText + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 10, 7, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, BTN_SEARCH, -1)
 		screen.show("TROSearchText")
 
 	# the best completion of the typed text: a name that starts with it, the most used one first
@@ -204,15 +221,20 @@ class CvTransportRoutesOverview:
 		szQuery = self.szQuery.lower()
 		for iIndex in range(len(self.Transports)):
 			dTransport = self.Transports[iIndex]
+			if self.iTypeFilter == 0 and dTransport["auto"]:
+				continue
+			if self.iTypeFilter == 1 and not dTransport["auto"]:
+				continue
 			if self.iDomainFilter == 1 and not dTransport["land"]:
 				continue
 			if self.iDomainFilter == 2 and dTransport["land"]:
 				continue
 			iAssigned = self.getAssignedCount(dTransport)
-			if self.iAssignFilter == 1 and iAssigned == 0:
-				continue
-			if self.iAssignFilter == 2 and iAssigned > 0:
-				continue
+			if self.iTypeFilter == 0:
+				if self.iAssignFilter == 1 and iAssigned == 0:
+					continue
+				if self.iAssignFilter == 2 and iAssigned > 0:
+					continue
 			if len(szQuery) > 0:
 				bFound = False
 				for tRoute in dTransport["routes"]:
@@ -238,6 +260,9 @@ class CvTransportRoutesOverview:
 		dTransport["button"] = pHead.getButton()
 		dTransport["size"] = pGroup.getNumUnits()
 		dTransport["land"] = (pHead.getDomainType() == DomainTypes.DOMAIN_LAND)
+		iFull = gc.getInfoTypeForString("AUTOMATE_TRANSPORT_FULL")
+		dTransport["auto"] = (iFull != -1 and pGroup.getAutomateType() == iFull)
+		dTransport["rawName"] = pHead.getNameNoDesc()
 		pPlot = pHead.plot()
 		szWhere = u"(%d, %d)" % (pHead.getX(), pHead.getY())
 		if pPlot != None and not pPlot.isNone() and pPlot.isCity():
@@ -421,10 +446,12 @@ class CvTransportRoutesOverview:
 			return 0
 		if inputClass.getNotifyCode() == NotifyCode.NOTIFY_LISTBOX_ITEM_SELECTED:
 			szName = inputClass.getFunctionName()
-			if szName == "TRODomain" or szName == "TROAssign":
+			if szName == "TROType" or szName == "TRODomain" or szName == "TROAssign":
 				screen = self.getScreen()
 				iValue = screen.getPullDownData(szName, screen.getSelectedPullDownID(szName))
-				if szName == "TRODomain":
+				if szName == "TROType":
+					self.iTypeFilter = iValue
+				elif szName == "TRODomain":
 					self.iDomainFilter = iValue
 				else:
 					self.iAssignFilter = iValue
@@ -451,7 +478,12 @@ class CvTransportRoutesOverview:
 					self.iFirst += self.iNumVisible
 				elif iData == BTN_CLEAR_SEARCH:
 					self.szQuery = u""
+					self.bSearchSelected = False
 					self.refresh()
+					return 0
+				elif iData == BTN_SEARCH:
+					self.bSearchSelected = True
+					self.drawSearchText()
 					return 0
 				else:
 					return 0
@@ -464,16 +496,22 @@ class CvTransportRoutesOverview:
 	def handleKey(self, iKey):
 		bChanged = False
 		if self.dKeys.has_key(iKey):
+			if self.bSearchSelected:
+				self.szQuery = u""
 			self.szQuery = self.szQuery + unicode(self.dKeys[iKey])
 			bChanged = True
 		elif iKey == self.iKeyBack:
-			self.szQuery = self.szQuery[:-1]
+			if self.bSearchSelected:
+				self.szQuery = u""
+			else:
+				self.szQuery = self.szQuery[:-1]
 			bChanged = True
 		elif iKey in self.aKeyAccept:
-			if len(self.szSuggestion) > len(self.szQuery):
+			if len(self.szSuggestion) > len(self.szQuery) and not self.bSearchSelected:
 				self.szQuery = self.szSuggestion
 				bChanged = True
 		if bChanged:
+			self.bSearchSelected = False
 			self.refresh()
 
 	def refresh(self):
@@ -503,6 +541,61 @@ class CvTransportRoutesOverview:
 					if self.player.getTradeRoute(iRoute).getID() != iRoute: # the route was deleted meanwhile
 						continue
 					CyMessageControl().sendDoCommand(dTransport["unit"], CommandTypes.COMMAND_ASSIGN_TRADE_ROUTE, iRoute, dTransport["assigned"][iRoute], False)
+		try:
+			self.askForNames()
+		except:
+			import traceback
+			logOverview(traceback.format_exc())
 		self.Transports = []
 		self.returnToDomestic()
 		return 0
+
+	# the numbers n of the units that are called "prefix n"
+	def getUsedNumbers(self, szPrefix):
+		aUsed = []
+		(pUnit, iter) = self.player.firstUnit(False)
+		while (pUnit):
+			szName = pUnit.getNameNoDesc()
+			if szName[:len(szPrefix) + 1] == szPrefix + u" " and szName[len(szPrefix) + 1:].isdigit():
+				aUsed.append(int(szName[len(szPrefix) + 1:]))
+			(pUnit, iter) = self.player.nextUnit(iter, False)
+		return aUsed
+
+	def isNamedLike(self, szName, szPrefix):
+		return szName[:len(szPrefix) + 1] == szPrefix + u" " and szName[len(szPrefix) + 1:].isdigit()
+
+	# transports that got their first trade route here (and the fully automatic ones, when they were shown) are offered a numbered name
+	def askForNames(self):
+		szRoute = localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_NAME_ROUTE", ())
+		szAuto = localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_NAME_AUTO", ())
+		dUsed = {}
+		dUsed[szRoute] = self.getUsedNumbers(szRoute)
+		dUsed[szAuto] = self.getUsedNumbers(szAuto)
+		for dTransport in self.Transports:
+			iUnit = dTransport["unit"]
+			if g_RenameAsked.has_key(iUnit):
+				continue
+			iNow = self.getAssignedCount(dTransport)
+			iBefore = 0
+			for iRoute in dTransport["original"].keys():
+				if dTransport["original"][iRoute]:
+					iBefore += 1
+			if dTransport["auto"]:
+				szPrefix = szAuto
+				bAsk = (self.iTypeFilter == 1)
+			else:
+				szPrefix = szRoute
+				bAsk = (iBefore == 0 and iNow > 0)
+			if not bAsk or self.isNamedLike(dTransport["rawName"], szPrefix):
+				continue
+			iNumber = 1
+			while iNumber in dUsed[szPrefix]:
+				iNumber += 1
+			dUsed[szPrefix].append(iNumber)
+			g_RenameAsked[iUnit] = 1
+			popup = CyPopup(CvUtil.EventRenameTransport, EventContextTypes.EVENTCONTEXT_ALL, True)
+			popup.setUserData((iUnit,))
+			popup.setBodyString(localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_RENAME", (dTransport["name"],)), CvUtil.FONT_CENTER_JUSTIFY)
+			popup.createEditBox(szPrefix + u" " + unicode(iNumber), 0)
+			popup.setEditBoxMaxCharCount(20, 20, 0)
+			popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)

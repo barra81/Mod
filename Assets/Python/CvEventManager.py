@@ -158,6 +158,7 @@ class CvEventManager:
 			CvUtil.EventCreateTradeRoute: ('CreateTradeRoute', self.__eventCreateTradeRouteApply, self.__eventCreateTradeRouteBegin),
 			CvUtil.EventEditTradeRoute: ('EditTradeRoute', self.__eventEditTradeRouteApply, self.__eventEditTradeRouteBegin),
 			CvUtil.EventDiploYieldAmount: ('DiploYieldAmount', self.__eventDiploYieldAmountApply, self.__eventDiploYieldAmountBegin),
+			CvUtil.EventRenameTransport: ('RenameTransport', self.__eventRenameTransportApply, self.__eventRenameTransportBegin),
 
 # Dale - AoD: AoDCheatMenu START
 			CvUtil.EventAoDCheatMenu: ('AoDCheatMenu', self.AoDCheatMenuApply, self.AoDCheatMenuBegin),
@@ -1199,6 +1200,21 @@ class CvEventManager:
 		'Wonder Movie Apply'
 		if (getChtLvl() > 0):
 			CvDebugTools.CvDebugTools().applyWonderMovie( (popupReturn) )
+
+	# WTP: the transport overview asks for the name of a transport (the popup is made there)
+	def __eventRenameTransportBegin(self, argsList):
+		return
+
+	def __eventRenameTransportApply(self, playerID, userData, popupReturn):
+		iUnitID = userData[0]
+		unit = gc.getPlayer(playerID).getUnit(iUnitID)
+		if unit is None or unit.isNone():
+			return
+		newName = popupReturn.getEditBoxString(0).strip()
+		if (len(newName) > 25):
+			newName = newName[:25]
+		if len(newName) > 0 and newName != unit.getNameNoDesc():
+			unit.setName(newName)
 
 	def __eventEditUnitNameBegin(self, argsList):
 		pUnit = argsList
