@@ -100,15 +100,15 @@ class CvTradeRouteScreen:
 
 	def __init__(self):
 		self.BACKGROUND_ID = "TRSBackground"
-		self.W = 1200
+		self.W = 1100
 		self.H = 600
 		self.OX = 0
 		self.OY = 0
 		self.ROW_H = 60
 		self.CHECK_H = 28
-		self.LIST_Y = 194
+		self.LIST_Y = 172
 		self.BLOCK_IMP_X = 90
-		self.BLOCK_EXP_X = 640
+		self.BLOCK_EXP_X = 520
 		self.CHECK_W = 124
 		self.BLOCK_SPIN_W = 116
 		self.iCity = -1
@@ -206,11 +206,12 @@ class CvTradeRouteScreen:
 		self.drawRows()
 
 	def drawMarketButton(self, pCity):
-		szMarket = "TXT_KEY_TRADEROUTE_PRESET_MARKET_AUTO"
+		szMarket = "TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT"
 		if pCity.isAutoMarketImport():
-			szMarket = "TXT_KEY_TRADEROUTE_PRESET_MARKET_AUTO_OFF"
+			szMarket = "TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT_ON"
+		iHalf = (self.W - 40 - 10) / 2
 		self.drop("TRSPreset4")
-		self.pHost.setButtonGFC("TRSPreset4", u"<font=2b>" + localText.getText(szMarket, ()) + u"</font>", "", self.OX + 20, self.OY + 96 + 30, self.W - 40, 26, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 4, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		self.pHost.setButtonGFC("TRSPreset4", u"<font=3b>" + localText.getText(szMarket, ()) + u"</font>", "", self.OX + 20 + iHalf + 10, self.OY + 96, iHalf, 28, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 4, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 
 	# opens the window (1: it is open, 0: the DLL shows its own popup instead)
 	def open(self, iCity, bCondensed):
@@ -267,10 +268,11 @@ class CvTradeRouteScreen:
 		aszPreset = [localText.getText("TXT_KEY_POPUP_IMPORT_CLEAR_ALL", ()), localText.getText("TXT_KEY_POPUP_IMPORT_ALL", ()), localText.getText("TXT_KEY_POPUP_IMPORT_EXPORT_ALL", ())]
 		for i in range(3):
 			szName = "TRSPreset" + str(i)
-			screen.setButtonGFC(szName, u"<font=2b>" + aszPreset[i] + u"</font>", "", self.OX + 20 + i * (iBW + 10), self.OY + 66, iBW, 26, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			screen.setButtonGFC(szName, u"<font=3b>" + aszPreset[i] + u"</font>", "", self.OX + 20 + i * (iBW + 10), self.OY + 62, iBW, 28, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 			self.aDrawn.append(szName)
 		szName = "TRSPreset3"
-		screen.setButtonGFC(szName, u"<font=2b>" + localText.getText("TXT_KEY_TRADEROUTE_PRESET_BUILD", ()) + u"</font>", "", self.OX + 20, self.OY + 96, self.W - 40, 26, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 3, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		iHalf = (self.W - 40 - 10) / 2
+		screen.setButtonGFC(szName, u"<font=3b>" + localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT", ()) + u"</font>", "", self.OX + 20, self.OY + 96, iHalf, 28, WidgetTypes.WIDGET_GENERAL, BTN_PRESET + 3, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		self.aDrawn.append(szName)
 		self.drawMarketButton(pCity)
 		self.aDrawn.append("TRSPreset4")
@@ -311,14 +313,13 @@ class CvTradeRouteScreen:
 		szLabel = "TRSt" + szName[4:]
 		self.drop(szName)
 		self.drop(szLabel)
-		# the button is the background, the text on it is a clickable text of the game (in the style of the other texts of the game,
-		# yellow when checked); both have the same code
-		screen.setButtonGFC(szName, u"", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		if bOn:
-			szShown = u"<font=3b><color=255,220,100>[x] " + szText + u"</color></font>"
+			# checked: the button is blank and the text on it is a clickable text of the game in yellow (black shadow); both have the same code
+			screen.setButtonGFC(szName, u"", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+			screen.setText(szLabel, "", u"<font=3b><color=255,220,100>[x] " + szText + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + (self.CHECK_H - 20) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
 		else:
-			szShown = u"<font=3b><color=0,0,0>[   ] " + szText + u"</color></font>"
-		screen.setText(szLabel, "", szShown, CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + (self.CHECK_H - 20) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
+			# not checked: the text of the button itself (like OK / Cancel), centered by the game
+			screen.setButtonGFC(szName, u"<font=3b>[   ] " + szText + u"</font>", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 
 	def drawRows(self):
 		screen = self.pHost
@@ -370,9 +371,9 @@ class CvTradeRouteScreen:
 			self.drop(szName)
 		# the signs are texts of the game on blank buttons (the signs of the button font look odd)
 		screen.setButtonGFC("TRSm" + szTag, u"", "", iX, iBY, 28, iBH, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setText("TRSM" + szTag, "", u"<font=4b><color=0,0,0>-</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + 14, iBY + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1)
+		screen.setText("TRSM" + szTag, "", u"<font=4b><color=60,45,30>-</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + 14, iBY + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1)
 		screen.setButtonGFC("TRSp" + szTag, u"", "", iX + self.BLOCK_SPIN_W - 28, iBY, 28, iBH, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setText("TRSP" + szTag, "", u"<font=4b><color=0,0,0>+</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + self.BLOCK_SPIN_W - 14, iBY + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1)
+		screen.setText("TRSP" + szTag, "", u"<font=4b><color=60,45,30>+</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + self.BLOCK_SPIN_W - 14, iBY + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1)
 		screen.setLabelAt("TRSv" + szTag, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + (self.ROW_H - 22) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 	def refreshRow(self, iSlot):
@@ -488,7 +489,11 @@ class CvTradeRouteScreen:
 			if aszKey.has_key(iField):
 				return localText.getText(aszKey[iField], ())
 		if iCode >= BTN_PRESET and iCode < BTN_PRESET + 5:
-			aszKey = ["TXT_KEY_WTP_TRADEROUTE_PRESET0_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET1_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET2_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET3_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET4_HELP"]
+			aszKey = ["TXT_KEY_WTP_TRADEROUTE_PRESET0_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET1_HELP", "TXT_KEY_WTP_TRADEROUTE_PRESET2_HELP", "TXT_KEY_TRADEROUTE_PRESET_BUILD", "TXT_KEY_TRADEROUTE_PRESET_MARKET_AUTO"]
+			if iCode - BTN_PRESET == 4:
+				pCity = self.getCity()
+				if pCity != None and not pCity.isNone() and pCity.isAutoMarketImport():
+					return localText.getText("TXT_KEY_TRADEROUTE_PRESET_MARKET_AUTO_OFF", ())
 			return localText.getText(aszKey[iCode - BTN_PRESET], ())
 		return u""
 

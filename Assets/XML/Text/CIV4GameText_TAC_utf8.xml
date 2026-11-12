@@ -3540,8 +3540,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_FAVORITE_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Favorite[COLOR_REVERT][PARAGRAPH:2]Marks this good as a favorite. The favorites view (drop down at the bottom right) lists only the favorite goods. Favorites apply to all cities and are saved with the game.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Favorit[COLOR_REVERT][PARAGRAPH:2]Markiert diese Ware als Favorit. Die Favoritenansicht (Auswahlmenü unten rechts) zeigt nur die Favoriten. Favoriten gelten für alle Städte und werden mit dem Spielstand gespeichert.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Favorite[COLOR_REVERT][NEWLINE]Marks this good as a favorite. The favorites view (drop down at the bottom right) lists only the favorite goods. Favorites apply to all cities and are saved with the game.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Favorit[COLOR_REVERT][NEWLINE]Markiert diese Ware als Favorit. Die Favoritenansicht (Auswahlmenü unten rechts) zeigt nur die Favoriten. Favoriten gelten für alle Städte und werden mit dem Spielstand gespeichert.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_VIEW_ALL</Tag>
@@ -3555,8 +3555,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_VIEW_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]View[COLOR_REVERT][PARAGRAPH:2]Switches between all goods, your favorite goods and only the goods that are marked (import, feeder, export or auto export) in this city.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Ansicht[COLOR_REVERT][PARAGRAPH:2]Wechselt zwischen allen Waren, deinen Favoriten und nur den Waren, die in dieser Stadt markiert sind (Import, Feeder, Export oder Auto-Export).</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]View[COLOR_REVERT][NEWLINE]Switches between all goods, your favorite goods and only the goods that are marked (import, feeder, export or auto export) in this city.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Ansicht[COLOR_REVERT][NEWLINE]Wechselt zwischen allen Waren, deinen Favoriten und nur den Waren, die in dieser Stadt markiert sind (Import, Feeder, Export oder Auto-Export).</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PAGE_PREV_HELP</Tag>
@@ -3570,32 +3570,47 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET0_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Clear All[COLOR_REVERT][PARAGRAPH:2]Removes all import and export settings of this city.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Alles löschen[COLOR_REVERT][PARAGRAPH:2]Entfernt alle Import- und Export-Einstellungen dieser Stadt.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Clear All[COLOR_REVERT][NEWLINE]Removes all import and export settings of this city.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Alles löschen[COLOR_REVERT][NEWLINE]Entfernt alle Import- und Export-Einstellungen dieser Stadt.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET1_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Import all goods[COLOR_REVERT][PARAGRAPH:2]Turns import on for all goods.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Alle Waren importieren[COLOR_REVERT][PARAGRAPH:2]Schaltet den Import für alle Waren ein.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Import all goods[COLOR_REVERT][NEWLINE]Turns import on for all goods.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Alle Waren importieren[COLOR_REVERT][NEWLINE]Schaltet den Import für alle Waren ein.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET2_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Auto-export all goods[COLOR_REVERT][PARAGRAPH:2]Turns automatic export on for all goods.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Alle Waren automatisch exportieren[COLOR_REVERT][PARAGRAPH:2]Schaltet den automatischen Export für alle Waren ein.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Auto-export all goods[COLOR_REVERT][NEWLINE]Turns automatic export on for all goods.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Alle Waren automatisch exportieren[COLOR_REVERT][NEWLINE]Schaltet den automatischen Export für alle Waren ein.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET3_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Building material[COLOR_REVERT][PARAGRAPH:2]Sets the import of the goods for building: clay, stone and tools with the feeder (at least 100, at most 150) and horses, sailcloth, hardwood and rope with the feeder, their levels unchanged. Export settings stay as they are.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Baumaterial[COLOR_REVERT][PARAGRAPH:2]Stellt den Import der Baumaterialien ein: Lehm, Stein und Werkzeug mit dem Feeder (mindestens 100, höchstens 150) sowie Pferde, Segeltuch, Hartholz und Seil mit dem Feeder, ihre Mengen bleiben unverändert. Die Export-Einstellungen bleiben unverändert.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Building material[COLOR_REVERT][NEWLINE]Sets the import of the goods for building: clay, stone and tools with the feeder (at least 100, at most 150) and horses, sailcloth, hardwood and rope with the feeder, their levels unchanged. Export settings stay as they are.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Baumaterial[COLOR_REVERT][NEWLINE]Stellt den Import der Baumaterialien ein: Lehm, Stein und Werkzeug mit dem Feeder (mindestens 100, höchstens 150) sowie Pferde, Segeltuch, Hartholz und Seil mit dem Feeder, ihre Mengen bleiben unverändert. Die Export-Einstellungen bleiben unverändert.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET4_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Market automatic[COLOR_REVERT][PARAGRAPH:2]Switches the automatic import of the goods the domestic market asks for on or off. The levels follow the demand.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Markt-Automatik[COLOR_REVERT][PARAGRAPH:2]Schaltet den automatischen Import der Waren, die der Heimatmarkt verlangt, ein oder aus. Die Mengen folgen dem Bedarf.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Market automatic[COLOR_REVERT][NEWLINE]Switches the automatic import of the goods the domestic market asks for on or off. The levels follow the demand.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Markt-Automatik[COLOR_REVERT][NEWLINE]Schaltet den automatischen Import der Waren, die der Heimatmarkt verlangt, ein oder aus. Die Mengen folgen dem Bedarf.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_VIEW_MARKED</Tag>
 		<English>Marked only</English>
 		<German>Nur markierte</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT</Tag>
+		<English>Building material</English>
+		<German>Baumaterial</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT</Tag>
+		<English>Market automatic</English>
+		<German>Markt-Automatik</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT_ON</Tag>
+		<English>Market automatic: ON</English>
+		<German>Markt-Automatik: AN</German>
 	</TEXT>
 </Civ4GameText>

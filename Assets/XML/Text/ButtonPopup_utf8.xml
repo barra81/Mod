@@ -41,8 +41,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_LAND_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Land transports only[COLOR_REVERT][PARAGRAPH:2]The goods are requested by land transports only. The route is invisible for ships. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Nur Landtransporter[COLOR_REVERT][PARAGRAPH:2]Die Ware wird nur von Landtransportern angefordert. Für Schiffe ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Land transports only[COLOR_REVERT][NEWLINE]The goods are requested by land transports only. The route is invisible for ships. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Nur Landtransporter[COLOR_REVERT][NEWLINE]Die Ware wird nur von Landtransportern angefordert. Für Schiffe ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_SEA</Tag>
@@ -51,8 +51,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_SEA_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Ships only[COLOR_REVERT][PARAGRAPH:2]The goods are requested by ships only. The route is invisible for land transports. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Nur Schiffe[COLOR_REVERT][PARAGRAPH:2]Die Ware wird nur von Schiffen angefordert. Für Landtransporter ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Ships only[COLOR_REVERT][NEWLINE]The goods are requested by ships only. The route is invisible for land transports. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Nur Schiffe[COLOR_REVERT][NEWLINE]Die Ware wird nur von Schiffen angefordert. Für Landtransporter ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_EXPORT_LAND</Tag>
@@ -61,8 +61,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_EXPORT_LAND_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Land transports only[COLOR_REVERT][PARAGRAPH:2]The goods are offered to land transports only. The route is invisible for ships. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Nur Landtransporter[COLOR_REVERT][PARAGRAPH:2]Die Ware wird nur Landtransportern angeboten. Für Schiffe ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Land transports only[COLOR_REVERT][NEWLINE]The goods are offered to land transports only. The route is invisible for ships. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Nur Landtransporter[COLOR_REVERT][NEWLINE]Die Ware wird nur Landtransportern angeboten. Für Schiffe ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_EXPORT_SEA</Tag>
@@ -71,8 +71,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_EXPORT_SEA_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Ships only[COLOR_REVERT][PARAGRAPH:2]The goods are offered to ships only. The route is invisible for land transports. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Nur Schiffe[COLOR_REVERT][PARAGRAPH:2]Die Ware wird nur Schiffen angeboten. Für Landtransporter ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Ships only[COLOR_REVERT][NEWLINE]The goods are offered to ships only. The route is invisible for land transports. If neither Land nor Sea is checked, land transports and ships are served as usual.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Nur Schiffe[COLOR_REVERT][NEWLINE]Die Ware wird nur Schiffen angeboten. Für Landtransporter ist die Route unsichtbar. Ist weder Land noch See angehakt, werden Landtransporter und Schiffe wie gewohnt bedient.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_TITLE</Tag>
@@ -131,14 +131,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_IMPORT_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Import this good[COLOR_REVERT][PARAGRAPH:2]Left: import limit[NEWLINE]While importing, no transport can make the warehouse exceed this amount.[NEWLINE]0 means no limit.</English>
-		<Portuguese>[COLOR_HIGHLIGHT_TEXT]Importar este bem[COLOR_REVERT][PARAGRAPH:2]Esquerda: limite de importação[NEWLINE]Durante a importação, nenhum transporte pode fazer com que o armazém exceda esse valor.[NEWLINE]0 significa que não há limite.</Portuguese>
-		<French>[COLOR_HIGHLIGHT_TEXT]Importer cette bien[COLOR_REVERT][PARAGRAPH:2]A gauche : limite d'importation[NEWLINE]Pendant l'importation, aucun transport ne peut faire dépasser ce montant à l'entrepôt.[NEWLINE]0 signifie aucune limite.</French>
-		<German>[COLOR_HIGHLIGHT_TEXT]Güter importieren[COLOR_REVERT][PARAGRAPH:2]Links: Obergrenze für Importe[NEWLINE]Wenn importiert wird, kann der Lagerbestand durch ankommende Transporte nicht überschritten werden.[NEWLINE]0 bedeutet keine Einschränkungen.</German>
-		<Italian>[COLOR_HIGHLIGHT_TEXT]Importa questo merce[COLOR_REVERT][PARAGRAPH:2]Sinistra: limite di importazione[NEWLINE]Durante l'importazione, nessun trasporto può far superare al magazzino questa quantità.[NEWLINE]0 significa nessun limite.</Italian>
-		<Spanish>[COLOR_HIGHLIGHT_TEXT]Importar esta mercancía[COLOR_REVERT][PARAGRAPH:2]Izquierda: límite de importación[NEWLINE]Durante la importación, ningún transporte puede hacer que el almacén supere esta cantidad.[NEWLINE]0 significa que no hay límite.</Spanish>
-		<Russian>[COLOR_HIGHLIGHT_TEXT]Импортировать этот товар[COLOR_REVERT][PARAGRAPH:2]Ограничение на импорт[NEWLINE]При импорте ни один транспорт не может превысить это количество на складе.[NEWLINE]0 означает отсутствие ограничений.</Russian>
-		<Hungarian>[COLOR_HIGHLIGHT_TEXT]Áru Importja[COLOR_REVERT][PARAGRAPH:2]Balra: import limit[NEWLINE]Amíg importálva van, nem lehet a beállított raktárkészletet meghaladni.[NEWLINE]0 jelentése, hogy nincs limit.</Hungarian>
+		<English>[COLOR_HIGHLIGHT_TEXT]Import this good[COLOR_REVERT][NEWLINE]Left: import limit[NEWLINE]While importing, no transport can make the warehouse exceed this amount.[NEWLINE]0 means no limit.</English>
+		<Portuguese>[COLOR_HIGHLIGHT_TEXT]Importar este bem[COLOR_REVERT][NEWLINE]Esquerda: limite de importação[NEWLINE]Durante a importação, nenhum transporte pode fazer com que o armazém exceda esse valor.[NEWLINE]0 significa que não há limite.</Portuguese>
+		<French>[COLOR_HIGHLIGHT_TEXT]Importer cette bien[COLOR_REVERT][NEWLINE]A gauche : limite d'importation[NEWLINE]Pendant l'importation, aucun transport ne peut faire dépasser ce montant à l'entrepôt.[NEWLINE]0 signifie aucune limite.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Güter importieren[COLOR_REVERT][NEWLINE]Links: Obergrenze für Importe[NEWLINE]Wenn importiert wird, kann der Lagerbestand durch ankommende Transporte nicht überschritten werden.[NEWLINE]0 bedeutet keine Einschränkungen.</German>
+		<Italian>[COLOR_HIGHLIGHT_TEXT]Importa questo merce[COLOR_REVERT][NEWLINE]Sinistra: limite di importazione[NEWLINE]Durante l'importazione, nessun trasporto può far superare al magazzino questa quantità.[NEWLINE]0 significa nessun limite.</Italian>
+		<Spanish>[COLOR_HIGHLIGHT_TEXT]Importar esta mercancía[COLOR_REVERT][NEWLINE]Izquierda: límite de importación[NEWLINE]Durante la importación, ningún transporte puede hacer que el almacén supere esta cantidad.[NEWLINE]0 significa que no hay límite.</Spanish>
+		<Russian>[COLOR_HIGHLIGHT_TEXT]Импортировать этот товар[COLOR_REVERT][NEWLINE]Ограничение на импорт[NEWLINE]При импорте ни один транспорт не может превысить это количество на складе.[NEWLINE]0 означает отсутствие ограничений.</Russian>
+		<Hungarian>[COLOR_HIGHLIGHT_TEXT]Áru Importja[COLOR_REVERT][NEWLINE]Balra: import limit[NEWLINE]Amíg importálva van, nem lehet a beállított raktárkészletet meghaladni.[NEWLINE]0 jelentése, hogy nincs limit.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_FEEDER</Tag>
@@ -151,14 +151,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_FEEDER_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Import feeder[COLOR_REVERT][PARAGRAPH:2]Turn import on at 75%[NEWLINE]Turn import off at 100%[NEWLINE]Compared to maintain level (bottom spinbutton)</English>
-		<Portuguese>[COLOR_HIGHLIGHT_TEXT]Gestor de Importação[COLOR_REVERT][PARAGRAPH:2]Ativar importação em 75%[NEWLINE]Desativar importação em 100%[NEWLINE]Em comparação com manter o nível (botão giratório inferior)</Portuguese>
-		<French>[COLOR_HIGHLIGHT_TEXT]Gestionnaire d'importation[COLOR_REVERT][PARAGRAPH:2]Démarre l'importation à 75%[NEWLINE]Arrête l'importation à 100%[NEWLINE]Par rapport au niveau de maintien (bouton rotatif inférieur)</French>
-		<German>[COLOR_HIGHLIGHT_TEXT]Importsteuerung[COLOR_REVERT][PARAGRAPH:2]Schaltet Import bei 75% an[NEWLINE]Schaltet Import bei 100% aus[NEWLINE]In Relation zur Obergrenze für Importe (unterer Button)</German>
-		<Italian>[COLOR_HIGHLIGHT_TEXT]Import feeder[COLOR_REVERT][PARAGRAPH:2]Attiva l'importazione al 75%[NEWLINE]Disattiva l'importazione al 100%[NEWLINE]Rispetto al mantenimento del livello (pulsante in basso)</Italian>
-		<Spanish>[COLOR_HIGHLIGHT_TEXT]Alimentador de importación[COLOR_REVERT][PARAGRAPH:2]Activar la importación al 75%[NEWLINE]Desactivar la importación al 100%[NEWLINE]En comparación con mantener el nivel (botón giratorio inferior)</Spanish>
-		<Russian>[COLOR_HIGHLIGHT_TEXT]Фидер импорта[COLOR_REVERT][PARAGRAPH:2]Включить импорт при 75%[NEWLINE]Выключить импорт при 100%[NEWLINE]Автоматическое поддержание нижнего счетчика</Russian>
-		<Hungarian>[COLOR_HIGHLIGHT_TEXT]Import beállítás[COLOR_REVERT][PARAGRAPH:2]Import elindítása 75%-nál[NEWLINE]Import leállítása 100%-nál[NEWLINE]A szint fenntartásához képest (alsó léptetőgomb)</Hungarian>
+		<English>[COLOR_HIGHLIGHT_TEXT]Import feeder[COLOR_REVERT][NEWLINE]Turn import on at 75%[NEWLINE]Turn import off at 100%[NEWLINE]Compared to maintain level (bottom spinbutton)</English>
+		<Portuguese>[COLOR_HIGHLIGHT_TEXT]Gestor de Importação[COLOR_REVERT][NEWLINE]Ativar importação em 75%[NEWLINE]Desativar importação em 100%[NEWLINE]Em comparação com manter o nível (botão giratório inferior)</Portuguese>
+		<French>[COLOR_HIGHLIGHT_TEXT]Gestionnaire d'importation[COLOR_REVERT][NEWLINE]Démarre l'importation à 75%[NEWLINE]Arrête l'importation à 100%[NEWLINE]Par rapport au niveau de maintien (bouton rotatif inférieur)</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Importsteuerung[COLOR_REVERT][NEWLINE]Schaltet Import bei 75% an[NEWLINE]Schaltet Import bei 100% aus[NEWLINE]In Relation zur Obergrenze für Importe (unterer Button)</German>
+		<Italian>[COLOR_HIGHLIGHT_TEXT]Import feeder[COLOR_REVERT][NEWLINE]Attiva l'importazione al 75%[NEWLINE]Disattiva l'importazione al 100%[NEWLINE]Rispetto al mantenimento del livello (pulsante in basso)</Italian>
+		<Spanish>[COLOR_HIGHLIGHT_TEXT]Alimentador de importación[COLOR_REVERT][NEWLINE]Activar la importación al 75%[NEWLINE]Desactivar la importación al 100%[NEWLINE]En comparación con mantener el nivel (botón giratorio inferior)</Spanish>
+		<Russian>[COLOR_HIGHLIGHT_TEXT]Фидер импорта[COLOR_REVERT][NEWLINE]Включить импорт при 75%[NEWLINE]Выключить импорт при 100%[NEWLINE]Автоматическое поддержание нижнего счетчика</Russian>
+		<Hungarian>[COLOR_HIGHLIGHT_TEXT]Import beállítás[COLOR_REVERT][NEWLINE]Import elindítása 75%-nál[NEWLINE]Import leállítása 100%-nál[NEWLINE]A szint fenntartásához képest (alsó léptetőgomb)</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_EXPORT</Tag>
@@ -173,14 +173,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_EXPORT_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Export this good[COLOR_REVERT][PARAGRAPH:2]Left: maintain level[NEWLINE]Import if warehouse is below this level or export if warehouse exceeds this level.</English>
-		<Portuguese>[COLOR_HIGHLIGHT_TEXT]Exportar este bem[COLOR_REVERT][PARAGRAPH:2]Esquerda: manter o nível[NEWLINE]Importar se o armazém estiver abaixo deste nível ou exportar se o armazém exceder este nível.</Portuguese>
-		<French>[COLOR_HIGHLIGHT_TEXT]Exporter ce bien[COLOR_REVERT][PARAGRAPH:2]Gauche : maintenir le niveau[NEWLINE]Importer si l'entrepôt est inférieur à ce niveau ou exporter si l'entrepôt dépasse ce niveau.</French>
-		<German>[COLOR_HIGHLIGHT_TEXT]Güter exportieren[COLOR_REVERT][PARAGRAPH:2]Links: Lagerbestand einhalten[NEWLINE]Importieren, wenn der Lagerbestand unterhalb dieser Schwelle liegt.[NEWLINE]Exportieren, wenn der Lagerbestand oberhalb dieser Schwelle liegt.</German>
-		<Italian>[COLOR_HIGHLIGHT_TEXT]Esporta questo bene[COLOR_REVERT][PARAGRAPH:2]Sinistra: mantenere il livello[NEWLINE]Importa se il magazzino è sotto questo livello o esporta se il magazzino supera questo livello.</Italian>
-		<Spanish>[COLOR_HIGHLIGHT_TEXT]Exportar este bien[COLOR_REVERT][PARAGRAPH:2]Izquierda: mantener el nivel[NEWLINE]Importar si el almacén está por debajo de este nivel o exportar si el almacén supera este nivel.</Spanish>
-		<Russian>[COLOR_HIGHLIGHT_TEXT]Экспортировать этот товар[COLOR_REVERT][PARAGRAPH:2]Поддерживать уровень[NEWLINE]Импортировать, если количество на складе ниже этого уровня; экспортировать, если количество на складе превышает этот уровень</Russian>
-		<Hungarian>[COLOR_HIGHLIGHT_TEXT]Áru Exportja[COLOR_REVERT][PARAGRAPH:2]Balra: szint fenntartása[NEWLINE]Importálás, ha a raktár ezen szint alatt van, vagy exportálás, ha a raktár meghaladja ezt a szintet.</Hungarian>
+		<English>[COLOR_HIGHLIGHT_TEXT]Export this good[COLOR_REVERT][NEWLINE]Left: maintain level[NEWLINE]Import if warehouse is below this level or export if warehouse exceeds this level.</English>
+		<Portuguese>[COLOR_HIGHLIGHT_TEXT]Exportar este bem[COLOR_REVERT][NEWLINE]Esquerda: manter o nível[NEWLINE]Importar se o armazém estiver abaixo deste nível ou exportar se o armazém exceder este nível.</Portuguese>
+		<French>[COLOR_HIGHLIGHT_TEXT]Exporter ce bien[COLOR_REVERT][NEWLINE]Gauche : maintenir le niveau[NEWLINE]Importer si l'entrepôt est inférieur à ce niveau ou exporter si l'entrepôt dépasse ce niveau.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Güter exportieren[COLOR_REVERT][NEWLINE]Links: Lagerbestand einhalten[NEWLINE]Importieren, wenn der Lagerbestand unterhalb dieser Schwelle liegt.[NEWLINE]Exportieren, wenn der Lagerbestand oberhalb dieser Schwelle liegt.</German>
+		<Italian>[COLOR_HIGHLIGHT_TEXT]Esporta questo bene[COLOR_REVERT][NEWLINE]Sinistra: mantenere il livello[NEWLINE]Importa se il magazzino è sotto questo livello o esporta se il magazzino supera questo livello.</Italian>
+		<Spanish>[COLOR_HIGHLIGHT_TEXT]Exportar este bien[COLOR_REVERT][NEWLINE]Izquierda: mantener el nivel[NEWLINE]Importar si el almacén está por debajo de este nivel o exportar si el almacén supera este nivel.</Spanish>
+		<Russian>[COLOR_HIGHLIGHT_TEXT]Экспортировать этот товар[COLOR_REVERT][NEWLINE]Поддерживать уровень[NEWLINE]Импортировать, если количество на складе ниже этого уровня; экспортировать, если количество на складе превышает этот уровень</Russian>
+		<Hungarian>[COLOR_HIGHLIGHT_TEXT]Áru Exportja[COLOR_REVERT][NEWLINE]Balra: szint fenntartása[NEWLINE]Importálás, ha a raktár ezen szint alatt van, vagy exportálás, ha a raktár meghaladja ezt a szintet.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_AUTO_EXPORT</Tag>
@@ -195,14 +195,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_POPUP_IMPORT_AUTO_EXPORT_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Automatic turn export ON/OFF at turn start[COLOR_REVERT][PARAGRAPH:2]A high number of trade routes slows down the game. This feature allows disabling trade routes when there's nothing to transport.[PARAGRAPH:2]Remember that restarting exports won't take effect until the next turn. This means it isn't well suited for cases where you both import and export at the same time.</English>
-		<Portuguese>[COLOR_HIGHLIGHT_TEXT]Ativar/desativar exportação automática no início do turno[COLOR_REVERT][PARAGRAPH:2]Um grande número de rotas comerciais torna o jogo mais lento. Este recurso permite desativar rotas comerciais quando não há nada para transportar.[PARAGRAPH:2]Lembre-se de que reiniciar as exportações não terá efeito até o próximo turno. Isso significa que não é adequado para casos em que você importa e exporta ao mesmo tempo.</Portuguese>
-		<French>[COLOR_HIGHLIGHT_TEXT]Activation/désactivation automatique des exportations au début du tour [COLOR_REVERT][PARAGRAPH:2]Un nombre élevé de routes commerciales ralentit le jeu. Cette fonctionnalité permet de désactiver les routes commerciales lorsqu'il n'y a rien à transporter.[PARAGRAPH:2]N'oubliez pas que le redémarrage des exportations ne prend effet qu'au tour suivant. Cela signifie qu'elle n'est pas bien adaptée aux cas où vous importez et exportez en même temps.</French>
-		<German>[COLOR_HIGHLIGHT_TEXT]Automatisches Ein- und Ausschalten des Exports bei Rundenbeginn[COLOR_REVERT][PARAGRAPH:2]Da eine hohe Anzahl von Handelsrouten das Spiel verlangsamt, ermöglicht diese Funktion es, Handelsrouten zu deaktivieren, wenn es nichts zu transportieren gibt.[PARAGRAPH:2]Denken Sie daran, dass das erneute Starten der Exporte erst in der nächsten Runde wirksam wird. Das heißt, es ist nicht gut geeignet für Fälle, in denen Sie gleichzeitig importieren und exportieren.</German>
-		<Italian>[COLOR_HIGHLIGHT_TEXT]Automatico attiva/disattiva le esportazioni all'inizio del turno[COLOR_REVERT][PARAGRAPH:2]Un alto numero di rotte commerciali rallenta il gioco. Questa funzione permette di disabilitare le rotte commerciali quando non c'è nulla da trasportare.[PARAGRAPH:2]Ricorda che il riavvio delle esportazioni non avrà effetto fino al turno successivo. Questo significa che non è adatto ai casi in cui si importa e si esporta allo stesso tempo.</Italian>
-		<Spanish>[COLOR_HIGHLIGHT_TEXT]Activación/desactivación automática de la exportación al inicio del turno[COLOR_REVERT][PARAGRAPH:2]Un número elevado de rutas comerciales ralentiza el juego. Esta característica permite desactivar las rutas comerciales cuando no hay nada que transportar.[PARAGRAPH:2]Recuerda que el reinicio de las exportaciones no tendrá efecto hasta el siguiente turno. Esto significa que no es adecuado para los casos en los que se importa y exporta al mismo tiempo.</Spanish>
-		<Russian>[COLOR_HIGHLIGHT_TEXT]Включение/выключение автоматического экспорта в начале каждого хода[COLOR_REVERT][PARAGRAPH:2]Большое количество торговых путей замедляет игру. Эта функция позволяет отключать торговые пути, когда нечего перевозить.[PARAGRAPH:2]Помните, что перезапуск экспорта не вступит в силу до следующего хода. Это означает, что он не очень подходит для случаев, когда вы импортируете и экспортируете одновременно.</Russian>
-		<Hungarian>[COLOR_HIGHLIGHT_TEXT]Az Export BE/KI kapcsolása a kör elején[COLOR_REVERT][PARAGRAPH:2]A nagyszámú kereskedelmi útvonal lelassítja a játékot. Ez a funkció lehetővé teszi a kereskedelmi útvonalak letiltását, ha nincs mit szállítani.[PARAGRAPH:2]Ne feledd, hogy az exportálás újraindítása csak a következő körben lép érvénybe. Ez azt jelenti, hogy nem alkalmas olyan esetekben, amikor egyszerre importálsz és exportálsz.</Hungarian>
+		<English>[COLOR_HIGHLIGHT_TEXT]Automatic turn export ON/OFF at turn start[COLOR_REVERT][NEWLINE]A high number of trade routes slows down the game. This feature allows disabling trade routes when there's nothing to transport.[NEWLINE]Remember that restarting exports won't take effect until the next turn. This means it isn't well suited for cases where you both import and export at the same time.</English>
+		<Portuguese>[COLOR_HIGHLIGHT_TEXT]Ativar/desativar exportação automática no início do turno[COLOR_REVERT][NEWLINE]Um grande número de rotas comerciais torna o jogo mais lento. Este recurso permite desativar rotas comerciais quando não há nada para transportar.[NEWLINE]Lembre-se de que reiniciar as exportações não terá efeito até o próximo turno. Isso significa que não é adequado para casos em que você importa e exporta ao mesmo tempo.</Portuguese>
+		<French>[COLOR_HIGHLIGHT_TEXT]Activation/désactivation automatique des exportations au début du tour [COLOR_REVERT][NEWLINE]Un nombre élevé de routes commerciales ralentit le jeu. Cette fonctionnalité permet de désactiver les routes commerciales lorsqu'il n'y a rien à transporter.[NEWLINE]N'oubliez pas que le redémarrage des exportations ne prend effet qu'au tour suivant. Cela signifie qu'elle n'est pas bien adaptée aux cas où vous importez et exportez en même temps.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Automatisches Ein- und Ausschalten des Exports bei Rundenbeginn[COLOR_REVERT][NEWLINE]Da eine hohe Anzahl von Handelsrouten das Spiel verlangsamt, ermöglicht diese Funktion es, Handelsrouten zu deaktivieren, wenn es nichts zu transportieren gibt.[NEWLINE]Denken Sie daran, dass das erneute Starten der Exporte erst in der nächsten Runde wirksam wird. Das heißt, es ist nicht gut geeignet für Fälle, in denen Sie gleichzeitig importieren und exportieren.</German>
+		<Italian>[COLOR_HIGHLIGHT_TEXT]Automatico attiva/disattiva le esportazioni all'inizio del turno[COLOR_REVERT][NEWLINE]Un alto numero di rotte commerciali rallenta il gioco. Questa funzione permette di disabilitare le rotte commerciali quando non c'è nulla da trasportare.[NEWLINE]Ricorda che il riavvio delle esportazioni non avrà effetto fino al turno successivo. Questo significa che non è adatto ai casi in cui si importa e si esporta allo stesso tempo.</Italian>
+		<Spanish>[COLOR_HIGHLIGHT_TEXT]Activación/desactivación automática de la exportación al inicio del turno[COLOR_REVERT][NEWLINE]Un número elevado de rutas comerciales ralentiza el juego. Esta característica permite desactivar las rutas comerciales cuando no hay nada que transportar.[NEWLINE]Recuerda que el reinicio de las exportaciones no tendrá efecto hasta el siguiente turno. Esto significa que no es adecuado para los casos en los que se importa y exporta al mismo tiempo.</Spanish>
+		<Russian>[COLOR_HIGHLIGHT_TEXT]Включение/выключение автоматического экспорта в начале каждого хода[COLOR_REVERT][NEWLINE]Большое количество торговых путей замедляет игру. Эта функция позволяет отключать торговые пути, когда нечего перевозить.[NEWLINE]Помните, что перезапуск экспорта не вступит в силу до следующего хода. Это означает, что он не очень подходит для случаев, когда вы импортируете и экспортируете одновременно.</Russian>
+		<Hungarian>[COLOR_HIGHLIGHT_TEXT]Az Export BE/KI kapcsolása a kör elején[COLOR_REVERT][NEWLINE]A nagyszámú kereskedelmi útvonal lelassítja a játékot. Ez a funkció lehetővé teszi a kereskedelmi útvonalak letiltását, ha nincs mit szállítani.[NEWLINE]Ne feledd, hogy az exportálás újraindítása csak a következő körben lép érvénybe. Ez azt jelenti, hogy nem alkalmas olyan esetekben, amikor egyszerre importálsz és exportálsz.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRADE_ROUTES_MAIN_TABLE</Tag>
