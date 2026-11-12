@@ -2869,14 +2869,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MILITARY_UPKEEP_GOLD_STR</Tag>
-		<English>Military upkeep:   -%d1 per turn</English>
-		<Portuguese>Manutenção militar: -%d1 por turno</Portuguese>
-		<French>Entretien militaire : -%d1 par tour</French>
-		<German>Militärunterhalt: -%d1 pro Runde</German>
-		<Italian>Mantenimento militare: -%d1 per turno</Italian>
-		<Spanish>Mantenimiento militar: -%d1 por turno</Spanish>
-		<Russian>Содержание армии: -%d1 за ход</Russian>
-		<Hungarian>Katonai fenntartás: -%d1 körönként</Hungarian>
+		<English>Military upkeep:   - %d1 per turn</English>
+		<Portuguese>Manutenção militar: - %d1 por turno</Portuguese>
+		<French>Entretien militaire : - %d1 par tour</French>
+		<German>Militärunterhalt: - %d1 pro Runde</German>
+		<Italian>Mantenimento militare: - %d1 per turno</Italian>
+		<Spanish>Mantenimiento militar: - %d1 por turno</Spanish>
+		<Russian>Содержание армии: - %d1 за ход</Russian>
+		<Hungarian>Katonai fenntartás: - %d1 körönként</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_DOMESTIC_MARKET_INCOME_STR</Tag>
