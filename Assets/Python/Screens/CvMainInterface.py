@@ -286,6 +286,16 @@ iGlobeLayerOptionHeight = 24
 
 g_pSelectedUnit = 0
 
+# WTP: a transport that was just automated (R menu / full automation) stays the selected unit and is followed on the map
+# until another unit is selected or the turn ends
+g_LastSelUnit = -1
+g_LastSelAuto = -1
+g_FollowUnit = -1
+g_FollowStart = 0.0
+g_FollowTurn = -1
+g_FollowX = -1
+g_FollowY = -1
+
 class CvMainInterface:
 	"Main Interface Screen"
 
@@ -4686,6 +4696,66 @@ class CvMainInterface:
 	def update( self, fDelta ):
 		self.updateTerritorialInfluenceEditor()
 		self.updatePioneerPlanEditor()
+		self.updateAutomatedFollow()
+		return
+
+	# WTP: the game selects the next unit when a transport gets automated: the transport stays selected (the game does its
+	# selection change within a moment, so the transport is selected again for a second) and the camera follows it
+	def updateAutomatedFollow(self):
+		global g_LastSelUnit, g_LastSelAuto, g_FollowUnit, g_FollowStart, g_FollowTurn, g_FollowX, g_FollowY
+		try:
+			iPlayer = gc.getGame().getActivePlayer()
+			if iPlayer == -1:
+				return
+			pPlayer = gc.getPlayer(iPlayer)
+			iRoutes = int(AutomateTypes.AUTOMATE_TRANSPORT_ROUTES)
+			iFull = int(AutomateTypes.AUTOMATE_TRANSPORT_FULL)
+			fNow = time.time()
+			pSel = CyInterface().getHeadSelectedUnit()
+			iSel = -1
+			iSelAuto = -1
+			if pSel != None and not pSel.isNone() and pSel.getOwner() == iPlayer:
+				iSel = pSel.getID()
+				iSelAuto = int(pSel.getGroup().getAutomateType())
+
+			# the unit selected a moment ago got an automation of the transport menus
+			if g_LastSelUnit != -1 and g_LastSelAuto != iRoutes and g_LastSelAuto != iFull and g_LastSelUnit != g_FollowUnit:
+				pPrev = pPlayer.getUnit(g_LastSelUnit)
+				if pPrev != None and not pPrev.isNone():
+					iNow = int(pPrev.getGroup().getAutomateType())
+					if iNow == iRoutes or iNow == iFull:
+						g_FollowUnit = g_LastSelUnit
+						g_FollowStart = fNow
+						g_FollowTurn = gc.getGame().getGameTurn()
+						g_FollowX = -1
+						g_FollowY = -1
+
+			if g_FollowUnit != -1:
+				pFollow = pPlayer.getUnit(g_FollowUnit)
+				if pFollow == None or pFollow.isNone() or g_FollowTurn != gc.getGame().getGameTurn():
+					g_FollowUnit = -1
+				elif fNow - g_FollowStart < 1.0:
+					if iSel != g_FollowUnit:
+						CyInterface().selectUnit(pFollow, True, False, True)
+						pFollow.centerCamera()
+						g_FollowX = pFollow.getX()
+						g_FollowY = pFollow.getY()
+					elif pFollow.getX() != g_FollowX or pFollow.getY() != g_FollowY:
+						pFollow.centerCamera()
+						g_FollowX = pFollow.getX()
+						g_FollowY = pFollow.getY()
+				elif iSel == g_FollowUnit:
+					if pFollow.getX() != g_FollowX or pFollow.getY() != g_FollowY:
+						pFollow.centerCamera()
+						g_FollowX = pFollow.getX()
+						g_FollowY = pFollow.getY()
+				else:
+					g_FollowUnit = -1 # another unit was selected: the following ends
+
+			g_LastSelUnit = iSel
+			g_LastSelAuto = iSelAuto
+		except:
+			pass
 		return
 
 	# Adds Mouse Over Help to General Widgets
