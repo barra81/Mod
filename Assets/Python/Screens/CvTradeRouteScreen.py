@@ -113,6 +113,59 @@ def saveFavorites(aFav):
 		import traceback
 		logTrade(traceback.format_exc())
 
+# the building material preset is a switch: it remembers (per city, in the script data of the player like the favorites) which goods it
+# turned on, so that switching it off takes only those away again (not the ones that were set by hand before)
+BLD_PREFIX = "[[WTPBLD:"
+BLD_SUFFIX = "]]"
+BLD_MATERIAL = ["YIELD_CLAY", "YIELD_STONE", "YIELD_TOOLS"] # feeder 100 / 150
+BLD_OTHER = ["YIELD_HORSES", "YIELD_SAILCLOTH", "YIELD_HARDWOOD", "YIELD_ROPE"] # feeder, levels unchanged
+
+def loadBuild():
+	dBuild = {}
+	try:
+		szData = getActivePlayer().getScriptData()
+		if szData == None:
+			szData = ""
+		iStart = szData.find(BLD_PREFIX)
+		if iStart != -1:
+			iStart += len(BLD_PREFIX)
+			iEnd = szData.find(BLD_SUFFIX, iStart)
+			if iEnd != -1:
+				for szEntry in szData[iStart:iEnd].split(";"):
+					if szEntry.find(":") == -1:
+						continue
+					szCity, szTypes = szEntry.split(":", 1)
+					aTypes = []
+					for szType in szTypes.split(","):
+						szType = szType.strip()
+						if len(szType) > 0:
+							aTypes.append(szType)
+					dBuild[int(szCity)] = aTypes
+	except:
+		pass
+	return dBuild
+
+def saveBuild(dBuild):
+	try:
+		pPlayer = getActivePlayer()
+		szData = pPlayer.getScriptData()
+		if szData == None:
+			szData = ""
+		iStart = szData.find(BLD_PREFIX)
+		if iStart != -1:
+			iEnd = szData.find(BLD_SUFFIX, iStart)
+			if iEnd != -1:
+				szData = szData[:iStart] + szData[iEnd + len(BLD_SUFFIX):]
+		aEntries = []
+		for iCity in dBuild.keys():
+			aEntries.append(str(iCity) + ":" + ",".join(dBuild[iCity]))
+		if len(aEntries) > 0:
+			szData = szData + BLD_PREFIX + ";".join(aEntries) + BLD_SUFFIX
+		pPlayer.setScriptData(szData)
+	except:
+		import traceback
+		logTrade(traceback.format_exc())
+
 class CvTradeRouteScreen:
 	"Import / export settings of a city"
 
@@ -217,20 +270,73 @@ class CvTradeRouteScreen:
 		pCity = self.getCity()
 		if pCity == None or pCity.isNone():
 			return
-		for iYield in self.aAllYields:
+		for iYield in self.dData.keys():
 			self.loadYield(pCity, iYield)
 		if self.iView == VIEW_MARKED:
 			self.buildView()
 			self.drawPage()
 		self.drawMarketButton(pCity)
+		self.drawBuildButton()
 		self.drawRows()
+
+	def isBuildOn(self):
+		return loadBuild().has_key(self.iCity)
+
+	def drawBuildButton(self):
+		iHalf = (self.W - 40 - 10) / 2
+		szKey = "TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT"
+		bOn = self.isBuildOn()
+		if bOn:
+			szKey = "TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT_ON"
+		self.addButton("TRSPreset3", localText.getText(szKey, ()), bOn, self.OX + 20, self.OY + 96, iHalf, 28, BTN_PRESET + 3)
+
+	def getYieldByType(self, szType):
+		for iYield in self.dData.keys():
+			if gc.getYieldInfo(iYield).getType() == szType:
+				return iYield
+		return -1
+
+	# the building material preset as a switch (see BLD_PREFIX)
+	def toggleBuild(self):
+		dBuild = loadBuild()
+		if dBuild.has_key(self.iCity):
+			# off: only the goods the preset turned on are taken away again
+			for szType in dBuild[self.iCity]:
+				iYield = self.getYieldByType(szType)
+				if iYield >= 0:
+					self.dData[iYield]["imp"] = False
+					self.dData[iYield]["feeder"] = False
+			del dBuild[self.iCity]
+		else:
+			aAdded = []
+			for szType in BLD_MATERIAL + BLD_OTHER:
+				iYield = self.getYieldByType(szType)
+				if iYield < 0:
+					continue
+				d = self.dData[iYield]
+				if not (d["imp"] or d["feeder"]):
+					aAdded.append(szType)
+				d["imp"] = True
+				d["feeder"] = True
+				if szType in BLD_MATERIAL:
+					d["maintain"] = 100
+					d["impLimit"] = 150
+			dBuild[self.iCity] = aAdded
+		saveBuild(dBuild)
+		self.apply()
+		self.drawBuildButton()
+		if self.iView == VIEW_MARKED:
+			self.buildView()
+			self.drawPage()
+		self.drawRows()
+		self.iReload = 60
 
 	def drawMarketButton(self, pCity):
 		szMarket = "TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT"
 		if pCity.isAutoMarketImport():
 			szMarket = "TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT_ON"
 		iHalf = (self.W - 40 - 10) / 2
-		self.addButton("TRSPreset4", localText.getText(szMarket, ()), False, self.OX + 20 + iHalf + 10, self.OY + 96, iHalf, 28, BTN_PRESET + 4)
+		self.addButton("TRSPreset4", localText.getText(szMarket, ()), pCity.isAutoMarketImport(), self.OX + 20 + iHalf + 10, self.OY + 96, iHalf, 28, BTN_PRESET + 4)
 
 	# opens the window (1: it is open, 0: the DLL shows its own popup instead)
 	def open(self, iCity, bCondensed):
@@ -250,10 +356,10 @@ class CvTradeRouteScreen:
 		for iYield in range(YieldTypes.NUM_YIELD_TYPES):
 			if not gc.getYieldInfo(iYield).isCargo():
 				continue
+			self.loadYield(pCity, iYield)
 			if bCondensed and not pCity.isYieldInTradeRouteCondensedList(iYield):
 				continue
 			self.aYields.append(iYield)
-			self.loadYield(pCity, iYield)
 
 		self.aAllYields = list(self.aYields)
 		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
@@ -290,7 +396,7 @@ class CvTradeRouteScreen:
 		for i in range(3):
 			self.addButton("TRSPreset" + str(i), aszPreset[i], False, self.OX + 20 + i * (iBW + 10), self.OY + 62, iBW, 28, BTN_PRESET + i)
 		iHalf = (self.W - 40 - 10) / 2
-		self.addButton("TRSPreset3", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT", ()), False, self.OX + 20, self.OY + 96, iHalf, 28, BTN_PRESET + 3)
+		self.drawBuildButton()
 		self.drawMarketButton(pCity)
 
 		self.addButton("TRSOk", localText.getText("TXT_KEY_MAIN_MENU_OK", ()), False, self.OX + self.W / 2 - 105, self.OY + self.H - 44, 100, 28, BTN_OK)
@@ -331,7 +437,7 @@ class CvTradeRouteScreen:
 		if bMark and USE_OVERLAY:
 			for i in range(HILITE_LAYERS):
 				szLight = "TRSb" + str(i) + "_" + szName
-				screen.addDDSGFC(szLight, MARK_ART, iX + MARGIN_X, iY + MARGIN_Y, iW - 2 * MARGIN_X, iH - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, iCode, -1)
+				screen.setImageButton(szLight, MARK_ART, iX + MARGIN_X, iY + MARGIN_Y, iW - 2 * MARGIN_X, iH - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, iCode, -1)
 				aLights.append(szLight)
 		self.dBtn[szName] = [iX, iY, iW, iH, iCode, szText, bMark, szFont, iDy, aLights]
 		self.drawButtonText(szName)
@@ -379,7 +485,7 @@ class CvTradeRouteScreen:
 		if szNew != "":
 			b = self.dBtn[szNew]
 			for i in range(HOVER_LAYERS):
-				self.pHost.addDDSGFC("TRSHover" + str(i), HOVER_ART, b[0] + MARGIN_X, b[1] + MARGIN_Y, b[2] - 2 * MARGIN_X, b[3] - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, b[4], -1)
+				self.pHost.setImageButton("TRSHover" + str(i), HOVER_ART, b[0] + MARGIN_X, b[1] + MARGIN_Y, b[2] - 2 * MARGIN_X, b[3] - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, b[4], -1)
 			self.sHover = szNew
 			self.drawButtonText(szNew) # (the text on top of the panel)
 
@@ -510,7 +616,7 @@ class CvTradeRouteScreen:
 		pCity = self.getCity()
 		if pCity == None or pCity.isNone():
 			return
-		for iYield in self.aAllYields:
+		for iYield in self.dData.keys():
 			d = self.dData[iYield]
 			if (d["imp"] != pCity.isImport(iYield) or d["exp"] != pCity.isExport(iYield) or d["feeder"] != pCity.isImportFeeder(iYield)
 				or d["auto"] != pCity.isAutoExport(iYield) or d["impDom"] != pCity.getImportDomains(iYield)
@@ -556,6 +662,9 @@ class CvTradeRouteScreen:
 
 	# a preset: the changes of the window are sent first, the window stays open and shows the result a moment later
 	def runPreset(self, iPreset):
+		if iPreset == 3:
+			self.toggleBuild()
+			return
 		try:
 			self.apply()
 			if iPreset <= 2:

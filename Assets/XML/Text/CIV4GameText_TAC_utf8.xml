@@ -3613,4 +3613,9 @@
 		<English>Market automatic: ON</English>
 		<German>Markt-Automatik: AN</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT_ON</Tag>
+		<English>Building material: ON</English>
+		<German>Baumaterial: AN</German>
+	</TEXT>
 </Civ4GameText>
