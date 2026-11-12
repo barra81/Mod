@@ -938,6 +938,22 @@ bool CvSelectionGroupAI::isDetourWorthwhile(const int* aiAvailable) const
 	return iFillable * 100 >= WTP_DETOUR_MIN_SLOT_PERCENT * GC.getGameINLINE().getCargoYieldCapacity();
 }
 
+int CvSelectionGroupAI::getFreeSlotCount() const
+{
+	int iFreeSlots = 0;
+	CLLNode<IDInfo>* pFreeNode = headUnitNode();
+	while (pFreeNode != NULL)
+	{
+		CvUnit* const pFreeUnit = ::getUnit(pFreeNode->m_data);
+		pFreeNode = nextUnitNode(pFreeNode);
+		if (pFreeUnit != NULL && !pFreeUnit->isCargo() && pFreeUnit->cargoSpace() > pFreeUnit->getCargo())
+		{
+			iFreeSlots += pFreeUnit->cargoSpace() - pFreeUnit->getCargo();
+		}
+	}
+	return iFreeSlots;
+}
+
 bool CvSelectionGroupAI::canLoadYieldHere(YieldTypes eYield) const
 {
 	CLLNode<IDInfo>* pUnitNode = headUnitNode();
@@ -1598,8 +1614,9 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				{
 					iValue /= 1 + kOwner.AI_plotTargetMissionAIs(pDestinationCityPlot, MISSIONAI_TRANSPORT, this, 0);
 
-					// WTP: with cargo on board a human player's automated transport serves the nearest colony first (value per turn)
-					if (bFillHold && !bNoCargo && iValue > 0)
+					// WTP: a human player's automated transport serves the nearest colony first (value per turn), with cargo on board as well as on
+					// the empty way to a colony whose yields are fetched (so it does not pass a near job for a far one of little more value)
+					if (bFillHold && iValue > 0)
 					{
 						iValue = std::max(1, iValue / std::max(1, iTurns));
 					}
@@ -1975,6 +1992,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				// the detours of all stops on the way to the priority target together stay within the limit
 				const int iDetourLeft = WTP_FILL_HOLD_MAX_DETOUR_TURNS - m_iPriorityDetour;
 				int iBestPickupAmount = 0;
+				int iBestPickupEfficiency = 0;
 				int iBestPickupDetour = MAX_INT;
 				int iBestPickupTotal = 0;
 				for (std::map<int, int>::const_iterator itPickup = aPickupAmounts.begin(); itPickup != aPickupAmounts.end(); ++itPickup)
@@ -2014,8 +2032,24 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 						{
 							continue;
 						}
-						if (iDetour <= iDetourLeft && (iDetour < iBestPickupDetour || (iDetour == iBestPickupDetour && iCandidateAmount > iBestPickupAmount)))
+						// slot efficiency: the units loaded per new slot that the stop needs (loads into partly filled slots need none)
+						int iNewSlots = 0;
+						const std::vector<int>& aiCandidateYields = aPickupByYield[itPickup->first];
+						for (YieldTypes eSlotYield = FIRST_YIELD; eSlotYield < NUM_YIELD_TYPES && eSlotYield < (YieldTypes)aiCandidateYields.size(); ++eSlotYield)
 						{
+							const int iBeyondPartial = aiCandidateYields[eSlotYield] - getPartialYieldSpace(eSlotYield);
+							if (iBeyondPartial > 0)
+							{
+								iNewSlots += (iBeyondPartial + iSlotCapacity - 1) / std::max(1, iSlotCapacity);
+							}
+						}
+						const int iCandidateEfficiency = iCandidateAmount * 10 / std::max(1, iNewSlots);
+						// the shorter detour wins, then the more efficient use of the slots, then the larger load
+						if (iDetour <= iDetourLeft && (iDetour < iBestPickupDetour
+							|| (iDetour == iBestPickupDetour && (iCandidateEfficiency > iBestPickupEfficiency
+								|| (iCandidateEfficiency == iBestPickupEfficiency && iCandidateAmount > iBestPickupAmount)))))
+						{
+							iBestPickupEfficiency = iCandidateEfficiency;
 							iBestPickupDetour = iDetour;
 							iBestPickupAmount = iCandidateAmount;
 							iBestPickupTotal = iDetour;
@@ -2027,6 +2061,60 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				{
 					m_iPriorityDetour += iBestPickupTotal;
 				}
+			}
+		}
+	}
+
+	// WTP: waiting counts like a detour. A transport with cargo and free space (slots or partly filled slots) waits a turn at a colony if
+	// the production of it for the same destination fills at least a quarter of a slot in that turn, within the detour budget, and if that is worth it
+	// (see isDetourWorthwhile). Stops without a detour come first.
+	if (bFillHold && pPickupStop == NULL && pPlotCity != NULL && kBestDestination.eOwner != NO_PLAYER && kBestDestination != kEurope
+		&& hasCargo() && (!isFull() || getPartialYieldSpace(NO_YIELD) > 0) && WTP_FILL_HOLD_MAX_DETOUR_TURNS - m_iPriorityDetour >= 1)
+	{
+		CvCity* const pWaitTarget = ::getCity(kBestDestination);
+		if (pWaitTarget != NULL && pWaitTarget != pPlotCity)
+		{
+			int iWaitToTarget = 0;
+			std::map<IDInfo, std::pair<bool, int> >::const_iterator itWaitPath = aGroupToDestPaths.find(kBestDestination);
+			if (itWaitPath != aGroupToDestPaths.end())
+			{
+				iWaitToTarget = itWaitPath->second.second;
+			}
+			const int iWaitSlotCapacity = GC.getGameINLINE().getCargoYieldCapacity();
+			const int iWaitFreeSlots = getFreeSlotCount() * iWaitSlotCapacity;
+			int aiExpected[NUM_YIELD_TYPES];
+			std::fill(aiExpected, aiExpected + NUM_YIELD_TYPES, 0);
+			int iExpectedTotal = 0;
+			for (uint i = 0; i < routes.size(); ++i)
+			{
+				if (routes[i]->getDestinationCity() != kBestDestination || ::getCity(routes[i]->getSourceCity()) != pPlotCity)
+				{
+					continue;
+				}
+				const YieldTypes eWaitYield = routes[i]->getYield();
+				// what the colony produces in a turn (what it stores now was loaded above as far as possible)
+				int iExpected = std::max(0, pPlotCity->getYieldRate(eWaitYield));
+				iExpected = std::min(iExpected, iWaitFreeSlots + getPartialYieldSpace(eWaitYield));
+				if (iExpected > 0 && pWaitTarget->getMaxImportAmount(eWaitYield) > 0 && !routes[i]->isPrivate())
+				{
+					iExpected = estimateYieldsToLoad(pWaitTarget, iExpected, eWaitYield, iWaitToTarget + 1, aiYieldsLoaded[eWaitYield]);
+				}
+				if (iExpected > 0)
+				{
+					aiExpected[eWaitYield] += iExpected;
+					iExpectedTotal += iExpected;
+				}
+			}
+			if (iExpectedTotal >= std::max(1, iWaitSlotCapacity / WTP_PICKUP_STOP_MIN_SLOT_DIVISOR) && isDetourWorthwhile(aiExpected))
+			{
+				m_kPriorityTarget = kBestDestination;
+				m_iPriorityDetour += 1;
+				pushMission(MISSION_SKIP);
+				if (isHuman())
+				{
+					updateTradeOrders(routes, routeValues, kBestDestination);
+				}
+				return true;
 			}
 		}
 	}

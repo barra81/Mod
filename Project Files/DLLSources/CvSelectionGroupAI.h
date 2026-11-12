@@ -74,6 +74,8 @@ public:
 	// WTP: a detour for loading is only worth it if a free slot is left, or if the yields available on it (per yield, NUM_YIELD_TYPES entries) can fill
 	// at least 20% of a slot in total in the partly filled slots of the transport
 	bool isDetourWorthwhile(const int* aiAvailable) const;
+	// WTP: number of free cargo slots of the group
+	int getFreeSlotCount() const;
 
 	bool AI_tradeRoutes();
 
