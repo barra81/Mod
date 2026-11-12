@@ -2224,7 +2224,7 @@ class CvMainInterface:
 									iCycleType = self.getAutomateTypeOfButton(i)
 									if len(self.getAutomatedUnits(iCycleType)) > 1:
 										iArrow = LARGE_BUTTON_SIZE * 3 / 4
-										iArrowY = int(Ycord) - (LARGE_BUTTON_SIZE * 3 / 4) - iArrow - 2 # directly above the top of the ring (it reaches 3/4 of the button size above the center)
+										iArrowY = int(Ycord) - (LARGE_BUTTON_SIZE * 3 / 4) - iArrow + (LARGE_BUTTON_SIZE / 5) # just above the visible top of the ring (the ring art has a transparent margin)
 										screen.setImageButton("WtpCycleLeft", ArtFileMgr.getInterfaceArtInfo("INTERFACE_CITY_LEFT_ARROW").getPath(), int(Xcord) - iArrow - 2, iArrowY, iArrow, iArrow, WidgetTypes.WIDGET_GENERAL, WTP_CYCLE_PREV, iCycleType)
 										screen.setImageButton("WtpCycleRight", ArtFileMgr.getInterfaceArtInfo("INTERFACE_CITY_RIGHT_ARROW").getPath(), int(Xcord) + 2, iArrowY, iArrow, iArrow, WidgetTypes.WIDGET_GENERAL, WTP_CYCLE_NEXT, iCycleType)
 										ActionButtonList.append("WtpCycleLeft")
