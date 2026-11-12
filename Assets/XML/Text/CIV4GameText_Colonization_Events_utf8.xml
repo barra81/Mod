@@ -282,7 +282,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_FOREST_FIRE_1</Tag>
-		<English>Mischievious children from [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] sparked a fire in the nearby forest and went home without stamping it out. Many acres of forest have been burnt down due to these brats!</English>
+		<English>Mischievous children from [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] sparked a fire in the nearby forest and went home without stamping it out. Many acres of forest have been burnt down due to these brats!</English>
 		<Portuguese>Crianças travessas de [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] provocaram um incêndio na floresta próxima e foram para casa sem apagá-lo. Muitos hectares de floresta foram queimados por causa desses pirralhos!</Portuguese>
 		<French>Des gamins malappris de [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] ont allumé un feu en forêt et sont repartis chez eux sans l'éteindre. Des hectares de froêt sont partis en fumée par la faute de ces garnements.</French>
 		<German>Spielende Kinder aus [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] haben im nahen Wald ein Feuerchen entfacht und sind nach Hause gelaufen, ohne es auszutreten. Diese Bälger! Viele Morgen besten Waldes sind abgebrannt.</German>
@@ -1373,7 +1373,7 @@
 		<English>A rumour is spreading that the [COLOR_HIGHLIGHT_TEXT]%s1_civ_adjective[COLOR_REVERT] daughter of a plantation owner fell in love with a slave.</English>
 		<Portuguese>Corre o boato de que [COLOR_HIGHLIGHT_TEXT]%s1_civ_adjective[COLOR_REVERT] filha de um fazendeiro se apaixonou por um escravo.</Portuguese>
 		<French>Selon une rumeur, la fille d'un riche planteur [COLOR_HIGHLIGHT_TEXT]%s1_civ_adjective[COLOR_REVERT] est tombé amouruese d'un esclave.</French>
-		<German>Ein Gerücht macht die Runde: Eine [COLOR_HIGHLIGHT_TEXT]%s1:4_civ_adjective[COLOR_REVERT] Tocher eines Plantagenbesitzers hat sich in einen Sklaven verliebt.</German>
+		<German>Ein Gerücht macht die Runde: Eine [COLOR_HIGHLIGHT_TEXT]%s1:4_civ_adjective[COLOR_REVERT] Tochter eines Plantagenbesitzers hat sich in einen Sklaven verliebt.</German>
 		<Russian>Ходят слухи, что дочь [COLOR_HIGHLIGHT_TEXT]%s1_civ_adjective[COLOR_REVERT] плантатора влюбилась в раба.</Russian>
 	</TEXT>
 	<TEXT>
@@ -1429,7 +1429,7 @@
 		<English>It's very strange. For several days a giant whale has been following our ship. It's like he's waiting to attack us when we're not paying attention. Wait! What is this? He's trying to ram us amidships!</English>
 		<Portuguese>É muito estranho. Há vários dias uma baleia gigante segue nosso navio. É como se ele estivesse esperando para nos atacar quando não estamos prestando atenção. Espere! O que é isso? Ele está tentando nos atingir no meio do navio!</Portuguese>
 		<French>Très étrange. Depuis des jours, une baleine géante poursuit notre navire. C'est comme si elle cherchait à attaquer dès que nous baissons la garde. Attendez! C'est quoi ça ? Elle essaie de nous éperonner par franc-bord !</French>
-		<German>Das ist in der Tat seltsam. Seit Tagen verfolgt unser Schiff ein riesiger Wal. Es scheint fast so als warte er nur auf eine Gelgenheit, um uns anzugreifen, wenn wir nicht aufmerksam sind. Wartet! Was ist das? Der Walf versucht uns tatsächlich auf Backbord zu rammen.</German>
+		<German>Das ist in der Tat seltsam. Seit Tagen verfolgt unser Schiff ein riesiger Wal. Es scheint fast so als warte er nur auf eine Gelegenheit, um uns anzugreifen, wenn wir nicht aufmerksam sind. Wartet! Was ist das? Der Walf versucht uns tatsächlich auf Backbord zu rammen.</German>
 		<Russian>Это очень странно. Уже несколько дней за нашим кораблем следует гигантский кит. Как будто он ждет удобный момент, чтобы напасть на нас, когда мы перестанем обращать на него внимание. Подождите! Что это?! Он пытается протаранить нас на миделе!!!</Russian>
 	</TEXT>
 	<TEXT>
@@ -1461,7 +1461,7 @@
 		<English>Milord, some criminals have broken into our armoury and stolen weapons. They claim that they're just impoverished citizens who can't even afford food. They demand to be given food and money, just a little. They promise to then lay down their weapons. Otherwise they threaten to attack the citizens.</English>
 		<Portuguese>Milorde, alguns criminosos invadiram nosso arsenal e roubaram armas. Eles afirmam que são apenas cidadãos empobrecidos que não conseguem nem comprar comida. Eles exigem comida e dinheiro, só um pouco. Eles prometem então depor as armas. Caso contrário, ameaçam atacar os cidadãos.</Portuguese>
 		<French>Sire, des criminels ont dévalisé une armurerie et volé nos armes. Ils prétendent être des citoyens miésreux qui ne peuvent même pas manger à leur faim. Ils exigent un peu de nourriture et d'argent, just un peu. Ils promettent par la suite de baisser les armes. Sinon ils attaqueront les citpyens.</French>
-		<German>Milord, einige Kriminelle sind in die Waffenkammer eingebrochen und haben sich bewaffnet. Sie behaupten lediglich verarmte Bürger zu sein, die sich kein Essen mehr leisten können. Sie verlangen von uns etwas Nahrung und Geld. Sie verspechen daraufhin die Waffen niederzulegen. Andernfalls drohen sie damit die Bürger der Stadt anzugreifen.</German>
+		<German>Milord, einige Kriminelle sind in die Waffenkammer eingebrochen und haben sich bewaffnet. Sie behaupten lediglich verarmte Bürger zu sein, die sich kein Essen mehr leisten können. Sie verlangen von uns etwas Nahrung und Geld. Sie versprechen daraufhin die Waffen niederzulegen. Andernfalls drohen sie damit die Bürger der Stadt anzugreifen.</German>
 		<Russian>Милорд, какие-то преступники проникли в наш арсенал и украли оружие. Они утверждают, что они просто бедные граждане, которые не могут позволить себе даже еду. Они требуют, чтобы им дали еды и денег, совсем немного. Обещают после этого сложить оружие. В противном случае они угрожают напасть на горожан.</Russian>
 	</TEXT>
 	<TEXT>
@@ -1630,7 +1630,7 @@
 		<English>Milord, a slave hunter has heard that escaped slaves were sighted near [COLOR_HIGHLIGHT_TEXT]%s2_city[COLOR_REVERT]. He offers us his services.</English>
 		<Portuguese>Milorde, um caçador de escravos ouviu dizer que escravos fugitivos foram avistados perto de [COLOR_HIGHLIGHT_TEXT]%s2_city[COLOR_REVERT]. Ele nos oferece seus serviços.</Portuguese>
 		<French>Sire, un chasseur d'eclave a entendu que des esclaves figitifs ont été aperçus près de [COLOR_HIGHLIGHT_TEXT]%s2_city[COLOR_REVERT].  Il nous propose ses services.</French>
-		<German>Milord, ein Sklavenjäger hat gehört, dass entflohene Sklaven in der Nähen von [COLOR_HIGHLIGHT_TEXT]%s2_city[COLOR_REVERT] gesichtet wurden. Er bietet uns seine Dienste an.</German>
+		<German>Milord, ein Sklavenjäger hat gehört, dass entflohene Sklaven in der Nähe von [COLOR_HIGHLIGHT_TEXT]%s2_city[COLOR_REVERT] gesichtet wurden. Er bietet uns seine Dienste an.</German>
 		<Russian>Милорд, охотник за рабами слышал, что недалеко от [COLOR_HIGHLIGHT_TEXT]%s2_city[COLOR_REVERT] были замечены сбежавшие рабы. Он предлагает нам свои услуги.</Russian>
 	</TEXT>
 	<TEXT>
@@ -2303,7 +2303,7 @@
 		<English>Milord, boll weevils have infested a plantation near [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT]. The black beetle bores into the cotton boll and lays eggs there. Larvae eat everything in the capsules before we can harvest the cotton filaments. A Native medicine man advises us to destroy the fields and burn down the plantation. Otherwise the infestation will spread.</English>
 		<Portuguese>Milorde, bicudos infestaram uma plantação perto de [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT]. O besouro preto perfura a cápsula do algodão e põe ovos ali. As larvas comem tudo o que está nas cápsulas antes de podermos colher os filamentos de algodão. Um curandeiro nativo nos aconselha a destruir os campos e queimar a plantação. Caso contrário, a infestação se espalhará.</Portuguese>
 		<French>Seigneur, une invasion de charançons du coton trouble nos récoltes dans une plantation près de [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT]. Ce scarabée noir fore dans la fleur et y pond. Les larves dévorent tout de l'intérieur avant que nous ne puvions récolter les filament. Un guérissuer indigène nous recommande de détruire les champs et d'incendier la plantation. Sinon l'insecte va se répandre.</French>
-		<German>Milord, Baumwollkapselkäfer haben eine Plantage bei [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] befallen. Das schwarze Getier bohrt seine Rüssel in die Kapselfrüchte und legt dort Eier ab. Larven fresssen die Kapseln leer, bevor wir ihre Samenfäden ernten können. Ein indianischer Medizinmann hat uns geraten, die Felder zu vernichten und sogar das Anwesen niederzubrennen, anderenfalls sei der Plage nicht Herr zu werden.</German>
+		<German>Milord, Baumwollkapselkäfer haben eine Plantage bei [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] befallen. Das schwarze Getier bohrt seine Rüssel in die Kapselfrüchte und legt dort Eier ab. Larven fressen die Kapseln leer, bevor wir ihre Samenfäden ernten können. Ein indianischer Medizinmann hat uns geraten, die Felder zu vernichten und sogar das Anwesen niederzubrennen, anderenfalls sei der Plage nicht Herr zu werden.</German>
 		<Russian>Милорд, долгоносики заполонили плантацию возле [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT]. Черный жук вгрызается в хлопковую коробочку и откладывает туда яйца. Личинки съедают все, что находится в капсулах, прежде чем мы успеваем собрать хлопковые нити. Шаман индейцев советует нам уничтожить поля и сжечь плантацию. В противном случае заражение будет распространяться.</Russian>
 	</TEXT>
 	<TEXT>
@@ -2492,7 +2492,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENTTRIGGER_CORRUPT_STATESMAN</Tag>
-		<English>In the [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] colonial empire, corrupt government stattesmen were caught gambling in a dive bar.</English>
+		<English>In the [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] colonial empire, corrupt government statesmen were caught gambling in a dive bar.</English>
 		<Portuguese>No império colonial [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT], estadistas governamentais corruptos foram apanhados a jogar num bar.</Portuguese>
 		<German>Im [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] Kolonialreich wurden korrupte Staatsbeamte beim Glückspiel in einer Spelunke erwischt.</German>
 		<Russian>В колониальной империи [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] коррумпированные государственные служащие были пойманы на азартных играх в захудалом баре.</Russian>
@@ -2508,7 +2508,7 @@
 		<Tag>TXT_KEY_EVENT_CORRUPT_STATESMAN_1</Tag>
 		<English>It’s dead simple! Bribe the innkeeper and the whores and let the matter blow over. I suspect that’s not the only thing our royal officials get up to, but we’re stuck with them.</English>
 		<Portuguese>É muito simples! Suborne o estalajadeiro e as prostitutas e deixe o assunto passar. Suspeito que essa não seja a única coisa que nossos funcionários reais fazem, mas estamos presos a eles.</Portuguese>
-		<German>Das ist doch ganz einfach! Bestecht den Wirt und die Huren und lasst Gras über die Sache wachsen. Ich vermute das ist nicht das Einzige, was unsere könglichen Beamten so treiben, aber wir sind auf sie angewiesen.</German>
+		<German>Das ist doch ganz einfach! Bestecht den Wirt und die Huren und lasst Gras über die Sache wachsen. Ich vermute das ist nicht das Einzige, was unsere königlichen Beamten so treiben, aber wir sind auf sie angewiesen.</German>
 		<Russian>Давайте уладим это дело по-тихому. Нужно подкупить трактирщика с проститутками и пусть дело само по себе затихнет. Подозреваю, что это не единственное, чем занимаются наши королевские чиновники, но что поделать, приходится с этим смириться.</Russian>
 	</TEXT>
 	<TEXT>
@@ -2754,7 +2754,7 @@
 		<English>The townsfolk are whispering that a large family of recent immigrants to [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] are witches! They keep to themselves, grow strange roots in cottage gardens, and don't attend church on Sundays. One of them even has a birthmark!</English>
 		<Portuguese>Os habitantes da cidade estão sussurrando que uma grande família de imigrantes recentes em [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] são bruxas! Eles são reservados, criam raízes estranhas nos jardins das casas e não vão à igreja aos domingos. Um deles tem até marca de nascença!</Portuguese>
 		<French>Le bruit court qu'une famille de récents immigrants à [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] est en fait composée de sorcières ! Elles restent entre elles, font pousser d'étranges racines dans leur jardin, et ne vont pas à l'église le dimanche. L'une d'elles a même une tache de naissance !</French>
-		<German>Die Bevölkerung flüstert, dass eine grosse Familie, die kürzlich in [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] eingewandert ist, unter dem Verdacht der Hexerei steht. Sie bleiben unter sich, bauen seltsame Wurzeln und Kräuter an und nehmen nicht an Gottesdiensten teil. Einer von Ihnen hat sogar ein auffallendes Geburtsmal.</German>
+		<German>Die Bevölkerung flüstert, dass eine große Familie, die kürzlich in [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] eingewandert ist, unter dem Verdacht der Hexerei steht. Sie bleiben unter sich, bauen seltsame Wurzeln und Kräuter an und nehmen nicht an Gottesdiensten teil. Einer von Ihnen hat sogar ein auffallendes Geburtsmal.</German>
 		<Russian>Горожане шепчутся, что женщины большой семьи недавних иммигрантов в [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] — ведьмы! Они держатся особняком, собирают какие-то коренья в недалеко от города и не ходят в церковь по воскресеньям. У одной из них даже есть родимое пятно!</Russian>
 	</TEXT>
 	<TEXT>
@@ -2986,7 +2986,7 @@
 		<English>Settler diseases are spreading to Native villages.</English>
 		<Portuguese>As doenças dos colonos estão se espalhando pelas aldeias indígenas.</Portuguese>
 		<French>Des maladies importées d'Europe se répandent dans les villages indigènes.</French>
-		<German>Die Krankheiten des Weissen Mannes verbreiten sich in den Dörfern der Ureinwohner.</German>
+		<German>Die Krankheiten des Weißen Mannes verbreiten sich in den Dörfern der Ureinwohner.</German>
 		<Russian>В деревнях индейцев распространяются болезни европейских переселенцев.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3002,7 +3002,7 @@
 		<English>European settlers have discovered a huge salt deposit near [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT].</English>
 		<Portuguese>Os colonizadores europeus descobriram um enorme depósito de sal perto de [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT].</Portuguese>
 		<French>Des colons européens ont décovert un immense dépôt de sel près de [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT].</French>
-		<German>Europäische Siedler haben grosse Salzvorkommen in der Gegend um [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] entdeckt.</German>
+		<German>Europäische Siedler haben große Salzvorkommen in der Gegend um [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] entdeckt.</German>
 		<Russian>Огромное месторождение соли было обнаружено колонистами недалеко от [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT].</Russian>
 	</TEXT>
 	<TEXT>
@@ -3218,7 +3218,7 @@
 		<English>In the woods close to one of our forts our troops heard shots. When they went out to investigate they walked into an dispute between Natives and trappers about hunting rights. The Natives claim that those forests still belong to them and that no settler is allowed to hunt there.</English>
 		<Portuguese>Na floresta perto de um dos nossos fortes, as nossas tropas ouviram tiros. Quando saíram para investigar, enfrentaram uma disputa entre nativos e caçadores sobre os direitos de caça. Os nativos afirmam que essas florestas ainda lhes pertencem e que nenhum colono está autorizado a caçar ali.</Portuguese>
 		<French>À proximité de l'un de nos forts, nos troupes ont entendu des tirs dans les bois. En menant l'investigation, ils se sont confrontés à une querelle entre des trappeurs et des indigènes à propos de droits de chasse. Les indigènes considèrent que cette forêt leur appartient et que les blancs n'y sont pas autorisés à chasser.</French>
-		<German>In der Nähe eines unserer Forts haben die Truppen Schüsse in den Wäldern gehört. Als sie zur Untersuchung ausrückten, fanden sie Ureinwohner und Trapper in einen Streit über Jagdrechte in den umliegenden Wäldern verwickelt vor. Die Ureinwohner behaupten, dass das Land immer noch ihnen gehört und dass dort kein weisser Mann ohne ihre Erlaubnis jagen darf.</German>
+		<German>In der Nähe eines unserer Forts haben die Truppen Schüsse in den Wäldern gehört. Als sie zur Untersuchung ausrückten, fanden sie Ureinwohner und Trapper in einen Streit über Jagdrechte in den umliegenden Wäldern verwickelt vor. Die Ureinwohner behaupten, dass das Land immer noch ihnen gehört und dass dort kein weißer Mann ohne ihre Erlaubnis jagen darf.</German>
 		<Russian>В лесу, недалеко от одного из наших фортов, наши бойцы услышали выстрелы. Они пошли проверить, в чем дело и увидели группы индейцев и звероловов, между которыми возник спор о правах на охоту. Туземцы утверждают, что эти леса по-прежнему принадлежат им и что ни одному поселенцу не разрешается там охотиться.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3247,7 +3247,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_MAN_FROM_THE_WILDERNESS</Tag>
-		<English>Some men from the nearby wilderness haved come into our fort to buy supplies. They know the area and could be very useful to us.</English>
+		<English>Some men from the nearby wilderness have come into our fort to buy supplies. They know the area and could be very useful to us.</English>
 		<Portuguese>Alguns homens da região selvagem próxima vieram ao nosso forte para comprar suprimentos. Eles conhecem a área e podem ser muito úteis para nós.</Portuguese>
 		<French>Des hommes vivant dans les terres sauvages sont venu pour s'approvisionner dans nos forts. Ils semblent bien connaître les environs et pourraient nous être utiles.</French>
 		<German>Einige Männer, die in der nahegelegenen Wildnis leben, sind in unser Fort gekommen, um Vorräte zu kaufen. Es scheint, als hätten sie sehr viel Wissen über die Gegend. Daher könnten sie uns sehr nützlich sein.</German>
@@ -3281,7 +3281,7 @@
 		<English>Some Native slaves escaped a foreign colony to seek protection in our monasteries.</English>
 		<Portuguese>Alguns escravos nativos escaparam de uma colônia estrangeira em busca de proteção em nossos mosteiros.</Portuguese>
 		<French>Des esclaves indigènes se sont enfuis et cherchent la protection dans nos monastères.</French>
-		<German>Einige Ureinwohner sind der Sklaverei des Weissen Mannes entflohen und suchen Schutz in Klöstern.</German>
+		<German>Einige Ureinwohner sind der Sklaverei des Weißen Mannes entflohen und suchen Schutz in Klöstern.</German>
 		<Russian>Несколько туземных рабов сбежало из чужой колонии в поисках защиты в наших монастырях.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3321,7 +3321,7 @@
 		<English>An influential society of educated men in our mother country heard about the founding of our first university. They want to help us by sending a prominent academic as a professor.</English>
 		<Portuguese>Uma sociedade influente de homens instruídos na nossa pátria ouviu falar da fundação da nossa primeira universidade. Eles querem nos ajudar enviando um acadêmico proeminente como professor.</Portuguese>
 		<French>Une société influente d'hommes éduqués dans notre mère patrie ont entendu parlé de la fondation de notre première université. Ils souhaitent nous aider en nous envoyer un de leurs professeurs émérites pour y enseigner.</French>
-		<German>Eine einflußreiche Gesellschaft gebildeter Männer unseres Heimatlandes hat von der Gründung unserer ersten Universität erfahren. Sie wollen uns helfen, indem sie uns einen hoch gebildeten Mann schicken wollen, der unsere Studenten unterrichtet.</German>
+		<German>Eine einflussreiche Gesellschaft gebildeter Männer unseres Heimatlandes hat von der Gründung unserer ersten Universität erfahren. Sie wollen uns helfen, indem sie uns einen hoch gebildeten Mann schicken wollen, der unsere Studenten unterrichtet.</German>
 		<Russian>Влиятельное общество образованных людей в нашей родной стране услышало об основании нашего первого университета. Они хотят помочь нам, прислав в качестве профессора видного ученого.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3345,7 +3345,7 @@
 		<English>An influential trading company wants to expand its business in the New World. It offers a reward to the first colony to build five cities with harbours.</English>
 		<Portuguese>Uma influente empresa comercial quer expandir seus negócios no Novo Mundo. Oferece uma recompensa à primeira colônia que construir cinco cidades com portos.</Portuguese>
 		<French>Une grande compagnie financière souhaite développer ses activités dans le Nouveau Monde. Elle offre une récompense à la première colonie qui construira 5 villes disposant de docks ou de meilleurs ports.</French>
-		<German>Eine einflußreiche Handelsgesellschaft will ihre Unternehmungen in der Neuen Welt ausweiten. Sie bietet daher dem Gouverneur der ersten Kolonie, die 5 Städte mit einfachen oder ausgebauten Häfen errichtet, eine Belohnung an.</German>
+		<German>Eine einflussreiche Handelsgesellschaft will ihre Unternehmungen in der Neuen Welt ausweiten. Sie bietet daher dem Gouverneur der ersten Kolonie, die 5 Städte mit einfachen oder ausgebauten Häfen errichtet, eine Belohnung an.</German>
 		<Russian>Влиятельная торговая компания хочет расширить свой бизнес в Новом Свете. Она предлагает награду первой державе, которая построит пять городов с доками.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3353,7 +3353,7 @@
 		<English>Milord, the governor of another colony has built harbours in five cities first. They've won the support offered by the influential trading company.</English>
 		<Portuguese>Milord, o governador de outra colônia construiu primeiro portos em cinco cidades. Eles ganharam o apoio oferecido pela influente empresa comercial.</Portuguese>
 		<French>Sire, une autre puissance a construit 5 ports avant vous. Ils ont obtenu le soutien de la compagnie financière influente.</French>
-		<German>Milord, der Gouverneur einer anderen Kolonie konnte vor Euch in 5 Städten Häfen errichten. Sie werden daher nun von einer einflußreichen Handelsgesellschaft unterstützt.</German>
+		<German>Milord, der Gouverneur einer anderen Kolonie konnte vor Euch in 5 Städten Häfen errichten. Sie werden daher nun von einer einflussreichen Handelsgesellschaft unterstützt.</German>
 		<Russian>Милорд, губернатор другой колониальной державы первым построил доки в пяти городах. Они получили поддержку, предложенную влиятельной торговой компанией.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3369,7 +3369,7 @@
 		<English>Milord, you have built harbours in five cities before any other colony could. You now have support from an influential trading company. Choose your reward.</English>
 		<Portuguese>Milorde, você construiu portos em cinco cidades antes que qualquer outra colônia pudesse fazê-lo. Agora você tem o apoio de uma empresa comercial influente. Escolha sua recompensa.</Portuguese>
 		<French>Sire, vous avez été le premier à construire des ports dans cinq de vos colonies. Vous avez obtenu le soutien d'une grande compagnie financière. Choisissez votre récompense.</French>
-		<German>Milord, Eure Kolonie konnte vor allen anderen in 5 Städten Häfen errichten. Ihr werdet daher nun von einer einflußreichen Handelsgesellschaft unterstützt. Wählt Eure Belohnung.</German>
+		<German>Milord, Eure Kolonie konnte vor allen anderen in 5 Städten Häfen errichten. Ihr werdet daher nun von einer einflussreichen Handelsgesellschaft unterstützt. Wählt Eure Belohnung.</German>
 		<Russian>Милорд, мы построили доки в пяти городах раньше, чем любая другая колониальная держава. Теперь у вас есть поддержка влиятельной торговой компании. Время забрать свою награду.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3384,7 +3384,7 @@
 		<English>A group of private traders in our colony insists that we need more markets. They even offer a reward if we can be the first to have five cities with markets.</English>
 		<Portuguese>Um grupo de comerciantes privados da nossa colônia insiste que precisamos de mais mercados. Eles até oferecem uma recompensa se conseguirmos ser os primeiros a ter cinco cidades com mercados.</Portuguese>
 		<French>Des négociants privés dans nos colonies nous demandent d'investir dans davantage de marchés. Ils nous proposent même une récompense si nous devenons la première puissance coloniale à construire 5 marchés.</French>
-		<German>Eine einflußreiche Gruppe von Händlern aus unseren Städten fordert, dass wir mehr Märkte in den Kolonien bauen. Sie bietet als Anreiz sogar eine Belohnung, falls wir als erste Kolonie Märkte in 5 Städten errichtet haben.</German>
+		<German>Eine einflussreiche Gruppe von Händlern aus unseren Städten fordert, dass wir mehr Märkte in den Kolonien bauen. Sie bietet als Anreiz sogar eine Belohnung, falls wir als erste Kolonie Märkte in 5 Städten errichtet haben.</German>
 		<Russian>Группа частных торговцев в нашей колонии настаивает на том, что нам нужно больше рынков. Они даже предлагают вознаграждение, если мы сможем быть первыми, у которых будет пять городов с рынками.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3552,7 +3552,7 @@
 		<English>Wonderful, let us celebrate a Hessian sausage festival.</English>
 		<Portuguese>Maravilhoso, vamos celebrar um festival de salsicha de Hesse.</Portuguese>
 		<French>Merveilleux, faisons une foire à la saucisse de Francfort.</French>
-		<German>Wundervoll, laßt uns ein hessisches Wurstfest feiern.</German>
+		<German>Wundervoll, lasst uns ein hessisches Wurstfest feiern.</German>
 		<Russian>Замечательно, давайте устроим фестиваль гессенских колбас.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3608,7 +3608,7 @@
 		<English>Milord, our diplomats in Europe have heard how European high society claims that we're uncivilized barbarians with no culture. If we're the first to build an opera in the New World we would change that image. That would also convince famous artists and actors to come to our colonies.</English>
 		<Portuguese>Milorde, os nossos diplomatas na Europa ouviram como a alta sociedade europeia afirma que somos bárbaros incivilizados e sem cultura. Se fôssemos os primeiros a construir uma ópera no Novo Mundo, mudaríamos essa imagem. Isso também convenceria artistas e atores famosos a virem para as nossas colônias.</Portuguese>
 		<French>Sire, nos diplomates en Europe ont entendu que la haute société d'Europe nous tient pour des rustres sans culture. Si nous sommes les premiers à construire un opéra dans le nouveay monde, ceci changera leur perception. Nous pourrions même convaincre des acteurs et artistes célèbres devenir dans nos colonies.</French>
-		<German>Milord, unsere Dimplomaten in Europa berichten dass die europäischen Adeligen und die Reichen der Oberschicht behaupten wir wären Barbaren ohne Kultur. Wenn wir die ersten in der Neuen Welt wären, die eine Oper bauen würden, könnten wir dieses Bild ändern. Das würde sicherlich auch berühmte Schauspieler und Künstler überzeugen in unsere Kolonien zu kommen.</German>
+		<German>Milord, unsere Diplomaten in Europa berichten dass die europäischen Adeligen und die Reichen der Oberschicht behaupten wir wären Barbaren ohne Kultur. Wenn wir die ersten in der Neuen Welt wären, die eine Oper bauen würden, könnten wir dieses Bild ändern. Das würde sicherlich auch berühmte Schauspieler und Künstler überzeugen in unsere Kolonien zu kommen.</German>
 		<Russian>Милорд, наши дипломаты в Европе слышали, как европейское высшее общество утверждает, что мы нецивилизованные варвары без культуры. Если бы мы первыми построили оперу в Новом Свете, мы изменили бы этот имидж. Это также убедило бы известных художников и актеров приехать в наши колонии.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3696,7 +3696,7 @@
 		<English>The judges shall get to work. There will be law and order in our colonies.</English>
 		<Portuguese>Os juízes devem começar a trabalhar. Haverá lei e ordem em nossas colônias.</Portuguese>
 		<French>Les juges doivent se mettre au travail. Le droit, la loi et l'ordre règneront dans nos colonies.</French>
-		<German>Die Richter sollen ans Werk gehen. Es soll Recht und Ordnung in useren Kolonien herrschen.</German>
+		<German>Die Richter sollen ans Werk gehen. Es soll Recht und Ordnung in unseren Kolonien herrschen.</German>
 		<Russian>Судьи должны приступить к работе. В наших колониях воцарится закон и порядок.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3704,7 +3704,7 @@
 		<English>Milord, our diplomats negotiating with the other colonies report that we seem politically fragmented. We should install a Colonial Congress to consolidate political opinions. This would also attract more qualified statesmen.</English>
 		<Portuguese>Milorde, os nossos diplomatas que negociam com as outras colônias relatam que parecemos politicamente fragmentados. Deveríamos instalar um Congresso Colonial para consolidar as opiniões políticas. Isto também atrairia estadistas mais qualificados.</Portuguese>
 		<French>Sire, nos diplomates négoicant avec les autres colonies nous rapportent notre désunion politique. Nous devons installer un Congrès Colonial pour réunir les différentes opinions politiques. Ceci attirera des hommes d'État qualifiée.</French>
-		<German>Milord, unsere Diplmaten, die von Verhandlungen mit anderen Kolonialmächten zurückkehren berichten dass wir den Eindruck vermitteln politisch uneins zu sein. Wir sollten einen Kolonialkongress gründen, um die politische Meinungen zu konsolidieren. Dies würde sicherlich auch dazu führen, dass wir weitere begabte Staasmänner findne.</German>
+		<German>Milord, unsere Diplomaten, die von Verhandlungen mit anderen Kolonialmächten zurückkehren berichten dass wir den Eindruck vermitteln politisch uneins zu sein. Wir sollten einen Kolonialkongress gründen, um die politische Meinungen zu konsolidieren. Dies würde sicherlich auch dazu führen, dass wir weitere begabte Staatsmänner finden.</German>
 		<Russian>Милорд, наши дипломаты, ведущие переговоры с другими колониальными державами, сообщают, что мы кажемся политически раздробленными. Мы должны создать Колониальный Конгресс, чтобы консолидировать политические взгляды. Это также привлекло бы более квалифицированных государственных деятелей.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3741,7 +3741,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_FIRST_COLONIAL_CONGRESS_DONE_1</Tag>
-		<English>The new statesmen shall get to work. From now on our colonies shall speak with one political voice in negotations with foreign powers.</English>
+		<English>The new statesmen shall get to work. From now on our colonies shall speak with one political voice in negotiations with foreign powers.</English>
 		<Portuguese>Os novos estadistas devem começar a trabalhar. Doravante, as nossas colônias falarão com uma só voz política nas negociações com potências estrangeiras.</Portuguese>
 		<French>Les nouveaux hommes d'État doivent se concerter. À partir de maintenant, nos colonies doivent parler à l'unisson lors des négociations avec les puissances étrangères.</French>
 		<German>Die neuen Staatsmänner sollen ans Werk gene. Unsere Kolonien sollen von nun an in Verhandlungen mit anderne Mächten mit einer einzigen politischen Stimme sprechen.</German>
@@ -3896,7 +3896,7 @@
 		<English>Milord, many of our literate citizens are unhappy. Most cities don't have enough newspapers to read. That means many educated people don't want to come to our colonies. We should build a Colonial Publisher. That will convince educated people from Europe to migrate to our colony.</English>
 		<Portuguese>Milorde, muitos dos nossos cidadãos alfabetizados estão infelizes. A maioria das cidades não tem jornais suficientes para ler. Isso significa que muitas pessoas instruídas não querem vir para as nossas colônias. Devíamos construir uma Editora Colonial. Isso convencerá as pessoas instruídas da Europa a migrar para a nossa colônia.</Portuguese>
 		<French>Sire, beaucoup de nos citoyens lettrés sont mécontents. La plupart des villes n'ont pas assez de journaux à lire. Ceci signifie que les gens éduqués ne voudront pas venir. Nous devrions construire une imprimerie coloniale. Ca devrait convaincre les gens éduqués d'émigrer de l'Europe vers notre colonie.</French>
-		<German>Milord, viele unser Bürger, die des Lesens mächtig sind, beschweren sich, dass es nicht genug Zeitungen in useren Städten gibt. Die sorgt auch dafür, dass viele Gebildete nicht in die Kolonien auswandern wollten. Wir sollten einen Kolonialen Zeitungverlag bauen, um diese Situation zu ändern und mehr Gebildete aus Europa zu überzeugen, in die Kolonien auszuwandern.</German>
+		<German>Milord, viele unser Bürger, die des Lesens mächtig sind, beschweren sich, dass es nicht genug Zeitungen in unseren Städten gibt. Die sorgt auch dafür, dass viele Gebildete nicht in die Kolonien auswandern wollten. Wir sollten einen Kolonialen Zeitungverlag bauen, um diese Situation zu ändern und mehr Gebildete aus Europa zu überzeugen, in die Kolonien auszuwandern.</German>
 		<Russian>Милорд, многие из наших грамотных граждан несчастливы. В большинстве городов нет достаточного количества газет для чтения. А это значит, что многие образованные люди не хотят приезжать в наши колонии. Мы должны построить колониальное издательство. Это убедит образованных людей из Европы мигрировать в нашу колонию.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3984,7 +3984,7 @@
 		<English>Wonderful! Let it sail out into the harbour and fire a salute.</English>
 		<Portuguese>Maravilhoso! Deixe-o navegar até o porto e faça uma saudação.</Portuguese>
 		<French>Merveilleux ! Laissez-le entrer au port et saluez-le d'une salve.</French>
-		<German>Wundervoll, laßt es aus dem Hafen segeln und unserer Flotte Salut schießen.</German>
+		<German>Wundervoll, lasst es aus dem Hafen segeln und unserer Flotte Salut schießen.</German>
 		<Russian>Прекрасно! Прикажите кораблям салютовать двенадцатью пушечными выстрелами.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3996,10 +3996,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENTTRIGGER_SIX_PRIVATEERS_QUEST</Tag>
-		<English>Milord, a small outpost of buccanneers has recently been destroyed by the fleet of another colonial power. The surviving buccanneers need a new place to live. They offer their loyalty to the first colonial nation that successfully builds a fleet of [COLOR_HIGHLIGHT_TEXT]six ships sailing with hidden nationality[COLOR_REVERT]. If we win them for our cause they could be very useful.</English>
+		<English>Milord, a small outpost of buccaneers has recently been destroyed by the fleet of another colonial power. The surviving buccaneers need a new place to live. They offer their loyalty to the first colonial nation that successfully builds a fleet of [COLOR_HIGHLIGHT_TEXT]six ships sailing with hidden nationality[COLOR_REVERT]. If we win them for our cause they could be very useful.</English>
 		<Portuguese>Milord, um pequeno posto avançado de bucaneiros foi recentemente destruído pela frota de outra potência colonial. Os bucaneiros sobreviventes precisam de um novo lugar para morar. Eles oferecem sua lealdade à primeira nação colonial que constrói com sucesso uma frota de [COLOR_HIGHLIGHT_TEXT]seis navios navegando com nacionalidade oculta[COLOR_REVERT]. Se os conquistarmos para a nossa causa, eles poderão ser muito úteis.</Portuguese>
 		<French>Sire, un petit repaire de boucaniers a été rasé récemment par la flotte d'une autre puissance coloniale. Les boucaniers réchappés souhaitent un nouveau lieu de vie. Ils jurent leur loyauté à la première nation qui constituera une flotte avec six navires cachant leur allégeance. Si nous les gagnons à notre cause, ils pourraient se montrer très utiles.</French>
-		<German>Milord, ein kleiner Außenposten von Bukanieren wurde kürzlich durch die Flotte einer anderen Kolonialmacht aufgerieben. Die überlebenden Bukaniere suchen nun nach einem neuen Platz zum leben und bieten ihre Loyalität der ersten Kolonialmacht an, die erfolgreich eine Flotte von [COLOR_HIGHLIGHT_TEXT]von sechs Schiffen mit versteckter Nationlität[COLOR_REVERT] aufbaut. Wenn wir sie für unsere Sache gewinnen, kann das sehr hilfreich sein.</German>
+		<German>Milord, ein kleiner Außenposten von Bukanieren wurde kürzlich durch die Flotte einer anderen Kolonialmacht aufgerieben. Die überlebenden Bukaniere suchen nun nach einem neuen Platz zum leben und bieten ihre Loyalität der ersten Kolonialmacht an, die erfolgreich eine Flotte von [COLOR_HIGHLIGHT_TEXT]von sechs Schiffen mit versteckter Nationalität[COLOR_REVERT] aufbaut. Wenn wir sie für unsere Sache gewinnen, kann das sehr hilfreich sein.</German>
 		<Russian>Милорд, небольшой форпост пиратов недавно был уничтожен флотом другой колониальной державы. Выжившие пираты ищут новое место для жизни. Они предлагают свои лояльность и корабли первой колониальной державе, которая успешно построит флотилию из [COLOR_HIGHLIGHT_TEXT]шести кораблей со скрытой национальной принадлежностью[COLOR_REVERT]. Эти лихие парни могут быть очень полезными для нас.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4012,7 +4012,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENTTRIGGER_SIX_PRIVATEERS_QUEST_DONE</Tag>
-		<English>Milord, you've acquired a fleet of six ships with hidden nationality before any other colony could. The buccanneers have joined your cause.</English>
+		<English>Milord, you've acquired a fleet of six ships with hidden nationality before any other colony could. The buccaneers have joined your cause.</English>
 		<Portuguese>Milorde, você adquiriu uma frota de seis navios com nacionalidade oculta antes que qualquer outra colônia pudesse. Os piratas juntaram-se à sua causa.</Portuguese>
 		<French>Sire, vous avez acquis une flotte de six navires à la nationalité cachée avant tous les autres. Les boucaniers rentrent dans vos rangs.</French>
 		<German>Milord, Eure Kolonie konnte vor allen anderen eine Flotte von sechs Schiffen mit versteckter Nationalität aufbauen. Die Bukaniere haben sich unserer Sache verschworen.</German>
@@ -4094,7 +4094,7 @@
 		<English>Wonderful! Tell the slave overseers to be careful not to damage our property.</English>
 		<Portuguese>Maravilhoso! Diga aos superintendentes de escravos para tomarem cuidado para não danificar nossas propriedades.</Portuguese>
 		<French>Merveilleux ! Dites aux contremaitres de faire attention à ne pas abîmer la « marchandise ».</French>
-		<German>Wundervoll, laßt den Sklavenaufsehern aber ausrichten, dass sie vorsichtig mit unserem Besitz sein sollen.</German>
+		<German>Wundervoll, lasst den Sklavenaufsehern aber ausrichten, dass sie vorsichtig mit unserem Besitz sein sollen.</German>
 		<Russian>Замечательно! И передайте надсмотрщикам за рабами, чтобы они были аккуратны в отношении нашего имущества.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4230,7 +4230,7 @@
 		<English>A corn chamber in [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] caught fire. Although the fire was extinguished and most of the corn saved, the building is heavily damaged and needs to be repaired or it will collapse.</English>
 		<Portuguese>Uma câmara de milho em [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] pegou fogo. Embora o incêndio tenha sido extinto e a maior parte do milho tenha sido salva, o edifício está fortemente danificado e precisa de ser reparado ou irá desabar.</Portuguese>
 		<French>Un grenier à grain a pris feu à [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT]. Même si le feu a pu être éteint, la récolte de grain n'a pas pu être sauvée, le bâtiment est très endommagé et a besoin de réparation pour ne pas s'écrouler.</French>
-		<German>Eine Getreidekammer in [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] hat Feuer gefangen. Obwohl das Feuer gelöscht werden konnte, so daß das meiste Getreide gerettet wurde, muss das Gebäude wieder repariert werden, denn es wird sonst bald zusammenfallen.</German>
+		<German>Eine Getreidekammer in [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] hat Feuer gefangen. Obwohl das Feuer gelöscht werden konnte, so dass das meiste Getreide gerettet wurde, muss das Gebäude wieder repariert werden, denn es wird sonst bald zusammenfallen.</German>
 		<Russian>В городе [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] загорелся амбар. И хотя пожар был потушен и большая часть кукурузы спасена, здание сильно повреждено и требует ремонта, иначе оно может рухнуть.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4422,7 +4422,7 @@
 		<English>The chief's daughter and our scout fell in love. The chief himself is not very happy but loves his daughter and thus will allow the marriage if we agree as well. If they marry, the scout will stay in the village and no longer work for us.</English>
 		<Portuguese>A filha do cacique e nosso batedor se apaixonaram. O próprio chefe não está muito feliz, mas ama a filha e por isso permitirá o casamento se também concordarmos. Se eles se casarem, o batedor ficará na aldeia e não trabalhará mais para nós.</Portuguese>
 		<French>La fille d'un chef amérindien et l'un de nos éclaireurs sont tombés amoureux. Le chef n'est pas très heureux mais adorent sa fille, il acceptera donc le mariage si nous donnons également notre accord. S'ils se marrient, l'éclaireur restera dans le village et abandonnera sa mission.</French>
-		<German>Die Tochter des Häuptlings und unser Kundschafter haben sich verliebt. Der Häuptling ist darüber nicht besonders erfreut, liebt jedoch seine Tochter, so daß er einer Hochzeit wohl zustimmen würde, wenn auch wir unsere Zustimmung geben. Falls die beiden heiraten, wird der Kundschafter sich in der Siedlung der Ureinwohner niederlassen, so daß er nicht mehr für uns arbeiten kann.</German>
+		<German>Die Tochter des Häuptlings und unser Kundschafter haben sich verliebt. Der Häuptling ist darüber nicht besonders erfreut, liebt jedoch seine Tochter, so dass er einer Hochzeit wohl zustimmen würde, wenn auch wir unsere Zustimmung geben. Falls die beiden heiraten, wird der Kundschafter sich in der Siedlung der Ureinwohner niederlassen, so dass er nicht mehr für uns arbeiten kann.</German>
 		<Russian>Дочь вождя индейцев и наш разведчик полюбили друг друга. Сам вождь не очень счастлив этому, но любит свою дочь и поэтому разрешит брак, если мы тоже согласимся. Если они поженятся, разведчик останется в деревне туземцев и больше не будет работать на нас.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4438,7 +4438,7 @@
 		<English>A medical doctor from Europe wants to fight settler diseases that are spreading through Native villages.</English>
 		<Portuguese>Um médico europeu quer combater as doenças dos colonos que se espalham pelas aldeias indígenas.</Portuguese>
 		<French>Un médecin venu d'Europe souhaite combattre la maladie de l'Homme Blanc qui se propage dans les villages indigènes.</French>
-		<German>Ein Arzt aus Europa will die Krankheiten des Weissen Mannes bekämpfen, die sich in den Dörfern der Ureinwohner verbreiten.</German>
+		<German>Ein Arzt aus Europa will die Krankheiten des Weißen Mannes bekämpfen, die sich in den Dörfern der Ureinwohner verbreiten.</German>
 		<Russian>Врач из Европы хочет бороться с болезнями поселенцев, которые распространяются в деревнях индейцев.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4446,7 +4446,7 @@
 		<English>A medical doctor from Europe has arrived in one of our cities. He heard about Native suffering and now wants to fight settler diseases spreading through Native villages.</English>
 		<Portuguese>Um médico da Europa chegou a uma das nossas cidades. Ele ouviu falar do sofrimento dos nativos e agora quer combater as doenças dos colonos que se espalham pelas aldeias indígenas.</Portuguese>
 		<French>Un médecin venu d'Europe est arrivé dans l'une de nos villes. Il sait que les indigènes souffrent actuellement d'une épidémie venue d'Europe et souhaite la combattre.</French>
-		<German>Ein Arzt aus Europa ist in einer unserer Städte eingetroffen und will die Krankheiten des Weissen Mannes bekämpfen, die sich in den Dörfern der Ureinwohner verbreiten.</German>
+		<German>Ein Arzt aus Europa ist in einer unserer Städte eingetroffen und will die Krankheiten des Weißen Mannes bekämpfen, die sich in den Dörfern der Ureinwohner verbreiten.</German>
 		<Russian>В один из наших городов приехал врач из Европы. Он слышал о страданиях коренных жителей Нового Света и теперь хочет бороться с болезнями поселенцев, распространяющимися в деревнях индейцев.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4510,7 +4510,7 @@
 		<English>One of our statesmen says he has diplomatic connections to a statesman with one of our colonial neighbours. They might even be called friends. He also knows that the other statesman is dissatisfied with his current employment and could be convinced to come and work for us.</English>
 		<Portuguese>Um dos nossos estadistas diz ter ligações diplomáticas com um estadista de um dos nossos vizinhos coloniais. Eles podem até ser chamados de amigos. Ele também sabe que o outro estadista está insatisfeito com o seu emprego atual e poderia ser convencido a vir trabalhar para nós.</Portuguese>
 		<French>Un de nos hommes d'États nous a expliqué qu'il avait des relations diplomatiques proches avec un collègue chez une puissance coloniale voisine. Il dit qu'ils peuvent même être considéré comme amis. Il sait également que cet autre homme d'État vit des moments difficiles et pourraient être tenté de venir nous rejoindre.</French>
-		<German>Einer unserer Staatsmänner berichtet uns, dass er diplomatische Beziehungen zu einem andere Staatsmann eines unsere europäischen Nachbarn hat und diesen sogar als Freund bezeichnet. Er weiss von diesem Staatsmann, dass dieser mit seiner aktuellen Stelle unzufrieden ist und überzeugt werden könnte, stattdessen für uns zu arbeiten.</German>
+		<German>Einer unserer Staatsmänner berichtet uns, dass er diplomatische Beziehungen zu einem andere Staatsmann eines unsere europäischen Nachbarn hat und diesen sogar als Freund bezeichnet. Er weiß von diesem Staatsmann, dass dieser mit seiner aktuellen Stelle unzufrieden ist und überzeugt werden könnte, stattdessen für uns zu arbeiten.</German>
 		<Russian>Один из наших государственных деятелей говорит, что у него есть дипломатические связи с государственным деятелем одного из наших колониальных соседей. Их можно даже назвать друзьями. Он также знает, что другой государственный деятель недоволен своей нынешней работой и его можно убедить перейти работать к нам.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4694,7 +4694,7 @@
 		<English>Private investors have turned from buccaneering to legal investments in merchant vessels.</English>
 		<Portuguese>Os investidores privados passaram da pirataria para investimentos legais em navios mercantes.</Portuguese>
 		<French>Les investisseurs privés se sont détournés de la flibuste pour investir légalement dans des navires marchands.</French>
-		<German>Private Eigner stellen ihre Freibeuter auf Handelsschiffahrt um.</German>
+		<German>Private Eigner stellen ihre Freibeuter auf Handelsschifffahrt um.</German>
 		<Russian>Частные инвесторы перешли от пиратства к легальным инвестициям в торговые суда.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4718,7 +4718,7 @@
 		<English>Milord, one of our new privateers was captured by our neighbour's navy. The buccaneers have all been hanged.</English>
 		<Portuguese>Milorde, um dos nossos novos corsários foi capturado pela marinha do nosso vizinho. Os bucaneiros foram todos enforcados.</Portuguese>
 		<French>Seigneur, un de nos nouveaux corsaires a été capturé par la marine de notre voisin. Les flibustiers ont tous été pendus.</French>
-		<German>Milord, der Freibeuter, den wir kürzlich mit einem neuen Kaperbrief ausstatteten, wurde von der Marine unserer Konkurenten aufgebracht und die Besatzung wegen Piraterie gehängt.</German>
+		<German>Milord, der Freibeuter, den wir kürzlich mit einem neuen Kaperbrief ausstatteten, wurde von der Marine unserer Konkurrenten aufgebracht und die Besatzung wegen Piraterie gehängt.</German>
 		<Russian>Милорд, один из наших новых каперов был захвачен флотом нашего соседа. Весь экипаж был повешен...</Russian>
 	</TEXT>
 	<TEXT>
@@ -4875,7 +4875,7 @@
 		<English>The word is that in [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] a lazy admiral is eating the governor out of house and home.</English>
 		<Portuguese>Diz-se que em [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] um almirante preguiçoso está comendo o governador fora de casa e de casa.</Portuguese>
 		<French>Le bruit court qu'à [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] un amiral paresseux mange le gouverneur à domicile.</French>
-		<German>Man munkelt, dass ein untätiger Admiral durch seine Gelage in [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] dem örtlichen Statthalter die Haare vom Kompf frisst.</German>
+		<German>Man munkelt, dass ein untätiger Admiral durch seine Gelage in [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] dem örtlichen Statthalter die Haare vom Kopf frisst.</German>
 		<Russian>Ходят слухи, что в городе [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] распутный адмирал своими запоями довел местного мэра до приступов мигрени.</Russian>
 	</TEXT>
 	<TEXT>
@@ -4979,7 +4979,7 @@
 		<English>For God's sake! Another colonial nation has succeeded in acquiring five fur trappers first and now dominates the fur market.</English>
 		<Portuguese>Pelo amor de Deus! Outra nação colonial conseguiu adquirir primeiro cinco caçadores de peles e agora domina o mercado de peles.</Portuguese>
 		<French>Pour l'amour de Dieu ! Une autre nation coloniale a réussi à acquérir cinq trappeurs de fourrure en premier et domine maintenant le marché de la fourrure.</French>
-		<German>Schlechte Kunde, Milord! Einer anderen Kolonialmacht ist es gelungen, als erstes fünf erfahrene Trapper zu anzuwerben, so daß sie nun den Pelzhandel dominiert.</German>
+		<German>Schlechte Kunde, Milord! Einer anderen Kolonialmacht ist es gelungen, als erstes fünf erfahrene Trapper zu anzuwerben, so dass sie nun den Pelzhandel dominiert.</German>
 		<Russian>Дьявол! Другой колониальной нации удалось первой приобрести пять охотников за пушным зверем и теперь она доминирует на меховом рынке.</Russian>
 	</TEXT>
 	<TEXT>
@@ -5338,7 +5338,7 @@
 		<English>A boatman discovered a vast shoal of fish in one of the large rivers!</English>
 		<Portuguese>Um barqueiro descobriu um grande cardume de peixes num dos grandes rios!</Portuguese>
 		<French>Un batelier a découvert un vaste banc de poissons dans l'une des grandes rivières !</French>
-		<German>Ein Flußschiffer hat einen mächtigen Fischschwarm in einem der großen Ströme entdeckt!</German>
+		<German>Ein Flussschiffer hat einen mächtigen Fischschwarm in einem der großen Ströme entdeckt!</German>
 		<Russian>Лодочник обнаружил огромный косяк рыбы в одной из больших рек!</Russian>
 	</TEXT>
 	<TEXT>
@@ -5755,7 +5755,7 @@
 		<Tag>TXT_KEY_EVENT_TRIGGER_ECCENTRIC_ARCHITECT_3</Tag>
 		<English>Sir, the Crown greatly appreciates your efforts, but more is required, and above all, it must be done more quickly. Workshops, forts and, above all, residential buildings must be constructed in abundance. The Crown is willing to send you another specialist from Europe, provided you pay for the passage.</English>
 		<Portuguese>Senhor, a Coroa aprecia muito os seus esforços, mas é necessário mais e, acima de tudo, deve ser feito mais rapidamente. Oficinas, fortes e, sobretudo, edifícios residenciais devem ser construídos em abundância. A Coroa está disposta a lhe enviar outro especialista da Europa, desde que você pague pela passagem.</Portuguese>
-		<German>Sir, die Krone weiß Eure Antrengungen durchaus zu schätzen, aber man verlangt noch mehr und vor allem schneller. Es müssen Werkstätten, Forts und vor allem Wohnhäuser in Hülle und Fülle errichtet werden. Die Krone will euch einen weiteren Spezialisten aus Europa herüberschicken, wenn ihr die Überfahrt zahlt.</German>
+		<German>Sir, die Krone weiß Eure Anstrengungen durchaus zu schätzen, aber man verlangt noch mehr und vor allem schneller. Es müssen Werkstätten, Forts und vor allem Wohnhäuser in Hülle und Fülle errichtet werden. Die Krone will euch einen weiteren Spezialisten aus Europa herüberschicken, wenn ihr die Überfahrt zahlt.</German>
 		<Russian>Милорд, Корона высоко ценит ваши усилия по развитию колоний, но требует увеличить количество разных зданий и скорость их возведения. В ещё большем количестве нужны мастерские, форты и, главное, жилые дома. Его Величество готов направить к нам ещё одного специалиста из Европы при условии, что вы оплатите проезд.</Russian>
 	</TEXT>
 	<TEXT>
@@ -5854,7 +5854,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENTTRIGGER_OFFICERS_WIFE</Tag>
-		<English>In [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] an offier intends to duel with another gentleman.</English>
+		<English>In [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] an officer intends to duel with another gentleman.</English>
 		<Portuguese>Em [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] um oficial pretende duelar com outro cavalheiro.</Portuguese>
 		<French>Un officier a l'intention de provoquer en duel un autre gentilhomme à [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT].</French>
 		<German>In [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] will sich ein Offizier mit einen anderen Ehrenmann duellieren.</German>
@@ -6232,7 +6232,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_SEASONED_TRADER_NATIVE_CITY_2</Tag>
-		<English>We're not here to make new friends. Let's look for for something valuable we can sell.</English>
+		<English>We're not here to make new friends. Let's look for something valuable we can sell.</English>
 		<Portuguese>Não estamos aqui para fazer novos amigos. Vamos procurar algo valioso que possamos vender.</Portuguese>
 		<French>Nous ne sommes pas là pour nous faire des amis. Demandons leur des trésors dont nous pouvons les soulager.</French>
 		 <German>Wir sind nicht hier um Freundschaft zu schließen. Fragen wir nach Schätzen, von denen wir sie erlösen können. Wir versprechen Ihnen Waren dafür.</German>
@@ -6345,7 +6345,7 @@
 		<English>From what we hear, the daughter might have learned quite a bit about medicinal herbs out there. We should take advantage of that. Hire her. She can work on one of the plantations.</English>
 		<Portuguese>Pelo que ouvimos, a filha pode ter aprendido bastante sobre as ervas medicinais que existem por aí. Deveríamos aproveitar isso. Contrate-a. Ela pode trabalhar em uma das plantações.</Portuguese>
 		<French>À ce qu'il parait, La jeune fille devrait en avoir appris beaucoup sur les plantes et herbes médicinales. Nous devrions en tirer profit. Embauchez-la. Elle pourra travailler dans une plantation.</French>
-		<German>Wie man hört, soll die Tochter ja da draußen einiges über Pflanzen und Heilkräuter gelernt haben. Das sollsten wir uns zu nutze machen. Stellt sie ein. Sie kann auf einer der Plantagen arbeiten.</German>
+		<German>Wie man hört, soll die Tochter ja da draußen einiges über Pflanzen und Heilkräuter gelernt haben. Das sollten wir uns zu nutze machen. Stellt sie ein. Sie kann auf einer der Plantagen arbeiten.</German>
 		<Russian>Судя по слухам, его дочь многое узнала о местных растениях. Мы должны этим воспользоваться - найдите ей работу на подходящей плантации.</Russian>
 	</TEXT>
 	<TEXT>
@@ -6725,7 +6725,7 @@
 		<Tag>TXT_KEY_EVENT_TRIGGER_DISCOVERY_EVENTS_ATTACKED_1</Tag>
 		<English>Milord, our expedition is being [COLOR_HIGHLIGHT_TEXT]ambushed[COLOR_REVERT] by hostile Natives! All across this vast new continent they attack us wherever we search for campsites.</English>
 		<Portuguese>Milorde, nossa expedição está sendo [COLOR_HIGHLIGHT_TEXT]emboscada[COLOR_REVERT] por nativos hostis! Por todo este vasto e novo continente eles nos atacam onde quer que procuremos acampamentos.</Portuguese>
-		<German>Milord, unsere Epedition wurde auf dem Weg durch diesen riesigen neuen Kontinent auf der Suche nach einem Lagerplatz aus dem [COLOR_HIGHLIGHT_TEXT]Hinterhalt[COLOR_REVERT] von Wilden angegriffen!</German>
+		<German>Milord, unsere Expedition wurde auf dem Weg durch diesen riesigen neuen Kontinent auf der Suche nach einem Lagerplatz aus dem [COLOR_HIGHLIGHT_TEXT]Hinterhalt[COLOR_REVERT] von Wilden angegriffen!</German>
 		<Russian>Милорд, наша экспедиция попала в засаду враждебно настроенных индейцев!</Russian>
 	</TEXT>
 	<TEXT>
@@ -7360,7 +7360,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_FRIENDLY_TRADE_WITH_NATIVE_NEIGHBORS_DONE_1</Tag>
-		<English>We shouldn't pressue our new Native friends with hard bargaining right from the first trade. Establishing trade relations matters more to me than the gold.</English>
+		<English>We shouldn't pressure our new Native friends with hard bargaining right from the first trade. Establishing trade relations matters more to me than the gold.</English>
 		<Portuguese>Não deveríamos pressionar nossos novos amigos nativos com negociações difíceis desde o primeiro comércio. Estabelecer relações comerciais é mais importante para mim do que o ouro.</Portuguese>
 		<German>Wir sollten die Indianer nicht gleich beim ersten Handel übervorteilen. Der Aufbau der Handelsbeziehungen ist mir gegenwärtig wichtiger als das Gold für unsere Waren.</German>
 		<Russian>Мы не должны требовать больших скидок от индейцев с первой же сделки. Установление хороших торговых отношений сейчас для нас важнее, чем золото.</Russian>
@@ -7496,7 +7496,7 @@
 		<Tag>TXT_KEY_EVENT_INITIAL_TRADE_WITH_NATIVES_2</Tag>
 		<English>They have to offer us more than just some corn and berries. Send them away. Tell them to come back when they have something worthwhile to offer us.</English>
 		<Portuguese>Eles têm para nos oferecer mais do que apenas milho e frutas vermelhas. Mande-os embora. Diga-lhes para voltarem quando tiverem algo que valha a pena nos oferecer.</Portuguese>
-		<German>Da müssen sie uns schon mehr bieten als das bischen Mais und Beeren. Schickt sie weg. Sie sollen erst wiederkommen, wenn sie etwas anbieten können, das sich für uns lohnt.</German>
+		<German>Da müssen sie uns schon mehr bieten als das bisschen Mais und Beeren. Schickt sie weg. Sie sollen erst wiederkommen, wenn sie etwas anbieten können, das sich für uns lohnt.</German>
 		<Russian>Они должны предложить нам нечто большее, чем просто немного кукурузы и ягод. Гоните их прочь и пусть возвращаются только тогда, когда они смогут предложить нам что-то более стоящее.</Russian>
 	</TEXT>
 	<TEXT>
@@ -8063,7 +8063,7 @@
 		<Tag>TXT_KEY_EVENT_TRIGGER_WHALING_TRIP_1</Tag>
 		<English>Milord, the crew on one of our fishing boats claims to have seen a huge white whale at sea, the biggest whale ever. That's something we have to see!.</English>
 		<Portuguese>Milorde, a tripulação de um dos nossos barcos de pesca afirma ter visto uma enorme baleia branca no mar, a maior baleia de sempre. Isso é algo que temos que ver!</Portuguese>
-		<German>Milord, die Besatung eines unserer Fischerboote behauptet, sie habe auf dem Meer einen gewaltigen weißen Wal gesehen, so groß wie noch nie ein Wal zuvor gewesen sei. Das sollten wir uns nicht entgehen lassen.</German>
+		<German>Milord, die Besatzung eines unserer Fischerboote behauptet, sie habe auf dem Meer einen gewaltigen weißen Wal gesehen, so groß wie noch nie ein Wal zuvor gewesen sei. Das sollten wir uns nicht entgehen lassen.</German>
 		<Russian>Милорд, команда одной из наших рыбацких лодок утверждает, что видела в море огромного белого кита! Самого большого кита, которого они когда-либо видели. Мы не должны упустить такой шанс!</Russian>
 	</TEXT>
 	<TEXT>
@@ -8245,7 +8245,7 @@
 		<Tag>TXT_KEY_EVENTTRIGGER_BUILD_MONASTERY_DONE</Tag>
 		<English>A colony has set up a new [COLOR_HIGHLIGHT_TEXT]monastery[COLOR_REVERT] to convert Natives to the Christian faith.</English>
 		<Portuguese>Uma colônia criou um novo [COLOR_HIGHLIGHT_TEXT]mosteiro[COLOR_REVERT] para converter os nativos à fé cristã.</Portuguese>
-		<German>Eine Kolonie hat eine neue [COLOR_HIGHLIGHT_TEXT]Missionstation[COLOR_REVERT] errichtet, um die Wilden zum christlichen Gott zu bekehren.</German>
+		<German>Eine Kolonie hat eine neue [COLOR_HIGHLIGHT_TEXT]Missionsstation[COLOR_REVERT] errichtet, um die Wilden zum christlichen Gott zu bekehren.</German>
 		<Russian>Европейцы основали [COLOR_HIGHLIGHT_TEXT]монастырь[COLOR_REVERT], чтобы обращать туземцев в христианскую веру.</Russian>
 	</TEXT>
 	<TEXT>
@@ -8315,7 +8315,7 @@
 		<Tag>TXT_KEY_EVENT_TRIGGER_DRAGOONS_TO_FRONTIER_DONE</Tag>
 		<English>Milord, we have stationed a mounted unit in the colony. The population can now feel safe again.</English>
 		<Portuguese>Milorde, estacionamos uma unidade montada na colônia. A população agora pode se sentir segura novamente.</Portuguese>
-		<German>Milord, wir haben eine Einheit Betittene in der Kolonie stationert. Die Bevölkerung kann sich nun wieder sicher fühlen.</German>
+		<German>Milord, wir haben eine Einheit Berittene in der Kolonie stationiert. Die Bevölkerung kann sich nun wieder sicher fühlen.</German>
 		<Russian>Милорд, мы разместили в колонии конный отряд. Население теперь может снова чувствовать себя в безопасности.</Russian>
 	</TEXT>
 	<TEXT>
@@ -8357,7 +8357,7 @@
 		<Tag>TXT_KEY_EVENT_DRAGOONS_TO_FRONTIER_HELP</Tag>
 		<English>[ICON_BULLET] Within [COLOR_UNIT_TEXT]10[COLOR_REVERT] turns, send a unit of [COLOR_UNIT_TEXT]Veteran Dragoons[COLOR_REVERT] or [COLOR_UNIT_TEXT]Veteran Cavalry[COLOR_REVERT] into the colony to protect the citizens and to guard the slaves. That will make the good citizens happy.</English>
 		<Portuguese>[ICON_BULLET] Dentro de [COLOR_UNIT_TEXT]10[COLOR_REVERT] turnos, envie uma unidade de [COLOR_UNIT_TEXT]Dragões Veteranos[COLOR_REVERT] ou [COLOR_UNIT_TEXT]Cavalaria Veterana[COLOR_REVERT] para a colônia para proteger os cidadãos e proteger os escravos. Isso deixará os bons cidadãos felizes.</Portuguese>
-		<German>[ICON_BULLET] Entsendet innerhalb von [COLOR_UNIT_TEXT]10[COLOR_REVERT] Runden eine Einheit [COLOR_UNIT_TEXT]erfahrene Dragooner[COLOR_REVERT] oder [COLOR_UNIT_TEXT]erfahrene Kavallerie[COLOR_REVERT] in die Kolonie, um die Bürger zu schützen und die Sklaven zu bewachen. Das wird die braven Bürger glücklich machen.</German>
+		<German>[ICON_BULLET] Entsendet innerhalb von [COLOR_UNIT_TEXT]10[COLOR_REVERT] Runden eine Einheit [COLOR_UNIT_TEXT]erfahrene Dragoner[COLOR_REVERT] oder [COLOR_UNIT_TEXT]erfahrene Kavallerie[COLOR_REVERT] in die Kolonie, um die Bürger zu schützen und die Sklaven zu bewachen. Das wird die braven Bürger glücklich machen.</German>
 		<Russian>[ICON_BULLET] В течение [COLOR_UNIT_TEXT]10[COLOR_REVERT] ходов отправьте отряд [COLOR_UNIT_TEXT]Ветеран драгун[COLOR_REVERT] или [COLOR_UNIT_TEXT]Ветеран кавалерии[COLOR_REVERT] в колонию для охраны. Это сделает колонистов счастливыми.</Russian>
 	</TEXT>
 	<TEXT>
@@ -8567,7 +8567,7 @@
 		<Tag>TXT_KEY_EVENT_TRIGGER_MIXED_SETTLEMENT</Tag>
 		<English>Mylord, in one of our colonies it appears that the Native Americans and European settlers have been getting on more than just as friends for some time now. We have received reports that many mestizos are being born there. The Church is not pleased with this immoral behaviour.</English>
 		<Portuguese>Meu senhor, em uma de nossas colônias parece que os nativos americanos e os colonos europeus já há algum tempo se dão mais do que apenas como amigos. Recebemos relatos de que muitos mestiços estão nascendo ali. A Igreja não está satisfeita com este comportamento imoral.</Portuguese>
-		<German>Milord, in einer unserer Kolonien haben sich Indianer und Europäer offenbar seit einiger Zeit mehr als freundschaftlich angenähert. Wir erhielten Berichte, dass dort viele Mestizen gebohren werden. Die Kirche ist nicht erfreut über da unzüchtige Treiben.</German>
+		<German>Milord, in einer unserer Kolonien haben sich Indianer und Europäer offenbar seit einiger Zeit mehr als freundschaftlich angenähert. Wir erhielten Berichte, dass dort viele Mestizen geboren werden. Die Kirche ist nicht erfreut über da unzüchtige Treiben.</German>
 		<Russian>Милорд, похоже, в одной из наших колоний туземцы и европейские поселенцы уже некоторое время живут не просто как друзья. Мы получили сообщения о том, что там рождается много метисов. Церковь недовольна таким аморальным поведением.</Russian>
 	</TEXT>
 	<TEXT>

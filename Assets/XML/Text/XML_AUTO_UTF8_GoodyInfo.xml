@@ -70,7 +70,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOODY_BUCCANNEER</Tag>
-		<English>You've discovered a [COLOR_UNIT_TEXT]buccanneer[COLOR_REVERT]! [NEWLINE]At first he seems ready to attack but after a moment of indecision he lowers his weapons and asks to join you.</English>
+		<English>You've discovered a [COLOR_UNIT_TEXT]buccaneer[COLOR_REVERT]! [NEWLINE]At first he seems ready to attack but after a moment of indecision he lowers his weapons and asks to join you.</English>
 		<Portuguese>Você descobriu um [COLOR_UNIT_TEXT]bucaneiro[COLOR_REVERT]! [NEWLINE]No começo ele parece pronto para atacar, mas depois de um momento de indecisão ele abaixa as armas e pede para se juntar a você.</Portuguese>
 		<French>Vous avez découvert un [COLOR_UNIT_TEXT]boucanier[COLOR_REVERT] ![NEWLINE] Il semblait d'abord prêt à vous attaquer mais il s'est ravisé en baissant ses armes et a démandé à vous rejoindre.</French>
 		<German>Ihr habt einen [COLOR_UNIT_TEXT]Bukanier[COLOR_REVERT] entdeckt! [NEWLINE]Zuerst scheint es, als würde er angreifen wollen, aber nach kurzer Zeit senkt er seine Waffen und bittet darum, sich uns anschließen zu dürfen.</German>
@@ -377,7 +377,7 @@
 		<English>You've discovered a proud [COLOR_UNIT_TEXT]Native warrior[COLOR_REVERT] who offers to join you!</English>
 		<Portuguese>Você descobriu um orgulhoso [COLOR_UNIT_TEXT]guerreiro nativo[COLOR_REVERT] que se oferece para se juntar a você!</Portuguese>
 		<French>Vous avez découvert un fier [COLOR_UNIT_TEXT]guerrier indigène[COLOR_REVERT] qui propose de vous rejoindre !</French>
-		<German>Ihr habt einen stolzen [COLOR_UNIT_TEXT]Ureinwohner-Krieger[COLOR_REVERT] entdeckt, der sich euch anschliesst!</German>
+		<German>Ihr habt einen stolzen [COLOR_UNIT_TEXT]Ureinwohner-Krieger[COLOR_REVERT] entdeckt, der sich euch anschließt!</German>
 		<Russian>Вы встретили гордого [COLOR_UNIT_TEXT]индейского воина[COLOR_REVERT], который желает присоединиться к вам!</Russian>
 	</TEXT>
 	<TEXT>
@@ -646,7 +646,7 @@
 		<Tag>TXT_KEY_GOODY_RUNAWAY_SERVANT</Tag>
 		<English>Milord, we've found an [COLOR_WARNING_TEXT]indentured servant[COLOR_REVERT] who fled a harsh master. He was so scared that he attacked us to avoid being brought home.</English>
 		<Portuguese>Milorde, encontramos um [COLOR_WARNING_TEXT]servo contratado[COLOR_REVERT] que fugiu de um mestre severo. Ele estava tão assustado que nos atacou para evitar ser levado para casa.</Portuguese>
-		<German>Milord, wir haben einen [COLOR_WARNING_TEXT]Schuldknecht[COLOR_REVERT] gefunden, der von den Züchtigungen seines Herrn geflohen ist. Er war so verängstigt, wieder dorthin zurückgebracht zu werden, daß er uns angriff.</German>
+		<German>Milord, wir haben einen [COLOR_WARNING_TEXT]Schuldknecht[COLOR_REVERT] gefunden, der von den Züchtigungen seines Herrn geflohen ist. Er war so verängstigt, wieder dorthin zurückgebracht zu werden, dass er uns angriff.</German>
 		<Russian>Милорд, мы нашли [COLOR_WARNING_TEXT]кабального слугу[COLOR_REVERT], который сбежал от сурового хозяина. Он был так напуган, что чуть не напал на нас, не желая возвращаться домой.</Russian>
 	</TEXT>
 	<TEXT>
@@ -750,14 +750,14 @@
 		<Tag>TXT_KEY_GOODY_COUGAR_IN_THE_NIGHT</Tag>
 		<English>Milord, the men at the campfire heard faint noises in the grass. We think a [COLOR_WARNING_TEXT]big cat[COLOR_REVERT] or some other predator is close by.</English>
 		<Portuguese>Milorde, os homens junto à fogueira ouviram ruídos fracos na grama. Achamos que um [COLOR_WARNING_TEXT]gato grande[COLOR_REVERT] ou algum outro predador está por perto.</Portuguese>
-		<German>Milord, die Männer am Lagerfeuer berichten, daß sie leise Geräusche im Gras gehört haben. Wir vermuten eine [COLOR_WARNING_TEXT]Raubkatze[COLOR_REVERT] oder ein anderes Raubtier in der Nähe.</German>
+		<German>Milord, die Männer am Lagerfeuer berichten, dass sie leise Geräusche im Gras gehört haben. Wir vermuten eine [COLOR_WARNING_TEXT]Raubkatze[COLOR_REVERT] oder ein anderes Raubtier in der Nähe.</German>
 		<Russian>Милорд, люди у костра слышали слабые шорохи в траве. Мы думаем, что поблизости находится [COLOR_WARNING_TEXT]большая кошка[COLOR_REVERT] или другой хищник.</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOODY_GREAT_WHITE</Tag>
 		<English>Milord, there are remnants of a sunken ship along with dead sailors floating in the water. Their blood has attracted a [COLOR_WARNING_TEXT]great white shark[COLOR_REVERT].</English>
 		<Portuguese>Milorde, há restos de um navio afundado junto com marinheiros mortos flutuando na água. O sangue deles atraiu um [COLOR_WARNING_TEXT]grande tubarão branco[COLOR_REVERT].</Portuguese>
-		<German>Milord, zwischen den Wrackteilen eines gesunkenen Schiffes treiben auch die Körper toter Seeleute im Wasser. Ihr Blut scheint einen [COLOR_WARNING_TEXT]Weissen Hai[COLOR_REVERT] angelockt zu haben.</German>
+		<German>Milord, zwischen den Wrackteilen eines gesunkenen Schiffes treiben auch die Körper toter Seeleute im Wasser. Ihr Blut scheint einen [COLOR_WARNING_TEXT]Weißen Hai[COLOR_REVERT] angelockt zu haben.</German>
 		<Russian>Милорд, в воде плавают остатки затонувшего корабля вместе с мертвыми моряками. Их кровь привлекла [COLOR_WARNING_TEXT]большую белую акулу[COLOR_REVERT].</Russian>
 	</TEXT>
 	<TEXT>
@@ -771,7 +771,7 @@
 		<Tag>TXT_KEY_GOODY_KRAKEN_ARMS</Tag>
 		<English>Milord, it seems this ship has been ripped apart by incredible forces. One of our old sailors swears that this could only have been a [COLOR_WARNING_TEXT]giant kraken[COLOR_REVERT].</English>
 		<Portuguese>Milorde, parece que esta nave foi destruída por forças incríveis. Um dos nossos antigos marinheiros jura que este só poderia ter sido um [COLOR_WARNING_TEXT]kraken gigante[COLOR_REVERT].</Portuguese>
-		<German>Milord, es scheint, dass dieses Schiff von unglaublichen Kräften auseinander gerissen wurde. Die alten Seebären in unserer Besatzung sind sich einig, daß dies nur ein außerordentlich [COLOR_WARNING_TEXT]großer Krake[COLOR_REVERT] gewesen sein kann.</German>
+		<German>Milord, es scheint, dass dieses Schiff von unglaublichen Kräften auseinander gerissen wurde. Die alten Seebären in unserer Besatzung sind sich einig, dass dies nur ein außerordentlich [COLOR_WARNING_TEXT]großer Krake[COLOR_REVERT] gewesen sein kann.</German>
 		<Russian>Милорд, кажется, этот корабль разорвало на части что-то, обладающее невероятной силой. Один из наших старых моряков клянется, что это мог быть только [COLOR_WARNING_TEXT]гигантский кракен[COLOR_REVERT].</Russian>
 	</TEXT>
 	<TEXT>

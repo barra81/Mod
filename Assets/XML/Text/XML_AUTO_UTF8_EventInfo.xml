@@ -270,7 +270,7 @@
 		<English>Ah well, pay somebody to help repair the axle. We need that transport to get moving soon.</English>
 		<Portuguese>Ah, bem, pague alguém para ajudar a consertar o eixo. Precisamos que esse transporte se mova logo.</Portuguese>
 		<French>Très bien, payons quelqu'un pour qu'il apporte son essieu. Nous avons besoin que ces chariots reprennent rapidement la route.</French>
-		<German>Nun gut, bezahlt jemanden damit er bei der Reparatur hilft. Wir brauchen dieses Fahrzeug bald wieder auf der Strasse.</German>
+		<German>Nun gut, bezahlt jemanden damit er bei der Reparatur hilft. Wir brauchen dieses Fahrzeug bald wieder auf der Straße.</German>
 		<Russian>Ну ладно, заплати кому-нибудь, чтобы он помог починить ось. Нам нужен этот транспорт, чтобы поскорее начать движение.</Russian>
 	</TEXT>
 	<TEXT>
@@ -326,7 +326,7 @@
 		<English>We will not only repair the corn chamber, but will immediately build a much bigger and better granary.</English>
 		<Portuguese>Não só repararemos a câmara de milho, mas construiremos imediatamente um celeiro muito maior e melhor.</Portuguese>
 		<French>Non seulement nous allons réparer le grenier, mais nous allons dans la foulée l'agrandir et l'améliorer.</French>
-		<German>Wir werden nicht nur die Getreidekammer reparieren lassen. Gebt direkt den Baum eines grossen Getreidespeichers in Auftrag.</German>
+		<German>Wir werden nicht nur die Getreidekammer reparieren lassen. Gebt direkt den Baum eines großen Getreidespeichers in Auftrag.</German>
 		<Russian>Мы не только отремонтируем амбар, но и сразу же построим зернохранилище намного больше и лучше.</Russian>
 	</TEXT>
 	<TEXT>
@@ -414,7 +414,7 @@
 		<English>Let them go in peace with enough animals to feed their tribe, provided they let their chief know of our goodwill.</English>
 		<Portuguese>Deixe-os ir em paz com animais suficientes para alimentar a sua tribo, desde que informem o seu chefe da nossa boa vontade.</Portuguese>
 		<French>Laissez les partir avec suffisamment d'animaux pour nourrir leur tribu, pour autant que leur chef soit prévenu de notre bienveillance.</French>
-		<German>Gebt ihnen genug Vieh, damit sie ihr Dorf ernähren können, und laßt sie dann in Frieden ziehen. Sie sollen ihren Häuptling wissen lassen, daß dies ein Zeichen unseres guten Willens ist.</German>
+		<German>Gebt ihnen genug Vieh, damit sie ihr Dorf ernähren können, und lasst sie dann in Frieden ziehen. Sie sollen ihren Häuptling wissen lassen, dass dies ein Zeichen unseres guten Willens ist.</German>
 		<Russian>Пусть идут с миром с достаточным количеством животных, чтобы прокормить свое племя, при условии, что они сообщат своему вождю о нашей благосклонности.</Russian>
 	</TEXT>
 	<TEXT>
@@ -422,7 +422,7 @@
 		<English>Drive a hard bargain to let them take the cattle in exchange for land and gold.</English>
 		<Portuguese>Faça uma barganha difícil para deixá-los levar o gado em troca de terras e ouro.</Portuguese>
 		<French>Conduisez des négociations pour qu'ils donnent des terres et de l'or en échange du bétail.</French>
-		<German>Gebt ihnen das Vieh, doch laßt sie einen hohen Preis in Form von Gold und Land zahlen.</German>
+		<German>Gebt ihnen das Vieh, doch lasst sie einen hohen Preis in Form von Gold und Land zahlen.</German>
 		<Russian>Заключите жесткую сделку, чтобы позволить им забрать скот только в обмен на землю и золото.</Russian>
 	</TEXT>
 	<TEXT>
@@ -430,7 +430,7 @@
 		<English>Put them in irons and set them to work the fields! We can spare no charity for these thieving savages.</English>
 		<Portuguese>Coloque-os em ferros e coloque-os para trabalhar nos campos! Não podemos poupar nenhuma caridade para esses selvagens ladrões.</Portuguese>
 		<French>Mettez les au fer et faites les travailler dans les champs ! Nous ne pouvons pas nous permettre de faire charité envers des voleurs sauvages.</French>
-		<German>Legt den Dieben Eisen an und laßt sie für diesen Frevel auf den Feldern arbeiten!</German>
+		<German>Legt den Dieben Eisen an und lasst sie für diesen Frevel auf den Feldern arbeiten!</German>
 		<Russian>Заковать их в кандалы и заставить работать в поле! Эти вороватые дикари не заслуживают милости.</Russian>
 	</TEXT>
 	<TEXT>
@@ -493,7 +493,7 @@
 		<English>Leave us alone with such stupidities. One day you might tell us that even alcohol is dangerous.</English>
 		<Portuguese>Deixe-nos em paz com essas estupidezes. Um dia você poderá nos dizer que até o álcool é perigoso.</Portuguese>
 		<French>Ce ne sont que des rumeurs. Quoi d'autres après ça ? Que l'alcool serait également dangereux pour la santé ? Cessons avec ces balivernes.</French>
-		<German>Laßt uns mit solch einem Unsinn in Ruhe. Eines Tages werdet ihr uns noch erzählen, daß selbst Alkohol gefährlich sei.</German>
+		<German>Lasst uns mit solch einem Unsinn in Ruhe. Eines Tages werdet ihr uns noch erzählen, dass selbst Alkohol gefährlich sei.</German>
 		<Russian>Оставьте нас в покое с такими глупостями. Однажды ты скажешь нам, что даже алкоголь опасен.</Russian>
 	</TEXT>
 	<TEXT>
@@ -522,7 +522,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_COMMANDEERED_2</Tag>
-		<English>Let them build their own ships! We cannot foresake the defense of our shores.</English>
+		<English>Let them build their own ships! We cannot forsake the defense of our shores.</English>
 		<Portuguese>Deixe-os construir seus próprios navios! Não podemos renunciar à defesa das nossas costas.</Portuguese>
 		<French>Qu'ils construisent leurs propres bateaux ! Nous ne pouvons pas mettre en danger nos côtes.</French>
 		<German>Die Royal Navy ist groß genug, um selbst ein Schiff abzustellen. Unsere Küsten dürfen nicht ungeschützt bleiben!</German>
@@ -533,7 +533,7 @@
 		<English>The Royal Navy has returned our war ship, somewhat the worse for wear, though with a generous share of booty in her hold!</English>
 		<Portuguese>A Marinha Real devolveu nosso navio de guerra, um tanto desgastado, embora com uma generosa parte do saque em seu porão!</Portuguese>
 		<French>La Marine Royale nous a rendu notre frégate, il est vrai un endommagé, mais avec un joli butin dans sa soute !</French>
-		<German>Die Royal Navy hat uns unser Kriegschiff wieder zurückgegeben. Sie ist zwar etwas mitgenommen, aber im Frachtraum findet sich als Ausgleich ein großzügiger Anteil an der Beute.</German>
+		<German>Die Royal Navy hat uns unser Kriegsschiff wieder zurückgegeben. Sie ist zwar etwas mitgenommen, aber im Frachtraum findet sich als Ausgleich ein großzügiger Anteil an der Beute.</German>
 		<Russian>Королевский флот наконец-то вернул наш корабль! Капитан ожидает дальнейших указаний в доках Европы.</Russian>
 	</TEXT>
 	<TEXT>
@@ -634,7 +634,7 @@
 		<English>I understand something different by Christian charity. Of course we give refuge to the Native.</English>
 		<Portuguese>Entendo algo diferente por caridade cristã. Claro que damos refúgio ao Nativo.</Portuguese>
 		<French>J'entends quelque chose de différent par la charité chrétienne. Nous accorderons un refuge à cet indigène.</French>
-		<German>Unter christlicher Nächstenliebe verstehe ich etwas anderes. Selbstverständlich gewähren wir dem Ureinwohnner Zuflucht.</German>
+		<German>Unter christlicher Nächstenliebe verstehe ich etwas anderes. Selbstverständlich gewähren wir dem Ureinwohner Zuflucht.</German>
 		<Russian>Под христианской благотворительностью я понимаю другое. Конечно, мы дадим прибежище индейцу.</Russian>
 	</TEXT>
 	<TEXT>
@@ -738,12 +738,12 @@
 		<English>Those men were simply desperate. They will be put into our service. Such an incident will not happen again.</English>
 		<Portuguese>Esses homens estavam simplesmente desesperados. Eles serão colocados ao nosso serviço. Tal incidente não acontecerá novamente.</Portuguese>
 		<French>Ces hommes étaient désespérés. Nous allons les mettre à notre service et un tel incident n'arrivera plus.</French>
-		<German>Die Männer waren schlicht verzweifelt. Wir werden sie in uneren Dienst stellen und Sorge tragen, dass so etwas nicht wieder vorkommt.</German>
+		<German>Die Männer waren schlicht verzweifelt. Wir werden sie in unseren Dienst stellen und Sorge tragen, dass so etwas nicht wieder vorkommt.</German>
 		<Russian>Эти люди не знали о наших дружеских отношениях. Однако, это не повод отдавать их индейцам. Они поступят к нам на службу.</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_DIPLOMATIC_CONNECTIONS_1</Tag>
-		<English>The stateman shall use this connection to offer the other official a lucrative position in our administration.</English>
+		<English>The statesman shall use this connection to offer the other official a lucrative position in our administration.</English>
 		<Portuguese>O estadista usará esta conexão para oferecer ao outro funcionário uma posição lucrativa em nossa administração.</Portuguese>
 		<French>Très bien, que cet homme d'État propose à son collègue une position lucrative dans notre administration.</French>
 		<German>Der Staatsmann soll seine Beziehungen nutzen und seinem Kollegen bei uns eine bessere Stelle als bei seinem bisherigen Arbeitgeber anbieten.</German>
@@ -794,7 +794,7 @@
 		<English>A man with such valuable knowledge cannot be left wandering in the wilderness. He must stay in our city and cure the sick there.</English>
 		<Portuguese>Um homem com um conhecimento tão valioso não pode ficar vagando no deserto. Ele deve ficar em nossa cidade e curar os enfermos de lá.</Portuguese>
 		<French>Nous avons besoin d'un homme disposant de telles qualification. Il vaut mieux qu'il reste dans notre ville et y soigne nos malades.</French>
-		<German>Ein Mann mit solch wertvollem Wissen, können wir nicht einfach in die Wildnis lassen. Er soll in userer Stadt bleiben und die Kranken dort heilen.</German>
+		<German>Ein Mann mit solch wertvollem Wissen, können wir nicht einfach in die Wildnis lassen. Er soll in unserer Stadt bleiben und die Kranken dort heilen.</German>
 		<Russian>Человека с такими ценными знаниями нельзя оставлять блуждать по пустыне. Он должен остаться в нашем городе и лечить там больных.</Russian>
 	</TEXT>
 	<TEXT>
@@ -1439,12 +1439,12 @@
 		<English>Send a few men to follow them around without being noticed. The Natives might lead us to a hidden mine sparkling with gems.</English>
 		<Portuguese>Envie alguns homens para segui-los sem serem notados. Os nativos podem nos levar a uma mina escondida repleta de pedras preciosas.</Portuguese>
 		<French>Envoyez des hommes pour les suivre sans se faire repérer. Ils pourront nous emmener vers cette mine cachée.</French>
-		<German>Lasst einige unsere Männer die Ureinwohner vorsichtig verfolgen. Sie führen uns vieleicht zu einer versteckten Edelsteinmine</German>
+		<German>Lasst einige unsere Männer die Ureinwohner vorsichtig verfolgen. Sie führen uns vielleicht zu einer versteckten Edelsteinmine</German>
 		<Russian>Отправьте несколько человек, чтобы они незаметно проследили за ними. Туземцы могут привести нас к скрытой шахте, сверкающей самоцветами.</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_HIDDEN_GEM_MINE_2</Tag>
-		<English>Tell our men that we will respect the wishes of our Native friends. Nobody shall try to find out where thoses stones come from.</English>
+		<English>Tell our men that we will respect the wishes of our Native friends. Nobody shall try to find out where those stones come from.</English>
 		<Portuguese>Diga aos nossos homens que respeitaremos os desejos dos nossos amigos nativos. Ninguém tentará descobrir de onde vêm essas pedras.</Portuguese>
 		<French>Dîtes à nos hommes qu'ils doivent respecter la volonté de nos voisins. Personne ne doit chercher à trouver l'origine de ces pierres.</French>
 		<German>Sagt unseren Leuten, dass wir die Wünsche unserer wilden Freunde respektieren werden. Es wird keine Nachforschungen geben.</German>
@@ -1890,7 +1890,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_OVERFISHING_1</Tag>
-		<English>Obstreporous nonsense! Spread the nets wide!</English>
+		<English>Obstreperous nonsense! Spread the nets wide!</English>
 		<Portuguese>Bobagem obstinada! Espalhe bem as redes!</Portuguese>
 		<French>Cela n'a absolument aucun sens ! Jetez les filets à la mer !</French>
 		<German>Was für ein Schwachsinn! Werft die Netze weit aus!</German>
@@ -2963,7 +2963,7 @@
 		<English>With so many pirates cruising in this area at the moment? We don't have the means to have all our whalers guarded by warships. And without protection, it's a pointless endeavour. We cannot employ him at the moment.</English>
 		<Portuguese>Com tantos piratas navegando nesta área neste momento? Não temos meios para ter todos os nossos baleeiros guardados por navios de guerra. E sem proteção, é um esforço inútil. Não podemos contratá-lo neste momento.</Portuguese>
 		<French>Oh my god, what a stupid idea! The pirates cruising along our coasts are already waiting for such fat prey! We have not enough military vessels to protect our whaling ships and without procetion this is a rather senseless endeavor. We cannot employ him.</French>
-		<German>Bei den vielen Piraten, die hier in dieser Gegend zur Zeit kreuzen? Wir haben nicht die Mittel, um alle unsere Walfänger von Kriegschiffen bewachen zu lassen. Und ohne Schutz ist das ein sinnloses Unterfangen. Wir können ihn derzeit nicht gebrauchen.</German>
+		<German>Bei den vielen Piraten, die hier in dieser Gegend zur Zeit kreuzen? Wir haben nicht die Mittel, um alle unsere Walfänger von Kriegsschiffen bewachen zu lassen. Und ohne Schutz ist das ein sinnloses Unterfangen. Wir können ihn derzeit nicht gebrauchen.</German>
 		<Russian>С таким количеством пиратов, курсирующих сейчас в наших водах? У нас нет средств, чтобы обеспечить все наши китобойные суда эскортом. А без флота это бессмысленная трата денег. Займитесь поиском действительно нужных специалистов.</Russian>
 	</TEXT>
 	<TEXT>
@@ -2987,7 +2987,7 @@
 		<English>Give them the weapons stored in the city. They shall form a militia and protect themselves.</English>
 		<Portuguese>Dê a eles as armas armazenadas na cidade. Eles formarão uma milícia e se protegerão.</Portuguese>
 		<French>Donnez leur les armes stockés dans la ville. Ils doivent former une milice et se protéger par eux-mêmes.</French>
-		<German>Gebt ihnen einige der gelagterten Waffen. Sie sollen eine Miliz aufstellen und sich selbst beschützen.</German>
+		<German>Gebt ihnen einige der gelagerten Waffen. Sie sollen eine Miliz aufstellen und sich selbst beschützen.</German>
 		<Russian>Выдайте им оружие, хранящееся в городе. Они сформируют ополчение и будут защищать себя.</Russian>
 	</TEXT>
 	<TEXT>
@@ -3256,7 +3256,7 @@
 		<Tag>TXT_KEY_EVENT_ECCENTRIC_ARCHITECT_2</Tag>
 		<English>We should exercise extreme caution here. His Majesty likes to send us people who have made themselves unpopular at court. There's bound to be some catch. Tell His Majesty that we can do without for the time being. It's better to take care of the construction ourselves.</English>
 		<Portuguese>Devemos ter extrema cautela aqui. Sua Majestade gosta de nos enviar pessoas que se tornaram impopulares na corte. É provável que haja algum problema. Diga a Sua Majestade que podemos ficar sem isso por enquanto. É melhor cuidarmos nós mesmos da construção.</Portuguese>
-		 <German>Wir sollten hier äußerste Vorsicht walten lasen. Seine Majestät schickt uns gerne Leute herüber, die sich bei Hofe unbeliebt gemacht haben und die Sache hat bestimmt einen Haken. Richtet seiner Majestät aus, dass wir gnädigst darauf verzichten, aber uns selbst um den Aufbau kümmern werden.</German>
+		 <German>Wir sollten hier äußerste Vorsicht walten lassen. Seine Majestät schickt uns gerne Leute herüber, die sich bei Hofe unbeliebt gemacht haben und die Sache hat bestimmt einen Haken. Richtet seiner Majestät aus, dass wir gnädigst darauf verzichten, aber uns selbst um den Aufbau kümmern werden.</German>
 		<Russian>Здесь нам следует проявлять крайнюю осторожность. Его Величество любит присылать к нам людей, которые стали непопулярными при Дворе и здесь обязательно должен быть какой-то подвох. Скажите Его Величеству, что мы сожалеем о том, что не сможем принять столь высокую персону в наших скромных обителях. Ну а о строительстве мы как-нибудь сами позаботимся.</Russian>
 	</TEXT>
    <TEXT>

@@ -263,7 +263,7 @@
 		<English>The game displays extra information on attitudes, taxes, Natives etc...</English>
 		<Portuguese>O jogo exibe informações extras sobre atitudes, impostos, nativos etc...</Portuguese>
 		<French>Des informations supplémentaires sur les attitudes, les taxes, et les indiens apparaissent a l'écran</French>
-		<German>Im Spiel werden zusätzliche Informationen angzeigt. Zur Attitude, zu den Steuern, zu den Ureinwohnern, etc...</German>
+		<German>Im Spiel werden zusätzliche Informationen angezeigt. Zur Attitude, zu den Steuern, zu den Ureinwohnern, etc...</German>
 		<Italian>Ulteriori informazioni vengono visualizzate nel gioco. Sull'atteggiamento, sulle tasse, sugli aborigeni, ecc...</Italian>
 		<Spanish>En el juego se muestra información adicional. Sobre la actitud, sobre los impuestos, sobre los aborígenes, etc...</Spanish>
 		<Russian>В игре отображается дополнительную информация об отношениях, налогах, туземцах и т.д.</Russian>
@@ -453,7 +453,7 @@
 		<Tag>TXT_KEY_GAMEOPTION_DEACTIVATE_HEMISPHERE_RESTRICTIONS_HELP</Tag>
 		<English>Normally some bonus resources (like the walrus, penguin, capybara, ...) are restricted for immersion either to the northern or southern hemisphere. If you activate this setting that restriction is removed.</English>
 		<Portuguese>Normalmente alguns recursos bônus (como morsa, pinguim, capivara, ...) são restritos para imersão tanto no hemisfério norte quanto no hemisfério sul. Se você ativar esta configuração, essa restrição será removida.</Portuguese>
-		<German>Standardmäßig sind viele Bonus-Ressourcen (wie z.B. Walross, Pinguin, Cabyara, ...) aus Gründen der Realitätstreue entweder auf die nördliche oder südliche Hemisphere beschränkt. Mit Aktivierung dieser Option wird diese Einschränkung aufgehoben.</German>
+		<German>Standardmäßig sind viele Bonus-Ressourcen (wie z.B. Walross, Pinguin, Cabyara, ...) aus Gründen der Realitätstreue entweder auf die nördliche oder südliche Hemisphäre beschränkt. Mit Aktivierung dieser Option wird diese Einschränkung aufgehoben.</German>
 		<Russian>Обычно расположение некоторых дополнительных ресурсов (такие как моржи, пингвины, капибара и т.д.) для реалистичности ограничено определенным полушарием. Если вы активируете этот параметр, ограничение будет отменено.</Russian>
 	</TEXT>
 	<TEXT>
