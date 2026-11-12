@@ -680,7 +680,7 @@ class CvTransportRoutesOverview:
 		self.Transports = []
 
 	# a click on the unit icon: the overview closes, the transport is selected and centered on the map
-	# (ESC without any other action opens the overview again, see CvEventManager.onKbdEvent)
+	# and the R screen opens; closing it opens the overview again (see CvTradeRoutesAdvisor.onClose)
 	def showOnMap(self, iSlot):
 		try:
 			iIndex = self.iFirst + iSlot
@@ -696,7 +696,11 @@ class CvTransportRoutesOverview:
 			CyInterface().selectUnit(pUnit, True, False, True)
 			pUnit.centerCamera()
 			import CvScreensInterface
-			CvScreensInterface.tOverviewMapReturn = (iUnit, pUnit.getX(), pUnit.getY())
+			CvScreensInterface.tradeRoutesAdvisor.fReturnToOverviewTime = time.time()
+			popupInfo = CyPopupInfo()
+			popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+			popupInfo.setText(u"showTradeRoutesAdvisor")
+			popupInfo.addPopup(pUnit.getOwner())
 		except:
 			import traceback
 			logOverview(traceback.format_exc())

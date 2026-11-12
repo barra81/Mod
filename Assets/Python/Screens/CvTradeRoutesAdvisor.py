@@ -114,6 +114,9 @@ class CvTradeRoutesAdvisor:
 		# WTP: opened from the trade routes tab of the domestic advisor: go back there when closed
 		self.bReturnToDomestic = (time.time() - getattr(self, "fReturnToDomesticTime", -100.0) < 5.0)
 		self.fReturnToDomesticTime = -100.0
+		# WTP: opened from the transport overview: go back there when closed
+		self.bReturnToOverview = (time.time() - getattr(self, "fReturnToOverviewTime", -100.0) < 5.0)
+		self.fReturnToOverviewTime = -100.0
 		
 		# Cargo list
 		self.YieldList = []
@@ -1079,6 +1082,16 @@ class CvTradeRoutesAdvisor:
 
 		
 	def onClose(self) :
+		if getattr(self, "bReturnToOverview", False):
+			self.bReturnToOverview = False
+			self.bReturnToDomestic = False
+			try:
+				popupInfo = CyPopupInfo()
+				popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+				popupInfo.setText(u"showTransportRoutesOverview")
+				popupInfo.addPopup(gc.getGame().getActivePlayer())
+			except:
+				pass
 		if getattr(self, "bReturnToDomestic", False):
 			self.bReturnToDomestic = False
 			try:

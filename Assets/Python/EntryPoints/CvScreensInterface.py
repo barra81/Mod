@@ -616,9 +616,6 @@ def update (argsList):
 # WTP: diplomacy opened from the native info tab of the domestic advisor
 bReturnToDomesticAfterDiplomacy = False
 
-# WTP: transport shown on the map from the transport overview (unit id, x, y), ESC opens the overview again
-tOverviewMapReturn = None
-
 # WTP: screen id of a trade screen opened from the exported goods tab of the domestic advisor (-1: none)
 iReturnToDomesticScreen = -1
 
