@@ -316,7 +316,7 @@ class CvTradeRouteScreen:
 		if bOn:
 			szShown = u"<font=3b><color=255,220,100>[x] " + szText + u"</color></font>"
 		else:
-			szShown = u"<font=3b><color=255,255,255>[   ] " + szText + u"</color></font>"
+			szShown = u"<font=3b><color=0,0,0>[   ] " + szText + u"</color></font>"
 		screen.setText(szLabel, "", szShown, CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + 3, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
 
 	def drawRows(self):
@@ -356,9 +356,8 @@ class CvTradeRouteScreen:
 			self.drawCheck("TRSc" + str(iSlot) + "_9", szAuto, d["auto"], iCX + self.CHECK_W + 4, iY + 3, iBase + F_EXP_AUTO)
 			self.drawCheck("TRSc" + str(iSlot) + "_10", szLand, (d["expDom"] & 1) != 0, iCX, iY + 28, iBase + F_EXP_LAND)
 			self.drawCheck("TRSc" + str(iSlot) + "_11", szSea, (d["expDom"] & 2) != 0, iCX + self.CHECK_W + 4, iY + 28, iBase + F_EXP_SEA)
-			# the favorite checkbox at the end of each block (one setting per good, both show it)
+			# the favorite checkbox at the right end of the row (one setting per good, for import and export)
 			bFav = self.isFav(iYield)
-			self.drawCheck("TRSc" + str(iSlot) + "_fi", szFav, bFav, self.OX + self.BLOCK_IMP_X + self.BLOCK_SPIN_W + 8 + 2 * self.CHECK_W + 4 + 20, iY + 15, BTN_FAV_IMP + iSlot)
 			self.drawCheck("TRSc" + str(iSlot) + "_fe", szFav, bFav, self.OX + self.iViewX, iY + 15, BTN_FAV_EXP + iSlot)
 
 	def drawSpin(self, iSlot, iBlock, iValue, iX, iY, iMinusCode, iPlusCode):
