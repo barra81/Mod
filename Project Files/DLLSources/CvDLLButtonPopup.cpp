@@ -4147,6 +4147,8 @@ bool CvDLLButtonPopup::launchYieldImportExportPopup(CvPopup* pPopup, CvPopupInfo
 		return false;
 	}
 	gDLL->getInterfaceIFace()->popupSetBodyString(pPopup, gDLL->getText("TXT_KEY_POPUP_IMPORT_TITLE", pCity->getNameKey()));
+	// WTP: the Land / Sea checkboxes need a wider window: a blank (transparent) image of the wanted width keeps it from being narrower
+	gDLL->getInterfaceIFace()->popupAddDDS(pPopup, "Art/units/Ships_Transport/west_indiaman/ship_sail_emblem_sml_blank.dds", 640, 1);
 
 	// auto traderoute - start - Nightinggale
 	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_IMPORT_CLEAR_ALL").c_str(), NULL, 0);
