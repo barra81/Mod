@@ -46,6 +46,7 @@ class CvYieldAmountScreen:
 		self.bSelected = True
 		self.bFinished = True
 		self.iLog = 0
+		self.bHostMain = False
 		self.pHost = None # the harbor screen (Europe / Africa / Port Royal) the dialog is drawn on, none: an own screen
 		self.OX = 0
 		self.OY = 0
@@ -94,6 +95,12 @@ class CvYieldAmountScreen:
 				self.pHost = CvScreensInterface.portroyalScreen.getScreen()
 		except:
 			self.pHost = None
+		# everywhere else (the cities, the map) the dialog is drawn on the main interface: a screen of its own makes the city screen
+		# show things that do not belong there (the minimap, the yellow ovals); the diplomacy has an own screen
+		self.bHostMain = False
+		if self.pHost == None and iFromPlayer < 0:
+			self.pHost = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			self.bHostMain = True
 
 		self.dDigits = {}
 		for i in range(10):
@@ -118,9 +125,7 @@ class CvYieldAmountScreen:
 		# where the dialog is drawn: in the diplomacy its bottom is at the lower edge of the portrait, in the cities (and on the map)
 		# just above the goods bar, in the harbors it is moved up by more than its height
 		if iFromPlayer >= 0:
-			iY = int(iYRes * 0.585) - self.H
-		else:
-			iY = int(iYRes * 0.84) - self.H
+			iY = int(iYRes * 0.597) - self.H
 		if self.pHost == None:
 			self.OX = 0
 			self.OY = 0
@@ -131,7 +136,13 @@ class CvYieldAmountScreen:
 		else:
 			screen = self.pHost
 			self.OX = (screen.getXResolution() - self.W) / 2
-			self.OY = max(0, (screen.getYResolution() - self.H) / 2 - self.H * 13 / 10)
+			if self.bHostMain:
+				# just above the goods bar; in the city screen at the right, up to the golden frame of the panels there
+				self.OY = int(screen.getYResolution() * 0.84) - self.H
+				if CyInterface().isCityScreenUp():
+					self.OX = int(screen.getXResolution() * 0.59) - self.W
+			else:
+				self.OY = int(screen.getYResolution() * 0.36) # the harbors: at the height of the landing stage
 		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, self.OX, self.OY, self.W, self.H, PanelStyles.PANEL_STYLE_MAIN, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		szTitle = localText.getText("TXT_KEY_SELECT_YIELD_POPUP", (gc.getYieldInfo(iYield).getDescription(),))
@@ -308,7 +319,7 @@ class CvYieldAmountScreen:
 		if self.bFinished:
 			return 0
 		try:
-			if self.pHost != None and not self.pHost.isActive():
+			if self.pHost != None and not self.bHostMain and not self.pHost.isActive():
 				self.finish(False) # the harbor screen was closed meanwhile
 				return 0
 			iNotches = CyGame().takeWheelNotches()
