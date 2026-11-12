@@ -41,13 +41,13 @@ F_EXP_SEA = 11
 # the lightening of a marked button (a translucent orange rectangle, the picture WTPMark.dds stretched to the face of the button, dimmer
 # than the hover effect of the game) and, because that covers the hover effect of the game, our own one on marked buttons (WTPHover.dds,
 # brighter). The pictures are 1 x 1 pixel (orange, different transparency); the margins are the border of the button picture that is
-# left free. (Unmarked buttons keep the hover effect of the game.)
+# left free. The hover effect is drawn on every button (also when the mouse is over its text).
 USE_OVERLAY = True
 MARK_ART = "Art/Interface/Screens/TradeRoutes/WTPMark.dds"
 HOVER_ART = "Art/Interface/Screens/TradeRoutes/WTPHover.dds"
 HILITE_LAYERS = 1
 HOVER_LAYERS = 1
-MARGIN_X = 4
+MARGIN_X = 2
 MARGIN_Y = 3
 # the font of all texts
 TEXT_FONT = "3b"
@@ -370,7 +370,7 @@ class CvTradeRouteScreen:
 		szNew = ""
 		for szName in self.dBtn.keys():
 			b = self.dBtn[szName]
-			if b[6] and iX >= b[0] and iX < b[0] + b[2] and iY >= b[1] + 3 and iY < b[1] + b[3] - 3:
+			if iX >= b[0] and iX < b[0] + b[2] and iY >= b[1] + 3 and iY < b[1] + b[3] - 3:
 				szNew = szName
 				break
 		if szNew == self.sHover:
@@ -435,7 +435,7 @@ class CvTradeRouteScreen:
 		iBY = iY + (self.ROW_H - iBH) / 2
 		self.drop("TRSv" + szTag)
 		self.addButton("TRSm" + szTag, u"-", False, iX, iBY, 28, iBH, iMinusCode, "", 1)
-		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28 - 5, iBY, 28, iBH, iPlusCode, "", -1)
+		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28 - 7, iBY, 28, iBH, iPlusCode, "", -1)
 		screen.setLabelAt("TRSv" + szTag, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + (self.ROW_H - 22) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 	def refreshRow(self, iSlot):
