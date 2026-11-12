@@ -30,12 +30,12 @@ def isNamedLike(szName, szPrefix):
 
 def getUsedNumbers(player, szPrefix):
 	aUsed = []
-	(pUnit, iter) = player.firstUnit(False)
+	(pUnit, iter) = player.firstUnit()
 	while (pUnit):
 		szName = pUnit.getNameNoDesc()
 		if isNamedLike(szName, szPrefix):
 			aUsed.append(int(szName[len(szPrefix) + 1:]))
-		(pUnit, iter) = player.nextUnit(iter, False)
+		(pUnit, iter) = player.nextUnit(iter)
 	return aUsed
 
 # the popup that renames a transport (the name is set by the event RenameTransport, see CvEventManager)
