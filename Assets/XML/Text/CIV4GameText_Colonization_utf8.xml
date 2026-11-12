@@ -260,6 +260,11 @@
 		<German>Wegpunkt</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_BANNER</Tag>
+		<English> [ICON_MOVES]</English>
+		<German> [ICON_MOVES]</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_SETTLE_NEW_CITY_NAME</Tag>
 		<English>Settlement name :</English>
 		<Portuguese>Nome da colônia:</Portuguese>
