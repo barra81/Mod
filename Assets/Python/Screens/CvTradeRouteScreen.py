@@ -42,6 +42,8 @@ F_EXP_SEA = 11
 # the buttons): layers of a translucent white pixel (the 1 x 1 picture of the trade route screen) stretched to the face of the button
 # (a rectangle, exactly); the margins are the border of the button picture that is left free
 PIXEL_ART = "Art/Interface/Screens/TradeRoutes/Pixel.dds"
+# switched off for now (True: lighter marked buttons and the own hover effect; the code is kept)
+USE_OVERLAY = False
 HILITE_LAYERS = 2
 HOVER_LAYERS = 3
 MARGIN_X = 4
@@ -325,7 +327,7 @@ class CvTradeRouteScreen:
 		self.removeButton(szName)
 		screen.setButtonGFC(szName, u"", "", iX, iY, iW, iH, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		aLights = []
-		if bMark:
+		if bMark and USE_OVERLAY:
 			for i in range(HILITE_LAYERS):
 				szLight = "TRSb" + str(i) + "_" + szName
 				screen.addDDSGFC(szLight, PIXEL_ART, iX + MARGIN_X, iY + MARGIN_Y, iW - 2 * MARGIN_X, iH - 2 * MARGIN_Y, WidgetTypes.WIDGET_GENERAL, iCode, -1)
@@ -360,6 +362,8 @@ class CvTradeRouteScreen:
 
 	# the button under the mouse gets a lighter / orange panel (called every frame)
 	def updateHover(self):
+		if not USE_OVERLAY:
+			return
 		iX = CyGame().getCursorClientX()
 		iY = CyGame().getCursorClientY()
 		szNew = ""
@@ -430,7 +434,7 @@ class CvTradeRouteScreen:
 		iBY = iY + (self.ROW_H - iBH) / 2
 		self.drop("TRSv" + szTag)
 		self.addButton("TRSm" + szTag, u"-", False, iX, iBY, 28, iBH, iMinusCode, "", 1)
-		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28 - 3, iBY, 28, iBH, iPlusCode, "", -1)
+		self.addButton("TRSp" + szTag, u"+", False, iX + self.BLOCK_SPIN_W - 28 - 5, iBY, 28, iBH, iPlusCode, "", -1)
 		screen.setLabelAt("TRSv" + szTag, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + (self.ROW_H - 22) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 	def refreshRow(self, iSlot):
