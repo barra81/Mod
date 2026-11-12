@@ -104,7 +104,8 @@ class CvTradeRouteScreen:
 		self.H = 600
 		self.OX = 0
 		self.OY = 0
-		self.ROW_H = 54
+		self.ROW_H = 60
+		self.CHECK_H = 28
 		self.LIST_Y = 194
 		self.BLOCK_IMP_X = 90
 		self.BLOCK_EXP_X = 640
@@ -285,7 +286,7 @@ class CvTradeRouteScreen:
 			self.aDrawn.append("TRSDown")
 			self.aDrawn.append("TRSPage")
 
-		self.iViewX = self.BLOCK_EXP_X + self.BLOCK_SPIN_W + 8 + 2 * self.CHECK_W + 4 + 20
+		self.iViewX = self.W - 20 - 160
 		screen.addDropDownBoxGFC("TRSView", self.OX + self.iViewX, self.OY + self.H - 44, 160, WidgetTypes.WIDGET_GENERAL, BTN_VIEW, -1, FontTypes.GAME_FONT)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()), 0, 0, True)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_FAV", ()), 1, 1, False)
@@ -312,12 +313,12 @@ class CvTradeRouteScreen:
 		self.drop(szLabel)
 		# the button is the background, the text on it is a clickable text of the game (in the style of the other texts of the game,
 		# yellow when checked); both have the same code
-		screen.setButtonGFC(szName, u"", "", iX, iY, self.CHECK_W, 24, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC(szName, u"", "", iX, iY, self.CHECK_W, self.CHECK_H, WidgetTypes.WIDGET_GENERAL, iCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		if bOn:
 			szShown = u"<font=3b><color=255,220,100>[x] " + szText + u"</color></font>"
 		else:
 			szShown = u"<font=3b><color=0,0,0>[   ] " + szText + u"</color></font>"
-		screen.setText(szLabel, "", szShown, CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + 3, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
+		screen.setText(szLabel, "", szShown, CvUtil.FONT_CENTER_JUSTIFY, iX + self.CHECK_W / 2, iY + (self.CHECK_H - 20) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iCode, -1)
 
 	def drawRows(self):
 		screen = self.pHost
@@ -339,38 +340,40 @@ class CvTradeRouteScreen:
 			iBase = BTN_ROW + iSlot * 16
 			szIcon = "TRSIcon" + str(iSlot)
 			self.drop(szIcon)
-			screen.setImageButton(szIcon, gc.getYieldInfo(iYield).getButton(), self.OX + 22, iY + 10, 32, 32, WidgetTypes.WIDGET_HELP_YIELD, iYield, -1)
+			screen.setImageButton(szIcon, gc.getYieldInfo(iYield).getButton(), self.OX + 22, iY + (self.ROW_H - 32) / 2, 32, 32, WidgetTypes.WIDGET_HELP_YIELD, iYield, -1)
 			# import block
 			iX = self.OX + self.BLOCK_IMP_X
 			self.drawSpin(iSlot, 0, d["impLimit"], iX, iY, iBase + F_IMP_MINUS, iBase + F_IMP_PLUS)
 			iCX = iX + self.BLOCK_SPIN_W + 8
-			self.drawCheck("TRSc" + str(iSlot) + "_2", szImport, d["imp"], iCX, iY + 3, iBase + F_IMP_CHECK)
-			self.drawCheck("TRSc" + str(iSlot) + "_3", szFeeder, d["feeder"], iCX + self.CHECK_W + 4, iY + 3, iBase + F_IMP_FEEDER)
-			self.drawCheck("TRSc" + str(iSlot) + "_4", szLand, (d["impDom"] & 1) != 0, iCX, iY + 28, iBase + F_IMP_LAND)
-			self.drawCheck("TRSc" + str(iSlot) + "_5", szSea, (d["impDom"] & 2) != 0, iCX + self.CHECK_W + 4, iY + 28, iBase + F_IMP_SEA)
+			self.drawCheck("TRSc" + str(iSlot) + "_2", szImport, d["imp"], iCX, iY + 2, iBase + F_IMP_CHECK)
+			self.drawCheck("TRSc" + str(iSlot) + "_3", szFeeder, d["feeder"], iCX + self.CHECK_W + 4, iY + 2, iBase + F_IMP_FEEDER)
+			self.drawCheck("TRSc" + str(iSlot) + "_4", szLand, (d["impDom"] & 1) != 0, iCX, iY + 2 + self.CHECK_H + 2, iBase + F_IMP_LAND)
+			self.drawCheck("TRSc" + str(iSlot) + "_5", szSea, (d["impDom"] & 2) != 0, iCX + self.CHECK_W + 4, iY + 2 + self.CHECK_H + 2, iBase + F_IMP_SEA)
 			# export block
 			iX = self.OX + self.BLOCK_EXP_X
 			self.drawSpin(iSlot, 1, d["maintain"], iX, iY, iBase + F_EXP_MINUS, iBase + F_EXP_PLUS)
 			iCX = iX + self.BLOCK_SPIN_W + 8
-			self.drawCheck("TRSc" + str(iSlot) + "_8", szExport, d["exp"], iCX, iY + 3, iBase + F_EXP_CHECK)
-			self.drawCheck("TRSc" + str(iSlot) + "_9", szAuto, d["auto"], iCX + self.CHECK_W + 4, iY + 3, iBase + F_EXP_AUTO)
-			self.drawCheck("TRSc" + str(iSlot) + "_10", szLand, (d["expDom"] & 1) != 0, iCX, iY + 28, iBase + F_EXP_LAND)
-			self.drawCheck("TRSc" + str(iSlot) + "_11", szSea, (d["expDom"] & 2) != 0, iCX + self.CHECK_W + 4, iY + 28, iBase + F_EXP_SEA)
+			self.drawCheck("TRSc" + str(iSlot) + "_8", szExport, d["exp"], iCX, iY + 2, iBase + F_EXP_CHECK)
+			self.drawCheck("TRSc" + str(iSlot) + "_9", szAuto, d["auto"], iCX + self.CHECK_W + 4, iY + 2, iBase + F_EXP_AUTO)
+			self.drawCheck("TRSc" + str(iSlot) + "_10", szLand, (d["expDom"] & 1) != 0, iCX, iY + 2 + self.CHECK_H + 2, iBase + F_EXP_LAND)
+			self.drawCheck("TRSc" + str(iSlot) + "_11", szSea, (d["expDom"] & 2) != 0, iCX + self.CHECK_W + 4, iY + 2 + self.CHECK_H + 2, iBase + F_EXP_SEA)
 			# the favorite checkbox at the right end of the row (one setting per good, for import and export)
 			bFav = self.isFav(iYield)
-			self.drawCheck("TRSc" + str(iSlot) + "_fe", szFav, bFav, self.OX + self.iViewX, iY + 15, BTN_FAV_EXP + iSlot)
+			self.drawCheck("TRSc" + str(iSlot) + "_fe", szFav, bFav, self.OX + self.iViewX + (160 - self.CHECK_W) / 2, iY + (self.ROW_H - self.CHECK_H) / 2, BTN_FAV_EXP + iSlot)
 
 	def drawSpin(self, iSlot, iBlock, iValue, iX, iY, iMinusCode, iPlusCode):
 		screen = self.pHost
-		szMinus = "TRSm" + str(iSlot) + "_" + str(iBlock)
-		szPlus = "TRSp" + str(iSlot) + "_" + str(iBlock)
-		szValue = "TRSv" + str(iSlot) + "_" + str(iBlock)
-		self.drop(szMinus)
-		self.drop(szPlus)
-		self.drop(szValue)
-		screen.setButtonGFC(szMinus, u"<font=3b>-</font>", "", iX, iY + 13, 24, 26, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setButtonGFC(szPlus, u"<font=3b>+</font>", "", iX + self.BLOCK_SPIN_W - 24, iY + 13, 24, 26, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		screen.setLabelAt(szValue, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + 16, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		szTag = str(iSlot) + "_" + str(iBlock)
+		iBH = 30
+		iBY = iY + (self.ROW_H - iBH) / 2
+		for szName in ("TRSm" + szTag, "TRSM" + szTag, "TRSp" + szTag, "TRSP" + szTag, "TRSv" + szTag):
+			self.drop(szName)
+		# the signs are texts of the game on blank buttons (the signs of the button font look odd)
+		screen.setButtonGFC("TRSm" + szTag, u"", "", iX, iBY, 28, iBH, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setText("TRSM" + szTag, "", u"<font=4b><color=0,0,0>-</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + 14, iBY + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iMinusCode, -1)
+		screen.setButtonGFC("TRSp" + szTag, u"", "", iX + self.BLOCK_SPIN_W - 28, iBY, 28, iBH, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setText("TRSP" + szTag, "", u"<font=4b><color=0,0,0>+</color></font>", CvUtil.FONT_CENTER_JUSTIFY, iX + self.BLOCK_SPIN_W - 14, iBY + 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, iPlusCode, -1)
+		screen.setLabelAt("TRSv" + szTag, self.BACKGROUND_ID, u"<font=3><color=255,255,255>" + unicode(iValue) + u"</color></font>", CvUtil.FONT_CENTER_JUSTIFY, (iX - self.OX) + self.BLOCK_SPIN_W / 2, (iY - self.OY) + (self.ROW_H - 22) / 2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 	def refreshRow(self, iSlot):
 		# only the changed row is drawn again: all of them (cheap enough, the list is short)
@@ -380,7 +383,9 @@ class CvTradeRouteScreen:
 		self.drop("TRSIcon" + str(iSlot))
 		for iBlock in range(2):
 			self.drop("TRSm" + str(iSlot) + "_" + str(iBlock))
+			self.drop("TRSM" + str(iSlot) + "_" + str(iBlock))
 			self.drop("TRSp" + str(iSlot) + "_" + str(iBlock))
+			self.drop("TRSP" + str(iSlot) + "_" + str(iBlock))
 			self.drop("TRSv" + str(iSlot) + "_" + str(iBlock))
 		for iField in (2, 3, 4, 5, 8, 9, 10, 11):
 			self.drop("TRSc" + str(iSlot) + "_" + str(iField))
