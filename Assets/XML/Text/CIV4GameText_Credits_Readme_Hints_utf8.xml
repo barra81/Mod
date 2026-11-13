@@ -1975,4 +1975,9 @@ Viel Spaß![NEWLINE]
 		<English>Press [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT] to open the Trade Route Manager: the trade routes, automation and names of all your transports at a glance.</English>
 		<German>Drücken Sie [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT], um den Handelsrouten-Manager zu öffnen: Handelsrouten, Automatisierung und Namen aller Transporter auf einen Blick.</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_69</Tag>
+		<English>Press [COLOR:140:255:40:255]&lt; CTRL + SHIFT + T &gt;[COLOR_REVERT] to switch the hover tooltip on or off: the tooltip window that appears right at the mouse cursor.</English>
+		<German>Drücken Sie [COLOR:140:255:40:255]&lt; STRG + SHIFT + T &gt;[COLOR_REVERT], um den Hover-Tooltip ein- oder auszuschalten: das Tooltip-Fenster, das direkt am Mauszeiger erscheint.</German>
+	</TEXT>
 </Civ4GameText>

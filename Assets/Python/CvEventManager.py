@@ -286,6 +286,11 @@ class CvEventManager:
 				except:
 					pass
 
+			# WTP: Ctrl+Shift+T switches the hover tooltip (own tooltip window at the cursor) on and off
+			if (theKey == int(InputTypes.KB_T) and self.bCtrl and self.bShift and not self.bAlt):
+				CvScreensInterface.mainInterface.toggleHoverTip()
+				return 1
+
 			if (theKey == int(InputTypes.KB_I) and self.bCtrl and not self.bShift and not self.bAlt):
 				CvScreensInterface.mainInterface.toggleTerritorialInfluence()
 				return 1
