@@ -328,6 +328,8 @@ class CvMainInterface:
 	bCursorTipShown = False
 	iCursorTipLines = 0
 	fWidgetHelpTime = 0.0
+	iTick = 0 # counted in update() (time.time() of the game is far too coarse)
+	iWidgetHelpTick = -1000
 	szCursorTipText = u""
 	tCursorTipAt = (-1000, -1000)
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
@@ -3755,7 +3757,7 @@ class CvMainInterface:
 	def showCursorTooltip( self, screen, szHelp, bWidget = False ):
 		try:
 			# the help of the map plot is not shown while the cursor is on a HUD element (the game reports the plot behind it)
-			if not bWidget and time.time() - self.fWidgetHelpTime < 0.7:
+			if not bWidget and self.iTick - self.iWidgetHelpTick < 30:
 				return
 			if CyInterface().isCityScreenUp() or len(szHelp) == 0:
 				self.hideCursorTooltip(screen)
@@ -3856,7 +3858,7 @@ class CvMainInterface:
 				self.tipLog("W(empty) type=%d xy=%d,%d" % (int(eWidgetType), gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()))
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			if szText and len(szText) > 0:
-				self.fWidgetHelpTime = time.time()
+				self.iWidgetHelpTick = self.iTick
 				self.showCursorTooltip(screen, szText, True)
 			# empty texts are ignored: the game reports them all the time on the map (log: type 24), they must not block the plot help
 		except:
@@ -3907,10 +3909,10 @@ class CvMainInterface:
 		else:
 			szHelp = CyInterface().getHelpString()
 			if len(szHelp) > 0:
-				self.tipLog("H len=%d sinceWidget=%.2f xy=%d,%d text=%s" % (len(szHelp), time.time() - self.fWidgetHelpTime, gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY(), repr(szHelp[:60].encode("ascii", "replace"))))
+				self.tipLog("H len=%d sinceWidget=%d xy=%d,%d text=%s" % (len(szHelp), self.iTick - self.iWidgetHelpTick, gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY(), repr(szHelp[:60].encode("ascii", "replace"))))
 			self.showCursorTooltip(screen, szHelp)
 			# while the cursor is on a HUD element the plot help behind it must not replace the help of the element
-			if time.time() - self.fWidgetHelpTime >= 0.7:
+			if self.iTick - self.iWidgetHelpTick >= 30:
 				screen.setHelpTextString( szHelp )
 
 		return 0
@@ -5272,6 +5274,7 @@ class CvMainInterface:
 
 	# Updates the Screen
 	def update( self, fDelta ):
+		self.iTick += 1
 		self.updateTerritorialInfluenceEditor()
 		self.updatePioneerPlanEditor()
 		self.updateAutomatedFollow()
