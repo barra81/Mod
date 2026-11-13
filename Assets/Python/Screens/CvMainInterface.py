@@ -3877,21 +3877,21 @@ class CvMainInterface:
 			if ord(c) >= 0x2000:
 				fSum += 13.0 # icon of the game font (measured: 12 to 14 pixels)
 			elif c == u" ":
-				fSum += 3.9
-			elif c in u"ijl.,:;!'|":
-				fSum += 5.5
-			elif c in u"()\"-ftr":
 				fSum += 4.0
+			elif c in u"ijl.,:;!'|":
+				fSum += 5.9
+			elif c in u"()\"-ftr":
+				fSum += 2.7
 			elif c in u"mwMW":
-				fSum += 12.1
+				fSum += 13.4
 			elif c.isupper():
-				fSum += 10.7
+				fSum += 10.3
 			elif c.isdigit():
-				fSum += 11.0
+				fSum += 8.9
 			elif c in u"+%/":
-				fSum += 7.4
+				fSum += 7.1
 			else:
-				fSum += 7.7
+				fSum += 8.2
 		return fSum * iLine / 22.0
 
 	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad, aiIndent = None ):
