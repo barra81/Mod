@@ -246,8 +246,8 @@ class CvEventManager:
 					pass
 			return 1
 
-		# WTP: Ctrl + Shift + I J K L move the message panel (two keys at once: diagonal)
-		aMoveKeys = [int(InputTypes.KB_J), int(InputTypes.KB_L), int(InputTypes.KB_I), int(InputTypes.KB_K)] # left, right, up, down
+		# WTP: Ctrl + Shift + W A S D move the message panel (two keys at once: diagonal)
+		aMoveKeys = [int(InputTypes.KB_A), int(InputTypes.KB_D), int(InputTypes.KB_W), int(InputTypes.KB_S)] # left, right, up, down
 		if (eventType == self.EventKeyUp):
 			try:
 				CvScreensInterface.mainInterface.releaseMessageArrow(aMoveKeys.index(int(key)))

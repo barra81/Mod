@@ -3670,7 +3670,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_AUTO_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Auto expand[COLOR_REVERT][NEWLINE]Click: the message panel opens expanded at the start of every turn (on) or stays collapsed (off).[NEWLINE]Move the panel: hold Ctrl and Shift and press I, J, K, L (I up, J left, K down, L right; two keys: diagonal).[NEWLINE]Position: %d1, %d2</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Auto-Ausklappen[COLOR_REVERT][NEWLINE]Klick: Das Meldungs-Panel öffnet zu Beginn jeder Runde ausgeklappt (an) oder bleibt eingeklappt (aus).[NEWLINE]Panel verschieben: Strg und Umschalt gedrückt halten und I, J, K, L drücken (I hoch, J links, K runter, L rechts; zwei Tasten: diagonal).[NEWLINE]Position: %d1, %d2</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Auto expand[COLOR_REVERT][NEWLINE]Click: the message panel opens expanded at the start of every turn (on) or stays collapsed (off).[NEWLINE]Move the panel: hold Ctrl and Shift and press W, A, S, D (two keys: diagonal).[NEWLINE]Position: %d1, %d2</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Auto-Ausklappen[COLOR_REVERT][NEWLINE]Klick: Das Meldungs-Panel öffnet zu Beginn jeder Runde ausgeklappt (an) oder bleibt eingeklappt (aus).[NEWLINE]Panel verschieben: Strg und Umschalt gedrückt halten und W, A, S, D drücken (zwei Tasten: diagonal).[NEWLINE]Position: %d1, %d2</German>
 	</TEXT>
 </Civ4GameText>
