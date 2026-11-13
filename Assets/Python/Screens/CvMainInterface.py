@@ -380,6 +380,8 @@ class CvMainInterface:
 	bClockDead = False
 	iTipMode = aiTipSettings[0] # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
 	aiTipIndent = []
+	tSelLogState = None
+	bSelLogError = False
 	aiWrapIndent = []
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
 	iSecondTipPara = -2
@@ -4394,6 +4396,27 @@ class CvMainInterface:
 	# WTP: debug log of the tooltip events (WTP_TipLog.txt in the game folder, at most 600 lines), to be removed again
 	iTipLogLines = 0
 	iLastLogType = -1
+	# WTP debug log: which cities are selected (changes only)
+	def logCitySelection( self ):
+		try:
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			aszSel = []
+			(loopCity, iter) = pPlayer.firstCity(False)
+			while loopCity:
+				if CyInterface().isCitySelected(loopCity):
+					aszSel.append(loopCity.getName())
+				(loopCity, iter) = pPlayer.nextCity(iter, False)
+			tState = (CyInterface().isCityScreenUp(), tuple(aszSel))
+			if tState != self.tSelLogState:
+				self.tSelLogState = tState
+				import WTPBannerLog
+				WTPBannerLog.log("SELECTION cityScreenUp=%s selected=%s" % (str(tState[0]), str(aszSel)))
+		except:
+			if not self.bSelLogError:
+				self.bSelLogError = True
+				import WTPBannerLog
+				WTPBannerLog.log("SELECTION log error: %s" % str(sys.exc_info()[1]))
+
 	def tipLog( self, szMsg ):
 		try:
 			if self.iTipLogLines > 600:
@@ -6153,6 +6176,7 @@ class CvMainInterface:
 		self.updateMessageMove()
 		self.updateCursorTooltip()
 		self.pollWidgetHelp()
+		self.logCitySelection()
 		try:
 			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
 		except:

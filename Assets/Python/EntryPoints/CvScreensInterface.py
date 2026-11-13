@@ -615,6 +615,14 @@ def handleInput (argsList):
 	' handle input is called when a screen is up '
 	inputClass = PyScreenInput.ScreenInput(argsList)
 
+	try:
+		# WTP debug log: every input of a screen except the cursor moving over elements
+		if inputClass.getNotifyCode() != NotifyCode.NOTIFY_CURSOR_MOVE_ON and inputClass.getNotifyCode() != NotifyCode.NOTIFY_CURSOR_MOVE_OFF:
+			import WTPBannerLog
+			WTPBannerLog.log("INPUT file=%s notify=%d type=%d data1=%d data2=%d flags=%d ctrl=%s alt=%s shift=%s" % (str(inputClass.getPythonFile()), int(inputClass.getNotifyCode()), int(inputClass.getButtonType()), inputClass.getData1(), inputClass.getData2(), inputClass.getFlags(), str(inputClass.isCtrlKeyDown()), str(inputClass.isAltKeyDown()), str(inputClass.isShiftKeyDown())))
+	except:
+		pass
+
 	# WTP: the buttons of the amount dialog when it is drawn on a harbor screen
 	if (yieldAmountScreen.isOpen() and yieldAmountScreen.isEmbedded()):
 		if (yieldAmountScreen.handleEmbeddedInput(inputClass)):
@@ -1000,3 +1008,18 @@ def selectOneEvent(argsList):
 	pPlayer.trigger(eventTriggerNumber)
 
 #TAC: EventTriggerMenu END
+
+# WTP debug log: every show... function (a screen or a menu that is opened) is logged with its arguments
+def wtpLoggedShow(szName, fxn):
+	def logged(*args):
+		try:
+			import WTPBannerLog
+			WTPBannerLog.log("SHOW %s args=%s" % (szName, str(args)[:200]))
+		except:
+			pass
+		return fxn(*args)
+	return logged
+
+for szWtpName in globals().keys():
+	if szWtpName.startswith("show") and callable(globals()[szWtpName]):
+		globals()[szWtpName] = wtpLoggedShow(szWtpName, globals()[szWtpName])
