@@ -314,7 +314,7 @@ class CvMainInterface:
 	BUTTON_BUILDING_UPGRADE_CLOSE = 760 # WTP: building upgrade panel of the city screen: close
 	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
 	BUTTON_MESSAGE_AUTO = 761 # WTP: message panel: auto expand at the start of a turn on / off
-	BUTTON_TIP_LINE = 758 # WTP: a line of a frozen hover tooltip (right click: Colopedia)
+	BUTTON_TIP_LINE = 762 # WTP: a line of a frozen hover tooltip (right click: Colopedia)
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
 	dMessagePediaChars = {}
 	aMessageConceptPatterns = []
