@@ -66,8 +66,8 @@ TEXT_FONT = "3b"
 TEXT_COLOR = "88,64,40"
 TEXT_DY = -14
 
-STEP = 10
-STEP_CTRL = 50
+STEP = 50
+STEP_CTRL = 10
 MAX_VALUE = 0xFFFF
 
 def logTrade(szText):
