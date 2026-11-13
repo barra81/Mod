@@ -246,17 +246,17 @@ class CvEventManager:
 					pass
 			return 1
 
-		# WTP: Shift + arrow keys move the message panel (they used to turn the camera: Ctrl + arrow keys still do)
+		# WTP: Ctrl + Shift + W A S D move the message panel (two keys at once: diagonal)
+		aMoveKeys = [int(InputTypes.KB_A), int(InputTypes.KB_D), int(InputTypes.KB_W), int(InputTypes.KB_S)] # left, right, up, down
 		if (eventType == self.EventKeyUp):
 			try:
-				CvScreensInterface.mainInterface.releaseMessageArrow([int(InputTypes.KB_LEFT), int(InputTypes.KB_RIGHT), int(InputTypes.KB_UP), int(InputTypes.KB_DOWN)].index(int(key)))
+				CvScreensInterface.mainInterface.releaseMessageArrow(aMoveKeys.index(int(key)))
 			except:
 				pass
-		elif (eventType == self.EventKeyDown and self.bShift and not self.bCtrl and not self.bAlt):
+		elif (eventType == self.EventKeyDown and self.bShift and self.bCtrl and not self.bAlt):
 			try:
-				aArrows = [int(InputTypes.KB_LEFT), int(InputTypes.KB_RIGHT), int(InputTypes.KB_UP), int(InputTypes.KB_DOWN)]
-				if int(key) in aArrows and CvScreensInterface.mainInterface.isMessagePanelShown():
-					CvScreensInterface.mainInterface.pressMessageArrow(aArrows.index(int(key)))
+				if int(key) in aMoveKeys and CvScreensInterface.mainInterface.isMessagePanelShown():
+					CvScreensInterface.mainInterface.pressMessageArrow(aMoveKeys.index(int(key)))
 					return 1
 			except:
 				pass
