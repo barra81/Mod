@@ -335,7 +335,7 @@ class CvMainInterface:
 	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
 	tTipLayout = None
 	tTipPlacedAt = (-1000, -1000)
-	iTipDelay = 0 # milliseconds the cursor has to rest before the first tooltip appears (options screen, Game tab)
+	iTipDelay = 0 # (-1: only on the key X) milliseconds the cursor has to rest before the first tooltip appears (options screen, Game tab)
 	szPendingHelp = None
 	bPendingWidget = False
 	fPendingStart = 0.0
@@ -3802,7 +3802,7 @@ class CvMainInterface:
 				return
 			# tooltip delay: a tooltip waits until the cursor has rested for the time of the option. Another text (the cursor has gone from one
 			# thing to the next) removes the tooltip that is shown and starts the time again
-			if self.iTipDelay > 0 and not bFromPending and (not self.bCursorTipShown or (szHelp != self.szCursorTipText and not self.bTipQuick)):
+			if self.iTipDelay != 0 and not bFromPending and (not self.bCursorTipShown or (szHelp != self.szCursorTipText and not self.bTipQuick)):
 				if self.bCursorTipShown:
 					self.hideCursorTooltip(screen)
 				if self.szPendingHelp is None:
@@ -4342,14 +4342,14 @@ class CvMainInterface:
 			# the cursor moves: the time starts again
 			self.tPendingPos = (iCursorX, iCursorY)
 			self.fPendingStart = fNow
-		elif fNow - self.fPendingStart >= self.iTipDelay:
+		elif self.iTipDelay > 0 and fNow - self.fPendingStart >= self.iTipDelay:
 			szHelp = self.szPendingHelp
 			bWidget = self.bPendingWidget
 			self.szPendingHelp = None
 			self.showCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE), szHelp, bWidget, True)
 
 	def setTipDelay( self, iIndex ):
-		aiDelay = (0, 250, 500, 800, 1200)
+		aiDelay = (0, 250, 500, 800, 1200, 2000, -1) # -1: never by itself, only the key X shows the tooltip
 		self.iTipDelay = aiDelay[max(0, min(len(aiDelay) - 1, iIndex))]
 		self.iTipDelayIndex = max(0, min(len(aiDelay) - 1, iIndex))
 		self.szPendingHelp = None

@@ -3755,8 +3755,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_HELP</Tag>
-		<English>How long the cursor has to rest on something before the hover tooltip appears. While a tooltip is shown, the next one appears at once. Moving the cursor starts the time again.</English>
-		<German>Wie lange der Mauszeiger auf etwas ruhen muss, bevor der Hover-Tooltip erscheint. Solange ein Tooltip angezeigt wird, erscheint der nächste sofort. Bewegt man den Mauszeiger, beginnt die Zeit neu.</German>
+		<English>How long the cursor has to rest on something before the hover tooltip appears. While a tooltip is shown, the next one appears at once. Moving the cursor starts the time again. "Only on key X": the tooltip appears only when you press X.</English>
+		<German>Wie lange der Mauszeiger auf etwas ruhen muss, bevor der Hover-Tooltip erscheint. Solange ein Tooltip angezeigt wird, erscheint der nächste sofort. Bewegt man den Mauszeiger, beginnt die Zeit neu. "Nur mit Taste X": Der Tooltip erscheint nur, wenn Sie X drücken.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_QUICK</Tag>
@@ -3767,6 +3767,16 @@
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_QUICK_HELP</Tag>
 		<English>Off: moving the cursor on to the next thing removes the tooltip and the delay starts again. On: while a tooltip is shown, the tooltip of the next thing appears at once. The key [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] shows a tooltip that still waits for its delay at once.</English>
 		<German>Aus: Beim Weiterfahren zum nächsten Ziel verschwindet der Tooltip und die Verzögerung beginnt neu. An: Solange ein Tooltip angezeigt wird, erscheint der Tooltip des nächsten Ziels sofort. Die Taste [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] zeigt einen Tooltip, der noch auf seine Verzögerung wartet, sofort an.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_5</Tag>
+		<English>Extra long (2 s)</English>
+		<German>Extra lang (2 s)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_6</Tag>
+		<English>Only on key X</English>
+		<German>Nur mit Taste X</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_OFF</Tag>

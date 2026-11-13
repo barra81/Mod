@@ -322,7 +322,7 @@ class CvOptionsScreen:
 		tab.attachLabel("TipDelayHBox", "TipDelayLabel", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY", ()))
 		tab.setToolTip("TipDelayLabel", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_HELP", ()))
 		tab.attachSpacer("TipDelayHBox")
-		aszTipDelays = (localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_0", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_1", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_2", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_3", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_4", ()))
+		aszTipDelays = (localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_0", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_1", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_2", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_3", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_4", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_5", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_6", ()))
 		iTipDelay = 0
 		try:
 			import CvScreensInterface
