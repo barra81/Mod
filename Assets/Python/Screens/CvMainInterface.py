@@ -3869,22 +3869,41 @@ class CvMainInterface:
 		self.drawCursorTip(screen, False)
 
 	# width of a window for the lines (icons of the game font are wider than letters: getMessageWidth, as the lines were wrapped)
+	# pixel width of a text of the tooltip font by character classes (fitted to measured lines of the game: a line of 50 characters is between 250
+	# and 350 pixels wide, so a character count is not good enough). The values are for a line distance of 22 pixels, the others are scaled.
+	def getTextPixels( self, szPlain, iLine ):
+		fSum = 0.0
+		for c in szPlain:
+			if ord(c) >= 0x2000:
+				fSum += 17.5 # icon of the game font
+			elif c == u" ":
+				fSum += 3.9
+			elif c in u"ijl.,:;!'|":
+				fSum += 5.5
+			elif c in u"()\"-ftr":
+				fSum += 4.0
+			elif c in u"mwMW":
+				fSum += 12.1
+			elif c.isupper():
+				fSum += 10.7
+			elif c.isdigit():
+				fSum += 11.0
+			elif c in u"+%/":
+				fSum += 7.4
+			else:
+				fSum += 7.7
+		return fSum * iLine / 22.0
+
 	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad, aiIndent = None ):
-		# letters are a bit narrower than the estimate that the lines are wrapped with (the window was too wide, measured in the game),
-		# icons and pictures keep their width
+		iLine = iChar / 0.32
 		fPixel = 0
 		for i in range(len(aszLines)):
-			szPlain = re.sub(u"<[^>]*>", u"", aszLines[i])
-			iIcons = 0
-			for c in szPlain:
-				if ord(c) >= 0x2000:
-					iIcons += 1
-			iImages = len(re.findall(u"<img=", aszLines[i].lower()))
-			fThis = (len(szPlain) - iIcons) * iChar * 0.93 + iIcons * 3.4 * iChar + iImages * self.fImgWidth * iChar
+			fThis = self.getTextPixels(re.sub(u"<[^>]*>", u"", aszLines[i]), iLine) + len(re.findall(u"<img=", aszLines[i].lower())) * 18.0 * iLine / 22.0
 			if aiIndent is not None and i < len(aiIndent):
 				fThis += aiIndent[i]
 			fPixel = max(fPixel, fThis)
-		return max(120, min(iMaxWidth, int(fPixel) + 2 * iPad + 4))
+		# a little reserve (4 %) and the border; the lines were wrapped by a character count, so wide letters can make a line wider than the maximum
+		return max(120, min(int(iMaxWidth * 1.15), int(fPixel * 1.04) + 2 * iPad + 2))
 
 	def drawCursorTip( self, screen, bClickable ):
 		(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = self.tTipLayout
