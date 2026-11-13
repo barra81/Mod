@@ -16,7 +16,6 @@ import CvScreensInterface
 # Achievements END
 import CvEventInterface
 import time
-import os
 import re
 import sys
 import math
@@ -3840,13 +3839,7 @@ class CvMainInterface:
 			if self.iTipLogLines > 600:
 				return
 			self.iTipLogLines += 1
-			szPath = "WTP_TipLog.txt"
-			try:
-				# the mod folder (three levels above this file), next to WTP_Timing.txt
-				szPath = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "WTP_TipLog.txt"))
-			except:
-				pass
-			f = open(szPath, "a")
+			f = open("WTP_TipLog.txt", "a")
 			f.write("%.2f %s\n" % (time.time() % 1000, szMsg))
 			f.close()
 		except:
