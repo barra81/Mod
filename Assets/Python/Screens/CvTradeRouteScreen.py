@@ -607,12 +607,15 @@ class CvTradeRouteScreen:
 		screen = self.pHost
 		iXRes = screen.getXResolution()
 		iYRes = screen.getYResolution()
-		self.H = min(int(iYRes * 0.86), self.LIST_Y + len(self.aYields) * self.ROW_H + 70)
+		# the window stays between the top bar and the three rows of the goods bar at the bottom (both stay visible)
+		iAreaTop = 70
+		iAreaH = iYRes - 225 - iAreaTop
+		self.H = min(iAreaH, self.LIST_Y + len(self.aYields) * self.ROW_H + 70)
 		self.iVisible = max(1, (self.H - self.LIST_Y - 70) / self.ROW_H)
 		self.iVisible = min(self.iVisible, len(self.aYields))
 		self.H = self.LIST_Y + self.iVisible * self.ROW_H + 70
 		self.OX = (iXRes - self.W) / 2
-		self.OY = (iYRes - self.H) / 2
+		self.OY = iAreaTop + (iAreaH - self.H) / 2
 		self.iFirst = 0
 		self.bFinished = False
 		self.aDrawn = []
