@@ -1015,14 +1015,14 @@ class CvTradeRouteScreen:
 		self.dBtn = {}
 		self.sHover = ""
 
-	# the pixels of a step: normal, with Ctrl twice, with Shift three times, with both four times as far
+	# the pixels of a step: normal, with Shift twice as far, with Ctrl half, with both a third
 	def getMoveStep(self, bCtrl, bShift):
 		if bCtrl and bShift:
-			return MOVE_STEP * 4
+			return MOVE_STEP / 3
 		if bShift:
-			return MOVE_STEP * 3
-		if bCtrl:
 			return MOVE_STEP * 2
+		if bCtrl:
+			return MOVE_STEP / 2
 		return MOVE_STEP
 
 	# a step is only noted here, the window is built again once per frame (many key repeats do not pile up)

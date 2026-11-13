@@ -3645,7 +3645,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_MOVE_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Moves the window; hold the button to keep moving. The arrow keys do the same. Ctrl: double steps, Shift: triple steps, both: four times as far.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Verschiebt das Fenster; Knopf gedrückt halten, um weiterzuschieben. Die Pfeiltasten machen dasselbe. Strg: doppelte Schritte, Umschalt: dreifache Schritte, beide: vierfach.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Moves the window; hold the button to keep moving. The arrow keys do the same. Shift: double steps, Ctrl: half steps, both: a third.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Verschiebt das Fenster; Knopf gedrückt halten, um weiterzuschieben. Die Pfeiltasten machen dasselbe. Umschalt: doppelte Schritte, Strg: halbe Schritte, beide: ein Drittel.</German>
 	</TEXT>
 </Civ4GameText>
