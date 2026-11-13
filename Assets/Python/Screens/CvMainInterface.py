@@ -4337,12 +4337,54 @@ class CvMainInterface:
 			return self.aszTipParas
 		return self.aNested[iLevel - 1][2]
 
+	# the command lines at the end of a city tooltip (select the city / all of the continent / all) are run by a right click on the line
+	def runCityCommand( self, aszParas, iPara ):
+		try:
+			szPara = re.sub(u"<[^>]*>", u"", aszParas[iPara]).strip()
+			szCtrl = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_CITY_BAR_SELECT_CTRL", ())).strip()
+			szAlt = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_CITY_BAR_SELECT_ALT", ())).strip()
+			szName = re.sub(u"<[^>]*>", u"", aszParas[0]).strip()
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			pCity = None
+			(loopCity, iter) = pPlayer.firstCity(False)
+			while loopCity:
+				if loopCity.getName() == szName:
+					pCity = loopCity
+					break
+				(loopCity, iter) = pPlayer.nextCity(iter, False)
+			if pCity is None:
+				return False
+			szSelect = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_CITY_BAR_SELECT", (pCity.getNameKey(),))).strip()
+			if szPara == szSelect:
+				iMode = 0
+			elif szPara == szCtrl:
+				iMode = 1
+			elif szPara == szAlt:
+				iMode = 2
+			else:
+				return False
+			CyInterface().selectCity(pCity, True)
+			if iMode > 0:
+				iArea = pCity.plot().getArea()
+				(loopCity, iter) = pPlayer.firstCity(False)
+				while loopCity:
+					if loopCity.getID() != pCity.getID() and (iMode == 2 or loopCity.plot().getArea() == iArea):
+						CyInterface().selectCity(loopCity, False)
+					(loopCity, iter) = pPlayer.nextCity(iter, False)
+			self.unfreezeAllTips()
+			return True
+		except:
+			self.tipLog("runCityCommand error: %s" % str(sys.exc_info()[1]))
+		return False
+
 	def openTipPedia( self, iData, bSecond ):
 		try:
 			iLevel = iData / 1000
 			iPara = iData % 1000
 			aszParas = self.getLevelParas(iLevel)
 			if iPara >= 0 and iPara < len(aszParas):
+				if self.runCityCommand(aszParas, iPara):
+					return
 				aTargets = self.getTextPediaTargets(aszParas[iPara])
 				if iPara == self.iTipSelPara and iLevel == len(self.aNested):
 					aTargets = self.getTextPediaAllTargets(aszParas[iPara])
