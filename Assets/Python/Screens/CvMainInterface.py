@@ -4677,7 +4677,7 @@ class CvMainInterface:
 				self.dMessageConcepts = dConcepts
 				# the summarized storage messages (surplus sold / lost): fixed Colopedia entries instead of the many goods symbols
 				aSpecial = []
-				for (szKey, aTypes) in (("TXT_KEY_WTP_SURPLUS_SOLD", ("CONCEPT_TRADE", "CONCEPT_NEW_STORAGE")), ("TXT_KEY_WTP_SURPLUS_LOST", ("CONCEPT_NEW_STORAGE",))):
+				for (szKey, aTypes) in (("TXT_KEY_WTP_SURPLUS_SOLD", ("CONCEPT_DOMESTIC_MARKETS", "CONCEPT_NEW_STORAGE")), ("TXT_KEY_WTP_SURPLUS_LOST", ("CONCEPT_NEW_STORAGE",))):
 					try:
 						szText = localText.getText(szKey, (u"\x01", u"\x02", 0))
 						szText = szText[szText.index(u"\x01") + 1:szText.index(u"\x02")]
