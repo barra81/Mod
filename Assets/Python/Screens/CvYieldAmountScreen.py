@@ -282,6 +282,19 @@ class CvYieldAmountScreen:
 		self.iHoldWait = MOVE_DELAY
 		self.queueMove(iDir, self.getMoveStep(bCtrl, bShift))
 
+	# Ctrl + Shift + Q: back to the default place
+	def resetPosition(self):
+		self.iPendX = 0
+		self.iPendY = 0
+		self.dMove[self.szCtx] = [0, 0]
+		if self.pHost == None:
+			self.applyPosition(self.getScreen())
+			return
+		screen = self.pHost
+		self.dropWidgets()
+		self.applyPosition(screen)
+		self.drawLayout(screen)
+
 	def handleKeyUp(self, iKey):
 		if iKey in self.aKeyArrows:
 			iDir = self.aKeyArrows.index(iKey)
@@ -419,7 +432,9 @@ class CvYieldAmountScreen:
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
 	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False):
-		if iKey in self.aKeyArrows:
+		if bCtrl and bShift and iKey == self.getKeyId("KB_Q"):
+			self.resetPosition()
+		elif iKey in self.aKeyArrows:
 			self.pressArrow(self.aKeyArrows.index(iKey), bCtrl, bShift)
 		elif self.dDigits.has_key(iKey):
 			if self.bSelected:

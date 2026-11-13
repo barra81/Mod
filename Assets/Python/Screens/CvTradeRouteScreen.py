@@ -1048,6 +1048,15 @@ class CvTradeRouteScreen:
 		self.iHoldWait = MOVE_DELAY
 		self.queueMove(iDir, self.getMoveStep(bCtrl, bShift))
 
+	# Ctrl + Shift + Q: back to the default place
+	def resetPosition(self):
+		self.iMoveX = 0
+		self.iMoveY = 0
+		self.iPendX = 0
+		self.iPendY = 0
+		self.teardownLayout()
+		self.buildLayout()
+
 	def handleKeyUp(self, iKey):
 		if iKey in self.aKeyArrows:
 			iDir = self.aKeyArrows.index(iKey)
@@ -1138,6 +1147,8 @@ class CvTradeRouteScreen:
 	def handleKey(self, iKey, bCtrl, bShift = False):
 		if iKey == self.iKeyEsc:
 			self.finish(False, -1)
+		elif bCtrl and bShift and iKey == self.getKeyId("KB_Q"):
+			self.resetPosition()
 		elif iKey in self.aKeyArrows:
 			self.pressArrow(self.aKeyArrows.index(iKey), bCtrl, bShift)
 		else:

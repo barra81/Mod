@@ -3645,8 +3645,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TRADEROUTE_MOVE_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Moves the window; hold the button to keep moving. The arrow keys do the same. Shift: double steps, Ctrl: half steps, both: a third.[NEWLINE]Position: %d1, %d2</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Verschiebt das Fenster; Knopf gedrückt halten, um weiterzuschieben. Die Pfeiltasten machen dasselbe. Umschalt: doppelte Schritte, Strg: halbe Schritte, beide: ein Drittel.[NEWLINE]Position: %d1, %d2</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Moves the window; hold the button to keep moving. The arrow keys do the same. Shift: double steps, Ctrl: half steps, both: a third.[NEWLINE]Ctrl+Shift+Q: back to the default place.[NEWLINE]Position: %d1, %d2</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Verschiebt das Fenster; Knopf gedrückt halten, um weiterzuschieben. Die Pfeiltasten machen dasselbe. Umschalt: doppelte Schritte, Strg: halbe Schritte, beide: ein Drittel.[NEWLINE]Strg+Umschalt+Q: zurück auf die Standardposition.[NEWLINE]Position: %d1, %d2</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP</Tag>
@@ -3655,8 +3655,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP_KEYS</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Moves the window; hold the button to keep moving. The arrow keys do the same. Shift: double steps, Ctrl: half steps, both: a third.[NEWLINE]Position: %d1, %d2</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Verschiebt das Fenster; Knopf gedrückt halten, um weiterzuschieben. Die Pfeiltasten machen dasselbe. Umschalt: doppelte Schritte, Strg: halbe Schritte, beide: ein Drittel.[NEWLINE]Position: %d1, %d2</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Moves the window; hold the button to keep moving. The arrow keys do the same. Shift: double steps, Ctrl: half steps, both: a third.[NEWLINE]Ctrl+Shift+Q: back to the default place.[NEWLINE]Position: %d1, %d2</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Verschiebt das Fenster; Knopf gedrückt halten, um weiterzuschieben. Die Pfeiltasten machen dasselbe. Umschalt: doppelte Schritte, Strg: halbe Schritte, beide: ein Drittel.[NEWLINE]Strg+Umschalt+Q: zurück auf die Standardposition.[NEWLINE]Position: %d1, %d2</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_AUTO_ON</Tag>
@@ -3670,7 +3670,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_AUTO_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Auto expand[COLOR_REVERT][NEWLINE]Click: the message panel opens expanded at the start of every turn (on) or stays collapsed (off).[NEWLINE]Move the panel: hold Ctrl and Shift and press W, A, S, D (two keys: diagonal).[NEWLINE]Position: %d1, %d2</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Auto-Ausklappen[COLOR_REVERT][NEWLINE]Klick: Das Meldungs-Panel öffnet zu Beginn jeder Runde ausgeklappt (an) oder bleibt eingeklappt (aus).[NEWLINE]Panel verschieben: Strg und Umschalt gedrückt halten und W, A, S, D drücken (zwei Tasten: diagonal).[NEWLINE]Position: %d1, %d2</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Auto expand[COLOR_REVERT][NEWLINE]Click: the message panel opens expanded at the start of every turn (on) or stays collapsed (off).[NEWLINE]Move the panel: hold Ctrl and Shift and press W, A, S, D (two keys: diagonal).[NEWLINE]Ctrl+Shift+Q: back to the default place.[NEWLINE]Position: %d1, %d2</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Auto-Ausklappen[COLOR_REVERT][NEWLINE]Klick: Das Meldungs-Panel öffnet zu Beginn jeder Runde ausgeklappt (an) oder bleibt eingeklappt (aus).[NEWLINE]Panel verschieben: Strg und Umschalt gedrückt halten und W, A, S, D drücken (zwei Tasten: diagonal).[NEWLINE]Strg+Umschalt+Q: zurück auf die Standardposition.[NEWLINE]Position: %d1, %d2</German>
 	</TEXT>
 </Civ4GameText>

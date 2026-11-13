@@ -255,6 +255,9 @@ class CvEventManager:
 				pass
 		elif (eventType == self.EventKeyDown and self.bShift and self.bCtrl and not self.bAlt):
 			try:
+				if int(key) == int(InputTypes.KB_Q) and CvScreensInterface.mainInterface.isMessagePanelShown():
+					CvScreensInterface.mainInterface.resetMessagePanel()
+					return 1
 				if int(key) in aMoveKeys and CvScreensInterface.mainInterface.isMessagePanelShown():
 					CvScreensInterface.mainInterface.pressMessageArrow(aMoveKeys.index(int(key)))
 					return 1
