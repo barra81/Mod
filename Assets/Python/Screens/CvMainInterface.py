@@ -317,6 +317,8 @@ class CvMainInterface:
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
 	dMessagePediaChars = {}
 	aMessageConceptPatterns = []
+	aMessageNameList = []
+	dMessagePediaCache = {}
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -4621,6 +4623,10 @@ class CvMainInterface:
 		aResult = []
 		try:
 			szMessage = self.aszMessageTexts[iMessage]
+			if szMessage in self.dMessagePediaCache:
+				return self.dMessagePediaCache[szMessage]
+			if len(self.dMessagePediaCache) > 300:
+				self.dMessagePediaCache = {}
 			if self.dMessagePediaNames is None:
 				dNames = {}
 				# later entries must not overwrite earlier ones: units first, then professions, buildings, goods, bonuses, promotions
@@ -4667,6 +4673,9 @@ class CvMainInterface:
 					aAliases.append((re.compile(u"(?<!\\w)" + re.escape(szName) + u"(?!\\w)", re.UNICODE | re.IGNORECASE), dConcepts[gc.getConceptInfo(i).getType()]))
 				self.aMessageConceptPatterns = aAliases
 				self.dMessagePediaChars = dChars
+				aNameList = [(k, v) for (k, v) in dNames.items() if len(k) >= 4]
+				aNameList.sort(key = lambda t: -len(t[0]))
+				self.aMessageNameList = aNameList
 				self.dMessagePediaNames = dNames
 			dNames = self.dMessagePediaNames
 			dChars = self.dMessagePediaChars
@@ -4696,6 +4705,28 @@ class CvMainInterface:
 			for (iPos, tFound) in aFound:
 				if not tFound in aResult:
 					aResult.append(tFound)
+			# names in the unmarked rest of the text: whole words only, the longest names first, a found name is cut out of the text
+			szRest = re.sub(u"<color=[^>]*>.*?</color>", u" ", szMessage)
+			szRest = re.sub(u"<[^>]*>", u"", szRest).lower()
+			aRest = []
+			oWord = re.compile(u"\\w", re.UNICODE)
+			for (szKey, tFound) in self.aMessageNameList:
+				iStart = 0
+				while True:
+					iPos = szRest.find(szKey, iStart)
+					if iPos < 0:
+						break
+					iEnd = iPos + len(szKey)
+					bOk = (iPos == 0 or oWord.match(szRest[iPos - 1]) is None) and (iEnd >= len(szRest) or oWord.match(szRest[iEnd]) is None)
+					if bOk:
+						aRest.append((iPos, tFound))
+						szRest = szRest[:iPos] + u" " * len(szKey) + szRest[iEnd:]
+						break
+					iStart = iPos + 1
+			aRest.sort(key = lambda t: t[0])
+			for (iPos, tFound) in aRest:
+				if not tFound in aResult:
+					aResult.append(tFound)
 			# game concepts in the plain text (after the named things)
 			szPlain = re.sub(u"<[^>]*>", u"", szMessage)
 			aConcepts = []
@@ -4707,6 +4738,7 @@ class CvMainInterface:
 			for (iPos, tFound) in aConcepts:
 				if not tFound in aResult:
 					aResult.append(tFound)
+			self.dMessagePediaCache[szMessage] = aResult
 		except:
 			pass
 		return aResult
