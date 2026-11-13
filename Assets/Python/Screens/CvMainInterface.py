@@ -330,6 +330,8 @@ class CvMainInterface:
 	fWidgetHelpTime = 0.0
 	iTick = 0 # counted in update() (time.time() of the game is far too coarse)
 	iWidgetHelpTick = -1000
+	bHudHover = False # the cursor is on a HUD element / widget with its own help text (until the game reports "no widget" again)
+	tHudHoverAt = (0, 0)
 	szCursorTipText = u""
 	tCursorTipAt = (-1000, -1000)
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
@@ -3757,7 +3759,7 @@ class CvMainInterface:
 	def showCursorTooltip( self, screen, szHelp, bWidget = False ):
 		try:
 			# the help of the map plot is not shown while the cursor is on a HUD element (the game reports the plot behind it)
-			if not bWidget and self.iTick - self.iWidgetHelpTick < 30:
+			if not bWidget and self.isHudHover():
 				return
 			if CyInterface().isCityScreenUp() or len(szHelp) == 0:
 				self.hideCursorTooltip(screen)
@@ -3848,6 +3850,17 @@ class CvMainInterface:
 		except:
 			pass
 
+	def isHudHover( self ):
+		if not self.bHudHover:
+			return False
+		try:
+			# safety: far away from the place where the HUD help was seen, the cursor has surely left the element
+			if abs(gc.getGame().getCursorClientX() - self.tHudHoverAt[0]) > 150 or abs(gc.getGame().getCursorClientY() - self.tHudHoverAt[1]) > 150:
+				self.bHudHover = False
+		except:
+			pass
+		return self.bHudHover
+
 	# called by the game when it asks for the help text of a widget under the cursor (CvScreensInterface.getWidgetHelp)
 	def widgetHelpSeen( self, szText, eWidgetType ):
 		try:
@@ -3859,7 +3872,12 @@ class CvMainInterface:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			if szText and len(szText) > 0:
 				self.iWidgetHelpTick = self.iTick
+				self.bHudHover = True
+				self.tHudHoverAt = (gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY())
 				self.showCursorTooltip(screen, szText, True)
+			elif int(eWidgetType) == int(WidgetTypes.WIDGET_GENERAL):
+				# the game asks for the help of "nothing in particular": the cursor has left the HUD element
+				self.bHudHover = False
 			# empty texts are ignored: the game reports them all the time on the map (log: type 24), they must not block the plot help
 		except:
 			pass
@@ -3912,7 +3930,7 @@ class CvMainInterface:
 				self.tipLog("H len=%d sinceWidget=%d xy=%d,%d text=%s" % (len(szHelp), self.iTick - self.iWidgetHelpTick, gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY(), repr(szHelp[:60].encode("ascii", "replace"))))
 			self.showCursorTooltip(screen, szHelp)
 			# while the cursor is on a HUD element the plot help behind it must not replace the help of the element
-			if self.iTick - self.iWidgetHelpTick >= 30:
+			if not self.isHudHover():
 				screen.setHelpTextString( szHelp )
 
 		return 0
