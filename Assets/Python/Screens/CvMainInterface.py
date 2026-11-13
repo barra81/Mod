@@ -3875,7 +3875,7 @@ class CvMainInterface:
 		fSum = 0.0
 		for c in szPlain:
 			if ord(c) >= 0x2000:
-				fSum += 17.5 # icon of the game font
+				fSum += 13.0 # icon of the game font (measured: 12 to 14 pixels)
 			elif c == u" ":
 				fSum += 3.9
 			elif c in u"ijl.,:;!'|":
@@ -3902,8 +3902,8 @@ class CvMainInterface:
 			if aiIndent is not None and i < len(aiIndent):
 				fThis += aiIndent[i]
 			fPixel = max(fPixel, fThis)
-		# a little reserve (4 %) and the border; the lines were wrapped by a character count, so wide letters can make a line wider than the maximum
-		return max(120, min(int(iMaxWidth * 1.15), int(fPixel * 1.04) + 2 * iPad + 2))
+		# a little reserve (2 % + 4 pixels) and the border; the lines were wrapped by a character count, so wide letters can make a line wider than the maximum
+		return max(120, min(int(iMaxWidth * 1.15), int(fPixel * 1.02) + 2 * iPad + 6))
 
 	def drawCursorTip( self, screen, bClickable ):
 		(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = self.tTipLayout
