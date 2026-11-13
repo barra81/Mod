@@ -740,12 +740,7 @@ def getWidgetHelp(argsList):
 	szText = getWidgetHelpText(argsList)
 	# WTP: the own tooltip window at the cursor shows the same text
 	try:
-		szOwn = szText
-		if (len(szOwn) == 0 and mainInterface.bHoverTip and int(argsList[1]) != int(WidgetTypes.WIDGET_GENERAL)):
-			# a widget of the game itself (its text is made by the DLL after this call): ask the DLL here, so that the own window is made before
-			# the game shows its own tooltip (changing the screen afterwards makes the tooltip of the game disappear)
-			szOwn = CyGame().getWidgetHelpFor(argsList[1], argsList[2], argsList[3], argsList[4] != 0)
-		mainInterface.widgetHelpSeen(szOwn, argsList[1])
+		mainInterface.widgetHelpSeen(szText, argsList[1])
 	except:
 		pass
 	return szText
