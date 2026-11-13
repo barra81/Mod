@@ -321,7 +321,16 @@ class CvMainInterface:
 	aMessageSpecial = []
 	dMessageConcepts = {}
 	dMessagePediaCache = {}
+	dMessagePediaAll = {} # the same with gold at the end instead of left out (mouse wheel list of the message panel)
 	dMessageLineIndex = {}
+	dMessageRects = {} # message -> (x, y, width, height) of its rows in the panel
+	tMsgPanelRect = None
+	szMsgSelText = u"" # the message with a target chosen by shift + mouse wheel and the index of the target
+	iMsgSelIdx = 0
+	bMsgWheel = False
+	tMsgPickKey = None
+	bMsgPickShown = False
+	iMsgPickLines = 0
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -4527,6 +4536,8 @@ class CvMainInterface:
 			self.aszMessageLines = []
 			self.dMessageCapitals = {}
 			self.dMessageLineIndex = {}
+			self.dMessageRects = {}
+			self.tMsgPanelRect = (iX, iY, iWidth, iHeight)
 
 			# a denser background: the panel style is semi-transparent, several of them on top of each other are better to read
 			# (two when collapsed, three when expanded)
@@ -4550,6 +4561,7 @@ class CvMainInterface:
 			fRow = 0.0
 			for i in aiShow:
 				iTargetX, iTargetY, eContact = atTargets[i]
+				self.dMessageRects[i] = (iX, iTextY + int(fRow * iLine), iWidth, max(1, int(len(aatLines[i]) * iLine)))
 				if eContact >= 0:
 					# a native tribe: contact (diplomacy), the click also centers its main settlement (handleInput)
 					eWidget = WidgetTypes.WIDGET_CONTACT_CIV
@@ -4629,15 +4641,153 @@ class CvMainInterface:
 				self.bMessagePanelErrorShown = True
 				CvUtil.pyPrint("Message panel failed: " + str(sys.exc_info()[1]))
 
+	# WTP: shift + mouse wheel on a message line chooses among all the things named in it: a window beside the panel lists them (the chosen one
+	# in yellow), the right click opens the chosen one. The rows of every message are kept when the panel is drawn.
+	def isMessageSelected( self, iMessage ):
+		try:
+			return self.aszMessageTexts[iMessage] == self.szMsgSelText
+		except:
+			return False
+
+	def getMessagePickNames( self ):
+		aszNames = ["HudMsgPickBack1", "HudMsgPickBack2"]
+		for i in range(self.iMsgPickLines):
+			aszNames.append("HudMsgPickLine%d" % i)
+		return aszNames
+
+	def hideMessagePick( self, screen ):
+		try:
+			if self.bMsgPickShown:
+				for szName in self.getMessagePickNames():
+					screen.hide(szName)
+					screen.deleteWidget(szName)
+		except:
+			pass
+		self.bMsgPickShown = False
+		self.iMsgPickLines = 0
+
+	def showMessagePick( self, screen, szText, iCursorY ):
+		try:
+			xRes = screen.getXResolution()
+			yRes = screen.getYResolution()
+			iLine = max(16, int(yRes * 0.0153)) # as in the message panel
+			iPad = max(6, iLine / 2)
+			iChar = iLine * 0.32
+			iMaxWidth = max(300, int(xRes * 0.2))
+			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
+			aszLines = []
+			for szPart in szText.split(u"\n"):
+				aszLines += self.wrapMessage(szPart, iCharsPerLine)
+			iLongest = 0
+			for szLine in aszLines:
+				iLongest = max(iLongest, len(re.sub(u"<[^>]*>", u"", szLine)))
+			iWidth = max(120, min(iMaxWidth, int(iLongest * iChar) + 2 * iPad + 8))
+			iHeight = len(aszLines) * iLine + 2 * iPad
+			(iPX, iPY, iPW, iPH) = self.tMsgPanelRect
+			# beside the panel (right of it, left if there is no room) at the height of the cursor
+			iX = iPX + iPW + 12
+			if iX + iWidth > xRes - 4:
+				iX = iPX - 12 - iWidth
+			iX = max(4, iX)
+			iY = max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2))
+			screen.addPanel("HudMsgPickBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			screen.addPanel("HudMsgPickBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			self.iMsgPickLines = len(aszLines)
+			for i in range(len(aszLines)):
+				screen.setText("HudMsgPickLine%d" % i, "Background", self.setFontSize(aszLines[i], -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iY + iPad + i * iLine, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			for szName in self.getMessagePickNames():
+				screen.show(szName)
+				screen.moveToFront(szName)
+			self.bMsgPickShown = True
+		except:
+			self.bMsgPickShown = False
+
+	# every frame: the message line under the cursor, the shift key and the mouse wheel
+	def updateMessageScroll( self ):
+		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+		iMsg = -1
+		if len(self.aszMessageLines) > 0 and self.tMsgPanelRect is not None:
+			iCX = gc.getGame().getCursorClientX()
+			iCY = gc.getGame().getCursorClientY()
+			for iIndex in self.dMessageRects.keys():
+				(iRX, iRY, iRW, iRH) = self.dMessageRects[iIndex]
+				if iCX >= iRX and iCX < iRX + iRW and iCY >= iRY and iCY < iRY + iRH:
+					iMsg = iIndex
+					break
+		aAll = []
+		if iMsg >= 0:
+			aAll = self.getMessagePediaAllTargets(iMsg)
+		bShift = False
+		try:
+			bShift = CyInterface().shiftKey()
+		except:
+			pass
+		# the wheel is only taken (the map does not zoom) while shift is down and the line names more than one thing
+		bWheel = (iMsg >= 0 and bShift and len(aAll) > 1)
+		if bWheel != self.bMsgWheel:
+			self.bMsgWheel = bWheel
+			try:
+				gc.getGame().setWheelCapture(bWheel)
+			except:
+				pass
+		if bWheel:
+			iNotches = gc.getGame().takeWheelNotches()
+			if iNotches != 0:
+				szText = self.aszMessageTexts[iMsg]
+				if szText != self.szMsgSelText:
+					self.szMsgSelText = szText
+					self.iMsgSelIdx = 0
+				# the wheel towards the user: the next one, away from the user: the one before
+				self.iMsgSelIdx = (self.iMsgSelIdx - iNotches) % len(aAll)
+		# the window: while shift is down, or while a chosen one is kept (as long as the cursor stays on the line)
+		bShow = (iMsg >= 0 and len(aAll) > 1 and (bShift or self.isMessageSelected(iMsg)))
+		iSel = -1
+		if bShow:
+			iSel = 0
+			if self.isMessageSelected(iMsg):
+				iSel = self.iMsgSelIdx
+		tKey = (iMsg, iSel, bShow)
+		if iMsg >= 0:
+			tKey = (self.aszMessageTexts[iMsg], iSel, bShow)
+		if tKey == self.tMsgPickKey:
+			return
+		self.tMsgPickKey = tKey
+		self.hideMessagePick(screen)
+		if bShow:
+			szText = localText.getText("TXT_KEY_WTP_TIP_PEDIA_LIST", ())
+			for i in range(len(aAll)):
+				if i == iSel:
+					szText += u"\n  <color=255,255,0,255>" + aAll[i][0] + u"</color>"
+				else:
+					szText += u"\n  " + aAll[i][0]
+			self.showMessagePick(screen, szText, gc.getGame().getCursorClientY())
+
 	def getMessagePediaTargets(self, iMessage):
-		# the things named (colored) in a message that have a Colopedia page: [(name, screen, id)] in the order of the text
+		try:
+			return self.getTextPediaTargets(self.aszMessageTexts[iMessage])
+		except:
+			return []
+
+	def getMessagePediaAllTargets(self, iMessage):
+		try:
+			return self.getTextPediaAllTargets(self.aszMessageTexts[iMessage])
+		except:
+			return []
+
+	def getTextPediaAllTargets(self, szMessage):
+		# all things named in a text, in the order of priority (colored names and symbols, game concepts, other names; gold last)
+		aResult = self.getTextPediaTargets(szMessage)
+		return self.dMessagePediaAll.get(szMessage, aResult)
+
+	def getTextPediaTargets(self, szMessage):
+		# the things named (colored) in a text that have a Colopedia page: [(name, screen, id)] in the order of the text
 		aResult = []
 		try:
-			szMessage = self.aszMessageTexts[iMessage]
 			if szMessage in self.dMessagePediaCache:
 				return self.dMessagePediaCache[szMessage]
 			if len(self.dMessagePediaCache) > 300:
 				self.dMessagePediaCache = {}
+				self.dMessagePediaAll = {}
 			if self.dMessagePediaNames is None:
 				dNames = {}
 				# later entries must not overwrite earlier ones: units first, then professions, buildings, goods, bonuses, promotions
@@ -4646,14 +4796,31 @@ class CvMainInterface:
 					(CvScreenEnums.PEDIA_BUILDING, gc.getNumBuildingInfos, gc.getBuildingInfo),
 					(CvScreenEnums.PEDIA_YIELDS, gc.getNumYieldInfos, gc.getYieldInfo),
 					(CvScreenEnums.PEDIA_BONUS, gc.getNumBonusInfos, gc.getBonusInfo),
-					(CvScreenEnums.PEDIA_PROMOTION, gc.getNumPromotionInfos, gc.getPromotionInfo))
+					(CvScreenEnums.PEDIA_PROMOTION, gc.getNumPromotionInfos, gc.getPromotionInfo),
+					(CvScreenEnums.PEDIA_TERRAIN, gc.getNumTerrainInfos, gc.getTerrainInfo),
+					(CvScreenEnums.PEDIA_FEATURE, gc.getNumFeatureInfos, gc.getFeatureInfo),
+					(CvScreenEnums.PEDIA_IMPROVEMENT, gc.getNumImprovementInfos, gc.getImprovementInfo))
 				for (eScreen, fNum, fInfo) in aKinds:
 					for i in range(fNum()):
-						szName = fInfo(i).getDescription()
+						# (the names of some infos have color tags: [COLOR_CAT_ROAD]Paved Country Road[COLOR_REVERT])
+						szName = re.sub(u"<[^>]*>", u"", fInfo(i).getDescription() or u"")
 						if szName and len(szName) >= 3:
 							szKey = szName.lower()
 							if not szKey in dNames:
 								dNames[szKey] = (szName, eScreen, i)
+				# the roads have no page of their own: the concept "Pioneers and improvements" tells about them
+				try:
+					iImprovements = -1
+					for i in range(gc.getNumConceptInfos()):
+						if gc.getConceptInfo(i).getType() == "CONCEPT_IMPROVEMENTS":
+							iImprovements = i
+					if iImprovements >= 0:
+						for i in range(gc.getNumRouteInfos()):
+							szName = re.sub(u"<[^>]*>", u"", gc.getRouteInfo(i).getDescription() or u"")
+							if szName and len(szName) >= 3 and not szName.lower() in dNames:
+								dNames[szName.lower()] = (szName, "CONCEPT", iImprovements)
+				except:
+					pass
 				# the symbols (font characters) of goods and bonus resources
 				dChars = {}
 				for (eScreen, fNum, fInfo) in ((CvScreenEnums.PEDIA_YIELDS, gc.getNumYieldInfos, gc.getYieldInfo), (CvScreenEnums.PEDIA_BONUS, gc.getNumBonusInfos, gc.getBonusInfo)):
@@ -4661,7 +4828,7 @@ class CvMainInterface:
 						try:
 							iChar = fInfo(i).getChar()
 							if iChar > 0:
-								dChars[unichr(iChar)] = (fInfo(i).getDescription(), eScreen, i)
+								dChars[unichr(iChar)] = (re.sub(u"<[^>]*>", u"", fInfo(i).getDescription()), eScreen, i)
 						except:
 							pass
 				# concepts (Colopedia: game concepts): by their name and by the key words of the text MESSAGE_CONCEPT_WORDS ("stem=CONCEPT_TYPE;...")
@@ -4669,7 +4836,7 @@ class CvMainInterface:
 				aConceptNames = []
 				for i in range(gc.getNumConceptInfos()):
 					try:
-						szName = gc.getConceptInfo(i).getDescription()
+						szName = re.sub(u"<[^>]*>", u"", gc.getConceptInfo(i).getDescription() or u"")
 						dConcepts[gc.getConceptInfo(i).getType()] = (szName, "CONCEPT", i)
 						if szName and len(szName) >= 4:
 							aConceptNames.append((szName, i))
@@ -4824,9 +4991,13 @@ class CvMainInterface:
 				if not tFound in aResult:
 					aResult.append(tFound)
 			# gold is mentioned in many messages: with more than two hits it is left out
+			# (the list for the mouse wheel keeps gold, at the end)
+			aAll = list(aResult)
 			if len(aResult) > 2:
 				szGold = gc.getYieldInfo(YieldTypes.YIELD_GOLD).getDescription().lower()
 				aResult = [t for t in aResult if t[0].lower() != szGold]
+				aAll = aResult + [t for t in aAll if t[0].lower() == szGold]
+			self.dMessagePediaAll[szMessage] = aAll
 			self.dMessagePediaCache[szMessage] = aResult
 		except:
 			pass
@@ -4838,6 +5009,10 @@ class CvMainInterface:
 			iIndex = 0
 			if bSecond:
 				iIndex = 1
+			if self.isMessageSelected(iMessage):
+				# the target chosen with shift + mouse wheel
+				aTargets = self.getMessagePediaAllTargets(iMessage)
+				iIndex = self.iMsgSelIdx
 			if iIndex < len(aTargets):
 				szName, eScreen, iEntry = aTargets[iIndex]
 				if eScreen == "CONCEPT":
@@ -4853,9 +5028,15 @@ class CvMainInterface:
 			aTargets = self.getMessagePediaTargets(iMessage)
 			if len(aTargets) == 0:
 				return u""
-			szText = localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP", (aTargets[0][0],))
-			if len(aTargets) > 1:
-				szText += u"\n" + localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP2", (aTargets[1][0],))
+			aAll = self.getMessagePediaAllTargets(iMessage)
+			if self.isMessageSelected(iMessage):
+				szText = localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP", (aAll[self.iMsgSelIdx][0],))
+			else:
+				szText = localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP", (aTargets[0][0],))
+				if len(aTargets) > 1:
+					szText += u"\n" + localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP2", (aTargets[1][0],))
+			if len(aAll) > 1:
+				szText += u"\n" + localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP_MORE", (len(aAll),))
 			return szText
 		except:
 			return u""
@@ -5112,6 +5293,10 @@ class CvMainInterface:
 		self.updatePioneerPlanEditor()
 		self.updateAutomatedFollow()
 		self.updateMessageMove()
+		try:
+			self.updateMessageScroll()
+		except:
+			pass
 		try:
 			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
 		except:
