@@ -3870,13 +3870,21 @@ class CvMainInterface:
 
 	# width of a window for the lines (icons of the game font are wider than letters: getMessageWidth, as the lines were wrapped)
 	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad, aiIndent = None ):
-		iLongest = 0
+		# letters are a bit narrower than the estimate that the lines are wrapped with (the window was too wide, measured in the game),
+		# icons and pictures keep their width
+		fPixel = 0
 		for i in range(len(aszLines)):
-			iThis = self.getLineWidth(aszLines[i])
+			szPlain = re.sub(u"<[^>]*>", u"", aszLines[i])
+			iIcons = 0
+			for c in szPlain:
+				if ord(c) >= 0x2000:
+					iIcons += 1
+			iImages = len(re.findall(u"<img=", aszLines[i].lower()))
+			fThis = (len(szPlain) - iIcons) * iChar * 0.93 + iIcons * 3.4 * iChar + iImages * self.fImgWidth * iChar
 			if aiIndent is not None and i < len(aiIndent):
-				iThis += aiIndent[i] / float(iChar)
-			iLongest = max(iLongest, iThis)
-		return max(120, min(iMaxWidth, int(iLongest * iChar) + 2 * iPad + 8))
+				fThis += aiIndent[i]
+			fPixel = max(fPixel, fThis)
+		return max(120, min(iMaxWidth, int(fPixel) + 2 * iPad + 4))
 
 	def drawCursorTip( self, screen, bClickable ):
 		(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = self.tTipLayout
