@@ -89,7 +89,7 @@ def handleTipQuickClicked ( argsList ):
 	"WTP: the next tooltip appears without delay while a tooltip is shown"
 	bValue, szName = argsList
 	try:
-		CvScreensInterface.mainInterface.bTipQuick = bValue
+		CvScreensInterface.mainInterface.setTipQuick(bValue)
 	except:
 		pass
 	return 1

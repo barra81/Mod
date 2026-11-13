@@ -300,6 +300,34 @@ g_FollowY = -1
 g_CycleUnit = -1
 g_CycleType = -1
 
+# WTP: the tooltip settings (options screen / Ctrl+Shift+T) are kept in a file in the game folder, so they stay after a restart
+TIP_DELAYS = (0, 250, 500, 800, 1200, 2000, -1) # milliseconds, -1: never by itself, only the key X shows the tooltip
+TIP_SETTINGS_FILE = "WTP_TooltipSettings.ini"
+
+def wtpLoadTipSettings():
+	# (mode, delay index, quick): default is the game tooltip (2), the delay "medium" (2) for the case that the hover tooltip is chosen
+	aiValues = [2, 2, 0]
+	try:
+		f = open(TIP_SETTINGS_FILE, "r")
+		for szLine in f.readlines():
+			if "=" in szLine:
+				aszPart = szLine.strip().split("=")
+				try:
+					if aszPart[0] == "mode":
+						aiValues[0] = max(0, min(2, int(aszPart[1])))
+					elif aszPart[0] == "delay":
+						aiValues[1] = max(0, min(len(TIP_DELAYS) - 1, int(aszPart[1])))
+					elif aszPart[0] == "quick":
+						aiValues[2] = max(0, min(1, int(aszPart[1])))
+				except:
+					pass
+		f.close()
+	except:
+		pass
+	return aiValues
+
+aiTipSettings = wtpLoadTipSettings()
+
 class CvMainInterface:
 	"Main Interface Screen"
 
@@ -335,7 +363,7 @@ class CvMainInterface:
 	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
 	tTipLayout = None
 	tTipPlacedAt = (-1000, -1000)
-	iTipDelay = 0 # (-1: only on the key X) milliseconds the cursor has to rest before the first tooltip appears (options screen, Game tab)
+	iTipDelay = TIP_DELAYS[aiTipSettings[1]] # (-1: only on the key X) milliseconds the cursor has to rest before the first tooltip appears (options screen, Game tab)
 	szPendingHelp = None
 	bPendingWidget = False
 	fPendingStart = 0.0
@@ -343,7 +371,7 @@ class CvMainInterface:
 	fLastClock = -1.0
 	iClockSame = 0
 	bClockDead = False
-	iTipMode = 0 # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
+	iTipMode = aiTipSettings[0] # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
 	aiTipIndent = []
 	aiWrapIndent = []
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
@@ -357,7 +385,7 @@ class CvMainInterface:
 	bShiftLogged = False
 	iSecondTipLines = 0
 	aszTipParas = []
-	bHoverTip = True # Ctrl+Shift+T switches the hover tooltip on and off
+	bHoverTip = (aiTipSettings[0] != 2) # false: the game tooltip
 	bHudHover = False # the cursor is on a HUD element / widget with its own help text (until the game reports "no widget" again)
 	tHudHoverAt = (0, 0)
 	szHudHelp = u"" # the text of the HUD element under the cursor: kept in the help area of the game ourselves (the tooltip of the game is lost when the screen changes)
@@ -4241,6 +4269,7 @@ class CvMainInterface:
 	def setHoverTipMode( self, iMode, bMessage ):
 		self.iTipMode = iMode
 		self.bHoverTip = (self.iTipMode != 2)
+		self.saveTipSettings()
 		self.unfreezeCursorTooltip()
 		self.bTipFrozen = False
 		try:
@@ -4349,13 +4378,30 @@ class CvMainInterface:
 			self.showCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE), szHelp, bWidget, True)
 
 	def setTipDelay( self, iIndex ):
-		aiDelay = (0, 250, 500, 800, 1200, 2000, -1) # -1: never by itself, only the key X shows the tooltip
-		self.iTipDelay = aiDelay[max(0, min(len(aiDelay) - 1, iIndex))]
-		self.iTipDelayIndex = max(0, min(len(aiDelay) - 1, iIndex))
+		self.iTipDelayIndex = max(0, min(len(TIP_DELAYS) - 1, iIndex))
+		self.iTipDelay = TIP_DELAYS[self.iTipDelayIndex]
 		self.szPendingHelp = None
+		self.saveTipSettings()
 
-	iTipDelayIndex = 0
-	bTipQuick = False # options screen: the next tooltip appears without delay while a tooltip is shown
+	def setTipQuick( self, bQuick ):
+		self.bTipQuick = bool(bQuick)
+		self.saveTipSettings()
+
+	def saveTipSettings( self ):
+		try:
+			f = open(TIP_SETTINGS_FILE, "w")
+			f.write("mode=%d\n" % self.iTipMode)
+			f.write("delay=%d\n" % self.iTipDelayIndex)
+			if self.bTipQuick:
+				f.write("quick=1\n")
+			else:
+				f.write("quick=0\n")
+			f.close()
+		except:
+			pass
+
+	iTipDelayIndex = aiTipSettings[1]
+	bTipQuick = (aiTipSettings[2] == 1) # options screen: the next tooltip appears without delay while a tooltip is shown
 
 	def hideCursorTooltip( self, screen ):
 		if self.bTipFrozen:
