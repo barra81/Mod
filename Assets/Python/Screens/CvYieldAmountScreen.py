@@ -129,8 +129,7 @@ class CvYieldAmountScreen:
 		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
 		self.iKeyUp = self.getKeyId("KB_PGUP")
 		self.iKeyDown = self.getKeyId("KB_PGDN")
-		self.iKeyArrowUp = self.getKeyId("KB_UP")
-		self.iKeyArrowDown = self.getKeyId("KB_DOWN")
+		self.aKeyArrows = [self.getKeyId("KB_LEFT"), self.getKeyId("KB_RIGHT"), self.getKeyId("KB_UP"), self.getKeyId("KB_DOWN")] # (move the window)
 		self.iWheelUp = self.getNotifyId("NOTIFY_MOUSEWHEELUP")
 		self.iWheelDown = self.getNotifyId("NOTIFY_MOUSEWHEELDOWN")
 		self.aWheelUp = [self.iWheelUp, self.getNotifyId("NOTIFY_SCROLL_UP")]
@@ -218,7 +217,7 @@ class CvYieldAmountScreen:
 
 		screen.setButtonGFC("YAMOk", u"<font=2>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		screen.setButtonGFC("YAMCancel", u"<font=2>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
-		# moves the window (Alt with the arrow keys does the same)
+		# moves the window (the arrow keys do the same)
 		iMX = self.W - 8 - 4 * 28
 		for i in range(4):
 			screen.setButtonGFC("YAMMove" + str(i), u"<font=2>" + [u"\u00ab", u"\u00bb", u"^", u"v"][i] + u"</font>", "", self.OX + iMX + [0, 84, 28, 56][i], self.OY + 4, 26, 18, WidgetTypes.WIDGET_GENERAL, BTN_MOVE + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
@@ -385,8 +384,8 @@ class CvYieldAmountScreen:
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
 	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False):
-		if bAlt and iKey in [self.getKeyId("KB_LEFT"), self.getKeyId("KB_RIGHT"), self.iKeyArrowUp, self.iKeyArrowDown]:
-			self.queueMove([self.getKeyId("KB_LEFT"), self.getKeyId("KB_RIGHT"), self.iKeyArrowUp, self.iKeyArrowDown].index(iKey), self.getMoveStep(bCtrl, bShift))
+		if iKey in self.aKeyArrows:
+			self.queueMove(self.aKeyArrows.index(iKey), self.getMoveStep(bCtrl, bShift))
 		elif self.dDigits.has_key(iKey):
 			if self.bSelected:
 				self.szValue = u""
@@ -409,10 +408,6 @@ class CvYieldAmountScreen:
 			self.step(1, bCtrl)
 		elif iKey == self.iKeyDown:
 			self.step(-1, bCtrl)
-		elif iKey == self.iKeyArrowUp:
-			self.setValue(self.getValue() + 1)
-		elif iKey == self.iKeyArrowDown:
-			self.setValue(self.getValue() - 1)
 		elif iKey in self.aKeyOk:
 			if len(self.szValue) > 0:
 				self.finish(True)
