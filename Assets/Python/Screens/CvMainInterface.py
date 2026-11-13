@@ -318,6 +318,8 @@ class CvMainInterface:
 	dMessagePediaChars = {}
 	aMessageConceptPatterns = []
 	aMessageNameList = []
+	aMessageSpecial = []
+	dMessageConcepts = {}
 	dMessagePediaCache = {}
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
@@ -4672,11 +4674,30 @@ class CvMainInterface:
 				for (szName, i) in aConceptNames:
 					aAliases.append((re.compile(u"(?<!\\w)" + re.escape(szName) + u"(?!\\w)", re.UNICODE | re.IGNORECASE), dConcepts[gc.getConceptInfo(i).getType()]))
 				self.aMessageConceptPatterns = aAliases
+				self.dMessageConcepts = dConcepts
+				# the summarized storage messages (surplus sold / lost): fixed Colopedia entries instead of the many goods symbols
+				aSpecial = []
+				for (szKey, aTypes) in (("TXT_KEY_WTP_SURPLUS_SOLD", ("CONCEPT_TRADE", "CONCEPT_NEW_STORAGE")), ("TXT_KEY_WTP_SURPLUS_LOST", ("CONCEPT_NEW_STORAGE",))):
+					try:
+						szText = localText.getText(szKey, (u"\x01", u"\x02", 0))
+						szText = szText[szText.index(u"\x01") + 1:szText.index(u"\x02")]
+						szText = re.sub(u"<[^>]*>", u"", szText).strip()
+						if len(szText) > 10:
+							aSpecial.append((szText, [dConcepts[t] for t in aTypes if t in dConcepts]))
+					except:
+						pass
+				self.aMessageSpecial = aSpecial
 				self.dMessagePediaChars = dChars
 				aNameList = [(k, v) for (k, v) in dNames.items() if len(k) >= 4]
 				aNameList.sort(key = lambda t: -len(t[0]))
 				self.aMessageNameList = aNameList
 				self.dMessagePediaNames = dNames
+			szPlainAll = re.sub(u"<[^>]*>", u"", szMessage)
+			for (szFragment, aSpecialTargets) in self.aMessageSpecial:
+				if szFragment in szPlainAll:
+					aResult = list(aSpecialTargets)
+					self.dMessagePediaCache[szMessage] = aResult
+					return aResult
 			dNames = self.dMessagePediaNames
 			dChars = self.dMessagePediaChars
 			aFound = [] # (position in the text, target)
