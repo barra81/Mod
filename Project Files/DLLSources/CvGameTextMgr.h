@@ -122,6 +122,7 @@ private:
 	void eventGoldHelp(CvWStringBuffer& szBuffer, EventTypes eEvent, PlayerTypes ePlayer, PlayerTypes eOtherPlayer);
 
 	std::vector<int*> m_apbPromotion;
+	int m_iYieldTotalForHelp; // plot help: amount of this yield in all cargo slots (the sell prices of the total are shown in a fourth line)
 	bool m_bSkipYieldPrices; // plot help: the sell prices of a cargo yield are shown once, not for every slot of the same yield
 
 	void setCityPlotYieldValueString(CvWStringBuffer& szString, CvCity* pCity, int iIndex, bool bAvoidGrowth, bool bIgnoreGrowth, bool bIgnoreFood = false);

@@ -63,7 +63,8 @@ CvGameTextMgr& CvGameTextMgr::GetInstance()
 //
 //----------------------------------------------------------------------------
 CvGameTextMgr::CvGameTextMgr()
-:m_bSkipYieldPrices(false)
+:m_iYieldTotalForHelp(0)
+,m_bSkipYieldPrices(false)
 {
 
 }
@@ -489,6 +490,18 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 			szString.append(szTempBuffer);
 		}
 		// R&R, ray, Port Royal - END
+
+		// WTP: more than one cargo slot with this yield: a fourth line with the sell prices of the total amount
+		if (m_iYieldTotalForHelp > pUnit->getYieldStored())
+		{
+			const CvPlayer& kOwner = GET_PLAYER(pUnit->getOwnerINLINE());
+			szString.append(L", ");
+			szString.append(gDLL->getText("TXT_KEY_WTP_TOTAL_PRICE_HELP"));
+			szTempBuffer.Format(L"%d%c (%d / %d / %d%c)", m_iYieldTotalForHelp, GC.getYieldInfo(pUnit->getYield()).getChar(),
+				kOwner.getSellToEuropeProfit(pUnit->getYield(), m_iYieldTotalForHelp), kOwner.getSellToAfricaProfit(pUnit->getYield(), m_iYieldTotalForHelp),
+				kOwner.getSellToPortRoyalProfit(pUnit->getYield(), m_iYieldTotalForHelp), GC.getSymbolID(GOLD_CHAR));
+			szString.append(szTempBuffer);
+		}
 	}
 
 	eBuild = pUnit->getBuildType();
@@ -1980,10 +1993,23 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 	{
 		// WTP: the sell prices of a cargo yield are shown once, for the first slot of this yield only
 		std::vector<bool> abYieldPricesShown(NUM_YIELD_TYPES, false);
+		std::vector<int> aiYieldTotal(NUM_YIELD_TYPES, 0);
+		for (uint iK = 0; iK < plotUnits.size(); ++iK)
+		{
+			if (plotUnits[iK]->getYield() != NO_YIELD)
+			{
+				aiYieldTotal[plotUnits[iK]->getYield()] += plotUnits[iK]->getYieldStored();
+			}
+		}
 
 		if (pPlot->getCenterUnit())
 		{
+			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
+			{
+				m_iYieldTotalForHelp = aiYieldTotal[pPlot->getCenterUnit()->getYield()];
+			}
 			setUnitHelp(szString, pPlot->getCenterUnit(), iNumVisibleUnits > iMaxNumUnits, true);
+			m_iYieldTotalForHelp = 0;
 			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
 			{
 				abYieldPricesShown[pPlot->getCenterUnit()->getYield()] = true;
@@ -2002,9 +2028,11 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 				{
 					m_bSkipYieldPrices = abYieldPricesShown[eLoopYield];
 					abYieldPricesShown[eLoopYield] = true;
+					m_iYieldTotalForHelp = aiYieldTotal[eLoopYield];
 				}
 				setUnitHelp(szString, pLoopUnit, true, true);
 				m_bSkipYieldPrices = false;
+				m_iYieldTotalForHelp = 0;
 			}
 		}
 

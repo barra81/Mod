@@ -3779,6 +3779,11 @@
 		<German>Nur mit Taste X</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TOTAL_PRICE_HELP</Tag>
+		<English>[NEWLINE]	Total[TAB][TAB]</English>
+		<German>[NEWLINE]	Gesamt[TAB][TAB]</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_OFF</Tag>
 		<English>Hover tooltip: off</English>
 		<German>Hover-Tooltip: aus</German>
