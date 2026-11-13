@@ -334,6 +334,8 @@ class CvMainInterface:
 	iWidgetHelpTick = -1000
 	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
 	tTipLayout = None
+	aiTipIndent = []
+	aiWrapIndent = []
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
 	iSecondTipPara = -2
 	tSecondTipKey = None
@@ -3798,12 +3800,16 @@ class CvMainInterface:
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = [] # the paragraph (text between two line breaks of the help) of every line: right click in the frozen window
+			aiIndent = [] # indent of continued rows of icons (pixels)
 			aszParas = szHelp.split(u"\n")
 			for iPara in range(len(aszParas)):
-				aszWrapped = self.wrapMessage(aszParas[iPara], iCharsPerLine)
+				aszWrapped = self.wrapMessage(aszParas[iPara], iCharsPerLine, True)
 				aszLines += aszWrapped
 				aiPara += [iPara] * len(aszWrapped)
-			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad)
+				for fIndent in self.aiWrapIndent:
+					aiIndent.append(int(fIndent * iChar))
+			self.aiTipIndent = aiIndent
+			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad, aiIndent)
 			iHeight = len(aszLines) * iLine + 2 * iPad
 			iGap = max(48, int(yRes * 0.04))
 			tRect = self.getTipAvoidRect(iCursorX, iCursorY)
@@ -3827,20 +3833,15 @@ class CvMainInterface:
 		except:
 			self.bCursorTipShown = False
 
-	# width of a window for the lines: icons in the text (promotions, yields ...) are single characters of the game font, but as wide as a line is high
-	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad ):
+	# width of a window for the lines (icons of the game font are wider than letters: getMessageWidth, as the lines were wrapped)
+	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad, aiIndent = None ):
 		iLongest = 0
-		iMostIcons = 0
-		for szLine in aszLines:
-			szPlain = re.sub(u"<[^>]*>", u"", szLine)
-			iIcons = 0
-			for c in szPlain:
-				if ord(c) > 0x2000:
-					iIcons += 1
-			iMostIcons = max(iMostIcons, iIcons)
-			# an icon is about as wide as 3 characters (it counted as one already)
-			iLongest = max(iLongest, len(szPlain) + 2 * iIcons)
-		return max(120, min(iMaxWidth + int(2 * iMostIcons * iChar), int(iLongest * iChar) + 2 * iPad + 8))
+		for i in range(len(aszLines)):
+			iThis = self.getMessageWidth(re.sub(u"<[^>]*>", u"", aszLines[i]))
+			if aiIndent is not None and i < len(aiIndent):
+				iThis += aiIndent[i] / float(iChar)
+			iLongest = max(iLongest, iThis)
+		return max(120, min(iMaxWidth, int(iLongest * iChar) + 2 * iPad + 8))
 
 	def drawCursorTip( self, screen, bClickable ):
 		(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = self.tTipLayout
@@ -3854,7 +3855,10 @@ class CvMainInterface:
 			if bClickable and aiPara[i] >= 0:
 				iData1 = self.BUTTON_TIP_LINE
 				iData2 = aiPara[i]
-			screen.setText("HudTipLine%d" % i, "Background", self.setFontSize(aszLines[i], -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iY + iPad + i * iLine, -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+			iIndent = 0
+			if i < len(self.aiTipIndent):
+				iIndent = self.aiTipIndent[i]
+			screen.setText("HudTipLine%d" % i, "Background", self.setFontSize(aszLines[i], -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad + iIndent, iY + iPad + i * iLine, -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
 		for szName in self.getCursorTipNames():
 			screen.show(szName)
 			screen.moveToFront(szName)
@@ -3879,6 +3883,7 @@ class CvMainInterface:
 			szHint = localText.getText("TXT_KEY_WTP_TIP_FROZEN_HINT", ())
 			aszLines = list(aszLines) + [szHint]
 			aiPara = list(aiPara) + [-1]
+			self.aiTipIndent = list(self.aiTipIndent) + [0]
 			iHeight += iLine
 			iWidth = max(iWidth, int(len(re.sub(u"<[^>]*>", u"", szHint)) * iLine * 0.32) + 2 * iPad + 8)
 			iY = max(4, min(screen.getYResolution() - iHeight - 4, iY))
@@ -4588,13 +4593,17 @@ class CvMainInterface:
 				iWidth += 1
 		return iWidth
 
-	def wrapMessage(self, szMessage, iCharsPerLine):
+	def wrapMessage(self, szMessage, iCharsPerLine, bIconIndent = False):
 		# splits a message with color markup into lines of about iCharsPerLine visible characters; the colors that are open at the end of
-		# a line are closed there and opened again at the start of the next line
+		# a line are closed there and opened again at the start of the next line.
+		# bIconIndent (hover tooltip): a row of icons (promotions) that does not fit is continued in the next line, under the first icon;
+		# the indent of every line (in characters) is in self.aiWrapIndent afterwards
 		aszLines = []
+		aiIndent = []
 		aszOpen = []
 		szLine = u""
 		iVisible = 0
+		iLineIndent = 0
 		for szToken in re.split(u"(<[^>]*>)", szMessage):
 			if not szToken:
 				continue
@@ -4610,27 +4619,77 @@ class CvMainInterface:
 			szLead = szToken[:len(szToken) - len(szToken.lstrip())]
 			szLine += szLead
 			iVisible += len(szLead)
+			aszWords = []
 			for szWord in re.findall(u"\\S+\\s*", szToken, re.UNICODE):
-				iWord = self.getMessageWidth(szWord.rstrip())
+				if bIconIndent:
+					# a row of icons at the end of a word (\"(26/37)\" + promotions) is a word of its own
+					aszWords += self.splitIconRow(szWord)
+				else:
+					aszWords.append(szWord)
+			for szWord in aszWords:
+				szCore = szWord.rstrip()
+				iWord = self.getMessageWidth(szCore)
+				if bIconIndent and len(szCore) > 1 and self.isIconRow(szCore):
+					# the row of icons starts where it is and goes on under its first icon
+					iIndent = iVisible
+					if iIndent + 4 * 3.4 > iCharsPerLine:
+						iIndent = 0
+					bHas = iVisible > 0
+					for szChar in szCore:
+						iChar = self.getMessageWidth(szChar)
+						if bHas and iVisible + iChar > iCharsPerLine:
+							aszLines.append(szLine + u"</color>" * len(aszOpen))
+							aiIndent.append(iLineIndent)
+							szLine = u"".join(aszOpen)
+							iVisible = iIndent
+							iLineIndent = iIndent
+							bHas = False
+						szLine += szChar
+						iVisible += iChar
+						bHas = True
+					szLine += szWord[len(szCore):]
+					iVisible += len(szWord) - len(szCore)
+					continue
 				if iVisible > 0 and iVisible + iWord > iCharsPerLine:
 					aszLines.append(szLine + u"</color>" * len(aszOpen))
+					aiIndent.append(iLineIndent)
 					szLine = u"".join(aszOpen)
 					iVisible = 0
+					iLineIndent = 0
 				if iWord > iCharsPerLine:
 					# a word without blanks that is longer than a line (e.g. a row of icons): broken between the characters
 					for szChar in szWord:
 						iChar = self.getMessageWidth(szChar)
 						if iVisible > 0 and iVisible + iChar > iCharsPerLine:
 							aszLines.append(szLine + u"</color>" * len(aszOpen))
+							aiIndent.append(iLineIndent)
 							szLine = u"".join(aszOpen)
 							iVisible = 0
+							iLineIndent = 0
 						szLine += szChar
 						iVisible += iChar
 					continue
 				szLine += szWord
 				iVisible += self.getMessageWidth(szWord)
 		aszLines.append(szLine)
+		aiIndent.append(iLineIndent)
+		self.aiWrapIndent = aiIndent
 		return aszLines
+
+	def splitIconRow(self, szWord):
+		szCore = szWord.rstrip()
+		iStart = len(szCore)
+		while iStart > 0 and ord(szCore[iStart - 1]) >= 0x2000:
+			iStart -= 1
+		if iStart > 0 and len(szCore) - iStart >= 2:
+			return [szWord[:iStart], szWord[iStart:]]
+		return [szWord]
+
+	def isIconRow(self, szText):
+		for szChar in szText:
+			if ord(szChar) < 0x2000:
+				return False
+		return True
 
 	def getMessageTargets(self, aszMessages, aiX, aiY):
 		# for every message: (x, y, ePlayer) - the plot to center (x < 0: none) and the native player to contact (-1: none)
