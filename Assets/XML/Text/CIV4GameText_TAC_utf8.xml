@@ -3794,11 +3794,6 @@
 		<German>[COLOR:140:255:40:255]Eingefroren - Esc oder X halten: schließen[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_WTP_TIP_RUN_COMMAND</Tag>
-		<English>Right click: run this command</English>
-		<German>Rechtsklick: diesen Befehl ausführen</German>
-	</TEXT>
-	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_PEDIA_HELP</Tag>
 		<English>Right click: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
 		<German>Rechtsklick: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</German>

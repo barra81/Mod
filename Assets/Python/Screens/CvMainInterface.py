@@ -4218,9 +4218,6 @@ class CvMainInterface:
 			szText = self.getPromotionTipText(aszLines[iLineIdx])
 			if len(szText) > 0:
 				self.showSecondTip(screen, szText, iCY)
-		elif iPara >= 0 and self.getCityCommand(aszTopParas, iPara) is not None:
-			# the command lines of a city tooltip: no Colopedia, a right click runs the command
-			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY)
 		elif iPara >= 0:
 			if iSel >= 0:
 				szText = self.getTipSecondText(iPara, iSel, aszTopParas)
@@ -4340,12 +4337,10 @@ class CvMainInterface:
 			return self.aszTipParas
 		return self.aNested[iLevel - 1][2]
 
-	# the command lines at the end of a city tooltip (select the city / all of the continent / all): (city, mode) or None
-	def getCityCommand( self, aszParas, iPara ):
+	# the command lines at the end of a city tooltip (select the city / all of the continent / all) are run by a right click on the line
+	def runCityCommand( self, aszParas, iPara ):
 		try:
 			szPara = re.sub(u"<[^>]*>", u"", aszParas[iPara]).strip()
-			if len(szPara) == 0 or iPara == 0:
-				return None
 			szCtrl = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_CITY_BAR_SELECT_CTRL", ())).strip()
 			szAlt = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_CITY_BAR_SELECT_ALT", ())).strip()
 			szName = re.sub(u"<[^>]*>", u"", aszParas[0]).strip()
@@ -4358,34 +4353,24 @@ class CvMainInterface:
 					break
 				(loopCity, iter) = pPlayer.nextCity(iter, False)
 			if pCity is None:
-				return None
+				return False
 			szSelect = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_CITY_BAR_SELECT", (pCity.getNameKey(),))).strip()
 			if szPara == szSelect:
-				return (pCity, 0)
-			if szPara == szCtrl:
-				return (pCity, 1)
-			if szPara == szAlt:
-				return (pCity, 2)
-		except:
-			pass
-		return None
-
-	# right click on such a line: the same as a click on the city banner (Ctrl: all cities of the continent, Alt: all cities): the cities are
-	# selected (to give them production orders), the city screen is not opened
-	def runCityCommand( self, aszParas, iPara ):
-		try:
-			tCommand = self.getCityCommand(aszParas, iPara)
-			if tCommand is None:
+				iMode = 0
+			elif szPara == szCtrl:
+				iMode = 1
+			elif szPara == szAlt:
+				iMode = 2
+			else:
 				return False
-			(pCity, iMode) = tCommand
-			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
-			iArea = pCity.plot().getArea()
-			CyInterface().clearSelectedCities()
-			(loopCity, iter) = pPlayer.firstCity(False)
-			while loopCity:
-				if loopCity.getID() == pCity.getID() or iMode == 2 or (iMode == 1 and loopCity.plot().getArea() == iArea):
-					CyInterface().addSelectedCity(loopCity, False)
-				(loopCity, iter) = pPlayer.nextCity(iter, False)
+			CyInterface().selectCity(pCity, True)
+			if iMode > 0:
+				iArea = pCity.plot().getArea()
+				(loopCity, iter) = pPlayer.firstCity(False)
+				while loopCity:
+					if loopCity.getID() != pCity.getID() and (iMode == 2 or loopCity.plot().getArea() == iArea):
+						CyInterface().selectCity(loopCity, False)
+					(loopCity, iter) = pPlayer.nextCity(iter, False)
 			self.unfreezeAllTips()
 			return True
 		except:
