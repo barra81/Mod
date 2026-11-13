@@ -322,6 +322,7 @@ class CvMainInterface:
 	dMessageConcepts = {}
 	dMessagePediaCache = {}
 	dMessageLineIndex = {}
+	tHelpAreaPos = None
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -757,7 +758,7 @@ class CvMainInterface:
 			screen.appendTableRow("EmphasizeTable")
 
 	# HELP TEXT AREA
-		screen.setHelpTextArea( HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, HELTTEXT_AREA_X_MARGIN, yResolution - SADDLE_HEIGHT, -0.1, True, ArtFileMgr.getInterfaceArtInfo("POPUPS_BACKGROUND_TRANSPARENT").getPath(), True, True, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
+		screen.setHelpTextArea( HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, HELTTEXT_AREA_X_MARGIN, yResolution - SADDLE_HEIGHT, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
 
 	# ADVISOR BUTTONS
 
@@ -3180,7 +3181,7 @@ class CvMainInterface:
 		else: # CITY SCREEN IS DOWN
 			self.MINIMAP_SIDE_MARGIN = MINIMAP_HEIGHT * 13 / 100
 			screen.placeMinimap(self.MINIMAP_SIDE_MARGIN, MINIMAP_HEIGHT - self.MINIMAP_SIDE_MARGIN, yResolution - MINIMAP_HEIGHT + self.MINIMAP_SIDE_MARGIN * 2, yResolution)
-			screen.setHelpTextArea( HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, HELTTEXT_AREA_X_MARGIN, yResolution - SADDLE_HEIGHT+HELPTEXT_AREA_Y_MARGIN, -0.1, True, ArtFileMgr.getInterfaceArtInfo("POPUPS_BACKGROUND_TRANSPARENT").getPath(), True, True, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH )
+			screen.setHelpTextArea( HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, HELTTEXT_AREA_X_MARGIN, yResolution - SADDLE_HEIGHT+HELPTEXT_AREA_Y_MARGIN, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH )
 
 			if ( CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW ):
 				self.setMinimapButtonVisibility(True)
@@ -3741,6 +3742,29 @@ class CvMainInterface:
 						iRow = screen.appendTableRow("ScoreBackground")
 						screen.setTableText("ScoreBackground", 0, iRow, szRowText, "", WidgetTypes.WIDGET_CONTACT_CIV, ePlayerRow, -1, CvUtil.FONT_RIGHT_JUSTIFY)
 					screen.show("ScoreBackground")
+
+	# WTP experiment: the help text area follows the mouse cursor (the game keeps it at a fixed place otherwise)
+	def updateHelpAtCursor( self ):
+		try:
+			if CyInterface().isCityScreenUp() or CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_HIDE_ALL:
+				return
+			if len(CyInterface().getHelpString()) == 0:
+				return
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			xRes = screen.getXResolution()
+			yRes = screen.getYResolution()
+			iCursorX = gc.getGame().getCursorClientX()
+			iCursorY = gc.getGame().getCursorClientY()
+			# the area is anchored with its bottom edge at y (it was above the bottom bar): the text appears above the cursor
+			iX = max(0, min(xRes - HELPTEXT_AREA_MAX_WIDTH - 10, iCursorX + 20))
+			iY = max(120, min(yRes - 10, iCursorY - 10))
+			tPos = (iX / 8, iY / 8)
+			if tPos == self.tHelpAreaPos:
+				return
+			self.tHelpAreaPos = tPos
+			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
+		except:
+			pass
 
 	# Will update the help Strings
 	def updateHelpStrings( self ):
@@ -5112,6 +5136,7 @@ class CvMainInterface:
 		self.updatePioneerPlanEditor()
 		self.updateAutomatedFollow()
 		self.updateMessageMove()
+		self.updateHelpAtCursor()
 		try:
 			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
 		except:
