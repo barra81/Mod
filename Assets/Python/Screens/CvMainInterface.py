@@ -324,6 +324,7 @@ class CvMainInterface:
 	dMessageLineIndex = {}
 	tMsgRect = (0, 0, 0, 0)
 	iMsgW = 0
+	iWidgetHelpCount = 0
 	bCursorTipShown = False
 	iCursorTipLines = 0
 	fWidgetHelpTime = 0.0
@@ -3838,10 +3839,22 @@ class CvMainInterface:
 			if szText and len(szText) > 0:
 				self.fWidgetHelpTime = time.time()
 				self.showCursorTooltip(screen, szText, True)
-			elif eWidgetType != WidgetTypes.WIDGET_GENERAL:
+			elif int(eWidgetType) != int(WidgetTypes.WIDGET_GENERAL):
 				# a HUD element of the game itself (its text is not known here): only the tooltip of the game
 				self.fWidgetHelpTime = time.time()
 				self.hideCursorTooltip(screen)
+		except:
+			pass
+
+	# the help texts the game itself makes for its HUD elements (the DLL stores the last one, CyGame.getWidgetHelp...)
+	def pollWidgetHelp( self ):
+		try:
+			game = gc.getGame()
+			iCount = game.getWidgetHelpCount()
+			if iCount == self.iWidgetHelpCount:
+				return
+			self.iWidgetHelpCount = iCount
+			self.widgetHelpSeen(game.getWidgetHelpText(), game.getWidgetHelpType())
 		except:
 			pass
 
@@ -5244,6 +5257,7 @@ class CvMainInterface:
 		self.updateAutomatedFollow()
 		self.updateMessageMove()
 		self.updateCursorTooltip()
+		self.pollWidgetHelp()
 		try:
 			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
 		except:

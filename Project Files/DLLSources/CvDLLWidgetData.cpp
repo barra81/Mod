@@ -226,7 +226,23 @@ void CvDLLWidgetData::freeInstance()
 	m_pInst = NULL;
 }
 
+// WTP: the last help text the game asked for (every widget of the interface), for the own tooltip window of the main interface (python)
+static CvWString g_szWtpWidgetHelp;
+static int g_iWtpWidgetHelpCount = 0;
+static int g_iWtpWidgetHelpType = 0;
+CvWString wtpGetWidgetHelpText() { return g_szWtpWidgetHelp; }
+int wtpGetWidgetHelpCount() { return g_iWtpWidgetHelpCount; }
+int wtpGetWidgetHelpType() { return g_iWtpWidgetHelpType; }
+
 void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, const CvWidgetDataStruct &widgetDataStruct)
+{
+	parseHelpInner(szBuffer, widgetDataStruct);
+	g_szWtpWidgetHelp = szBuffer.getCString();
+	g_iWtpWidgetHelpType = (int)widgetDataStruct.m_eWidgetType;
+	g_iWtpWidgetHelpCount++;
+}
+
+void CvDLLWidgetData::parseHelpInner(CvWStringBuffer &szBuffer, const CvWidgetDataStruct &widgetDataStruct)
 {
 	CxDesyncMonitor StartAsyncExecution;
 

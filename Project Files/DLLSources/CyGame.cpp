@@ -784,6 +784,23 @@ static bool wtpGetCursor(POINT& pt)
 	return true;
 }
 
+// WTP: the last help text of a widget of the interface (see CvDLLWidgetData::parseHelp)
+extern CvWString wtpGetWidgetHelpText();
+extern int wtpGetWidgetHelpCount();
+extern int wtpGetWidgetHelpType();
+std::wstring CyGame::getWidgetHelpText() const
+{
+	return std::wstring(wtpGetWidgetHelpText().GetCString());
+}
+int CyGame::getWidgetHelpCount() const
+{
+	return wtpGetWidgetHelpCount();
+}
+int CyGame::getWidgetHelpType() const
+{
+	return wtpGetWidgetHelpType();
+}
+
 int CyGame::getCursorClientX() const
 {
 	POINT pt;
