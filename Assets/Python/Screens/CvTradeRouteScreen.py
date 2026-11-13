@@ -268,7 +268,7 @@ class CvTradeRouteScreen:
 		self.dData = {}
 		self.iFirst = 0
 		self.iVisible = 0
-		self.iAreaH = 800
+		self.iYRes = 1440
 		self.tLayout = (0, False)
 		self.iReload = 0
 		self.iViewX = 0
@@ -377,8 +377,14 @@ class CvTradeRouteScreen:
 			self.searchChanged()
 
 	# the number of rows and whether there are pages: when it changes the window is built again (its height follows)
+	def getMaxVisible(self):
+		iBottom = self.iYRes
+		if self.iMoveY == 0:
+			iBottom = self.iYRes - 225 # (the default place: the three rows of the goods bar stay visible)
+		return max(1, (iBottom - self.OY - self.LIST_Y - 70) / self.ROW_H)
+
 	def getLayoutKey(self):
-		iMaxVisible = max(1, (self.iAreaH - self.LIST_Y - 70) / self.ROW_H)
+		iMaxVisible = self.getMaxVisible()
 		iVisible = min(iMaxVisible, max(1, len(self.aYields)))
 		return (iVisible, len(self.aYields) > iVisible)
 
@@ -652,27 +658,21 @@ class CvTradeRouteScreen:
 		screen = self.pHost
 		iXRes = screen.getXResolution()
 		iYRes = screen.getYResolution()
-		# the window stays between the top bar and the three rows of the goods bar at the bottom (both stay visible)
-		iAreaTop = 70
-		iAreaH = iYRes - 225 - iAreaTop
-		self.iAreaH = iAreaH
-		# the height follows the number of goods shown (the top stays where it is, the bottom moves)
-		iMaxVisible = max(1, (iAreaH - self.LIST_Y - 70) / self.ROW_H)
-		iFullVisible = min(iMaxVisible, max(1, len(self.aAllYields)))
+		self.iYRes = iYRes
+		# the default place: at the right edge of the screen, just below the top bar (until the player moves the window)
+		iBaseX = iXRes - self.W
+		iBaseY = 71
+		# the height follows the number of goods shown (the top stays where it is, the bottom moves): in the default place it ends above
+		# the three rows of the goods bar, a window the player has moved down may go down to the bottom of the screen
+		iTop = max(0, min(iYRes - (self.LIST_Y + self.ROW_H + 70), iBaseY + self.iMoveY))
+		self.iMoveY = iTop - iBaseY
+		self.OY = iTop
+		iMaxVisible = self.getMaxVisible()
 		self.iVisible = min(iMaxVisible, max(1, len(self.aYields)))
 		self.tLayout = self.getLayoutKey()
-		iFullH = self.LIST_Y + iFullVisible * self.ROW_H + 70
 		self.H = self.LIST_Y + self.iVisible * self.ROW_H + 70
-		# the default place: at the right edge of the screen, just below the top bar (until the player moves the window)
-		self.OX = iXRes - self.W
-		self.OY = iAreaTop + 1
-		# moved by the player (stays on the screen)
-		iBaseX = self.OX
-		iBaseY = self.OY
-		self.OX = max(0, min(iXRes - self.W, self.OX + self.iMoveX))
-		self.OY = max(0, min(iYRes - self.H, self.OY + self.iMoveY))
+		self.OX = max(0, min(iXRes - self.W, iBaseX + self.iMoveX))
 		self.iMoveX = self.OX - iBaseX
-		self.iMoveY = self.OY - iBaseY
 		self.iFirst = min(self.iFirst, max(0, (len(self.aYields) - 1) / self.iVisible * self.iVisible))
 		self.aDrawn = []
 
