@@ -3832,9 +3832,23 @@ class CvMainInterface:
 			aszNames.append("HudTipLine%d" % i)
 		return aszNames
 
+	# WTP: debug log of the tooltip events (WTP_TipLog.txt in the game folder, at most 600 lines), to be removed again
+	iTipLogLines = 0
+	def tipLog( self, szMsg ):
+		try:
+			if self.iTipLogLines > 600:
+				return
+			self.iTipLogLines += 1
+			f = open("WTP_TipLog.txt", "a")
+			f.write("%.2f %s\n" % (time.time() % 1000, szMsg))
+			f.close()
+		except:
+			pass
+
 	# called by the game when it asks for the help text of a widget under the cursor (CvScreensInterface.getWidgetHelp)
 	def widgetHelpSeen( self, szText, eWidgetType ):
 		try:
+			self.tipLog("W type=%d len=%d" % (int(eWidgetType), len(szText or u"")))
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			if szText and len(szText) > 0:
 				self.fWidgetHelpTime = time.time()
@@ -3890,8 +3904,11 @@ class CvMainInterface:
 			self.hideCursorTooltip(screen)
 		else:
 			szHelp = CyInterface().getHelpString()
+			self.tipLog("H len=%d sinceWidget=%.2f" % (len(szHelp), time.time() - self.fWidgetHelpTime))
 			self.showCursorTooltip(screen, szHelp)
-			screen.setHelpTextString( szHelp )
+			# while the cursor is on a HUD element the plot help behind it must not replace the help of the element
+			if time.time() - self.fWidgetHelpTime >= 0.7:
+				screen.setHelpTextString( szHelp )
 
 		return 0
 
