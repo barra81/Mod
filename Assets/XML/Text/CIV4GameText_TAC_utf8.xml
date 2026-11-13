@@ -3724,6 +3724,41 @@
 		<German>Wie Tooltips angezeigt werden. Hover-Tooltip: ein Fenster direkt am Mauszeiger (Taste [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] friert es ein, Rechtsklick öffnet die Colopedia). Tastenkombination zum Umschalten zwischen den drei Modi: [COLOR_HIGHLIGHT_TEXT]Strg + Umschalt + T[COLOR_REVERT].</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY</Tag>
+		<English>Tooltip delay:</English>
+		<German>Tooltip-Verzögerung:</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_0</Tag>
+		<English>None</English>
+		<German>Keine</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_1</Tag>
+		<English>Short (0.25 s)</English>
+		<German>Kurz (0,25 s)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_2</Tag>
+		<English>Medium (0.5 s)</English>
+		<German>Mittel (0,5 s)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_3</Tag>
+		<English>Long (0.8 s)</English>
+		<German>Lang (0,8 s)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_4</Tag>
+		<English>Very long (1.2 s)</English>
+		<German>Sehr lang (1,2 s)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_HELP</Tag>
+		<English>How long the cursor has to rest on something before the hover tooltip appears. While a tooltip is shown, the next one appears at once. Moving the cursor starts the time again.</English>
+		<German>Wie lange der Mauszeiger auf etwas ruhen muss, bevor der Hover-Tooltip erscheint. Solange ein Tooltip angezeigt wird, erscheint der nächste sofort. Bewegt man den Mauszeiger, beginnt die Zeit neu.</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_OFF</Tag>
 		<English>Hover tooltip: off</English>
 		<German>Hover-Tooltip: aus</German>

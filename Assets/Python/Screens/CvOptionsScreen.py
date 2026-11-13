@@ -318,6 +318,21 @@ class CvOptionsScreen:
 		tab.setLayoutFlag("TipModeDropdownBox", "LAYOUT_LEFT")
 		tab.setToolTip("TipModeDropdownBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE_HELP", ()))
 
+		tab.attachHBox("GamePanelCenter", "TipDelayHBox")
+		tab.attachLabel("TipDelayHBox", "TipDelayLabel", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY", ()))
+		tab.setToolTip("TipDelayLabel", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_HELP", ()))
+		tab.attachSpacer("TipDelayHBox")
+		aszTipDelays = (localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_0", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_1", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_2", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_3", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_4", ()))
+		iTipDelay = 0
+		try:
+			import CvScreensInterface
+			iTipDelay = CvScreensInterface.mainInterface.iTipDelayIndex
+		except:
+			pass
+		tab.attachDropDown("TipDelayHBox", "TipDelayDropdownBox", "TipDelayDropdownBox", aszTipDelays, self.callbackIFace, "handleTipDelayDropdownInput", "TipDelayDropdownBox", iTipDelay)
+		tab.setLayoutFlag("TipDelayDropdownBox", "LAYOUT_LEFT")
+		tab.setToolTip("TipDelayDropdownBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_HELP", ()))
+
 		tab.attachSpacer("GamePanelCenter")
 
 		tab.attachHBox("GamePanelCenter", "LangHBox")

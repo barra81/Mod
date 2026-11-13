@@ -335,6 +335,14 @@ class CvMainInterface:
 	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
 	tTipLayout = None
 	tTipPlacedAt = (-1000, -1000)
+	iTipDelay = 0 # milliseconds the cursor has to rest before the first tooltip appears (options screen, Game tab)
+	szPendingHelp = None
+	bPendingWidget = False
+	fPendingStart = 0.0
+	tPendingPos = (0, 0)
+	fLastClock = -1.0
+	iClockSame = 0
+	bClockDead = False
 	iTipMode = 0 # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
 	aiTipIndent = []
 	aiWrapIndent = []
@@ -3777,7 +3785,7 @@ class CvMainInterface:
 
 	# WTP: own tooltip window at the mouse cursor (the tooltip of the game stays at its place). It shows the same text, is vertically
 	# centered on the cursor, right of it (left if there is no room) and lies in front of the HUD elements.
-	def showCursorTooltip( self, screen, szHelp, bWidget = False ):
+	def showCursorTooltip( self, screen, szHelp, bWidget = False, bFromPending = False ):
 		if self.bTipFrozen or not self.bHoverTip:
 			return
 		try:
@@ -3792,6 +3800,15 @@ class CvMainInterface:
 			# the same text again with the cursor near the last place: the window stays as it is (no flicker)
 			if self.bCursorTipShown and szHelp == self.szCursorTipText and abs(iCursorX - self.tCursorTipAt[0]) < 80 and abs(iCursorY - self.tCursorTipAt[1]) < 80:
 				return
+			# tooltip delay: a first tooltip waits until the cursor has rested for the time of the option (it is replaced at once while one is shown)
+			if self.iTipDelay > 0 and not bFromPending and not self.bCursorTipShown:
+				if self.szPendingHelp is None:
+					self.fPendingStart = self.getTipNow()
+					self.tPendingPos = (iCursorX, iCursorY)
+				self.szPendingHelp = szHelp
+				self.bPendingWidget = bWidget
+				return
+			self.szPendingHelp = None
 			self.hideCursorTooltip(screen)
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
@@ -4288,9 +4305,51 @@ class CvMainInterface:
 		except:
 			pass
 
+	# time in milliseconds for the tooltip delay. time.time() of the game does not advance (log), time.clock() should; if that one does not
+	# advance either, the frames are counted (60 per second assumed)
+	def getTipNow( self ):
+		try:
+			fNow = time.clock() * 1000.0
+			if fNow == self.fLastClock:
+				self.iClockSame += 1
+				if self.iClockSame > 120 and not self.bClockDead:
+					self.bClockDead = True
+					self.tipLog("tooltip delay: time.clock() does not advance, counting frames")
+			else:
+				self.iClockSame = 0
+				self.fLastClock = fNow
+			if not self.bClockDead:
+				return fNow
+		except:
+			self.bClockDead = True
+		return self.iTick * 16.7
+
+	def updatePendingTip( self ):
+		iCursorX = gc.getGame().getCursorClientX()
+		iCursorY = gc.getGame().getCursorClientY()
+		fNow = self.getTipNow()
+		if abs(iCursorX - self.tPendingPos[0]) > 3 or abs(iCursorY - self.tPendingPos[1]) > 3:
+			# the cursor moves: the time starts again
+			self.tPendingPos = (iCursorX, iCursorY)
+			self.fPendingStart = fNow
+		elif fNow - self.fPendingStart >= self.iTipDelay:
+			szHelp = self.szPendingHelp
+			bWidget = self.bPendingWidget
+			self.szPendingHelp = None
+			self.showCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE), szHelp, bWidget, True)
+
+	def setTipDelay( self, iIndex ):
+		aiDelay = (0, 250, 500, 800, 1200)
+		self.iTipDelay = aiDelay[max(0, min(len(aiDelay) - 1, iIndex))]
+		self.iTipDelayIndex = max(0, min(len(aiDelay) - 1, iIndex))
+		self.szPendingHelp = None
+
+	iTipDelayIndex = 0
+
 	def hideCursorTooltip( self, screen ):
 		if self.bTipFrozen:
 			return
+		self.szPendingHelp = None
 		try:
 			if self.bCursorTipShown:
 				for szName in self.getCursorTipNames():
@@ -4330,6 +4389,11 @@ class CvMainInterface:
 					self.hideCursorTooltip(screen)
 			except:
 				pass
+		if self.szPendingHelp is not None:
+			try:
+				self.updatePendingTip()
+			except:
+				self.szPendingHelp = None
 		if not self.bCursorTipShown:
 			return
 		try:

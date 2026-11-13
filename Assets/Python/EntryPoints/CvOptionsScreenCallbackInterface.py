@@ -76,6 +76,15 @@ def handleTipModeDropdownInput ( argsList ):
 		pass
 	return 1
 
+def handleTipDelayDropdownInput ( argsList ):
+	"WTP: tooltip delay (index of the list in CvMainInterface.setTipDelay)"
+	iValue, szName = argsList
+	try:
+		CvScreensInterface.mainInterface.setTipDelay(iValue)
+	except:
+		pass
+	return 1
+
 def handleGameReset ( argsList ):
 	"Resets these options"
 	szName = argsList
