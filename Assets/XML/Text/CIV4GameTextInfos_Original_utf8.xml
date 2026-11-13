@@ -13119,10 +13119,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_BL_BORN</Tag>
-		<English>The warriors stationed in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] look up to their lieutenant for his courage.</English>
+		<English>The warriors stationed in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] look up to their [COLOR_UNIT_TEXT]Brave Lieutenant[COLOR_REVERT] for his courage.</English>
 		<Portuguese>Os guerreiros estacionados em [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] admiram seu tenente por sua coragem.</Portuguese>
 		<French>Les guerriers en garnison à [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] admirent leur lieutenant pour sa bravoure.</French>
-		<German>Der unerschrockene Leutnant gilt den in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] stationierten Kämpfern als ein Vorbild an Tapferkeit und Manneszucht.</German>
+		<German>Ein [COLOR_UNIT_TEXT]Mutiger Leutnant[COLOR_REVERT] gilt den in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] stationierten Kämpfern als ein Vorbild an Tapferkeit und Manneszucht.</German>
 		<Russian>Воины в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] уважают своего лейтенанта за его храбрость.</Russian>
 		<Hungarian>[COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] katonái felnéznek Hadnagyukra a bátorsága miatt.</Hungarian>
 	</TEXT>
