@@ -663,8 +663,9 @@ class CvTradeRouteScreen:
 		self.tLayout = self.getLayoutKey()
 		iFullH = self.LIST_Y + iFullVisible * self.ROW_H + 70
 		self.H = self.LIST_Y + self.iVisible * self.ROW_H + 70
-		self.OX = (iXRes - self.W) / 2
-		self.OY = iAreaTop + (iAreaH - iFullH) / 2
+		# the default place: at the right edge of the screen, just below the top bar (until the player moves the window)
+		self.OX = iXRes - self.W
+		self.OY = iAreaTop + 1
 		# moved by the player (stays on the screen)
 		iBaseX = self.OX
 		iBaseY = self.OY
