@@ -28,6 +28,7 @@ VIEW_MARKED = 2
 VIEW_BUILD = 3 # the goods of the building material preset
 VIEW_MARKET = 4 # the goods of the market automatic preset
 VIEW_PRODUCED = 5 # the goods the city produces
+VIEW_NEEDED = 6 # the goods the current production needs
 
 # fields of a row
 F_IMP_MINUS = 0
@@ -402,6 +403,11 @@ class CvTradeRouteScreen:
 			self.aYields = []
 			if pCity != None and not pCity.isNone():
 				self.aYields = [i for i in self.aAllYields if pCity.getYieldRate(i) > 0]
+		elif self.iView == VIEW_NEEDED:
+			pCity = self.getCity()
+			self.aYields = []
+			if pCity != None and not pCity.isNone():
+				self.aYields = [i for i in self.aAllYields if pCity.getRawYieldConsumed(i) > 0]
 		else:
 			self.aYields = list(self.aAllYields)
 		szTerm = self.szQuery.strip().lower()
@@ -655,6 +661,7 @@ class CvTradeRouteScreen:
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT", ()), 3, 3, False)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT", ()), 4, 4, False)
 		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_PRODUCED", ()), 5, 5, False)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_NEEDED", ()), 6, 6, False)
 		self.aDrawn.append("TRSView")
 		self.drawRows()
 		self.drawPage()
