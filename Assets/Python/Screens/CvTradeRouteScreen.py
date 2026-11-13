@@ -266,6 +266,8 @@ class CvTradeRouteScreen:
 		self.dData = {}
 		self.iFirst = 0
 		self.iVisible = 0
+		self.iAreaH = 800
+		self.tLayout = (0, False)
 		self.iReload = 0
 		self.iViewX = 0
 		self.aAllYields = [] # all goods of the default view
@@ -364,12 +366,25 @@ class CvTradeRouteScreen:
 		if bChanged:
 			self.searchChanged()
 
+	# the number of rows and whether there are pages: when it changes the window is built again (its height follows)
+	def getLayoutKey(self):
+		iMaxVisible = max(1, (self.iAreaH - self.LIST_Y - 70) / self.ROW_H)
+		iVisible = min(iMaxVisible, max(1, len(self.aYields)))
+		return (iVisible, len(self.aYields) > iVisible)
+
+	def refreshList(self):
+		if self.getLayoutKey() != self.tLayout:
+			self.teardownLayout()
+			self.buildLayout()
+		else:
+			self.drawRows()
+			self.drawPage()
+
 	def searchChanged(self):
 		self.findSuggestion()
 		self.drawSearchText()
 		self.buildView()
-		self.drawRows()
-		self.drawPage()
+		self.refreshList()
 
 	def isFav(self, iYield):
 		return gc.getYieldInfo(iYield).getType() in self.aFav
@@ -435,8 +450,7 @@ class CvTradeRouteScreen:
 			return
 		self.iView = iView
 		self.buildView()
-		self.drawRows()
-		self.drawPage()
+		self.refreshList()
 
 	def loadYield(self, pCity, iYield):
 		d = {}
@@ -627,12 +641,16 @@ class CvTradeRouteScreen:
 		# the window stays between the top bar and the three rows of the goods bar at the bottom (both stay visible)
 		iAreaTop = 70
 		iAreaH = iYRes - 225 - iAreaTop
-		self.H = min(iAreaH, self.LIST_Y + len(self.aAllYields) * self.ROW_H + 70)
-		self.iVisible = max(1, (self.H - self.LIST_Y - 70) / self.ROW_H)
-		self.iVisible = min(self.iVisible, len(self.aAllYields))
+		self.iAreaH = iAreaH
+		# the height follows the number of goods shown (the top stays where it is, the bottom moves)
+		iMaxVisible = max(1, (iAreaH - self.LIST_Y - 70) / self.ROW_H)
+		iFullVisible = min(iMaxVisible, max(1, len(self.aAllYields)))
+		self.iVisible = min(iMaxVisible, max(1, len(self.aYields)))
+		self.tLayout = self.getLayoutKey()
+		iFullH = self.LIST_Y + iFullVisible * self.ROW_H + 70
 		self.H = self.LIST_Y + self.iVisible * self.ROW_H + 70
 		self.OX = (iXRes - self.W) / 2
-		self.OY = iAreaTop + (iAreaH - self.H) / 2
+		self.OY = iAreaTop + (iAreaH - iFullH) / 2
 		# moved by the player (stays on the screen)
 		iBaseX = self.OX
 		iBaseY = self.OY
@@ -677,7 +695,7 @@ class CvTradeRouteScreen:
 		self.addButton("TRSMoveR", u"\u00bb", False, iMX + 90, self.OY + 12, 28, 24, BTN_MOVE + 1)
 		self.addButton("TRSOk", localText.getText("TXT_KEY_MAIN_MENU_OK", ()), False, self.OX + self.W / 2 - 105, self.OY + self.H - 44, 100, 28, BTN_OK)
 		self.addButton("TRSCancel", localText.getText("TXT_KEY_POPUP_CANCEL", ()), False, self.OX + self.W / 2 + 5, self.OY + self.H - 44, 100, 28, BTN_CANCEL)
-		if len(self.aAllYields) > self.iVisible:
+		if len(self.aYields) > self.iVisible:
 			self.addButton("TRSUp", u"\u00ab", False, self.OX + 24, self.OY + self.H - 44, 36, 28, BTN_UP)
 			self.addButton("TRSDown", u"\u00bb", False, self.OX + 24 + 36 + 150, self.OY + self.H - 44, 36, 28, BTN_DOWN)
 			self.aDrawn.append("TRSPage")
@@ -847,7 +865,7 @@ class CvTradeRouteScreen:
 		return max(1, (len(self.aYields) + self.iVisible - 1) / self.iVisible)
 
 	def drawPage(self):
-		if len(self.aAllYields) <= self.iVisible:
+		if len(self.aYields) <= self.iVisible:
 			return
 		szText = u"<font=3b>" + localText.getText("TXT_KEY_WTP_TRADEROUTE_PAGE", (self.iFirst / self.iVisible + 1, self.getNumPages())) + u"</font>"
 		self.pHost.setLabelAt("TRSPage", self.BACKGROUND_ID, szText, CvUtil.FONT_CENTER_JUSTIFY, 24 + 36 + 75, self.H - 40, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
