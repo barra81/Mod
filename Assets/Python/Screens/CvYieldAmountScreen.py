@@ -130,7 +130,6 @@ class CvYieldAmountScreen:
 		self.iKeyUp = self.getKeyId("KB_PGUP")
 		self.iKeyDown = self.getKeyId("KB_PGDN")
 		self.aKeyArrows = [self.getKeyId("KB_LEFT"), self.getKeyId("KB_RIGHT"), self.getKeyId("KB_UP"), self.getKeyId("KB_DOWN")] # (move the window)
-		self.aKeyWasd = [self.getKeyId("KB_A"), self.getKeyId("KB_D"), self.getKeyId("KB_W"), self.getKeyId("KB_S")] # (the same; the diplomacy takes the arrow keys itself before Python sees them)
 		self.iWheelUp = self.getNotifyId("NOTIFY_MOUSEWHEELUP")
 		self.iWheelDown = self.getNotifyId("NOTIFY_MOUSEWHEELDOWN")
 		self.aWheelUp = [self.iWheelUp, self.getNotifyId("NOTIFY_SCROLL_UP")]
@@ -397,8 +396,6 @@ class CvYieldAmountScreen:
 	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False):
 		if iKey in self.aKeyArrows:
 			self.queueMove(self.aKeyArrows.index(iKey), self.getMoveStep(bCtrl, bShift))
-		elif iKey in self.aKeyWasd:
-			self.queueMove(self.aKeyWasd.index(iKey), self.getMoveStep(bCtrl, bShift))
 		elif self.dDigits.has_key(iKey):
 			if self.bSelected:
 				self.szValue = u""
