@@ -4204,7 +4204,7 @@ class CvMainInterface:
 			# the game asks for the help text again with every cursor move over the element (log). A cursor that has moved away from the place
 			# of the last question and is not asked about any more has left the element; far away it has surely left it
 			iDist = max(abs(gc.getGame().getCursorClientX() - self.tHudHoverAt[0]), abs(gc.getGame().getCursorClientY() - self.tHudHoverAt[1]))
-			if iDist > 150 or (iDist > 45 and self.iTick - self.iWidgetHelpTick >= 6):
+			if iDist > 150 or (iDist > 35 and self.iTick - self.iWidgetHelpTick >= 6):
 				self.bHudHover = False
 				self.szHudHelp = u""
 		except:
