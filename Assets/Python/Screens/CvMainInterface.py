@@ -4406,7 +4406,7 @@ class CvMainInterface:
 			iBaseX = iX
 			iBaseY = iY
 			iX = max(0, min(xRes - iWidth, iX + self.iMsgMoveX))
-			iY = max(0, min(yRes - 200, iY + self.iMsgMoveY))
+			iY = max(0, min(yRes - 120, iY + self.iMsgMoveY))
 			self.iMsgMoveX = iX - iBaseX
 			self.iMsgMoveY = iY - iBaseY
 			self.iMsgX = iX
@@ -4435,10 +4435,14 @@ class CvMainInterface:
 
 			# which messages: collapsed the newest ones that fit; expanded pages of the full height of the panel, the newest page
 			# first, a click on the footer shows the next older page (and after the last one the newest again)
+			# the expanded panel ends at 80 percent of the screen height in its default place, moved down it may reach the bottom edge
+			iBottomLimit = int(yRes * 0.80)
+			if self.iMsgMoveY != 0:
+				iBottomLimit = yRes - 10
 			bFooterPrevious = self.bMessagePanelExpanded and (iNumPrevious > 0 or bPrevious)
 			if self.bMessagePanelExpanded:
 				iFooterLines = 1 # the footer of the previous turn
-				iMaxLines = max(6, (int(yRes * 0.80) - iY - iHeaderHeight - iGap - 2 * iPad) / iLine - 2 * iFooterLines)
+				iMaxLines = max(6, (iBottomLimit - iY - iHeaderHeight - iGap - 2 * iPad) / iLine - 2 * iFooterLines)
 			else:
 				iFooterLines = 0
 				iMaxLines = 7 # collapsed: three priority messages of two lines each (3 * 2.2 lines)
