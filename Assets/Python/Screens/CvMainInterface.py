@@ -4705,9 +4705,8 @@ class CvMainInterface:
 			for (iPos, tFound) in aFound:
 				if not tFound in aResult:
 					aResult.append(tFound)
-			# names in the unmarked rest of the text: whole words only, the longest names first, a found name is cut out of the text
-			szRest = re.sub(u"<color=[^>]*>.*?</color>", u" ", szMessage)
-			szRest = re.sub(u"<[^>]*>", u"", szRest).lower()
+			# names in the whole text (marked or not): whole words only, the longest names first, a found name is cut out of the text
+			szRest = re.sub(u"<[^>]*>", u"", szMessage).lower()
 			aRest = []
 			oWord = re.compile(u"\\w", re.UNICODE)
 			for (szKey, tFound) in self.aMessageNameList:
