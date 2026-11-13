@@ -4147,12 +4147,12 @@ class CvMainInterface:
 				if iPromotion < 0 or iPromotion in aiDone:
 					continue
 				aiDone.append(iPromotion)
-				szText = u"<color=255,255,0,255>" + gc.getPromotionInfo(iPromotion).getDescription() + u"</color>"
-				szHelp = CyGameTextMgr().getPromotionHelp(iPromotion, False).strip()
-				if len(szHelp) > 0:
-					szText += u"\n" + szHelp
+				# the help text of the game starts with the name of the promotion itself
+				szText = CyGameTextMgr().getPromotionHelp(iPromotion, False).strip()
+				if len(szText) == 0:
+					szText = u"<color=255,255,0,255>" + gc.getPromotionInfo(iPromotion).getDescription() + u"</color>"
 				aszTexts.append(szText)
-			return u"\n".join(aszTexts)
+			return u"\n\n".join(aszTexts)
 		except:
 			return u""
 
