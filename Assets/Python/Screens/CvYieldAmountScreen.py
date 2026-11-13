@@ -243,6 +243,21 @@ class CvYieldAmountScreen:
 	def queueMove(self, iDir, iStep):
 		self.iPendX += [-iStep, iStep, 0, 0][iDir]
 		self.iPendY += [0, 0, -iStep, iStep][iDir]
+		if self.pHost == None:
+			# an own screen (diplomacy): moved at once, it does not depend on the update calls of the screen
+			self.applyPending()
+
+	def applyPending(self):
+		if self.iPendX != 0 or self.iPendY != 0:
+			iX = self.iPendX
+			iY = self.iPendY
+			self.iPendX = 0
+			self.iPendY = 0
+			try:
+				self.moveWindow(iX, iY)
+			except:
+				import traceback
+				logYield(traceback.format_exc())
 
 	def moveWindow(self, iDX, iDY):
 		aMove = self.dMove.get(self.szCtx, [0, 0])
@@ -285,12 +300,7 @@ class CvYieldAmountScreen:
 				self.bRepeatDone = True
 				aMod = self.getModifiers()
 				self.queueMove(self.iMoveDir, self.getMoveStep(aMod[0], aMod[1]))
-		if self.iPendX != 0 or self.iPendY != 0:
-			iX = self.iPendX
-			iY = self.iPendY
-			self.iPendX = 0
-			self.iPendY = 0
-			self.moveWindow(iX, iY)
+		self.applyPending()
 
 	def dropWidgets(self):
 		try:
