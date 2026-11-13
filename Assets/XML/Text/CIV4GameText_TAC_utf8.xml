@@ -3643,4 +3643,9 @@
 		<English>Needed goods</English>
 		<German>Benötigte Waren</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TRADEROUTE_MOVE_HELP</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Moves the window a bit. Ctrl with the arrow keys does the same.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Verschiebt das Fenster ein Stück. Strg mit den Pfeiltasten macht dasselbe.</German>
+	</TEXT>
 </Civ4GameText>

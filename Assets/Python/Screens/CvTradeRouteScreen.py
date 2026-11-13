@@ -21,6 +21,8 @@ BTN_FAV_EXP = 41100 # + slot
 BTN_VIEW = 41200 # the drop down: default view / favorites
 BTN_SEARCH = 41300 # the search field
 BTN_CLEAR_SEARCH = 41301
+BTN_MOVE = 41310 # +0 left, +1 right, +2 up, +3 down
+MOVE_STEP = 60
 BTN_ROW = 42000 # + slot * 16 + field
 VIEW_ALL = 0
 VIEW_FAV = 1
@@ -270,6 +272,8 @@ class CvTradeRouteScreen:
 		self.aFav = [] # the favorite goods (yield types)
 		self.iView = VIEW_ALL
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
+		self.iMoveX = 0 # the window moved by the player
+		self.iMoveY = 0
 		self.dBtn = {} # the buttons (name: [x, y, w, h, code, text, marked, font, dy, panels])
 		self.szQuery = u""
 		self.aConfirmed = [] # the goods confirmed with Enter (lowercase names)
@@ -600,26 +604,49 @@ class CvTradeRouteScreen:
 		self.iKeyBack = self.getKeyId("KB_BACKSPACE")
 		self.aKeyAccept = [self.getKeyId("KB_TAB"), self.getKeyId("KB_RIGHT")]
 		self.aKeyConfirm = [self.getKeyId("KB_RETURN"), self.getKeyId("KB_NUMPADENTER")]
+		self.aKeyArrows = [self.getKeyId("KB_LEFT"), self.getKeyId("KB_RIGHT"), self.getKeyId("KB_UP"), self.getKeyId("KB_DOWN")]
 		self.iKey6 = self.getKeyId("KB_6")
 		self.iKey7 = self.getKeyId("KB_7")
 		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
 		self.pHost = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+		self.iFirst = 0
+		self.bFinished = False
+		self.buildLayout()
+		try:
+			CyGame().setWheelCapture(True)
+		except:
+			pass
+		return 1
+
+	# the widgets of the window at its current place (also used to move it)
+	def buildLayout(self):
+		pCity = self.getCity()
 		screen = self.pHost
 		iXRes = screen.getXResolution()
 		iYRes = screen.getYResolution()
 		# the window stays between the top bar and the three rows of the goods bar at the bottom (both stay visible)
 		iAreaTop = 70
 		iAreaH = iYRes - 225 - iAreaTop
-		self.H = min(iAreaH, self.LIST_Y + len(self.aYields) * self.ROW_H + 70)
+		self.H = min(iAreaH, self.LIST_Y + len(self.aAllYields) * self.ROW_H + 70)
 		self.iVisible = max(1, (self.H - self.LIST_Y - 70) / self.ROW_H)
-		self.iVisible = min(self.iVisible, len(self.aYields))
+		self.iVisible = min(self.iVisible, len(self.aAllYields))
 		self.H = self.LIST_Y + self.iVisible * self.ROW_H + 70
 		self.OX = (iXRes - self.W) / 2
 		self.OY = iAreaTop + (iAreaH - self.H) / 2
-		self.iFirst = 0
-		self.bFinished = False
+		# moved by the player (stays on the screen)
+		iBaseX = self.OX
+		iBaseY = self.OY
+		self.OX = max(0, min(iXRes - self.W, self.OX + self.iMoveX))
+		self.OY = max(0, min(iYRes - self.H, self.OY + self.iMoveY))
+		self.iMoveX = self.OX - iBaseX
+		self.iMoveY = self.OY - iBaseY
+		self.iFirst = min(self.iFirst, max(0, (len(self.aYields) - 1) / self.iVisible * self.iVisible))
 		self.aDrawn = []
 
+		# the dark, translucent background: the panel style of the message panel, three layers on top of each other like the expanded one
+		for szBack in ("TRSBack1", "TRSBack2"):
+			screen.addPanel(szBack, u"", u"", True, False, self.OX, self.OY, self.W, self.H, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			self.aDrawn.append(szBack)
 		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, self.OX, self.OY, self.W, self.H, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		self.aDrawn.append(self.BACKGROUND_ID)
 		szTitle = u"<font=3><color=255,220,100>" + pCity.getName() + u"</color></font>"
@@ -642,9 +669,15 @@ class CvTradeRouteScreen:
 		self.drawBuildButton()
 		self.drawMarketButton(pCity)
 
+		# moves the window (the arrows at the top right; Ctrl with the arrow keys does the same)
+		iMX = self.OX + self.W - 20 - 4 * 30
+		self.addButton("TRSMoveL", u"\u00ab", False, iMX, self.OY + 12, 28, 24, BTN_MOVE)
+		self.addButton("TRSMoveU", u"^", False, iMX + 30, self.OY + 12, 28, 24, BTN_MOVE + 2)
+		self.addButton("TRSMoveD", u"v", False, iMX + 60, self.OY + 12, 28, 24, BTN_MOVE + 3)
+		self.addButton("TRSMoveR", u"\u00bb", False, iMX + 90, self.OY + 12, 28, 24, BTN_MOVE + 1)
 		self.addButton("TRSOk", localText.getText("TXT_KEY_MAIN_MENU_OK", ()), False, self.OX + self.W / 2 - 105, self.OY + self.H - 44, 100, 28, BTN_OK)
 		self.addButton("TRSCancel", localText.getText("TXT_KEY_POPUP_CANCEL", ()), False, self.OX + self.W / 2 + 5, self.OY + self.H - 44, 100, 28, BTN_CANCEL)
-		if len(self.aYields) > self.iVisible:
+		if len(self.aAllYields) > self.iVisible:
 			self.addButton("TRSUp", u"\u00ab", False, self.OX + 24, self.OY + self.H - 44, 36, 28, BTN_UP)
 			self.addButton("TRSDown", u"\u00bb", False, self.OX + 24 + 36 + 150, self.OY + self.H - 44, 36, 28, BTN_DOWN)
 			self.aDrawn.append("TRSPage")
@@ -658,21 +691,16 @@ class CvTradeRouteScreen:
 		self.drawSearchText()
 		self.iViewX = self.W - 20 - 160
 		screen.addDropDownBoxGFC("TRSView", self.OX + self.iViewX, self.OY + self.H - 44, 160, WidgetTypes.WIDGET_GENERAL, BTN_VIEW, -1, FontTypes.GAME_FONT)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()), 0, 0, True)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_FAV", ()), 1, 1, False)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_MARKED", ()), 2, 2, False)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT", ()), 3, 3, False)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT", ()), 4, 4, False)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_PRODUCED", ()), 5, 5, False)
-		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_NEEDED", ()), 6, 6, False)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_ALL", ()), 0, 0, self.iView == 0)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_FAV", ()), 1, 1, self.iView == 1)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_MARKED", ()), 2, 2, self.iView == 2)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET3_SHORT", ()), 3, 3, self.iView == 3)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_PRESET4_SHORT", ()), 4, 4, self.iView == 4)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_PRODUCED", ()), 5, 5, self.iView == 5)
+		screen.addPullDownString("TRSView", localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_NEEDED", ()), 6, 6, self.iView == 6)
 		self.aDrawn.append("TRSView")
 		self.drawRows()
 		self.drawPage()
-		try:
-			CyGame().setWheelCapture(True)
-		except:
-			pass
-		return 1
 
 	def drop(self, szName):
 		try:
@@ -894,6 +922,8 @@ class CvTradeRouteScreen:
 			return localText.getText("TXT_KEY_WTP_TRADEROUTE_VIEW_HELP", ())
 		if iCode == BTN_SEARCH:
 			return localText.getText("TXT_KEY_WTP_TRADEROUTE_SEARCH_HELP", ())
+		if iCode >= BTN_MOVE and iCode < BTN_MOVE + 4:
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_MOVE_HELP", ())
 		if iCode == BTN_CLEAR_SEARCH:
 			return localText.getText("TXT_KEY_WTP_TRADEROUTE_SEARCH_CLEAR_HELP", ())
 		if iCode >= BTN_FAV_IMP and iCode < BTN_FAV_IMP + 80:
@@ -938,6 +968,31 @@ class CvTradeRouteScreen:
 			logTrade(traceback.format_exc())
 		self.iReload = 60
 
+	def teardownLayout(self):
+		try:
+			self.clearRows()
+			self.clearHover()
+			for szName in self.dBtn.keys():
+				self.removeButton(szName)
+			for szName in self.aDrawn:
+				self.drop(szName)
+			for szName in ("TRSOk", "TRSCancel", "TRSUp", "TRSDown", "TRSPage", "TRSSearchText", "TRSSearchBG", "TRSHeadImp", "TRSHeadExp", "TRSTitle", "TRSHint", "TRSBack1", "TRSBack2", self.BACKGROUND_ID):
+				self.drop(szName)
+			for i in range(5):
+				self.drop("TRSPreset" + str(i))
+		except:
+			import traceback
+			logTrade(traceback.format_exc())
+		self.dBtn = {}
+		self.sHover = ""
+
+	# moves the window and builds it again at the new place
+	def moveWindow(self, iDX, iDY):
+		self.iMoveX += iDX
+		self.iMoveY += iDY
+		self.teardownLayout()
+		self.buildLayout()
+
 	def finish(self, bOk, iPreset):
 		if self.bFinished:
 			return
@@ -957,20 +1012,7 @@ class CvTradeRouteScreen:
 			CyGame().setWheelCapture(False)
 		except:
 			pass
-		try:
-			self.clearRows()
-			self.clearHover()
-			for szName in self.dBtn.keys():
-				self.removeButton(szName)
-			for szName in self.aDrawn:
-				self.drop(szName)
-			for szName in ("TRSOk", "TRSCancel", "TRSUp", "TRSDown", "TRSPage", "TRSSearchText", "TRSSearchBG", "TRSHeadImp", "TRSHeadExp", "TRSTitle", "TRSHint", self.BACKGROUND_ID):
-				self.drop(szName)
-			for i in range(5):
-				self.drop("TRSPreset" + str(i))
-		except:
-			import traceback
-			logTrade(traceback.format_exc())
+		self.teardownLayout()
 		# the interface is redrawn completely afterwards
 		for szBit in ("MiscButtons_DIRTY_BIT", "GameData_DIRTY_BIT", "ResourceTable_DIRTY_BIT", "Minimap_Section_DIRTY_BIT", "Help_DIRTY_BIT", "InfoPane_DIRTY_BIT", "SelectionButtons_DIRTY_BIT", "CityScreen_DIRTY_BIT"):
 			try:
@@ -983,6 +1025,9 @@ class CvTradeRouteScreen:
 	def handleKey(self, iKey, bCtrl, bShift = False):
 		if iKey == self.iKeyEsc:
 			self.finish(False, -1)
+		elif bCtrl and iKey in self.aKeyArrows:
+			iIndex = self.aKeyArrows.index(iKey)
+			self.moveWindow([-MOVE_STEP, MOVE_STEP, 0, 0][iIndex], [0, 0, -MOVE_STEP, MOVE_STEP][iIndex])
 		else:
 			self.handleSearchKey(iKey, bShift)
 
@@ -1005,6 +1050,8 @@ class CvTradeRouteScreen:
 			self.finish(True, -1)
 		elif iData == BTN_CANCEL:
 			self.finish(False, -1)
+		elif iData >= BTN_MOVE and iData < BTN_MOVE + 4:
+			self.moveWindow([-MOVE_STEP, MOVE_STEP, 0, 0][iData - BTN_MOVE], [0, 0, -MOVE_STEP, MOVE_STEP][iData - BTN_MOVE])
 		elif iData == BTN_CLEAR_SEARCH:
 			self.szQuery = u""
 			self.aConfirmed = []
