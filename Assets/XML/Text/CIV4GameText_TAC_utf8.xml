@@ -3700,7 +3700,22 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_FROZEN_HINT</Tag>
-		<English>[COLOR:140:255:40:255]Right click: Colopedia (Ctrl: 2nd) - Esc: close[COLOR_REVERT]</English>
-		<German>[COLOR:140:255:40:255]Rechtsklick: Colopedia (Strg: 2.) - Esc: schließen[COLOR_REVERT]</German>
+		<English>[COLOR:140:255:40:255]Right click: Colopedia (Ctrl: 2nd, Shift + wheel: choose) - Esc: close[COLOR_REVERT]</English>
+		<German>[COLOR:140:255:40:255]Rechtsklick: Colopedia (Strg: 2., Shift + Rad: wählen) - Esc: schließen[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PEDIA_HELP</Tag>
+		<English>Right click: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
+		<German>Rechtsklick: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PEDIA_HELP2</Tag>
+		<English>Ctrl + right click: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
+		<German>Strg + Rechtsklick: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PEDIA_LIST</Tag>
+		<English>[COLOR:140:255:40:255]All hits (Shift + mouse wheel: choose):[COLOR_REVERT]</English>
+		<German>[COLOR:140:255:40:255]Alle Treffer (Shift + Mausrad: auswählen):[COLOR_REVERT]</German>
 	</TEXT>
 </Civ4GameText>

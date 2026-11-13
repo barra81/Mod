@@ -340,6 +340,7 @@ class CvMainInterface:
 	iTipSelPara = -1 # the line of the frozen tooltip with a chosen target (shift + mouse wheel) and the index of the target
 	iTipSelIdx = 0
 	bTipWheel = False
+	szFrozenError = ""
 	iSecondTipLines = 0
 	aszTipParas = []
 	bHoverTip = True # Ctrl+Shift+T switches the hover tooltip on and off
@@ -3943,11 +3944,13 @@ class CvMainInterface:
 		except:
 			pass
 		if bWheel != self.bTipWheel:
+			self.tipLog("wheel capture %s" % str(bWheel))
 			self.bTipWheel = bWheel
 			gc.getGame().setWheelCapture(bWheel)
 		if bWheel:
 			iNotches = gc.getGame().takeWheelNotches()
 			if iNotches != 0:
+				self.tipLog("wheel notches=%d para=%d" % (iNotches, iPara))
 				aTargets = self.getTextPediaAllTargets(self.aszTipParas[iPara])
 				if iPara != self.iTipSelPara:
 					self.iTipSelPara = iPara
@@ -3964,18 +3967,47 @@ class CvMainInterface:
 		self.hideSecondTip(screen)
 		if iPara >= 0:
 			if iSel >= 0:
-				aTargets = self.getTextPediaAllTargets(self.aszTipParas[iPara])
-				aszNames = []
-				for i in range(len(aTargets)):
-					if i == iSel:
-						aszNames.append(u"<color=255,255,0,255>" + aTargets[i][0] + u"</color>")
-					else:
-						aszNames.append(aTargets[i][0])
-				szText = u"\n".join(aszNames)
+				szText = self.getTipSecondText(iPara, iSel)
 			else:
-				szText = self.getTipPediaHelp(iPara)
+				szText = self.getTipSecondText(iPara)
 			if len(szText) > 0:
 				self.showSecondTip(screen, szText, iCY)
+
+	# the text of the second window: what a right click opens, and all the hits of the line (the chosen one in yellow)
+	def getTipSecondText( self, iPara, iSel = -1 ):
+		try:
+			szLine = self.aszTipParas[iPara]
+			aTargets = self.getTextPediaTargets(szLine)
+			aAll = self.getTextPediaAllTargets(szLine)
+			if len(aAll) == 0:
+				return u""
+			if iSel >= 0:
+				iIdx = iSel
+			else:
+				iIdx = 0
+				if len(aTargets) > 0:
+					# (the first one of the default list)
+					for i in range(len(aAll)):
+						if aAll[i] == aTargets[0]:
+							iIdx = i
+			if iSel >= 0:
+				szText = localText.getText("TXT_KEY_WTP_TIP_PEDIA_HELP", (aAll[iIdx][0],))
+			else:
+				if len(aTargets) == 0:
+					return u""
+				szText = localText.getText("TXT_KEY_WTP_TIP_PEDIA_HELP", (aTargets[0][0],))
+				if len(aTargets) > 1:
+					szText += u"\n" + localText.getText("TXT_KEY_WTP_TIP_PEDIA_HELP2", (aTargets[1][0],))
+			if len(aAll) > 1:
+				szText += u"\n" + localText.getText("TXT_KEY_WTP_TIP_PEDIA_LIST", ())
+				for i in range(len(aAll)):
+					if i == iIdx:
+						szText += u"\n  <color=255,255,0,255>" + aAll[i][0] + u"</color>"
+					else:
+						szText += u"\n  " + aAll[i][0]
+			return szText
+		except:
+			return u""
 
 	def unfreezeCursorTooltip( self ):
 		if not self.bTipFrozen:
@@ -4141,7 +4173,13 @@ class CvMainInterface:
 				try:
 					self.updateFrozenTip()
 				except:
-					pass
+					try:
+						szError = str(sys.exc_info()[1])
+						if szError != self.szFrozenError:
+							self.szFrozenError = szError
+							self.tipLog("updateFrozenTip error: %s" % szError)
+					except:
+						pass
 			return
 		if not self.bCursorTipShown:
 			return
@@ -5090,7 +5128,8 @@ class CvMainInterface:
 					(CvScreenEnums.PEDIA_IMPROVEMENT, gc.getNumImprovementInfos, gc.getImprovementInfo))
 				for (eScreen, fNum, fInfo) in aKinds:
 					for i in range(fNum()):
-						szName = fInfo(i).getDescription()
+						# (the names of some infos have color tags: [COLOR_CAT_ROAD]Paved Country Road[COLOR_REVERT])
+						szName = re.sub(u"<[^>]*>", u"", fInfo(i).getDescription() or u"")
 						if szName and len(szName) >= 3:
 							szKey = szName.lower()
 							if not szKey in dNames:
@@ -5103,7 +5142,7 @@ class CvMainInterface:
 							iImprovements = i
 					if iImprovements >= 0:
 						for i in range(gc.getNumRouteInfos()):
-							szName = gc.getRouteInfo(i).getDescription()
+							szName = re.sub(u"<[^>]*>", u"", gc.getRouteInfo(i).getDescription() or u"")
 							if szName and len(szName) >= 3 and not szName.lower() in dNames:
 								dNames[szName.lower()] = (szName, "CONCEPT", iImprovements)
 				except:
@@ -5115,7 +5154,7 @@ class CvMainInterface:
 						try:
 							iChar = fInfo(i).getChar()
 							if iChar > 0:
-								dChars[unichr(iChar)] = (fInfo(i).getDescription(), eScreen, i)
+								dChars[unichr(iChar)] = (re.sub(u"<[^>]*>", u"", fInfo(i).getDescription()), eScreen, i)
 						except:
 							pass
 				# concepts (Colopedia: game concepts): by their name and by the key words of the text MESSAGE_CONCEPT_WORDS ("stem=CONCEPT_TYPE;...")
@@ -5123,7 +5162,7 @@ class CvMainInterface:
 				aConceptNames = []
 				for i in range(gc.getNumConceptInfos()):
 					try:
-						szName = gc.getConceptInfo(i).getDescription()
+						szName = re.sub(u"<[^>]*>", u"", gc.getConceptInfo(i).getDescription() or u"")
 						dConcepts[gc.getConceptInfo(i).getType()] = (szName, "CONCEPT", i)
 						if szName and len(szName) >= 4:
 							aConceptNames.append((szName, i))
