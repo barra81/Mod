@@ -3895,9 +3895,11 @@ class CvMainInterface:
 				self.bHudHover = True
 				self.tHudHoverAt = (gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY())
 				self.showCursorTooltip(screen, szText, True)
-			elif int(eWidgetType) == int(WidgetTypes.WIDGET_GENERAL):
-				# the game asks for the help of "nothing in particular": the cursor has left the HUD element
-				self.bHudHover = False
+			elif int(eWidgetType) == int(WidgetTypes.WIDGET_GENERAL) and self.bHudHover:
+				# the game asks for the help of "nothing in particular". Directly after the text of a widget (same place) it does that
+				# too (log), so only a cursor that has moved away from the last widget text means that the HUD element was left
+				if abs(gc.getGame().getCursorClientX() - self.tHudHoverAt[0]) > 4 or abs(gc.getGame().getCursorClientY() - self.tHudHoverAt[1]) > 4:
+					self.bHudHover = False
 			# empty texts are ignored: the game reports them all the time on the map (log: type 24), they must not block the plot help
 		except:
 			pass
