@@ -4688,7 +4688,7 @@ class CvMainInterface:
 						pass
 				self.aMessageSpecial = aSpecial
 				self.dMessagePediaChars = dChars
-				aNameList = [(k, v) for (k, v) in dNames.items() if len(k) >= 4]
+				aNameList = [(k, v) for (k, v) in dNames.items() if len(k) >= 3]
 				aNameList.sort(key = lambda t: -len(t[0]))
 				self.aMessageNameList = aNameList
 				self.dMessagePediaNames = dNames
@@ -4750,7 +4750,7 @@ class CvMainInterface:
 			for (iPos, tFound) in aFound:
 				if not tFound in aResult:
 					aResult.append(tFound)
-			# names in the whole text (marked or not): whole words only, the longest names first, a found name is cut out of the text
+			# names in the whole text (marked or not): whole words only (at least 3 letters), the longest names first, a found name is cut out of the text
 			szRest = maskCities(re.sub(u"<[^>]*>", u"", szMessage)).lower()
 			aRest = []
 			oWord = re.compile(u"\\w", re.UNICODE)
@@ -4782,6 +4782,10 @@ class CvMainInterface:
 			for (iPos, tFound) in aConcepts:
 				if not tFound in aResult:
 					aResult.append(tFound)
+			# gold is mentioned in many messages: with more than two hits it is left out
+			if len(aResult) > 2:
+				eGold = gc.getInfoTypeForString("YIELD_GOLD")
+				aResult = [t for t in aResult if not (t[1] == CvScreenEnums.PEDIA_YIELDS and t[2] == eGold)]
 			self.dMessagePediaCache[szMessage] = aResult
 		except:
 			pass
