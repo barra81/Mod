@@ -3830,8 +3830,8 @@ class CvMainInterface:
 			try:
 				for i in range(len(aszLines)):
 					szPlain = re.sub(u"<[^>]*>", u"", aszLines[i])
-					if self.getMessageWidth(szPlain) > len(szPlain):
-						self.tipLog("tip line %d: %d chars, weighted %.1f, indent %d, budget %d chars, window %d px (max %d, char %.1f px, res %d)" % (i, len(szPlain), self.getMessageWidth(szPlain), aiIndent[i], iCharsPerLine, iWidth, iMaxWidth, iChar, xRes))
+					if self.getLineWidth(aszLines[i]) > len(szPlain):
+						self.tipLog("tip line %d: %d chars, weighted %.1f, indent %d, budget %d chars, window %d px (max %d, char %.1f px, res %d)" % (i, len(szPlain), self.getLineWidth(aszLines[i]), aiIndent[i], iCharsPerLine, iWidth, iMaxWidth, iChar, xRes))
 			except:
 				pass
 			self.drawCursorTip(screen, False)
@@ -3845,7 +3845,7 @@ class CvMainInterface:
 	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad, aiIndent = None ):
 		iLongest = 0
 		for i in range(len(aszLines)):
-			iThis = self.getMessageWidth(re.sub(u"<[^>]*>", u"", aszLines[i]))
+			iThis = self.getLineWidth(aszLines[i])
 			if aiIndent is not None and i < len(aiIndent):
 				iThis += aiIndent[i] / float(iChar)
 			iLongest = max(iLongest, iThis)
@@ -4616,11 +4616,32 @@ class CvMainInterface:
 		szLine = u""
 		iVisible = 0
 		iLineIndent = 0
+		bImgRun = False
+		iImgIndent = 0
 		for szToken in re.split(u"(<[^>]*>)", szMessage):
 			if not szToken:
 				continue
 			if szToken[0] == u"<" and szToken[-1] == u">":
 				szLower = szToken.lower()
+				if szLower.startswith(u"<img="):
+					# a picture (the promotions of a unit): about as wide as an icon of the game font; a row of them goes on in the next line
+					# under the first one when the line is full
+					if not bImgRun:
+						bImgRun = True
+						iImgIndent = 0
+						if bIconIndent:
+							iImgIndent = iVisible
+							if iImgIndent + 4 * self.fImgWidth > iCharsPerLine:
+								iImgIndent = 0
+					if iVisible > iLineIndent and iVisible + self.fImgWidth > iCharsPerLine:
+						aszLines.append(szLine + u"</color>" * len(aszOpen))
+						aiIndent.append(iLineIndent)
+						szLine = u"".join(aszOpen)
+						iVisible = iImgIndent
+						iLineIndent = iImgIndent
+					szLine += szToken
+					iVisible += self.fImgWidth
+					continue
 				if szLower.startswith(u"<color"):
 					aszOpen.append(szToken)
 				elif szLower == u"</color>":
@@ -4628,6 +4649,8 @@ class CvMainInterface:
 						aszOpen.pop()
 				szLine += szToken
 				continue
+			if szToken.strip():
+				bImgRun = False
 			szLead = szToken[:len(szToken) - len(szToken.lstrip())]
 			szLine += szLead
 			iVisible += len(szLead)
@@ -4696,6 +4719,12 @@ class CvMainInterface:
 		if iStart > 0 and len(szCore) - iStart >= 2:
 			return [szWord[:iStart], szWord[iStart:]]
 		return [szWord]
+
+	fImgWidth = 3.6 # width of a picture (<img=...>) in characters
+
+	# visible width of a line in characters (pictures and icons of the game font count more than a letter)
+	def getLineWidth(self, szLine):
+		return self.getMessageWidth(re.sub(u"<[^>]*>", u"", szLine)) + self.fImgWidth * len(re.findall(u"<img=", szLine.lower()))
 
 	def isIconRow(self, szText):
 		for szChar in szText:
