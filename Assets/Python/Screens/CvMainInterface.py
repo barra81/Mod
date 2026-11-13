@@ -4399,7 +4399,7 @@ class CvMainInterface:
 			(loopCity, iter) = pPlayer.firstCity(False)
 			while loopCity:
 				if loopCity.getID() == pCity.getID() or iMode == 2 or (iMode == 1 and loopCity.plot().getArea() == iArea):
-					CyInterface().addSelectedCity(loopCity, False)
+					CyInterface().addSelectedCity(loopCity)
 				(loopCity, iter) = pPlayer.nextCity(iter, False)
 			self.unfreezeAllTips()
 			return True
