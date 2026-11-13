@@ -4639,7 +4639,7 @@ class CvMainInterface:
 			dNames = self.dMessagePediaNames
 			for szSegment in re.findall(u"<color=[^>]*>(.*?)</color>", szMessage):
 				szSegment = re.sub(u"<[^>]*>", u"", szSegment)
-				szSegment = re.sub(u"^[^\\w]+|[^\\w]+$", u"", szSegment, 0, re.UNICODE).lower()
+				szSegment = re.compile(u"^[^\\w]+|[^\\w]+$", re.UNICODE).sub(u"", szSegment).lower()
 				if len(szSegment) < 3:
 					continue
 				tFound = dNames.get(szSegment)
