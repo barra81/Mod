@@ -3858,10 +3858,7 @@ class CvMainInterface:
 			if szText and len(szText) > 0:
 				self.fWidgetHelpTime = time.time()
 				self.showCursorTooltip(screen, szText, True)
-			elif int(eWidgetType) != int(WidgetTypes.WIDGET_GENERAL):
-				# a HUD element of the game itself (its text is not known here): only the tooltip of the game
-				self.fWidgetHelpTime = time.time()
-				self.hideCursorTooltip(screen)
+			# empty texts are ignored: the game reports them all the time on the map (log: type 24), they must not block the plot help
 		except:
 			pass
 
