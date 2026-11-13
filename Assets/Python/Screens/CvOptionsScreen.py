@@ -314,7 +314,7 @@ class CvOptionsScreen:
 			iTipMode = CvScreensInterface.mainInterface.iTipMode
 		except:
 			pass
-		tab.attachDropDown("TipHBox", "TipModeDropdownBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE", ()), aszTipModes, self.callbackIFace, "handleTipModeDropdownInput", "TipModeDropdownBox", iTipMode)
+		tab.attachDropDown("TipHBox", "TipModeDropdownBox", "TipModeDropdownBox", aszTipModes, self.callbackIFace, "handleTipModeDropdownInput", "TipModeDropdownBox", iTipMode)
 		tab.setLayoutFlag("TipModeDropdownBox", "LAYOUT_LEFT")
 		tab.setToolTip("TipModeDropdownBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE_HELP", ()))
 
