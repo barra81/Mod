@@ -246,6 +246,21 @@ class CvEventManager:
 					pass
 			return 1
 
+		# WTP: Shift + arrow keys move the message panel (they used to turn the camera: Ctrl + arrow keys still do)
+		if (eventType == self.EventKeyUp):
+			try:
+				CvScreensInterface.mainInterface.releaseMessageArrow([int(InputTypes.KB_LEFT), int(InputTypes.KB_RIGHT), int(InputTypes.KB_UP), int(InputTypes.KB_DOWN)].index(int(key)))
+			except:
+				pass
+		elif (eventType == self.EventKeyDown and self.bShift and not self.bCtrl and not self.bAlt):
+			try:
+				aArrows = [int(InputTypes.KB_LEFT), int(InputTypes.KB_RIGHT), int(InputTypes.KB_UP), int(InputTypes.KB_DOWN)]
+				if int(key) in aArrows and CvScreensInterface.mainInterface.isMessagePanelShown():
+					CvScreensInterface.mainInterface.pressMessageArrow(aArrows.index(int(key)))
+					return 1
+			except:
+				pass
+
 		if (self.bAllowCheats):
 			# notify debug tools of input to allow it to override the control
 			argsList = (eventType,key,self.bCtrl,self.bShift,self.bAlt,mx,my,px,py,gc.getGame().isNetworkMultiPlayer())

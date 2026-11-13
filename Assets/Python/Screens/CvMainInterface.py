@@ -603,6 +603,12 @@ class CvMainInterface:
 		self.bMessageAutoExpand = None # opens expanded at the start of a turn (saved with the game; None: not read yet)
 		self.iMessageTurn = -1
 		self.bMessageTurnPending = True
+		self.iMsgMoveX = 0 # the message panel moved by the player (Shift + arrow keys)
+		self.iMsgMoveY = 0
+		self.iMsgX = 0
+		self.iMsgY = 0
+		self.aMsgHeld = [] # the arrow keys that are down
+		self.iMsgHoldWait = 0
 		self.aszUpgradeWidgets = [] # WTP: building upgrade panel of the city screen
 		self.iUpgradeCity = -1
 		self.tMessagePanelKey = None
@@ -4181,6 +4187,42 @@ class CvMainInterface:
 		except:
 			pass
 
+	# the message panel is moved with Shift and the arrow keys (two keys at once: diagonal)
+	def isMessagePanelShown(self):
+		return self.tMessagePanelKey is not None
+
+	def pressMessageArrow(self, iDir):
+		if iDir in self.aMsgHeld:
+			return
+		self.aMsgHeld.append(iDir)
+		self.iMsgHoldWait = 18
+		self.moveMessagePanel([iDir])
+
+	def releaseMessageArrow(self, iDir):
+		if iDir in self.aMsgHeld:
+			self.aMsgHeld.remove(iDir)
+
+	def moveMessagePanel(self, aDirs):
+		for iDir in aDirs:
+			self.iMsgMoveX += [-40, 40, 0, 0][iDir]
+			self.iMsgMoveY += [0, 0, -40, 40][iDir]
+		self.updateMessagePanel()
+
+	def updateMessageMove(self):
+		if len(self.aMsgHeld) == 0:
+			return
+		try:
+			bShift = CyInterface().shiftKey()
+		except:
+			bShift = True
+		if not bShift:
+			self.aMsgHeld = []
+			return
+		self.iMsgHoldWait -= 1
+		if self.iMsgHoldWait <= 0:
+			self.iMsgHoldWait = 3
+			self.moveMessagePanel(list(self.aMsgHeld))
+
 	def hideMessagePanel(self, screen):
 		for szName in self.aszMessageLines:
 			screen.hide(szName)
@@ -4343,7 +4385,7 @@ class CvMainInterface:
 				iNumPriority = game.getNumHudPriorityPrevious()
 			else:
 				iNumPriority = game.getNumHudPriority()
-			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), xRes, yRes)
+			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes)
 			if tKey == self.tMessagePanelKey:
 				return
 			self.tMessagePanelKey = tKey
@@ -4354,6 +4396,15 @@ class CvMainInterface:
 			iWidth = max(380, int(xRes * 0.23))
 			iX = (xRes - iWidth) / 2
 			iY = int(yRes * 0.058) # just below the round buttons of the top HUD
+			# moved by the player (stays on the screen)
+			iBaseX = iX
+			iBaseY = iY
+			iX = max(0, min(xRes - iWidth, iX + self.iMsgMoveX))
+			iY = max(0, min(yRes - 200, iY + self.iMsgMoveY))
+			self.iMsgMoveX = iX - iBaseX
+			self.iMsgMoveY = iY - iBaseY
+			self.iMsgX = iX
+			self.iMsgY = iY
 			iHeaderHeight = int(max(14, int(yRes * 0.0135)) * 0.85)
 			iGap = int(iLine * 0.8) # a blank line between the header and the messages
 			iIndent = int(iLine * 0.95) # the lines after the first one of a message
@@ -4797,6 +4848,7 @@ class CvMainInterface:
 		self.updateTerritorialInfluenceEditor()
 		self.updatePioneerPlanEditor()
 		self.updateAutomatedFollow()
+		self.updateMessageMove()
 		try:
 			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
 		except:
@@ -4909,6 +4961,8 @@ class CvMainInterface:
 				return localText.getText("TXT_KEY_INTERFACE_ACHIEVE_ADVISOR", ("F10", ""));
 			elif iData1 == self.BUTTON_TERRITORIAL_INFLUENCE:
 				return localText.getText("TXT_KEY_INTERFACE_TERRITORIAL_INFLUENCE", ("Ctrl+I", ""));
+			elif iData1 == self.BUTTON_MESSAGE_AUTO:
+				return localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_AUTO_HELP", (self.iMsgX, self.iMsgY))
 			elif iData1 == self.BUTTON_PIONEER_PLAN:
 				return localText.getText("TXT_KEY_INTERFACE_PIONEER_PLAN", ());
 			elif iData1 == self.BUTTON_PIONEER_PLAN_BUILD:
