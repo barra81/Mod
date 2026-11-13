@@ -3876,6 +3876,7 @@ class CvMainInterface:
 	# and 350 pixels wide, so a character count is not good enough). The values are for a line distance of 22 pixels, the others are scaled.
 	def getTextPixels( self, szPlain, iLine ):
 		fSum = 0.0
+		szPlain = szPlain.replace(u"&lt;", u"<").replace(u"&gt;", u">").replace(u"&amp;", u"&")
 		for c in szPlain:
 			if ord(c) >= 0x2000:
 				fSum += 13.0 # icon of the game font (measured: 12 to 14 pixels)
@@ -4685,6 +4686,8 @@ class CvMainInterface:
 	def getMessageWidth(self, szText):
 		# width in characters: the symbols of the game font (icons) are wider than letters
 		iWidth = 0
+		# the help texts contain &lt; &gt; &amp; for the signs that are shown (&lt;F1&gt; is 4 characters wide)
+		szText = szText.replace(u"&lt;", u"<").replace(u"&gt;", u">").replace(u"&amp;", u"&")
 		for szChar in szText:
 			if ord(szChar) >= 0x2000:
 				iWidth += 3.4
