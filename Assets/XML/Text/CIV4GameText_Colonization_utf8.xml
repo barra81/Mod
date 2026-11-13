@@ -4049,10 +4049,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CITY_GROWTH</Tag>
-		<English>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]The people are so well-fed and healthy that they bring many children into the world - the city is growing!</English>
+		<English>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]The people are so [COLOR_POSITIVE_TEXT]well-fed and healthy[COLOR_REVERT] that they bring many children into the world - [COLOR_POSITIVE_TEXT]the city is growing![COLOR_REVERT]</English>
 		<Portuguese>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]As pessoas estão tão bem alimentadas e saudáveis que trazem muitas crianças ao mundo - a cidade está crescendo!</Portuguese>
 		<French>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]L'abondance de nourriture a permis à la population de croître !</French>
-		<German>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Die Menschen sind so wohlgenährt und gesund, dass sie viele Kinder in die Welt setzen - die Stadt wächst!</German>
+		<German>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Die Menschen sind so [COLOR_POSITIVE_TEXT]wohlgenährt und gesund[COLOR_REVERT], dass sie viele Kinder in die Welt setzen - [COLOR_POSITIVE_TEXT]die Stadt wächst![COLOR_REVERT]</German>
 		<Italian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]L'abbondanza di cibo a ha causato un aumento della popolazione!</Italian>
 		<Spanish>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]La abundancia de Alimentos en ha comportado un aumento de población.</Spanish>
 		<Russian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Люди настолько сыты и здоровы, что рожают на свет много детей - город растет!</Russian>

@@ -1336,10 +1336,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ALMOST_NO_RAW</Tag>
-		<English>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]The stock of %F2_yield_icon is declining. We will soon have a problem with the production of %F3_yield_icon.</English>
+		<English>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]The stock of %F2_yield_icon [COLOR_WARNING_TEXT]is declining[COLOR_REVERT]. We will soon have a problem with the production of %F3_yield_icon.</English>
 		<Portuguese>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]O estoque de %F2_yield_icon está diminuindo. Em breve teremos um problema com a produção de %F3_yield_icon.</Portuguese>
 		<French>%s1_city est presque à cours de %F2_yield_icon et ne pourra en conséquence plus produire de %F3_yield_icon.</French>
-		<German>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Es neigt sich der Lagervorrat an %F2_yield_icon. Bei der Herstellung von %F3_yield_icon werden wir bald ein Problem bekommen.</German>
+		<German>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Es [COLOR_WARNING_TEXT]neigt sich[COLOR_REVERT] der Lagervorrat an %F2_yield_icon. Bei der Herstellung von %F3_yield_icon werden wir bald ein Problem bekommen.</German>
 		<Russian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Запас %F2_yield_icon снижается. Скоро у нас возникнут проблемы с производством %F3_yield_icon.</Russian>
 		<Hungarian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]%F2_yield_icon készlet csökken. %F3_yield_icon előállításával hamarosan gond lesz.</Hungarian>
 	</TEXT>

@@ -4181,10 +4181,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_YOU_UNITS_UNDER_ATTACK</Tag>
-		<English>Your forces are under attack by %s1_player!</English>
+		<English>[COLOR_WARNING_TEXT]Your forces are under attack by %s1_player![COLOR_REVERT]</English>
 		<Portuguese>Suas forças estão sob ataque de %s1_player!</Portuguese>
 		<French>Vos forces sont attaquées (%s1_player)!</French>
-		<German>Eure Truppen werden angegriffen (%s1_player)!</German>
+		<German>[COLOR_WARNING_TEXT]Eure Truppen werden angegriffen (%s1_player)![COLOR_REVERT]</German>
 		<Italian>Le tue forze sono sotto attacco (%s1_player)!</Italian>
 		<Spanish>Atacan a vuestras fuerzas (%s1_player).</Spanish>
 		<Russian>Наши войска атакованы %s1_player!</Russian>
@@ -4214,10 +4214,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_IMP_DESTROYED</Tag>
-		<English>A %s1_ImpName has been destroyed by a marauding [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</English>
+		<English>A %s1_ImpName [COLOR_WARNING_TEXT]has been destroyed[COLOR_REVERT] by a marauding [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</English>
 		<Portuguese>Um %s1_ImpName foi destruído por um saqueador [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</Portuguese>
 		<French>Destruction de [NUM1:un:une:des:des] %s1_ImpName - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT]) !</French>
-		<German>Eine Modernisierung %s1_ImpName wurde zerstört - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT])!</German>
+		<German>Eine Modernisierung %s1_ImpName [COLOR_WARNING_TEXT]wurde zerstört[COLOR_REVERT] - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT])!</German>
 		<Italian>[NUM1:Un:Una] %s1_ImpName è [NUM1:stato sabotato:stata sabotata] - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT])!</Italian>
 		<Spanish>[NUM1:Un:Una:Unos:Unas] %s1_ImpName [NUM1:ha sido destruido:ha sido destruida:han sido destruidos:han sido destruidas] - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT]).</Spanish>
 		<Russian>%s1_ImpName уничтожена [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</Russian>
@@ -12129,10 +12129,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_CITY_IMPROVEMENT_DESTROYED</Tag>
-		<English>Your %s1_improvement has been destroyed</English>
+		<English>Your %s1_improvement [COLOR_WARNING_TEXT]has been destroyed[COLOR_REVERT]</English>
 		<Portuguese>Seu %s1_improvement foi destruído</Portuguese>
 		<French>Votre %s1_improvement a été détruit(e)</French>
-		<German>Eure Modernisierung %s1_improvement wurde zerstört</German>
+		<German>Eure Modernisierung %s1_improvement [COLOR_WARNING_TEXT]wurde zerstört[COLOR_REVERT]</German>
 		<Italian>[NUM1:Il tuo:La tua] %s1_improvement è [NUM1:stato distrutto:stata distrutta]</Italian>
 		<Spanish>[NUM1:Vuestro:Vuestra:Vuestros:Vuestras] %s1_improvement [NUM1:ha quedado destruido:ha quedado destruida:han quedado destruidos:han quedado destruidas]</Spanish>
 		<Russian>Ваше %s1_improvement было уничтожено</Russian>
@@ -12642,10 +12642,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_YOU_UNITS_UNDER_ATTACK_UNKNOWN</Tag>
-		<English>Your forces are under attack!</English>
+		<English>[COLOR_WARNING_TEXT]Your forces are under attack![COLOR_REVERT]</English>
 		<Portuguese>Suas forças estão sob ataque!</Portuguese>
 		<French>Vos troupes sont attaquées !</French>
-		<German>Eure Truppen werden angegriffen!</German>
+		<German>[COLOR_WARNING_TEXT]Eure Truppen werden angegriffen![COLOR_REVERT]</German>
 		<Italian>Le tue forze sono sotto attacco!</Italian>
 		<Spanish>Atacan a vuestras fuerzas.</Spanish>
 		<Russian>Ваши войска атакованы!</Russian>
@@ -14170,7 +14170,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_YOU_UNIT_WAS_DESTROYED_UNKNOWN</Tag>
-		<English>[COLOR_WARNING_TEXT]Bad news, Milord! [COLOR_REVERT]While defending, your [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] was destroyed by an enemy [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT]!</English>
+		<English>[COLOR_WARNING_TEXT]Bad news, Milord! [COLOR_REVERT]While defending, your [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] [COLOR_WARNING_TEXT]was destroyed[COLOR_REVERT] by an enemy [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT]!</English>
 		<Portuguese>[COLOR_WARNING_TEXT]Más notícias, Milorde! [COLOR_REVERT]Enquanto defendia, seu [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] foi destruído por um inimigo [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT]!</Portuguese>
 		<French>En se défendant, [NUM1:votre:votre:vos:vos] %s1_UnitName a été [NUM1:détruit:détruite:détruits:détruites] par l'unité ennemie : %s2_EnUName !</French>
 		<German>[COLOR_WARNING_TEXT]Schlechte Nachrichten, Milord! [COLOR_REVERT]Eure Einheit [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] wurde von einer feindlichen Einheit [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT] angegriffen und bei der Verteidigung vernichtet!</German>

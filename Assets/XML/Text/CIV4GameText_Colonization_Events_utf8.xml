@@ -5730,10 +5730,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENTTRIGGER_ECCENTRIC_ARCHITECT</Tag>
-		<English>There are rumours that his Majesty has sent an experienced architect to your colonies in order to support the development of the colonies.</English>
+		<English>There are rumours that his Majesty has sent an [COLOR_POSITIVE_TEXT]experienced architect[COLOR_REVERT] to your colonies in order to support the development of the colonies.</English>
 		<Portuguese>Há rumores de que Sua Majestade enviou um arquiteto experiente às suas colônias para apoiar o desenvolvimento das colônias.</Portuguese>
 		<French>Il paraitrait que sa Majesté a envoyé un architecte expérimenté dans vos colonies afin d'aider à les bâtir.</French>
-		<German>Es heißt, der König habe zur Förderung der Entwicklung seiner Kolonien in der Neuen Welt einen Architekten nach [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] entsandt.</German>
+		<German>Es heißt, der König habe zur Förderung der Entwicklung seiner Kolonien in der Neuen Welt einen [COLOR_POSITIVE_TEXT]Architekten[COLOR_REVERT] nach [COLOR_SELECTED_TEXT]%s2_city[COLOR_REVERT] entsandt.</German>
 		<Russian>Ходят слухи об отправке в колонии опытного архитектора, чтобы поддержать их развитие.</Russian>
 	</TEXT>
 	<TEXT>
