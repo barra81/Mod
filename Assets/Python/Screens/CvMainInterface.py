@@ -316,6 +316,7 @@ class CvMainInterface:
 	BUTTON_MESSAGE_AUTO = 761 # WTP: message panel: auto expand at the start of a turn on / off
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
 	dMessagePediaChars = {}
+	aMessageConceptPatterns = []
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -4646,6 +4647,25 @@ class CvMainInterface:
 								dChars[unichr(iChar)] = (fInfo(i).getDescription(), eScreen, i)
 						except:
 							pass
+				# concepts (Colopedia: game concepts): by their name and by the key words of the text MESSAGE_CONCEPT_WORDS ("stem=CONCEPT_TYPE;...")
+				dConcepts = {}
+				aConceptNames = []
+				for i in range(gc.getNumConceptInfos()):
+					try:
+						szName = gc.getConceptInfo(i).getDescription()
+						dConcepts[gc.getConceptInfo(i).getType()] = (szName, "CONCEPT", i)
+						if szName and len(szName) >= 4:
+							aConceptNames.append((szName, i))
+					except:
+						pass
+				aAliases = []
+				for szEntry in localText.getText("TXT_KEY_WTP_MESSAGE_CONCEPT_WORDS", ()).split(u";"):
+					aParts = szEntry.strip().split(u"=")
+					if len(aParts) == 2 and aParts[1].strip() in dConcepts:
+						aAliases.append((re.compile(u"(?<!\\w)" + re.escape(aParts[0].strip()) + u"\\w*", re.UNICODE | re.IGNORECASE), dConcepts[aParts[1].strip()]))
+				for (szName, i) in aConceptNames:
+					aAliases.append((re.compile(u"(?<!\\w)" + re.escape(szName) + u"(?!\\w)", re.UNICODE | re.IGNORECASE), dConcepts[gc.getConceptInfo(i).getType()]))
+				self.aMessageConceptPatterns = aAliases
 				self.dMessagePediaChars = dChars
 				self.dMessagePediaNames = dNames
 			dNames = self.dMessagePediaNames
@@ -4676,6 +4696,17 @@ class CvMainInterface:
 			for (iPos, tFound) in aFound:
 				if not tFound in aResult:
 					aResult.append(tFound)
+			# game concepts in the plain text (after the named things)
+			szPlain = re.sub(u"<[^>]*>", u"", szMessage)
+			aConcepts = []
+			for (oPattern, tConcept) in self.aMessageConceptPatterns:
+				oMatch = oPattern.search(szPlain)
+				if oMatch is not None:
+					aConcepts.append((oMatch.start(), tConcept))
+			aConcepts.sort(key = lambda t: t[0])
+			for (iPos, tFound) in aConcepts:
+				if not tFound in aResult:
+					aResult.append(tFound)
 		except:
 			pass
 		return aResult
@@ -4688,7 +4719,11 @@ class CvMainInterface:
 				iIndex = 1
 			if iIndex < len(aTargets):
 				szName, eScreen, iEntry = aTargets[iIndex]
-				CvScreensInterface.pediaMainScreen.pediaJump(eScreen, iEntry, True)
+				if eScreen == "CONCEPT":
+					iEntryId = CvScreensInterface.pediaMainScreen.pediaHistorical.getIdFromEntryInfo(CivilopediaPageTypes.CIVILOPEDIA_PAGE_CONCEPT, iEntry)
+					CvScreensInterface.pediaMainScreen.pediaJump(CvScreenEnums.PEDIA_HISTORY, iEntryId, True)
+				else:
+					CvScreensInterface.pediaMainScreen.pediaJump(eScreen, iEntry, True)
 		except:
 			pass
 
