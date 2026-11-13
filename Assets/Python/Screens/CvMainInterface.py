@@ -3799,6 +3799,9 @@ class CvMainInterface:
 			iPad = max(6, iLine / 2)
 			iChar = iLine * 0.32 # width of a character (measured in the message panel)
 			iMaxWidth = max(300, int(xRes * 0.2))
+			if bWidget:
+				# texts of HUD elements are long sentences: narrower window, more lines (as the tooltip of the game)
+				iMaxWidth = max(300, int(xRes * 0.14))
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = [] # the paragraph (text between two line breaks of the help) of every line: right click in the frozen window
