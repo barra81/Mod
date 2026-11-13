@@ -4825,7 +4825,7 @@ class CvMainInterface:
 					aResult.append(tFound)
 			# gold is mentioned in many messages: with more than two hits it is left out
 			if len(aResult) > 2:
-				szGold = gc.getYieldInfo(gc.getInfoTypeForString("YIELD_GOLD")).getDescription().lower()
+				szGold = gc.getYieldInfo(YieldTypes.YIELD_GOLD).getDescription().lower()
 				aResult = [t for t in aResult if t[0].lower() != szGold]
 			self.dMessagePediaCache[szMessage] = aResult
 		except:
