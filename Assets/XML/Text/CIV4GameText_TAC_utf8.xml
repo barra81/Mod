@@ -3690,13 +3690,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_ON</Tag>
-		<English>Hover tooltip: on</English>
-		<German>Hover-Tooltip: an</German>
+		<English>Nested tooltips: on</English>
+		<German>Nested Tooltips: an</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_ORIGINAL</Tag>
-		<English>Hover tooltip: window at the original position</English>
-		<German>Hover-Tooltip: Fenster an der ursprünglichen Position</German>
+		<English>Nested tooltips: window at the original position</English>
+		<German>Nested Tooltips: Fenster an der ursprünglichen Position</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE</Tag>
@@ -3705,8 +3705,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE_0</Tag>
-		<English>Hover tooltip (at the cursor)</English>
-		<German>Hover-Tooltip (am Mauszeiger)</German>
+		<English>Nested tooltips (at the cursor) (recommended)</English>
+		<German>Nested Tooltips (am Mauszeiger) (empfohlen)</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE_1</Tag>
@@ -3720,8 +3720,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE_HELP</Tag>
-		<English>How tooltips are shown. Hover tooltip: a window right at the mouse cursor (key [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] freezes it, right click opens the Colopedia). Hotkey to switch between the three modes: [COLOR_HIGHLIGHT_TEXT]Ctrl + Shift + T[COLOR_REVERT].</English>
-		<German>Wie Tooltips angezeigt werden. Hover-Tooltip: ein Fenster direkt am Mauszeiger (Taste [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] friert es ein, Rechtsklick öffnet die Colopedia). Tastenkombination zum Umschalten zwischen den drei Modi: [COLOR_HIGHLIGHT_TEXT]Strg + Umschalt + T[COLOR_REVERT].</German>
+		<English>How tooltips are shown. Nested tooltips: a window right at the mouse cursor. Key [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] freezes it (and again the tooltip beside it, and so on), right click opens the Colopedia, [COLOR_HIGHLIGHT_TEXT]Esc[COLOR_REVERT] unfreezes the last one, holding [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] all of them. Hotkey to switch between the three modes: [COLOR_HIGHLIGHT_TEXT]Ctrl + Shift + T[COLOR_REVERT].</English>
+		<German>Wie Tooltips angezeigt werden. Nested Tooltips: ein Fenster direkt am Mauszeiger. Taste [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] friert es ein (und erneut den Tooltip daneben, und so weiter), Rechtsklick öffnet die Colopedia, [COLOR_HIGHLIGHT_TEXT]Esc[COLOR_REVERT] hebt das letzte Einfrieren auf, X gehalten alle. Tastenkombination zum Umschalten zwischen den drei Modi: [COLOR_HIGHLIGHT_TEXT]Strg + Umschalt + T[COLOR_REVERT].</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY</Tag>
@@ -3755,8 +3755,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_DELAY_HELP</Tag>
-		<English>How long the cursor has to rest on something before the hover tooltip appears. While a tooltip is shown, the next one appears at once. Moving the cursor starts the time again. "Only on key X": the tooltip appears only when you press X.</English>
-		<German>Wie lange der Mauszeiger auf etwas ruhen muss, bevor der Hover-Tooltip erscheint. Solange ein Tooltip angezeigt wird, erscheint der nächste sofort. Bewegt man den Mauszeiger, beginnt die Zeit neu. "Nur mit Taste X": Der Tooltip erscheint nur, wenn Sie X drücken.</German>
+		<English>How long the cursor has to rest on something before the nested tooltip appears. While a tooltip is shown, the next one appears at once. Moving the cursor starts the time again. "Only on key X": the tooltip appears only when you press X.</English>
+		<German>Wie lange der Mauszeiger auf etwas ruhen muss, bevor der Nested Tooltip erscheint. Solange ein Tooltip angezeigt wird, erscheint der nächste sofort. Bewegt man den Mauszeiger, beginnt die Zeit neu. "Nur mit Taste X": Der Tooltip erscheint nur, wenn Sie X drücken.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_OPTIONS_TIP_QUICK</Tag>
@@ -3785,13 +3785,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_OFF</Tag>
-		<English>Hover tooltip: off</English>
-		<German>Hover-Tooltip: aus</German>
+		<English>Nested tooltips: off</English>
+		<German>Nested Tooltips: aus</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_FROZEN_HINT</Tag>
-		<English>[COLOR:140:255:40:255]Right click: Colopedia (Ctrl: 2nd, Shift + wheel: choose) - Esc: close[COLOR_REVERT]</English>
-		<German>[COLOR:140:255:40:255]Rechtsklick: Colopedia (Strg: 2., Shift + Rad: wählen) - Esc: schließen[COLOR_REVERT]</German>
+		<English>[COLOR:140:255:40:255]Frozen - Esc or hold X: close[COLOR_REVERT]</English>
+		<German>[COLOR:140:255:40:255]Eingefroren - Esc oder X halten: schließen[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_PEDIA_HELP</Tag>

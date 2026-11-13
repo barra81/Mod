@@ -246,12 +246,23 @@ class CvEventManager:
 					pass
 			return 1
 
-		# WTP: Esc closes the frozen hover tooltip
+		# WTP: nested tooltips. Esc unfreezes the last frozen tooltip, X (short press) freezes the tooltip that is shown,
+		# X held closes all frozen ones
 		if (eventType == self.EventKeyDown):
 			try:
 				if int(key) == int(InputTypes.KB_ESCAPE) and CvScreensInterface.mainInterface.isTipFrozen():
 					CvScreensInterface.mainInterface.unfreezeCursorTooltip()
 					return 1
+				if int(key) == int(InputTypes.KB_X) and not self.bCtrl and not self.bShift and not self.bAlt:
+					if CvScreensInterface.mainInterface.keyXDown():
+						return 1
+			except:
+				pass
+		elif (eventType == self.EventKeyUp):
+			try:
+				if int(key) == int(InputTypes.KB_X):
+					if CvScreensInterface.mainInterface.keyXUp():
+						return 1
 			except:
 				pass
 
@@ -292,14 +303,6 @@ class CvEventManager:
 					popupInfo.setText(u"showTransportRoutesOverview")
 					popupInfo.addPopup(gc.getGame().getActivePlayer())
 					return 1
-				except:
-					pass
-
-			# WTP: X freezes the hover tooltip that is shown (and closes a frozen one)
-			if (theKey == int(InputTypes.KB_X) and not self.bCtrl and not self.bShift and not self.bAlt):
-				try:
-					if CvScreensInterface.mainInterface.freezeCursorTooltip():
-						return 1
 				except:
 					pass
 
