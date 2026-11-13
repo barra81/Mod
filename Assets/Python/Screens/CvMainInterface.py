@@ -322,7 +322,6 @@ class CvMainInterface:
 	dMessageConcepts = {}
 	dMessagePediaCache = {}
 	dMessageLineIndex = {}
-	tHelpAreaPos = None
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -3743,25 +3742,36 @@ class CvMainInterface:
 						screen.setTableText("ScoreBackground", 0, iRow, szRowText, "", WidgetTypes.WIDGET_CONTACT_CIV, ePlayerRow, -1, CvUtil.FONT_RIGHT_JUSTIFY)
 					screen.show("ScoreBackground")
 
-	# WTP experiment: the help text area follows the mouse cursor (the game keeps it at a fixed place otherwise)
-	def updateHelpAtCursor( self ):
+	# WTP experiment: the help text area is placed at the mouse cursor each time the help text changes (the text is set right after,
+	# so the tooltip is not cleared by a later move of the area)
+	def placeHelpAtCursor( self, screen, szHelp ):
 		try:
-			if CyInterface().isCityScreenUp() or CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_HIDE_ALL:
+			if CyInterface().isCityScreenUp() or len(szHelp) == 0:
 				return
-			if len(CyInterface().getHelpString()) == 0:
-				return
-			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
 			iCursorX = gc.getGame().getCursorClientX()
 			iCursorY = gc.getGame().getCursorClientY()
-			# the area is anchored with its bottom edge at y (it was above the bottom bar): the text appears above the cursor
-			iX = max(0, min(xRes - HELPTEXT_AREA_MAX_WIDTH - 10, iCursorX + 20))
-			iY = max(120, min(yRes - 10, iCursorY - 10))
-			tPos = (iX / 8, iY / 8)
-			if tPos == self.tHelpAreaPos:
-				return
-			self.tHelpAreaPos = tPos
+			# size of the text (estimated: the game wraps at the maximum width)
+			iLine = max(16, int(yRes * 0.0153))
+			iChar = iLine * 0.32
+			iCharsPerLine = max(20, int((HELPTEXT_AREA_MAX_WIDTH - 16) / iChar))
+			aLines = re.sub(u"<[^>]*>", u"", szHelp).split(u"\n")
+			iRows = 0
+			iLongest = 0
+			for szLine in aLines:
+				iLongest = max(iLongest, len(szLine))
+				iRows += max(1, (len(szLine) + iCharsPerLine - 1) / iCharsPerLine)
+			iHeight = iRows * iLine + 14
+			iWidth = max(HELPTEXT_AREA_MIN_WIDTH, min(HELPTEXT_AREA_MAX_WIDTH, int(iLongest * iChar) + 16))
+			# to the right of the cursor, to the left if there is no room
+			iX = iCursorX + 24
+			if iX + iWidth > xRes - 4:
+				iX = iCursorX - 24 - iWidth
+			iX = max(4, iX)
+			# vertically centered on the cursor: the area is anchored with its bottom edge at y
+			iY = iCursorY + iHeight / 2
+			iY = max(iHeight + 4, min(yRes - 4, iY))
 			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
 		except:
 			pass
@@ -3773,7 +3783,9 @@ class CvMainInterface:
 		if ( CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_HIDE_ALL ):
 			screen.setHelpTextString("")
 		else:
-			screen.setHelpTextString( CyInterface().getHelpString() )
+			szHelp = CyInterface().getHelpString()
+			self.placeHelpAtCursor(screen, szHelp)
+			screen.setHelpTextString( szHelp )
 
 		return 0
 
@@ -5136,7 +5148,6 @@ class CvMainInterface:
 		self.updatePioneerPlanEditor()
 		self.updateAutomatedFollow()
 		self.updateMessageMove()
-		self.updateHelpAtCursor()
 		try:
 			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
 		except:
