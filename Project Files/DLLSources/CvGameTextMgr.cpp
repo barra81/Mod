@@ -63,6 +63,7 @@ CvGameTextMgr& CvGameTextMgr::GetInstance()
 //
 //----------------------------------------------------------------------------
 CvGameTextMgr::CvGameTextMgr()
+:m_bSkipYieldPrices(false)
 {
 
 }
@@ -444,7 +445,14 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 		szString.append(szTempBuffer);
 	}
 
-	if (pUnit->getYield() != NO_YIELD)
+	if (pUnit->getYield() != NO_YIELD && m_bSkipYieldPrices)
+	{
+		// same yield in another cargo slot: only the amount, the sell prices were shown with the first slot of this yield
+		szString.append(L", ");
+		szTempBuffer.Format(L"%d%c", pUnit->getYieldStored(), GC.getYieldInfo(pUnit->getYield()).getChar());
+		szString.append(szTempBuffer);
+	}
+	else if (pUnit->getYield() != NO_YIELD)
 	{
 		// R&R, ray, Africa - START
 		szString.append(L", ");
@@ -1970,9 +1978,16 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 
 	if (iNumVisibleUnits > 0)
 	{
+		// WTP: the sell prices of a cargo yield are shown once, for the first slot of this yield only
+		std::vector<bool> abYieldPricesShown(NUM_YIELD_TYPES, false);
+
 		if (pPlot->getCenterUnit())
 		{
 			setUnitHelp(szString, pPlot->getCenterUnit(), iNumVisibleUnits > iMaxNumUnits, true);
+			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
+			{
+				abYieldPricesShown[pPlot->getCenterUnit()->getYield()] = true;
+			}
 		}
 
 		uint iNumShown = std::min<uint>(iMaxNumUnits, iNumVisibleUnits);
@@ -1982,7 +1997,14 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 			if (pLoopUnit != pPlot->getCenterUnit())
 			{
 				szString.append(NEWLINE);
+				YieldTypes eLoopYield = pLoopUnit->getYield();
+				if (eLoopYield != NO_YIELD)
+				{
+					m_bSkipYieldPrices = abYieldPricesShown[eLoopYield];
+					abYieldPricesShown[eLoopYield] = true;
+				}
 				setUnitHelp(szString, pLoopUnit, true, true);
+				m_bSkipYieldPrices = false;
 			}
 		}
 
