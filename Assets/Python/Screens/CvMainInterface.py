@@ -3764,15 +3764,17 @@ class CvMainInterface:
 				iRows += max(1, (len(szLine) + iCharsPerLine - 1) / iCharsPerLine)
 			iHeight = iRows * iLine + 14
 			iWidth = max(HELPTEXT_AREA_MIN_WIDTH, min(HELPTEXT_AREA_MAX_WIDTH, int(iLongest * iChar) + 16))
-			# to the right of the cursor, to the left if there is no room
-			iX = iCursorX + 24
+			# to the right of the cursor (the cursor picture reaches about 30 pixels, the area must not get under it: the game then
+			# takes the mouse as being over the tooltip and hides it), to the left if there is no room
+			iGap = max(48, int(yRes * 0.04))
+			iX = iCursorX + iGap
 			if iX + iWidth > xRes - 4:
-				iX = iCursorX - 24 - iWidth
+				iX = iCursorX - int(iGap * 0.6) - int(iWidth * 1.15)
 			iX = max(4, iX)
 			# vertically centered on the cursor: the area is anchored with its bottom edge at y
 			iY = iCursorY + iHeight / 2
 			iY = max(iHeight + 4, min(yRes - 4, iY))
-			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
+			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -2.2, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
 		except:
 			pass
 
