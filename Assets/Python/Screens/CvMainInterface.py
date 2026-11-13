@@ -322,6 +322,7 @@ class CvMainInterface:
 	aMessageSpecial = []
 	dMessageConcepts = {}
 	dMessagePediaCache = {}
+	dMessagePediaAll = {} # the same with gold at the end instead of left out (mouse wheel list of the frozen tooltip)
 	dMessageLineIndex = {}
 	tMsgRect = (0, 0, 0, 0)
 	iMsgW = 0
@@ -3937,7 +3938,7 @@ class CvMainInterface:
 		# the mouse wheel is only taken (the map does not zoom) while shift is down and the cursor is on a line with named things
 		bWheel = False
 		try:
-			if iPara >= 0 and gc.getGame().isShiftKeyPressed() and len(self.getTextPediaTargets(self.aszTipParas[iPara])) > 0:
+			if iPara >= 0 and gc.getGame().isShiftKeyPressed() and len(self.getTextPediaAllTargets(self.aszTipParas[iPara])) > 0:
 				bWheel = True
 		except:
 			pass
@@ -3947,7 +3948,7 @@ class CvMainInterface:
 		if bWheel:
 			iNotches = gc.getGame().takeWheelNotches()
 			if iNotches != 0:
-				aTargets = self.getTextPediaTargets(self.aszTipParas[iPara])
+				aTargets = self.getTextPediaAllTargets(self.aszTipParas[iPara])
 				if iPara != self.iTipSelPara:
 					self.iTipSelPara = iPara
 					self.iTipSelIdx = 0
@@ -3963,7 +3964,7 @@ class CvMainInterface:
 		self.hideSecondTip(screen)
 		if iPara >= 0:
 			if iSel >= 0:
-				aTargets = self.getTextPediaTargets(self.aszTipParas[iPara])
+				aTargets = self.getTextPediaAllTargets(self.aszTipParas[iPara])
 				aszNames = []
 				for i in range(len(aTargets)):
 					if i == iSel:
@@ -4001,6 +4002,7 @@ class CvMainInterface:
 			if iPara >= 0 and iPara < len(self.aszTipParas):
 				aTargets = self.getTextPediaTargets(self.aszTipParas[iPara])
 				if iPara == self.iTipSelPara:
+					aTargets = self.getTextPediaAllTargets(self.aszTipParas[iPara])
 					# the target chosen with shift + mouse wheel
 					self.openPediaTargetIndex(aTargets, self.iTipSelIdx)
 				else:
@@ -5060,6 +5062,11 @@ class CvMainInterface:
 		except:
 			return []
 
+	def getTextPediaAllTargets(self, szMessage):
+		# all things named in a text, in the order of priority (colored names and symbols, game concepts, other names; gold last)
+		aResult = self.getTextPediaTargets(szMessage)
+		return self.dMessagePediaAll.get(szMessage, aResult)
+
 	def getTextPediaTargets(self, szMessage):
 		# the things named (colored) in a text that have a Colopedia page: [(name, screen, id)] in the order of the text
 		aResult = []
@@ -5068,6 +5075,7 @@ class CvMainInterface:
 				return self.dMessagePediaCache[szMessage]
 			if len(self.dMessagePediaCache) > 300:
 				self.dMessagePediaCache = {}
+				self.dMessagePediaAll = {}
 			if self.dMessagePediaNames is None:
 				dNames = {}
 				# later entries must not overwrite earlier ones: units first, then professions, buildings, goods, bonuses, promotions
@@ -5270,9 +5278,13 @@ class CvMainInterface:
 				if not tFound in aResult:
 					aResult.append(tFound)
 			# gold is mentioned in many messages: with more than two hits it is left out
+			# (the list for the mouse wheel of the frozen tooltip keeps gold, at the end)
+			aAll = list(aResult)
 			if len(aResult) > 2:
 				szGold = gc.getYieldInfo(YieldTypes.YIELD_GOLD).getDescription().lower()
 				aResult = [t for t in aResult if t[0].lower() != szGold]
+				aAll = aResult + [t for t in aAll if t[0].lower() == szGold]
+			self.dMessagePediaAll[szMessage] = aAll
 			self.dMessagePediaCache[szMessage] = aResult
 		except:
 			pass
