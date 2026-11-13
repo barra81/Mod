@@ -3694,6 +3694,11 @@
 		<German>Hover-Tooltip: an</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_HOVER_TIP_ORIGINAL</Tag>
+		<English>Hover tooltip: window at the original position</English>
+		<German>Hover-Tooltip: Fenster an der ursprünglichen Position</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_OFF</Tag>
 		<English>Hover tooltip: off</English>
 		<German>Hover-Tooltip: aus</German>

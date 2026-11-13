@@ -334,6 +334,8 @@ class CvMainInterface:
 	iWidgetHelpTick = -1000
 	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
 	tTipLayout = None
+	tTipPlacedAt = (-1000, -1000)
+	iTipMode = 0 # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
 	aiTipIndent = []
 	aiWrapIndent = []
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
@@ -3811,20 +3813,8 @@ class CvMainInterface:
 			self.aiTipIndent = aiIndent
 			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad, aiIndent)
 			iHeight = len(aszLines) * iLine + 2 * iPad
-			iGap = max(48, int(yRes * 0.04))
-			tRect = self.getTipAvoidRect(iCursorX, iCursorY)
-			if tRect is not None:
-				# beside the window (right of it, left if there is no room), at the height of the cursor
-				iX = tRect[0] + tRect[2] + 12
-				if iX + iWidth > xRes - 4:
-					iX = tRect[0] - 12 - iWidth
-			else:
-				iX = iCursorX + iGap
-				if iX + iWidth > xRes - 4:
-					iX = iCursorX - int(iGap * 0.6) - iWidth
-			iX = max(4, iX)
-			# the top of the window is at the lower end of the cursor
-			iY = max(4, min(yRes - iHeight - 4, iCursorY + self.getCursorBottom(yRes)))
+			(iX, iY) = self.getTipPlacement(iWidth, iHeight, iCursorX, iCursorY, xRes, yRes)
+			self.tTipPlacedAt = (iCursorX, iCursorY)
 			self.tTipLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
 			self.aszTipParas = aszParas
 			try:
@@ -3840,6 +3830,43 @@ class CvMainInterface:
 			self.tCursorTipAt = (iCursorX, iCursorY)
 		except:
 			self.bCursorTipShown = False
+
+	# where a window of this size goes: mode 0 beside the cursor (right of it, left if there is no room; beside the own windows when the cursor is
+	# on one) with its top at the lower end of the cursor; mode 1 at the place of the game tooltip (left, above the HUD, growing upwards)
+	def getTipPlacement( self, iWidth, iHeight, iCursorX, iCursorY, xRes, yRes ):
+		if self.iTipMode == 1:
+			return (HELTTEXT_AREA_X_MARGIN, max(4, yRes - SADDLE_HEIGHT - iHeight))
+		iGap = max(48, int(yRes * 0.04))
+		tRect = self.getTipAvoidRect(iCursorX, iCursorY)
+		if tRect is not None:
+			iX = tRect[0] + tRect[2] + 12
+			if iX + iWidth > xRes - 4:
+				iX = tRect[0] - 12 - iWidth
+		else:
+			iX = iCursorX + iGap
+			if iX + iWidth > xRes - 4:
+				iX = iCursorX - int(iGap * 0.6) - iWidth
+		iX = max(4, iX)
+		iY = max(4, min(yRes - iHeight - 4, iCursorY + self.getCursorBottom(yRes)))
+		return (iX, iY)
+
+	# the window follows the cursor: the game asks for the same text again only now and then, and a window that stays where it was made
+	# would be too far away from the cursor
+	def followCursorTip( self, screen ):
+		iCursorX = gc.getGame().getCursorClientX()
+		iCursorY = gc.getGame().getCursorClientY()
+		if abs(iCursorX - self.tTipPlacedAt[0]) < 6 and abs(iCursorY - self.tTipPlacedAt[1]) < 6:
+			return
+		(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = self.tTipLayout
+		(iNX, iNY) = self.getTipPlacement(iWidth, iHeight, iCursorX, iCursorY, screen.getXResolution(), screen.getYResolution())
+		self.tTipPlacedAt = (iCursorX, iCursorY)
+		if iNX == iX and iNY == iY:
+			return
+		for szName in self.getCursorTipNames():
+			screen.hide(szName)
+			screen.deleteWidget(szName)
+		self.tTipLayout = (iNX, iNY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
+		self.drawCursorTip(screen, False)
 
 	# width of a window for the lines (icons of the game font are wider than letters: getMessageWidth, as the lines were wrapped)
 	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad, aiIndent = None ):
@@ -4141,18 +4168,22 @@ class CvMainInterface:
 			pass
 
 	def toggleHoverTip( self ):
-		self.bHoverTip = not self.bHoverTip
+		# 0: hover tooltip at the cursor, 1: own tooltip window at the place of the game tooltip, 2: off (game tooltip)
+		self.iTipMode = (self.iTipMode + 1) % 3
+		self.bHoverTip = (self.iTipMode != 2)
 		self.unfreezeCursorTooltip()
 		self.bTipFrozen = False
 		try:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			self.bHudHover = False
-			if not self.bHoverTip:
-				self.hideCursorTooltip(screen)
-			if self.bHoverTip:
+			self.hideCursorTooltip(screen)
+			if self.iTipMode == 0:
 				szKey = "TXT_KEY_WTP_HOVER_TIP_ON"
+			elif self.iTipMode == 1:
+				szKey = "TXT_KEY_WTP_HOVER_TIP_ORIGINAL"
 			else:
 				szKey = "TXT_KEY_WTP_HOVER_TIP_OFF"
+				screen.setHelpTextString("")
 			CyInterface().addImmediateMessage(localText.getText(szKey, ()), "")
 		except:
 			pass
@@ -4186,7 +4217,8 @@ class CvMainInterface:
 				self.tHudHoverAt = (gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY())
 				self.szHudHelp = szText
 				self.showCursorTooltip(screen, szText, True)
-				screen.setHelpTextString(szText)
+				# the game tooltip is not shown while the own one is on
+				screen.setHelpTextString(u"")
 			elif int(eWidgetType) == int(WidgetTypes.WIDGET_GENERAL) and self.bHudHover:
 				# the game asks for the help of "nothing in particular". Directly after the text of a widget (same place) it does that
 				# too (log), so only a cursor that has moved away from the last widget text means that the HUD element was left
@@ -4245,8 +4277,11 @@ class CvMainInterface:
 		try:
 			iDX = abs(gc.getGame().getCursorClientX() - self.tCursorTipAt[0])
 			iDY = abs(gc.getGame().getCursorClientY() - self.tCursorTipAt[1])
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			if iDX > 100 or iDY > 100 or CyInterface().isCityScreenUp():
-				self.hideCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE))
+				self.hideCursorTooltip(screen)
+			elif self.iTipMode == 0:
+				self.followCursorTip(screen)
 		except:
 			self.bCursorTipShown = False
 
@@ -4263,11 +4298,11 @@ class CvMainInterface:
 				self.tipLog("H len=%d sinceWidget=%d xy=%d,%d text=%s" % (len(szHelp), self.iTick - self.iWidgetHelpTick, gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY(), repr(szHelp[:60].encode("ascii", "replace"))))
 			self.showCursorTooltip(screen, szHelp)
 			# while the cursor is on a HUD element the plot help behind it must not replace the help of the element
-			if not self.bHoverTip or not self.isHudHover():
+			if not self.bHoverTip:
 				screen.setHelpTextString( szHelp )
-			elif len(self.szHudHelp) > 0:
-				# the cursor is on a HUD element: its text stays in the help area (the plot help behind it must not replace it)
-				screen.setHelpTextString( self.szHudHelp )
+			else:
+				# the own tooltip is on: the game tooltip stays away
+				screen.setHelpTextString( u"" )
 
 		return 0
 

@@ -1977,8 +1977,8 @@ Viel Spaß![NEWLINE]
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_69</Tag>
-		<English>Press [COLOR:140:255:40:255]&lt; CTRL + SHIFT + T &gt;[COLOR_REVERT] to switch the hover tooltip on or off: the tooltip window that appears right at the mouse cursor.</English>
-		<German>Drücken Sie [COLOR:140:255:40:255]&lt; STRG + SHIFT + T &gt;[COLOR_REVERT], um den Hover-Tooltip ein- oder auszuschalten: das Tooltip-Fenster, das direkt am Mauszeiger erscheint.</German>
+		<English>Press [COLOR:140:255:40:255]&lt; CTRL + SHIFT + T &gt;[COLOR_REVERT] to switch the tooltip mode: hover tooltip (window at the mouse cursor, the game tooltip is off), own tooltip window at the original position, or the game tooltip.</English>
+		<German>Drücken Sie [COLOR:140:255:40:255]&lt; STRG + SHIFT + T &gt;[COLOR_REVERT], um den Tooltip-Modus umzuschalten: Hover-Tooltip (Fenster am Mauszeiger, der Spiel-Tooltip ist aus), eigenes Tooltip-Fenster an der ursprünglichen Position oder der Spiel-Tooltip.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_70</Tag>
