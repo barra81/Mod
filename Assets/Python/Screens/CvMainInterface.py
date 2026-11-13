@@ -333,6 +333,7 @@ class CvMainInterface:
 	bHoverTip = True # Ctrl+Shift+T switches the hover tooltip on and off
 	bHudHover = False # the cursor is on a HUD element / widget with its own help text (until the game reports "no widget" again)
 	tHudHoverAt = (0, 0)
+	szHudHelp = u"" # the text of the HUD element under the cursor: kept in the help area of the game ourselves (the tooltip of the game is lost when the screen changes)
 	szCursorTipText = u""
 	tCursorTipAt = (-1000, -1000)
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
@@ -3875,6 +3876,7 @@ class CvMainInterface:
 			# safety: far away from the place where the HUD help was seen, the cursor has surely left the element
 			if abs(gc.getGame().getCursorClientX() - self.tHudHoverAt[0]) > 150 or abs(gc.getGame().getCursorClientY() - self.tHudHoverAt[1]) > 150:
 				self.bHudHover = False
+				self.szHudHelp = u""
 		except:
 			pass
 		return self.bHudHover
@@ -3894,12 +3896,15 @@ class CvMainInterface:
 				self.iWidgetHelpTick = self.iTick
 				self.bHudHover = True
 				self.tHudHoverAt = (gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY())
+				self.szHudHelp = szText
 				self.showCursorTooltip(screen, szText, True)
+				screen.setHelpTextString(szText)
 			elif int(eWidgetType) == int(WidgetTypes.WIDGET_GENERAL) and self.bHudHover:
 				# the game asks for the help of "nothing in particular". Directly after the text of a widget (same place) it does that
 				# too (log), so only a cursor that has moved away from the last widget text means that the HUD element was left
 				if abs(gc.getGame().getCursorClientX() - self.tHudHoverAt[0]) > 4 or abs(gc.getGame().getCursorClientY() - self.tHudHoverAt[1]) > 4:
 					self.bHudHover = False
+					self.szHudHelp = u""
 			# empty texts are ignored: the game reports them all the time on the map (log: type 24), they must not block the plot help
 		except:
 			pass
@@ -3954,6 +3959,9 @@ class CvMainInterface:
 			# while the cursor is on a HUD element the plot help behind it must not replace the help of the element
 			if not self.bHoverTip or not self.isHudHover():
 				screen.setHelpTextString( szHelp )
+			elif len(self.szHudHelp) > 0:
+				# the cursor is on a HUD element: its text stays in the help area (the plot help behind it must not replace it)
+				screen.setHelpTextString( self.szHudHelp )
 
 		return 0
 
