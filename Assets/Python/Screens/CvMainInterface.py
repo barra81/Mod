@@ -3823,9 +3823,17 @@ class CvMainInterface:
 				if iX + iWidth > xRes - 4:
 					iX = iCursorX - int(iGap * 0.6) - iWidth
 			iX = max(4, iX)
-			iY = max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2))
+			# the top of the window is at the lower end of the cursor
+			iY = max(4, min(yRes - iHeight - 4, iCursorY + self.getCursorBottom(yRes)))
 			self.tTipLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
 			self.aszTipParas = aszParas
+			try:
+				for i in range(len(aszLines)):
+					szPlain = re.sub(u"<[^>]*>", u"", aszLines[i])
+					if self.getMessageWidth(szPlain) > len(szPlain):
+						self.tipLog("tip line %d: %d chars, weighted %.1f, indent %d, budget %d chars, window %d px (max %d, char %.1f px, res %d)" % (i, len(szPlain), self.getMessageWidth(szPlain), aiIndent[i], iCharsPerLine, iWidth, iMaxWidth, iChar, xRes))
+			except:
+				pass
 			self.drawCursorTip(screen, False)
 			self.bCursorTipShown = True
 			self.szCursorTipText = szHelp
@@ -3931,7 +3939,7 @@ class CvMainInterface:
 			if iX + iWidth > xRes - 4:
 				iX = iFX - 12 - iWidth
 			iX = max(4, iX)
-			iY = max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2))
+			iY = max(4, min(yRes - iHeight - 4, iCursorY + self.getCursorBottom(yRes)))
 			screen.addPanel("HudTip2Back1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			screen.addPanel("HudTip2Back2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			self.iSecondTipLines = len(aszLines)
@@ -4089,6 +4097,10 @@ class CvMainInterface:
 				gc.getGame().setWheelCapture(False)
 		except:
 			pass
+
+	# distance from the cursor position (hot spot) to the lower end of the cursor picture: the tooltip windows start there
+	def getCursorBottom( self, yRes ):
+		return max(20, int(yRes * 0.025))
 
 	def getTipAvoidRect( self, iCursorX, iCursorY ):
 		# the own windows whose elements have a tooltip: the tooltip appears beside the window, not over it
