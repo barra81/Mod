@@ -341,6 +341,8 @@ class CvMainInterface:
 	iTipSelIdx = 0
 	bTipWheel = False
 	szFrozenError = ""
+	bShiftErrorLogged = False
+	bShiftLogged = False
 	iSecondTipLines = 0
 	aszTipParas = []
 	bHoverTip = True # Ctrl+Shift+T switches the hover tooltip on and off
@@ -3938,8 +3940,18 @@ class CvMainInterface:
 			iPara = aiPara[int((iCY - iY - iPad) / iLine)]
 		# the mouse wheel is only taken (the map does not zoom) while shift is down and the cursor is on a line with named things
 		bWheel = False
+		bShift = False
 		try:
-			if iPara >= 0 and gc.getGame().isShiftKeyPressed() and len(self.getTextPediaAllTargets(self.aszTipParas[iPara])) > 0:
+			bShift = gc.getGame().isShiftKeyPressed()
+		except:
+			if not self.bShiftErrorLogged:
+				self.bShiftErrorLogged = True
+				self.tipLog("isShiftKeyPressed error: %s" % str(sys.exc_info()[1]))
+		if bShift != self.bShiftLogged:
+			self.bShiftLogged = bShift
+			self.tipLog("frozen: shift=%s para=%d targets=%d" % (str(bShift), iPara, len(self.getTextPediaAllTargets(self.aszTipParas[iPara])) if iPara >= 0 else -1))
+		try:
+			if iPara >= 0 and bShift and len(self.getTextPediaAllTargets(self.aszTipParas[iPara])) > 0:
 				bWheel = True
 		except:
 			pass
