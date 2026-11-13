@@ -173,6 +173,7 @@ public:
 	void setWheelCapture(bool bOn) const; // WTP: the mouse wheel is collected for the amount dialog (python) instead of zooming the map
 	int takeWheelNotches() const; // WTP: the notches of the wheel since the last call (positive: away from the user)
 	bool isCtrlKeyPressed() const;
+	bool isShiftKeyPressed() const; // WTP: is the shift key down (frozen tooltip: shift + mouse wheel)
 	void sendDiploYieldAmount(int iYield, int iAmount, int iFromPlayer) const; // WTP: the amount dialog (python) sets the amount of goods of a diplomacy deal
 	void sendYieldTransfer(int iUnitID, int iData3, int iYield, int iAmount, bool bPlayerAction) const; // WTP: the amount dialog (python) sends the transfer of goods
 	std::wstring getWidgetHelpText() const; // WTP: the last help text the game asked for (widget under the cursor)

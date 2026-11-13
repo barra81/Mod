@@ -742,6 +742,11 @@ bool CyGame::isCtrlKeyPressed() const
 	return (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
 }
 
+bool CyGame::isShiftKeyPressed() const
+{
+	return (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+}
+
 // WTP: the amount of goods of a diplomacy deal (the same as CvDLLButtonPopup::handleSelectYieldAmountPopup does)
 void CyGame::sendDiploYieldAmount(int iYield, int iAmount, int iFromPlayer) const
 {

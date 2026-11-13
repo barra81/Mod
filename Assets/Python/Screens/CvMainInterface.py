@@ -335,6 +335,10 @@ class CvMainInterface:
 	tTipLayout = None
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
 	iSecondTipPara = -2
+	tSecondTipKey = None
+	iTipSelPara = -1 # the line of the frozen tooltip with a chosen target (shift + mouse wheel) and the index of the target
+	iTipSelIdx = 0
+	bTipWheel = False
 	iSecondTipLines = 0
 	aszTipParas = []
 	bHoverTip = True # Ctrl+Shift+T switches the hover tooltip on and off
@@ -3920,7 +3924,8 @@ class CvMainInterface:
 		except:
 			self.bSecondTipShown = False
 
-	# every frame while frozen: the line of the frozen window under the cursor decides about the second window
+	# every frame while frozen: the line of the frozen window under the cursor decides about the second window. Shift + mouse wheel on a line
+	# chooses among all the things named in it (the window lists them, the chosen one in yellow; a right click opens its page)
 	def updateFrozenTip( self ):
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 		(iX, iY, iW, iH, aszLines, aiPara, iPad, iLine) = self.tTipLayout
@@ -3929,12 +3934,45 @@ class CvMainInterface:
 		iPara = -1
 		if iCX >= iX and iCX < iX + iW and iCY >= iY + iPad and iCY < iY + iPad + len(aszLines) * iLine:
 			iPara = aiPara[int((iCY - iY - iPad) / iLine)]
-		if iPara == self.iSecondTipPara:
+		# the mouse wheel is only taken (the map does not zoom) while shift is down and the cursor is on a line with named things
+		bWheel = False
+		try:
+			if iPara >= 0 and gc.getGame().isShiftKeyPressed() and len(self.getTextPediaTargets(self.aszTipParas[iPara])) > 0:
+				bWheel = True
+		except:
+			pass
+		if bWheel != self.bTipWheel:
+			self.bTipWheel = bWheel
+			gc.getGame().setWheelCapture(bWheel)
+		if bWheel:
+			iNotches = gc.getGame().takeWheelNotches()
+			if iNotches != 0:
+				aTargets = self.getTextPediaTargets(self.aszTipParas[iPara])
+				if iPara != self.iTipSelPara:
+					self.iTipSelPara = iPara
+					self.iTipSelIdx = 0
+				# the wheel towards the user: the next one, away from the user: the one before
+				self.iTipSelIdx = (self.iTipSelIdx - iNotches) % len(aTargets)
+		iSel = -1
+		if iPara >= 0 and iPara == self.iTipSelPara:
+			iSel = self.iTipSelIdx
+		tKey = (iPara, iSel)
+		if tKey == self.tSecondTipKey:
 			return
-		self.iSecondTipPara = iPara
+		self.tSecondTipKey = tKey
 		self.hideSecondTip(screen)
 		if iPara >= 0:
-			szText = self.getTipPediaHelp(iPara)
+			if iSel >= 0:
+				aTargets = self.getTextPediaTargets(self.aszTipParas[iPara])
+				aszNames = []
+				for i in range(len(aTargets)):
+					if i == iSel:
+						aszNames.append(u"<color=255,255,0,255>" + aTargets[i][0] + u"</color>")
+					else:
+						aszNames.append(aTargets[i][0])
+				szText = u"\n".join(aszNames)
+			else:
+				szText = self.getTipPediaHelp(iPara)
 			if len(szText) > 0:
 				self.showSecondTip(screen, szText, iCY)
 
@@ -3942,7 +3980,15 @@ class CvMainInterface:
 		if not self.bTipFrozen:
 			return False
 		self.hideSecondTip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE))
-		self.iSecondTipPara = -2
+		self.tSecondTipKey = None
+		self.iTipSelPara = -1
+		self.iTipSelIdx = 0
+		if self.bTipWheel:
+			self.bTipWheel = False
+			try:
+				gc.getGame().setWheelCapture(False)
+			except:
+				pass
 		self.bTipFrozen = False
 		self.hideCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE))
 		return True
@@ -3953,7 +3999,12 @@ class CvMainInterface:
 	def openTipPedia( self, iPara, bSecond ):
 		try:
 			if iPara >= 0 and iPara < len(self.aszTipParas):
-				self.openPediaTargets(self.getTextPediaTargets(self.aszTipParas[iPara]), bSecond)
+				aTargets = self.getTextPediaTargets(self.aszTipParas[iPara])
+				if iPara == self.iTipSelPara:
+					# the target chosen with shift + mouse wheel
+					self.openPediaTargetIndex(aTargets, self.iTipSelIdx)
+				else:
+					self.openPediaTargets(aTargets, bSecond)
 		except:
 			pass
 		self.unfreezeCursorTooltip()
@@ -5025,7 +5076,10 @@ class CvMainInterface:
 					(CvScreenEnums.PEDIA_BUILDING, gc.getNumBuildingInfos, gc.getBuildingInfo),
 					(CvScreenEnums.PEDIA_YIELDS, gc.getNumYieldInfos, gc.getYieldInfo),
 					(CvScreenEnums.PEDIA_BONUS, gc.getNumBonusInfos, gc.getBonusInfo),
-					(CvScreenEnums.PEDIA_PROMOTION, gc.getNumPromotionInfos, gc.getPromotionInfo))
+					(CvScreenEnums.PEDIA_PROMOTION, gc.getNumPromotionInfos, gc.getPromotionInfo),
+					(CvScreenEnums.PEDIA_TERRAIN, gc.getNumTerrainInfos, gc.getTerrainInfo),
+					(CvScreenEnums.PEDIA_FEATURE, gc.getNumFeatureInfos, gc.getFeatureInfo),
+					(CvScreenEnums.PEDIA_IMPROVEMENT, gc.getNumImprovementInfos, gc.getImprovementInfo))
 				for (eScreen, fNum, fInfo) in aKinds:
 					for i in range(fNum()):
 						szName = fInfo(i).getDescription()
@@ -5033,6 +5087,19 @@ class CvMainInterface:
 							szKey = szName.lower()
 							if not szKey in dNames:
 								dNames[szKey] = (szName, eScreen, i)
+				# the roads have no page of their own: the concept "Pioneers and improvements" tells about them
+				try:
+					iImprovements = -1
+					for i in range(gc.getNumConceptInfos()):
+						if gc.getConceptInfo(i).getType() == "CONCEPT_IMPROVEMENTS":
+							iImprovements = i
+					if iImprovements >= 0:
+						for i in range(gc.getNumRouteInfos()):
+							szName = gc.getRouteInfo(i).getDescription()
+							if szName and len(szName) >= 3 and not szName.lower() in dNames:
+								dNames[szName.lower()] = (szName, "CONCEPT", iImprovements)
+				except:
+					pass
 				# the symbols (font characters) of goods and bonus resources
 				dChars = {}
 				for (eScreen, fNum, fInfo) in ((CvScreenEnums.PEDIA_YIELDS, gc.getNumYieldInfos, gc.getYieldInfo), (CvScreenEnums.PEDIA_BONUS, gc.getNumBonusInfos, gc.getBonusInfo)):
@@ -5215,11 +5282,14 @@ class CvMainInterface:
 		self.openPediaTargets(self.getMessagePediaTargets(iMessage), bSecond)
 
 	def openPediaTargets(self, aTargets, bSecond):
+		iIndex = 0
+		if bSecond:
+			iIndex = 1
+		self.openPediaTargetIndex(aTargets, iIndex)
+
+	def openPediaTargetIndex(self, aTargets, iIndex):
 		try:
-			iIndex = 0
-			if bSecond:
-				iIndex = 1
-			if iIndex < len(aTargets):
+			if iIndex >= 0 and iIndex < len(aTargets):
 				szName, eScreen, iEntry = aTargets[iIndex]
 				if eScreen == "CONCEPT":
 					iEntryId = CvScreensInterface.pediaMainScreen.pediaHistorical.getIdFromEntryInfo(CivilopediaPageTypes.CIVILOPEDIA_PAGE_CONCEPT, iEntry)
