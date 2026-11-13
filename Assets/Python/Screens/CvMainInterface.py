@@ -3950,7 +3950,7 @@ class CvMainInterface:
 			elif c in u"+%/":
 				fSum += 7.1
 			else:
-				fSum += 8.2
+				fSum += 7.7
 		return fSum * iLine / 22.0
 
 	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad, aiIndent = None ):
@@ -3961,8 +3961,8 @@ class CvMainInterface:
 			if aiIndent is not None and i < len(aiIndent):
 				fThis += aiIndent[i]
 			fPixel = max(fPixel, fThis)
-		# a little reserve (2 % + 4 pixels) and the border; the lines were wrapped by a character count, so wide letters can make a line wider than the maximum
-		return max(120, min(int(iMaxWidth * 1.15), int(fPixel * 1.02) + 2 * iPad + 6))
+		# a little reserve (1 % + 2 pixels) and the border; the lines were wrapped by a character count, so wide letters can make a line wider than the maximum
+		return max(120, min(int(iMaxWidth * 1.15), int(fPixel * 1.01) + 2 * iPad + 4))
 
 	def drawCursorTip( self, screen, bClickable ):
 		self.iCursorTipLines = len(self.tTipLayout[4])
