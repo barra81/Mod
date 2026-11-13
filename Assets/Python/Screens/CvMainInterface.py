@@ -4002,11 +4002,14 @@ class CvMainInterface:
 				screen.hide(szName)
 				screen.deleteWidget(szName)
 			szHint = localText.getText("TXT_KEY_WTP_TIP_FROZEN_HINT", ())
-			aszLines = list(aszLines) + [szHint]
-			aiPara = list(aiPara) + [-1]
-			self.aiTipIndent = list(self.aiTipIndent) + [0]
-			iHeight += iLine
-			iWidth = max(iWidth, int(len(re.sub(u"<[^>]*>", u"", szHint)) * iLine * 0.32) + 2 * iPad + 8)
+			# the hint line is wrapped to the width of the window (the window does not get wider because of it)
+			iChar = iLine * 0.32
+			aszHint = self.wrapMessage(szHint, max(20, int((iWidth - 2 * iPad) / iChar)))
+			aszLines = list(aszLines) + aszHint
+			aiPara = list(aiPara) + [-1] * len(aszHint)
+			self.aiTipIndent = list(self.aiTipIndent) + [0] * len(aszHint)
+			iHeight += iLine * len(aszHint)
+			iWidth = max(iWidth, self.getTipTextWidth(aszHint, iChar, int(iWidth * 1.3), iPad))
 			iY = max(4, min(screen.getYResolution() - iHeight - 4, iY))
 			iX = max(4, min(screen.getXResolution() - iWidth - 4, iX))
 			self.tTipLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
@@ -4152,7 +4155,7 @@ class CvMainInterface:
 				if len(szText) == 0:
 					szText = u"<color=255,255,0,255>" + gc.getPromotionInfo(iPromotion).getDescription() + u"</color>"
 				aszTexts.append(szText)
-			return u"\n\n".join(aszTexts)
+			return u"\n".join(aszTexts)
 		except:
 			return u""
 
