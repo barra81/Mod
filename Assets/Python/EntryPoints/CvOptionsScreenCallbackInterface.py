@@ -67,6 +67,15 @@ def handleLanguagesDropdownBoxInput ( argsList ):
 
 	return 1
 
+def handleTipModeDropdownInput ( argsList ):
+	"WTP: tooltip mode (0 hover tooltip, 1 own window at the original position, 2 game tooltip)"
+	iValue, szName = argsList
+	try:
+		CvScreensInterface.mainInterface.setHoverTipMode(iValue, False)
+	except:
+		pass
+	return 1
+
 def handleGameReset ( argsList ):
 	"Resets these options"
 	szName = argsList

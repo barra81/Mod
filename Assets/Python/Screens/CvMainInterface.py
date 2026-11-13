@@ -4208,7 +4208,11 @@ class CvMainInterface:
 
 	def toggleHoverTip( self ):
 		# 0: hover tooltip at the cursor, 1: own tooltip window at the place of the game tooltip, 2: off (game tooltip)
-		self.iTipMode = (self.iTipMode + 1) % 3
+		self.setHoverTipMode((self.iTipMode + 1) % 3, True)
+
+	# also called by the options screen (Game tab); bMessage: the message of the hotkey
+	def setHoverTipMode( self, iMode, bMessage ):
+		self.iTipMode = iMode
 		self.bHoverTip = (self.iTipMode != 2)
 		self.unfreezeCursorTooltip()
 		self.bTipFrozen = False
@@ -4224,7 +4228,8 @@ class CvMainInterface:
 			else:
 				szKey = "TXT_KEY_WTP_HOVER_TIP_OFF"
 				screen.setHelpTextString("")
-			CyInterface().addImmediateMessage(localText.getText(szKey, ()), "")
+			if bMessage:
+				CyInterface().addImmediateMessage(localText.getText(szKey, ()), "")
 		except:
 			pass
 

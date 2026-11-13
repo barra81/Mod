@@ -3699,6 +3699,31 @@
 		<German>Hover-Tooltip: Fenster an der ursprünglichen Position</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE</Tag>
+		<English>Tooltips:</English>
+		<German>Tooltips:</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE_0</Tag>
+		<English>Hover tooltip (at the cursor)</English>
+		<German>Hover-Tooltip (am Mauszeiger)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE_1</Tag>
+		<English>Own window at the original position</English>
+		<German>Eigenes Fenster an der ursprünglichen Position</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE_2</Tag>
+		<English>Game tooltip</English>
+		<German>Spiel-Tooltip</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_MODE_HELP</Tag>
+		<English>How tooltips are shown. Hover tooltip: a window right at the mouse cursor (key [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] freezes it, right click opens the Colopedia). Hotkey to switch between the three modes: [COLOR_HIGHLIGHT_TEXT]Ctrl + Shift + T[COLOR_REVERT].</English>
+		<German>Wie Tooltips angezeigt werden. Hover-Tooltip: ein Fenster direkt am Mauszeiger (Taste [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] friert es ein, Rechtsklick öffnet die Colopedia). Tastenkombination zum Umschalten zwischen den drei Modi: [COLOR_HIGHLIGHT_TEXT]Strg + Umschalt + T[COLOR_REVERT].</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_OFF</Tag>
 		<English>Hover tooltip: off</English>
 		<German>Hover-Tooltip: aus</German>

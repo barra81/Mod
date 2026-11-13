@@ -302,6 +302,24 @@ class CvOptionsScreen:
 
 		tab.attachSpacer("GamePanelCenter")
 
+		# WTP: tooltip mode (hover tooltip at the cursor / own window at the original position / game tooltip), Ctrl + Shift + T
+		tab.attachHBox("GamePanelCenter", "TipHBox")
+		tab.attachLabel("TipHBox", "TipLabel", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE", ()))
+		tab.setToolTip("TipLabel", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE_HELP", ()))
+		tab.attachSpacer("TipHBox")
+		aszTipModes = (localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE_0", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE_1", ()), localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE_2", ()))
+		iTipMode = 0
+		try:
+			import CvScreensInterface
+			iTipMode = CvScreensInterface.mainInterface.iTipMode
+		except:
+			pass
+		tab.attachDropDown("TipHBox", "TipModeDropdownBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE", ()), aszTipModes, self.callbackIFace, "handleTipModeDropdownInput", "TipModeDropdownBox", iTipMode)
+		tab.setLayoutFlag("TipModeDropdownBox", "LAYOUT_LEFT")
+		tab.setToolTip("TipModeDropdownBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_MODE_HELP", ()))
+
+		tab.attachSpacer("GamePanelCenter")
+
 		tab.attachHBox("GamePanelCenter", "LangHBox")
 
 		# Languages Dropdown
