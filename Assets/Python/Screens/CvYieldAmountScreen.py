@@ -15,6 +15,10 @@ BTN_PLUS = 40002
 BTN_MAX = 40003
 BTN_OK = 40004
 BTN_CANCEL = 40005
+BTN_MOVE = 40010 # +0 left, +1 right, +2 up, +3 down
+MOVE_STEP = 60
+MOVE_DELAY = 18 # frames until the held move button repeats
+MOVE_REPEAT = 3 # frames between the steps
 
 STEP = 25
 STEP_CTRL = 50
@@ -51,6 +55,18 @@ class CvYieldAmountScreen:
 		self.pHost = None # the harbor screen (Europe / Africa / Port Royal) the dialog is drawn on, none: an own screen
 		self.OX = 0
 		self.OY = 0
+		self.dMove = {} # the window moved by the player, per place (diplomacy, city, harbor, map): [x, y]
+		self.szCtx = ""
+		self.iBaseX = 0
+		self.iBaseY = 0
+		self.iGX = 0 # the window on the screen
+		self.iGY = 0
+		self.iMoveDir = -1
+		self.iMoveWait = 0
+		self.bMouseWasDown = False
+		self.bRepeatDone = False
+		self.iPendX = 0
+		self.iPendY = 0
 
 	def getScreen(self):
 		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.YIELD_AMOUNT)
@@ -128,26 +144,65 @@ class CvYieldAmountScreen:
 		# just above the goods bar, in the harbors it is moved up by more than its height
 		if iFromPlayer >= 0:
 			iY = int(iYRes * 0.597) - self.H
+		self.iMoveDir = -1
+		self.iPendX = 0
+		self.iPendY = 0
+		self.bMouseWasDown = False
+		self.bRepeatDone = False
 		if self.pHost == None:
+			self.szCtx = "diplomacy"
+			self.iBaseX = iX
+			self.iBaseY = iY
 			self.OX = 0
 			self.OY = 0
 			# (no setRenderInterfaceOnly: it would switch off the 3d views of the city screen; the keys come from CvEventManager.onKbdEvent)
 			screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
-			screen.setDimensions(iX, iY, self.W, self.H)
+			self.applyPosition(screen)
 			screen.showWindowBackground(False)
 		else:
 			screen = self.pHost
 			self.OX = (screen.getXResolution() - self.W) / 2
+			self.szCtx = "harbor"
 			if self.bHostMain:
 				# just above the goods bar; in the city screen at the right, up to the golden frame of the panels there
 				self.OY = int(screen.getYResolution() * 0.84) - self.H
+				self.szCtx = "map"
 				if CyInterface().isCityScreenUp():
 					self.OX = int(screen.getXResolution() * 0.592) - self.W
+					self.szCtx = "city"
 			else:
 				self.OY = int(screen.getYResolution() * 0.305) # the harbors: a little above the landing stage
+			self.iBaseX = self.OX
+			self.iBaseY = self.OY
+			self.applyPosition(screen)
+		self.drawLayout(screen)
+		try:
+			CyGame().setWheelCapture(True)
+		except:
+			pass
+		return 1
+
+	# the place of the window: the base place plus what the player moved it (stays on the screen)
+	def applyPosition(self, screen):
+		aMove = self.dMove.get(self.szCtx, [0, 0])
+		iXRes = screen.getXResolution()
+		iYRes = screen.getYResolution()
+		iX = max(0, min(iXRes - self.W, self.iBaseX + aMove[0]))
+		iY = max(0, min(iYRes - self.H, self.iBaseY + aMove[1]))
+		self.dMove[self.szCtx] = [iX - self.iBaseX, iY - self.iBaseY]
+		self.iGX = iX
+		self.iGY = iY
+		if self.pHost == None:
+			screen.setDimensions(iX, iY, self.W, self.H) # (the widgets of the own screen stay at 0, 0)
+		else:
+			self.OX = iX
+			self.OY = iY
+
+	# the widgets of the dialog
+	def drawLayout(self, screen):
 		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, self.OX, self.OY, self.W, self.H, PanelStyles.PANEL_STYLE_MAIN, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
-		szTitle = localText.getText("TXT_KEY_SELECT_YIELD_POPUP", (gc.getYieldInfo(iYield).getDescription(),))
+		szTitle = localText.getText("TXT_KEY_SELECT_YIELD_POPUP", (gc.getYieldInfo(self.iYield).getDescription(),))
 		screen.setLabelAt("YAMTitle", self.BACKGROUND_ID, u"<font=3>" + szTitle + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 24, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.addPanel("YAMValueBG", u"", u"", False, False, self.OX + self.W / 2 - 70, self.OY + 44, 140, 36, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
@@ -163,12 +218,89 @@ class CvYieldAmountScreen:
 
 		screen.setButtonGFC("YAMOk", u"<font=2>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		screen.setButtonGFC("YAMCancel", u"<font=2>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		# moves the window (Alt with the arrow keys does the same)
+		iMX = self.W - 8 - 4 * 28
+		for i in range(4):
+			screen.setButtonGFC("YAMMove" + str(i), u"<font=2>" + [u"\u00ab", u"\u00bb", u"^", u"v"][i] + u"</font>", "", self.OX + iMX + [0, 84, 28, 56][i], self.OY + 4, 26, 18, WidgetTypes.WIDGET_GENERAL, BTN_MOVE + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
 		self.drawValue()
+
+	# the pixels of a step: normal, with Shift twice as far, with Ctrl half, with both a third
+	def getMoveStep(self, bCtrl, bShift):
+		if bCtrl and bShift:
+			return MOVE_STEP / 3
+		if bShift:
+			return MOVE_STEP * 2
+		if bCtrl:
+			return MOVE_STEP / 2
+		return MOVE_STEP
+
+	def getModifiers(self):
 		try:
-			CyGame().setWheelCapture(True)
+			return (CyInterface().ctrlKey(), CyInterface().shiftKey())
 		except:
-			pass
-		return 1
+			return (False, False)
+
+	# a step is only noted here, the window is moved once per frame
+	def queueMove(self, iDir, iStep):
+		self.iPendX += [-iStep, iStep, 0, 0][iDir]
+		self.iPendY += [0, 0, -iStep, iStep][iDir]
+
+	def moveWindow(self, iDX, iDY):
+		aMove = self.dMove.get(self.szCtx, [0, 0])
+		self.dMove[self.szCtx] = [aMove[0] + iDX, aMove[1] + iDY]
+		if self.pHost == None:
+			self.applyPosition(self.getScreen())
+			return
+		# drawn on another screen: the widgets are built again at the new place
+		screen = self.pHost
+		self.dropWidgets()
+		self.applyPosition(screen)
+		self.drawLayout(screen)
+
+	# the move buttons held down: the steps go on until the mouse button is released (the first step is the click itself)
+	def updateMove(self):
+		try:
+			bDown = CyInterface().isLeftMouseDown()
+		except:
+			bDown = False
+		if not bDown:
+			self.iMoveDir = -1
+			self.bMouseWasDown = False
+		elif self.iMoveDir == -1:
+			if not self.bMouseWasDown:
+				self.bMouseWasDown = True
+				self.bRepeatDone = False
+				iX = CyGame().getCursorClientX() - self.iGX
+				iY = CyGame().getCursorClientY() - self.iGY
+				iMX = self.W - 8 - 4 * 28
+				for i in range(4):
+					iBX = iMX + [0, 84, 28, 56][i]
+					if iX >= iBX and iX < iBX + 26 and iY >= 4 and iY < 22:
+						self.iMoveDir = i
+						self.iMoveWait = MOVE_DELAY
+						break
+		else:
+			self.iMoveWait -= 1
+			if self.iMoveWait <= 0:
+				self.iMoveWait = MOVE_REPEAT
+				self.bRepeatDone = True
+				aMod = self.getModifiers()
+				self.queueMove(self.iMoveDir, self.getMoveStep(aMod[0], aMod[1]))
+		if self.iPendX != 0 or self.iPendY != 0:
+			iX = self.iPendX
+			iY = self.iPendY
+			self.iPendX = 0
+			self.iPendY = 0
+			self.moveWindow(iX, iY)
+
+	def dropWidgets(self):
+		try:
+			aNames = ["YAMValue", "YAMTitle", "YAMHintA", "YAMHintB", "YAMValueBG", "YAMMinus", "YAMPlus", "YAMMax", "YAMOk", "YAMCancel", "YAMMove0", "YAMMove1", "YAMMove2", "YAMMove3", self.BACKGROUND_ID]
+			for szName in aNames:
+				self.pHost.deleteWidget(szName)
+		except:
+			import traceback
+			logYield(traceback.format_exc())
 
 	def isHostMain(self):
 		return self.bHostMain and not self.bFinished
@@ -246,19 +378,16 @@ class CvYieldAmountScreen:
 			self.getScreen().hideScreen()
 		else:
 			# drawn on a harbor screen: the widgets are removed again
-			try:
-				for szName in ("YAMValue", "YAMTitle", "YAMHintA", "YAMHintB", "YAMValueBG", "YAMMinus", "YAMPlus", "YAMMax", "YAMOk", "YAMCancel", self.BACKGROUND_ID):
-					self.pHost.deleteWidget(szName)
-			except:
-				import traceback
-				logYield(traceback.format_exc())
+			self.dropWidgets()
 			self.refreshView()
 			self.bHostMain = False
 			self.pHost = None
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
-	def handleKey(self, iKey, bCtrl):
-		if self.dDigits.has_key(iKey):
+	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False):
+		if bAlt and iKey in [self.getKeyId("KB_LEFT"), self.getKeyId("KB_RIGHT"), self.iKeyArrowUp, self.iKeyArrowDown]:
+			self.queueMove([self.getKeyId("KB_LEFT"), self.getKeyId("KB_RIGHT"), self.iKeyArrowUp, self.iKeyArrowDown].index(iKey), self.getMoveStep(bCtrl, bShift))
+		elif self.dDigits.has_key(iKey):
 			if self.bSelected:
 				self.szValue = u""
 			self.bSelected = False
@@ -296,7 +425,7 @@ class CvYieldAmountScreen:
 		if int(inputClass.getNotifyCode()) != int(NotifyCode.NOTIFY_CLICKED) or inputClass.getButtonType() != WidgetTypes.WIDGET_GENERAL:
 			return 0
 		iData = inputClass.getData1()
-		if iData < BTN_MINUS or iData > BTN_CANCEL:
+		if iData < BTN_MINUS or iData >= BTN_MOVE + 4 or (iData > BTN_CANCEL and iData < BTN_MOVE):
 			return 0
 		self.handleInput(inputClass)
 		return 1
@@ -325,6 +454,12 @@ class CvYieldAmountScreen:
 						self.finish(True)
 				elif iData == BTN_CANCEL:
 					self.finish(False)
+				elif iData >= BTN_MOVE and iData < BTN_MOVE + 4:
+					if self.bRepeatDone:
+						self.bRepeatDone = False # (the release after the window was moved by holding the button)
+					else:
+						aMod = self.getModifiers()
+						self.queueMove(iData - BTN_MOVE, self.getMoveStep(aMod[0], aMod[1]))
 			return 0
 		# the other events are logged (the first ones): this shows what the mouse wheel sends if it is none of the codes above
 		if self.iLog < 60 and iCode != int(NotifyCode.NOTIFY_CURSOR_MOVE_ON) and iCode != int(NotifyCode.NOTIFY_CURSOR_MOVE_OFF):
@@ -340,6 +475,7 @@ class CvYieldAmountScreen:
 			if self.pHost != None and not self.bHostMain and not self.pHost.isActive():
 				self.finish(False) # the harbor screen was closed meanwhile
 				return 0
+			self.updateMove()
 			iNotches = CyGame().takeWheelNotches()
 			if iNotches != 0:
 				bCtrl = CyGame().isCtrlKeyPressed()
