@@ -4768,10 +4768,7 @@ class CvMainInterface:
 						break
 					iStart = iPos + 1
 			aRest.sort(key = lambda t: t[0])
-			for (iPos, tFound) in aRest:
-				if not tFound in aResult:
-					aResult.append(tFound)
-			# game concepts in the plain text (after the named things)
+			# game concepts in the plain text (after the marked names and symbols, before the other names)
 			szPlain = maskCities(re.sub(u"<[^>]*>", u"", szMessage))
 			aConcepts = []
 			for (oPattern, tConcept) in self.aMessageConceptPatterns:
@@ -4782,10 +4779,14 @@ class CvMainInterface:
 			for (iPos, tFound) in aConcepts:
 				if not tFound in aResult:
 					aResult.append(tFound)
+			# the names found in the whole text come last (the game concepts have priority)
+			for (iPos, tFound) in aRest:
+				if not tFound in aResult:
+					aResult.append(tFound)
 			# gold is mentioned in many messages: with more than two hits it is left out
 			if len(aResult) > 2:
-				eGold = gc.getInfoTypeForString("YIELD_GOLD")
-				aResult = [t for t in aResult if not (t[1] == CvScreenEnums.PEDIA_YIELDS and t[2] == eGold)]
+				szGold = gc.getYieldInfo(gc.getInfoTypeForString("YIELD_GOLD")).getDescription().lower()
+				aResult = [t for t in aResult if t[0].lower() != szGold]
 			self.dMessagePediaCache[szMessage] = aResult
 		except:
 			pass
