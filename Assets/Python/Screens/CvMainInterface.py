@@ -3802,7 +3802,7 @@ class CvMainInterface:
 				return
 			# tooltip delay: a tooltip waits until the cursor has rested for the time of the option. Another text (the cursor has gone from one
 			# thing to the next) removes the tooltip that is shown and starts the time again
-			if self.iTipDelay > 0 and not bFromPending and (not self.bCursorTipShown or szHelp != self.szCursorTipText):
+			if self.iTipDelay > 0 and not bFromPending and (not self.bCursorTipShown or (szHelp != self.szCursorTipText and not self.bTipQuick)):
 				if self.bCursorTipShown:
 					self.hideCursorTooltip(screen)
 				if self.szPendingHelp is None:
@@ -3955,6 +3955,13 @@ class CvMainInterface:
 		try:
 			if self.isPediaActive():
 				return False
+			if self.szPendingHelp is not None and not self.bTipFrozen:
+				# the tooltip still waits for its delay: X shows it at once
+				szHelp = self.szPendingHelp
+				bWidget = self.bPendingWidget
+				self.szPendingHelp = None
+				self.showCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE), szHelp, bWidget, True)
+				return True
 			if self.bTipFrozen:
 				self.unfreezeCursorTooltip()
 				return True
@@ -4348,6 +4355,7 @@ class CvMainInterface:
 		self.szPendingHelp = None
 
 	iTipDelayIndex = 0
+	bTipQuick = False # options screen: the next tooltip appears without delay while a tooltip is shown
 
 	def hideCursorTooltip( self, screen ):
 		if self.bTipFrozen:

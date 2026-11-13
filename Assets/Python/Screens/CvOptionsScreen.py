@@ -333,6 +333,14 @@ class CvOptionsScreen:
 		tab.setLayoutFlag("TipDelayDropdownBox", "LAYOUT_LEFT")
 		tab.setToolTip("TipDelayDropdownBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_DELAY_HELP", ()))
 
+		bTipQuick = False
+		try:
+			bTipQuick = CvScreensInterface.mainInterface.bTipQuick
+		except:
+			pass
+		tab.attachCheckBox("GamePanelCenter", "TipQuickCheckBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_QUICK", ()), self.callbackIFace, "handleTipQuickClicked", "TipQuickCheckBox", bTipQuick)
+		tab.setToolTip("TipQuickCheckBox", localText.getText("TXT_KEY_WTP_OPTIONS_TIP_QUICK_HELP", ()))
+
 		tab.attachSpacer("GamePanelCenter")
 
 		tab.attachHBox("GamePanelCenter", "LangHBox")

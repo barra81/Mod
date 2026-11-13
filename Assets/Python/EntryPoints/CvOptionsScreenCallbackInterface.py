@@ -85,6 +85,15 @@ def handleTipDelayDropdownInput ( argsList ):
 		pass
 	return 1
 
+def handleTipQuickClicked ( argsList ):
+	"WTP: the next tooltip appears without delay while a tooltip is shown"
+	bValue, szName = argsList
+	try:
+		CvScreensInterface.mainInterface.bTipQuick = bValue
+	except:
+		pass
+	return 1
+
 def handleGameReset ( argsList ):
 	"Resets these options"
 	szName = argsList

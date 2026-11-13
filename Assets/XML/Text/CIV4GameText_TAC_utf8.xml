@@ -3759,6 +3759,16 @@
 		<German>Wie lange der Mauszeiger auf etwas ruhen muss, bevor der Hover-Tooltip erscheint. Solange ein Tooltip angezeigt wird, erscheint der nächste sofort. Bewegt man den Mauszeiger, beginnt die Zeit neu.</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_QUICK</Tag>
+		<English>Next tooltip without delay (while a tooltip is shown)</English>
+		<German>Nächster Tooltip ohne Verzögerung (solange ein Tooltip angezeigt wird)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_OPTIONS_TIP_QUICK_HELP</Tag>
+		<English>Off: moving the cursor on to the next thing removes the tooltip and the delay starts again. On: while a tooltip is shown, the tooltip of the next thing appears at once. The key [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] shows a tooltip that still waits for its delay at once.</English>
+		<German>Aus: Beim Weiterfahren zum nächsten Ziel verschwindet der Tooltip und die Verzögerung beginnt neu. An: Solange ein Tooltip angezeigt wird, erscheint der Tooltip des nächsten Ziels sofort. Die Taste [COLOR_HIGHLIGHT_TEXT]X[COLOR_REVERT] zeigt einen Tooltip, der noch auf seine Verzögerung wartet, sofort an.</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_HOVER_TIP_OFF</Tag>
 		<English>Hover tooltip: off</English>
 		<German>Hover-Tooltip: aus</German>
