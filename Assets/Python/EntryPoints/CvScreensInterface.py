@@ -744,8 +744,8 @@ def getWidgetHelp(argsList):
 	# WTP: the move buttons of the amount dialog
 	if (yieldAmountScreen.isOpen() and argsList[1] == WidgetTypes.WIDGET_GENERAL and argsList[2] >= 40010 and argsList[2] < 40014):
 		if (yieldAmountScreen.iFromPlayer >= 0):
-			return CyTranslator().getText("TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP", ()) # (the diplomacy gets no keys)
-		return CyTranslator().getText("TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP_KEYS", ())
+			return CyTranslator().getText("TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP", (yieldAmountScreen.iGX, yieldAmountScreen.iGY)) # (the diplomacy gets no keys)
+		return CyTranslator().getText("TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP_KEYS", (yieldAmountScreen.iGX, yieldAmountScreen.iGY))
 	if (HandleMouseoverMap.has_key(iScreen)):
 		screen = HandleMouseoverMap.get(iScreen)
 		return screen.getWidgetHelp(argsList)

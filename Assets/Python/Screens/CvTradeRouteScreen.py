@@ -955,7 +955,7 @@ class CvTradeRouteScreen:
 		if iCode == BTN_SEARCH:
 			return localText.getText("TXT_KEY_WTP_TRADEROUTE_SEARCH_HELP", ())
 		if iCode >= BTN_MOVE and iCode < BTN_MOVE + 4:
-			return localText.getText("TXT_KEY_WTP_TRADEROUTE_MOVE_HELP", ())
+			return localText.getText("TXT_KEY_WTP_TRADEROUTE_MOVE_HELP", (self.OX, self.OY))
 		if iCode == BTN_CLEAR_SEARCH:
 			return localText.getText("TXT_KEY_WTP_TRADEROUTE_SEARCH_CLEAR_HELP", ())
 		if iCode >= BTN_FAV_IMP and iCode < BTN_FAV_IMP + 80:
