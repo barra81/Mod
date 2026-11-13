@@ -4683,23 +4683,36 @@ class CvMainInterface:
 						szText = szText[szText.index(u"\x01") + 1:szText.index(u"\x02")]
 						szText = re.sub(u"<[^>]*>", u"", szText).strip()
 						if len(szText) > 10:
-							aSpecial.append((szText, [dConcepts[t] for t in aTypes if t in dConcepts], False))
+							aSpecial.append((szText, [dConcepts[t] for t in aTypes if t in dConcepts], None))
 					except:
 						pass
-				# the messages about a great general / admiral: the unit pages (the admiral first if the text names him)
+				# the messages about a new great person (great general / admiral, brave lieutenant, able captain): the unit page and the concept
 				try:
-					aGreat = []
-					for szUnit in ("UNIT_GREAT_GENERAL", "UNIT_GREAT_ADMIRAL"):
+					tConcept = dConcepts.get("CONCEPT_GREAT_GENERALS")
+					dUnits = {}
+					for szUnit in ("UNIT_GREAT_GENERAL", "UNIT_GREAT_ADMIRAL", "UNIT_BRAVE_LIEUTENANT", "UNIT_CAPABLE_CAPTAIN"):
 						eUnit = gc.getInfoTypeForString(szUnit)
 						if eUnit >= 0:
-							aGreat.append((gc.getUnitInfo(eUnit).getDescription(), CvScreenEnums.PEDIA_UNIT, eUnit))
-					if len(aGreat) == 2:
-						for szKey in ("TXT_KEY_MISC_GP_BORN", "TXT_KEY_MISC_GP_BORN_SOMEWHERE", "TXT_KEY_MISC_GP_BORN_FIELD"):
-							aPieces = re.split(u"[\x01\x02]", localText.getText(szKey, (u"\x01", u"\x02")))
-							aPieces = [re.sub(u"<[^>]*>", u"", t).strip() for t in aPieces]
-							aPieces.sort(key = lambda t: -len(t))
-							if len(aPieces[0]) > 10:
-								aSpecial.append((aPieces[0], aGreat, True))
+							dUnits[szUnit] = (gc.getUnitInfo(eUnit).getDescription(), CvScreenEnums.PEDIA_UNIT, eUnit)
+					aGroups = []
+					for szKey in ("TXT_KEY_MISC_GP_BORN", "TXT_KEY_MISC_GP_BORN_SOMEWHERE", "TXT_KEY_MISC_GP_BORN_FIELD"):
+						aGroups.append((szKey, "UNIT_GREAT_GENERAL"))
+					for szKey in ("TXT_KEY_MISC_BL_BORN", "TXT_KEY_MISC_BL_BORN_SOMEWHERE", "TXT_KEY_MISC_BL_BORN_FIELD"):
+						aGroups.append((szKey, "UNIT_BRAVE_LIEUTENANT"))
+					for szKey in ("TXT_KEY_MISC_CC_BORN", "TXT_KEY_MISC_CC_BORN_SOMEWHERE", "TXT_KEY_MISC_CC_BORN_FIELD"):
+						aGroups.append((szKey, "UNIT_CAPABLE_CAPTAIN"))
+					for (szKey, szUnit) in aGroups:
+						if not szUnit in dUnits:
+							continue
+						aPieces = re.split(u"[\x01\x02]", localText.getText(szKey, (u"\x01", u"\x02")))
+						aPieces = [re.sub(u"<[^>]*>", u"", t).strip() for t in aPieces]
+						aPieces.sort(key = lambda t: -len(t))
+						if len(aPieces[0]) > 10:
+							aTargets = [dUnits[szUnit]]
+							if tConcept is not None:
+								aTargets.append(tConcept)
+							# great generals: the admiral instead of the general if the text names him
+							aSpecial.append((aPieces[0], aTargets, szUnit == "UNIT_GREAT_GENERAL" and "UNIT_GREAT_ADMIRAL" in dUnits and dUnits["UNIT_GREAT_ADMIRAL"]))
 				except:
 					pass
 				self.aMessageSpecial = aSpecial
@@ -4712,8 +4725,8 @@ class CvMainInterface:
 			for (szFragment, aSpecialTargets, bGreat) in self.aMessageSpecial:
 				if szFragment in szPlainAll:
 					aResult = list(aSpecialTargets)
-					if bGreat and len(aResult) == 2 and aResult[1][0].lower() in szPlainAll.lower():
-						aResult.reverse()
+					if bGreat and bGreat[0].lower() in szPlainAll.lower() and len(aResult) > 0:
+						aResult[0] = bGreat
 					self.dMessagePediaCache[szMessage] = aResult
 					return aResult
 			# the names of settlements are cut out of the text (Fort Nassau is a city, not a fort)

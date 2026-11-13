@@ -13128,19 +13128,19 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_BL_BORN_SOMEWHERE</Tag>
-		<English>In a distant region, a young soldier is making a name for himself as a brave lieutenant.</English>
+		<English>In a distant region, a young soldier is making a name for himself as a [COLOR_UNIT_TEXT]Brave Lieutenant[COLOR_REVERT].</English>
 		<Portuguese>Em uma região distante, um jovem soldado está se destacando como um valente tenente.</Portuguese>
 		<French>Dans une région lointaine, un jeune soldat se distingue comme un lieutenant courageux. </French>
-		<German>In einer fernen Gegend macht ein junger Soldat als ein mutiger Leutnant von sich reden.</German>
+		<German>In einer fernen Gegend macht ein junger Soldat als [COLOR_UNIT_TEXT]Mutiger Leutnant[COLOR_REVERT] von sich reden.</German>
 		<Russian>В далеком крае молодой солдат стал известным храбрым лейтенантом.</Russian>
 		<Hungarian>Egy távoli vidéken egy fiatal katona bátor Hadnagyként szerez magának hírnevet.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_BL_BORN_FIELD</Tag>
-		<English>In the recent battle a young soldier fell upon his enemies like a wolf among the lambs. He is now known everywhere as a truly brave lieutenant.</English>
+		<English>In the recent battle a young soldier fell upon his enemies like a wolf among the lambs. He is now known everywhere as a truly [COLOR_UNIT_TEXT]Brave Lieutenant[COLOR_REVERT].</English>
 		<Portuguese>Na recente batalha, um jovem soldado caiu sobre seus inimigos como um lobo entre cordeiros. Ele agora é conhecido em todos os lugares como um tenente verdadeiramente corajoso.</Portuguese>
 		<French>Lors des derniers combats un jeune soldat s'est distingué par sa bravoure face à l'ennemi. Il est maintenant reconnu comme un lieutenant courageux. </French>
-		<German>In der jüngsten Schlacht fiel ein junger Soldat über seine Feinde her wie der Wolf über die Lämmer. Er gilt nun allerorten als mutiger Leutnant.</German>
+		<German>In der jüngsten Schlacht fiel ein junger Soldat über seine Feinde her wie der Wolf über die Lämmer. Er gilt nun allerorten als [COLOR_UNIT_TEXT]Mutiger Leutnant[COLOR_REVERT].</German>
 		<Russian>В недавнем сражении молодой воин бросался на своих врагов, как волк на ягнят. Теперь повсюду он известен как поистине храбрый лейтенант.</Russian>
 		<Hungarian>A legutóbbi csatában egy fiatal katona úgy esett neki ellenségeinek, mint farkas a bárányoknak. Most már mindenütt úgy ismerik, mint egy igazán bátor Hadnagyot.</Hungarian>
 	</TEXT>
@@ -13155,19 +13155,19 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_CC_BORN_SOMEWHERE</Tag>
-		<English>In a distant region, a young sailor is making a name for himself as a capable captain.</English>
+		<English>In a distant region, a young sailor is making a name for himself as an [COLOR_UNIT_TEXT]Able Captain[COLOR_REVERT].</English>
 		<Portuguese>Numa região distante, um jovem marinheiro está se destacando como um capitão competente.</Portuguese>
 		<French>Dans une région lointaine, un jeune marin se fait un nom comme capitaine capable. </French>
-		<German>In einer fernen Gegend macht ein junger Seeman als ein fähiger Kapitän von sich reden.</German>
+		<German>In einer fernen Gegend macht ein junger Seemann als [COLOR_UNIT_TEXT]Fähiger Kapitän[COLOR_REVERT] von sich reden.</German>
 		<Russian>Люди говорят, где-то далеко молодой моряк смог стать умелым капитаном.</Russian>
 		<Hungarian>Egy távoli vidéken egy fiatal tengerész tehetséges Kapitányként szerez magának hírnevet.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_CC_BORN_FIELD</Tag>
-		<English>In the recent sea battle a young captain cut through the enemy like a shark into a school of tuna. He is now known everywhere as a truly capable commander.</English>
+		<English>In the recent sea battle a young captain cut through the enemy like a shark into a school of tuna. He is now known everywhere as a truly [COLOR_UNIT_TEXT]Able Captain[COLOR_REVERT].</English>
 		<Portuguese>Na recente batalha naval, um jovem capitão liderou sua tripulação contra o inimigo como um tubarão contra um bando de atum. Ele agora é conhecido em todos os lugares como um comandante verdadeiramente capaz.</Portuguese>
 		<French>Lors de la dernière bataille navale un jeune capitaine a mené son équipage contre l'ennemi comme un requin dans un banc de thons. Il est reconnu de tous comme un commandant vraiment capable. </French>
-		<German>In der jüngsten Seeschlacht fiel ein junger Seemann und seine Mannschaft über seine Feinde her wie der Hai über Thunfische. Er gilt nun allerorten als wahrhaft fähiger Kapitän.</German>
+		<German>In der jüngsten Seeschlacht fiel ein junger Seemann und seine Mannschaft über seine Feinde her wie der Hai über Thunfische. Er gilt nun allerorten als [COLOR_UNIT_TEXT]Fähiger Kapitän[COLOR_REVERT].</German>
 		<Russian>В недавнем морском сражении молодой командер, искусно управляя своим кораблём, нанёс противнику серьёзный ушерб. Теперь повсюду его знают как действительно способного капитана.</Russian>
 		<Hungarian>A legutóbbi tengeri csatában egy fiatal kapitány úgy vezette legénységét az ellenség ellen, mint a vad cápa. Most már mindenütt úgy ismerik, mint igazán rátermett Parancsnokot.</Hungarian>
 	</TEXT>
