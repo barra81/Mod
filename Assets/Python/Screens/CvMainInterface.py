@@ -3966,7 +3966,7 @@ class CvMainInterface:
 			eWidget = WidgetTypes.WIDGET_GENERAL
 			iData1 = -1
 			iData2 = -1
-			if bClickable and aiPara[i] >= 0:
+			if bClickable and aiPara[i] >= 0 and aszLines[i].lower().find(u"<img=") < 0:
 				iData1 = self.BUTTON_TIP_LINE
 				iData2 = aiPara[i]
 			iIndent = 0
@@ -4073,8 +4073,13 @@ class CvMainInterface:
 		iCX = gc.getGame().getCursorClientX()
 		iCY = gc.getGame().getCursorClientY()
 		iPara = -1
+		iLineIdx = -1
+		bPromoLine = False
 		if iCX >= iX and iCX < iX + iW and iCY >= iY + iPad and iCY < iY + iPad + len(aszLines) * iLine:
-			iPara = aiPara[int((iCY - iY - iPad) / iLine)]
+			iLineIdx = int((iCY - iY - iPad) / iLine)
+			iPara = aiPara[iLineIdx]
+			# the line with the promotion pictures of a unit: its tooltip lists the promotions and what they do (nothing for the Colopedia)
+			bPromoLine = (aszLines[iLineIdx].lower().find(u"<img=") >= 0)
 		# the mouse wheel is only taken (the map does not zoom) while shift is down and the cursor is on a line with named things
 		bWheel = False
 		bShift = False
@@ -4091,7 +4096,7 @@ class CvMainInterface:
 				iLogTargets = len(self.getTextPediaAllTargets(self.aszTipParas[iPara]))
 			self.tipLog("frozen: shift=%s para=%d targets=%d" % (str(bShift), iPara, iLogTargets))
 		try:
-			if iPara >= 0 and bShift and len(self.getTextPediaAllTargets(self.aszTipParas[iPara])) > 0:
+			if iPara >= 0 and not bPromoLine and bShift and len(self.getTextPediaAllTargets(self.aszTipParas[iPara])) > 0:
 				bWheel = True
 		except:
 			pass
@@ -4110,20 +4115,48 @@ class CvMainInterface:
 				# the wheel towards the user: the next one, away from the user: the one before
 				self.iTipSelIdx = (self.iTipSelIdx - iNotches) % len(aTargets)
 		iSel = -1
-		if iPara >= 0 and iPara == self.iTipSelPara:
+		if iPara >= 0 and iPara == self.iTipSelPara and not bPromoLine:
 			iSel = self.iTipSelIdx
-		tKey = (iPara, iSel)
+		tKey = (iPara, iSel, iLineIdx, bPromoLine)
 		if tKey == self.tSecondTipKey:
 			return
 		self.tSecondTipKey = tKey
 		self.hideSecondTip(screen)
-		if iPara >= 0:
+		if bPromoLine:
+			szText = self.getPromotionTipText(aszLines[iLineIdx])
+			if len(szText) > 0:
+				self.showSecondTip(screen, szText, iCY)
+		elif iPara >= 0:
 			if iSel >= 0:
 				szText = self.getTipSecondText(iPara, iSel)
 			else:
 				szText = self.getTipSecondText(iPara)
 			if len(szText) > 0:
 				self.showSecondTip(screen, szText, iCY)
+
+	# the promotions named by the pictures of a line (<img=button path size=16>): their names and what they do
+	def getPromotionTipText( self, szLine ):
+		try:
+			if len(self.dPromotionButtons) == 0:
+				for i in range(gc.getNumPromotionInfos()):
+					self.dPromotionButtons[gc.getPromotionInfo(i).getButton().replace("\\", "/").lower()] = i
+			aszTexts = []
+			aiDone = []
+			for szPath in re.findall(u"<img=([^ >]+)", szLine):
+				iPromotion = self.dPromotionButtons.get(str(szPath).replace("\\", "/").lower(), -1)
+				if iPromotion < 0 or iPromotion in aiDone:
+					continue
+				aiDone.append(iPromotion)
+				szText = u"<color=255,255,0,255>" + gc.getPromotionInfo(iPromotion).getDescription() + u"</color>"
+				szHelp = CyGameTextMgr().getPromotionHelp(iPromotion, False).strip()
+				if len(szHelp) > 0:
+					szText += u"\n" + szHelp
+				aszTexts.append(szText)
+			return u"\n".join(aszTexts)
+		except:
+			return u""
+
+	dPromotionButtons = {}
 
 	# the text of the second window: what a right click opens, and all the hits of the line (the chosen one in yellow)
 	def getTipSecondText( self, iPara, iSel = -1 ):
@@ -4854,7 +4887,10 @@ class CvMainInterface:
 									fRun += self.fImgWidth
 								elif szNext and szNext.lower() != u"</img>" and szNext.strip():
 									break
-							if iVisible > iLineIndent and iVisible + fRun > iCharsPerLine:
+							# the promotions of a unit always go into a line of their own (not behind a number: that is a counted group)
+							szBefore = re.sub(u"<[^>]*>", u"", szLine).rstrip()
+							bOwnLine = (len(szBefore) > 0 and not szBefore[-1:].isdigit())
+							if iVisible > iLineIndent and (bOwnLine or iVisible + fRun > iCharsPerLine):
 								aszLines.append(szLine + u"</color>" * len(aszOpen))
 								aiIndent.append(iLineIndent)
 								szLine = u"".join(aszOpen)
