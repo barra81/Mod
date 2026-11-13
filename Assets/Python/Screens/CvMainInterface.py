@@ -4201,8 +4201,10 @@ class CvMainInterface:
 		if not self.bHudHover:
 			return False
 		try:
-			# safety: far away from the place where the HUD help was seen, the cursor has surely left the element
-			if abs(gc.getGame().getCursorClientX() - self.tHudHoverAt[0]) > 150 or abs(gc.getGame().getCursorClientY() - self.tHudHoverAt[1]) > 150:
+			# the game asks for the help text again with every cursor move over the element (log). A cursor that has moved away from the place
+			# of the last question and is not asked about any more has left the element; far away it has surely left it
+			iDist = max(abs(gc.getGame().getCursorClientX() - self.tHudHoverAt[0]), abs(gc.getGame().getCursorClientY() - self.tHudHoverAt[1]))
+			if iDist > 150 or (iDist > 20 and self.iTick - self.iWidgetHelpTick >= 3):
 				self.bHudHover = False
 				self.szHudHelp = u""
 		except:
@@ -4281,6 +4283,17 @@ class CvMainInterface:
 					except:
 						pass
 			return
+		if self.bHoverTip and self.bHudHover and not self.isHudHover():
+			# the cursor has left the HUD element: the help of what is under it now (map plot) takes the place of the element help at once
+			try:
+				screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+				szPlotHelp = CyInterface().getHelpString()
+				if len(szPlotHelp) > 0:
+					self.showCursorTooltip(screen, szPlotHelp)
+				else:
+					self.hideCursorTooltip(screen)
+			except:
+				pass
 		if not self.bCursorTipShown:
 			return
 		try:
