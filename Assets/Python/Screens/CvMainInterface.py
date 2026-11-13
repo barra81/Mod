@@ -323,6 +323,7 @@ class CvMainInterface:
 	dMessagePediaCache = {}
 	dMessageLineIndex = {}
 	szLastHelp = u""
+	tHelpPlacedAt = (-1000, -1000)
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -3752,13 +3753,16 @@ class CvMainInterface:
 				return
 			# the game may report the same help text again and again while the mouse stays on a HUD element: placing the area anew
 			# each time makes the tooltip flicker, so it is placed only when the text is a new one
-			if szHelp == self.szLastHelp:
-				return
-			self.szLastHelp = szHelp
-			xRes = screen.getXResolution()
-			yRes = screen.getYResolution()
+			# (the game does not always report that a tooltip went away, then the same text comes back at another place of the screen:
+			# placed anew if the cursor is far from the place of the last time)
 			iCursorX = gc.getGame().getCursorClientX()
 			iCursorY = gc.getGame().getCursorClientY()
+			if szHelp == self.szLastHelp and abs(iCursorX - self.tHelpPlacedAt[0]) < 80 and abs(iCursorY - self.tHelpPlacedAt[1]) < 80:
+				return
+			self.szLastHelp = szHelp
+			self.tHelpPlacedAt = (iCursorX, iCursorY)
+			xRes = screen.getXResolution()
+			yRes = screen.getYResolution()
 			# size of the text (estimated: the game wraps at the maximum width)
 			iLine = max(16, int(yRes * 0.0153))
 			iChar = iLine * 0.32
