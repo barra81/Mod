@@ -2,7 +2,7 @@
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
 		<Tag>TXT_KEY_ROUTE_ROAD</Tag>
-		<English>[COLOR_CAT_GOLD]Road[COLOR_REVERT]</English>
+		<English>[COLOR_CAT_ROAD]Road[COLOR_REVERT]</English>
 		
 		<Portuguese>
 			<Text>Estrada</Text>
@@ -15,7 +15,7 @@
 			<Plural>0</Plural>
 		</French>
 		<German>
-			<Text>[COLOR_CAT_GOLD]Straße:Straßen[COLOR_REVERT]</Text>
+			<Text>[COLOR_CAT_ROAD]Straße:Straßen[COLOR_REVERT]</Text>
 			<Gender>Female</Gender>
 			<Plural>0:1</Plural>
 		</German>
@@ -33,28 +33,28 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ROUTE_COUNTRY_ROAD</Tag>
-		<English>[COLOR_CAT_GOLD]Country Road[COLOR_REVERT]</English>
+		<English>[COLOR_CAT_ROAD]Country Road[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Estrada de terra</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</Portuguese>
 		<French>Route de gravier</French>
-		<German>[COLOR_CAT_GOLD]Landstraße[COLOR_REVERT]</German>
+		<German>[COLOR_CAT_ROAD]Landstraße[COLOR_REVERT]</German>
 		<Italian>Strada di campagna</Italian>
 		<Spanish>Carretera rural</Spanish>
 		<Russian>Гравийная дорога</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ROUTE_PLASTERED_ROAD</Tag>
-		<English>[COLOR_CAT_GOLD]Paved Country Road[COLOR_REVERT]</English>
+		<English>[COLOR_CAT_ROAD]Paved Country Road[COLOR_REVERT]</English>
 		<Portuguese>
 			<Text>Estrada de terra pavimentada</Text>
 			<Gender>Female</Gender>
 			<Plural>0</Plural>
 		</Portuguese>
 		<French>Route pavée</French>
-		<German>[COLOR_CAT_GOLD]gepflasterte Landstraße[COLOR_REVERT]</German>
+		<German>[COLOR_CAT_ROAD]gepflasterte Landstraße[COLOR_REVERT]</German>
 		<Italian>Strada di campagna intonacata</Italian>
 		<Spanish>Carretera rural enlucida</Spanish>
 		<Russian>Вымощенная камнем дорога</Russian>

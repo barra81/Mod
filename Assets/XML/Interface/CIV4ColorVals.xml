@@ -1169,6 +1169,13 @@
 			<fAlpha>1.000</fAlpha>
 		</ColorVal>
 		<ColorVal>
+			<Type>COLOR_CAT_ROAD</Type>
+			<fRed>1.000</fRed>
+			<fGreen>0.804</fGreen>
+			<fBlue>0.157</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
+		<ColorVal>
 			<Type>COLOR_CAT_RESEARCH</Type>
 			<fRed>0.157</fRed>
 			<fGreen>0.882</fGreen>
