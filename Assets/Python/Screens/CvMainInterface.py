@@ -322,8 +322,9 @@ class CvMainInterface:
 	dMessageConcepts = {}
 	dMessagePediaCache = {}
 	dMessageLineIndex = {}
-	szLastHelp = u""
-	tHelpPlacedAt = (-1000, -1000)
+	bCursorTipShown = False
+	szCursorTipText = u""
+	tCursorTipAt = (-1000, -1000)
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -3744,50 +3745,75 @@ class CvMainInterface:
 						screen.setTableText("ScoreBackground", 0, iRow, szRowText, "", WidgetTypes.WIDGET_CONTACT_CIV, ePlayerRow, -1, CvUtil.FONT_RIGHT_JUSTIFY)
 					screen.show("ScoreBackground")
 
-	# WTP experiment: the help text area is placed at the mouse cursor each time the help text changes (the text is set right after,
-	# so the tooltip is not cleared by a later move of the area)
-	def placeHelpAtCursor( self, screen, szHelp ):
+	# WTP: own tooltip window at the mouse cursor (the tooltip of the game stays at its place). It shows the same text, is vertically
+	# centered on the cursor, right of it (left if there is no room) and lies in front of the HUD elements.
+	def showCursorTooltip( self, screen, szHelp ):
 		try:
 			if CyInterface().isCityScreenUp() or len(szHelp) == 0:
-				self.szLastHelp = u""
+				self.hideCursorTooltip(screen)
 				return
-			# the game may report the same help text again and again while the mouse stays on a HUD element: placing the area anew
-			# each time makes the tooltip flicker, so it is placed only when the text is a new one
-			# (the game does not always report that a tooltip went away, then the same text comes back at another place of the screen:
-			# placed anew if the cursor is far from the place of the last time)
 			iCursorX = gc.getGame().getCursorClientX()
 			iCursorY = gc.getGame().getCursorClientY()
-			if szHelp == self.szLastHelp and abs(iCursorX - self.tHelpPlacedAt[0]) < 80 and abs(iCursorY - self.tHelpPlacedAt[1]) < 80:
+			# the same text again with the cursor near the last place: the window stays as it is (no flicker)
+			if self.bCursorTipShown and szHelp == self.szCursorTipText and abs(iCursorX - self.tCursorTipAt[0]) < 80 and abs(iCursorY - self.tCursorTipAt[1]) < 80:
 				return
-			self.szLastHelp = szHelp
-			self.tHelpPlacedAt = (iCursorX, iCursorY)
+			self.hideCursorTooltip(screen)
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
-			# size of the text (estimated: the game wraps at the maximum width)
-			iLine = max(16, int(yRes * 0.0153))
-			iChar = iLine * 0.32
-			iCharsPerLine = max(20, int((HELPTEXT_AREA_MAX_WIDTH - 16) / iChar))
-			aLines = re.sub(u"<[^>]*>", u"", szHelp).split(u"\n")
-			iRows = 0
+			iLine = max(16, int(yRes * 0.0153)) # distance of the text lines (as in the message panel)
+			iPad = max(6, iLine / 2)
+			iChar = iLine * 0.32 # width of a character (measured in the message panel)
+			iMaxWidth = max(300, int(xRes * 0.2))
+			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
+			aszLines = []
+			for szPart in szHelp.split(u"\n"):
+				aszLines += self.wrapMessage(szPart, iCharsPerLine)
 			iLongest = 0
-			for szLine in aLines:
-				iLongest = max(iLongest, len(szLine))
-				iRows += max(1, (len(szLine) + iCharsPerLine - 1) / iCharsPerLine)
-			iHeight = iRows * iLine + 14
-			iWidth = max(HELPTEXT_AREA_MIN_WIDTH, min(HELPTEXT_AREA_MAX_WIDTH, int(iLongest * iChar) + 16))
-			# to the right of the cursor (the cursor picture reaches about 30 pixels, the area must not get under it: the game then
-			# takes the mouse as being over the tooltip and hides it), to the left if there is no room
+			for szLine in aszLines:
+				iLongest = max(iLongest, len(re.sub(u"<[^>]*>", u"", szLine)))
+			iWidth = max(120, min(iMaxWidth, int(iLongest * iChar) + 2 * iPad + 8))
+			iHeight = len(aszLines) * iLine + 2 * iPad
 			iGap = max(48, int(yRes * 0.04))
 			iX = iCursorX + iGap
 			if iX + iWidth > xRes - 4:
-				iX = iCursorX - int(iGap * 0.6) - int(iWidth * 1.15)
+				iX = iCursorX - int(iGap * 0.6) - iWidth
 			iX = max(4, iX)
-			# vertically centered on the cursor: the area is anchored with its bottom edge at y
-			iY = iCursorY + iHeight / 2
-			iY = max(iHeight + 4, min(yRes - 4, iY))
-			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -8.0, False, "", True, True, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
+			iY = max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2))
+			screen.addPanel("HudTipBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			screen.addPanel("HudTipBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			szText = u"\n".join(aszLines)
+			screen.setText("HudTipText", "Background", self.setFontSize(szText, -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iY + iPad, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			for szName in ("HudTipBack1", "HudTipBack2", "HudTipText"):
+				screen.show(szName)
+				screen.moveToFront(szName)
+			self.bCursorTipShown = True
+			self.szCursorTipText = szHelp
+			self.tCursorTipAt = (iCursorX, iCursorY)
+		except:
+			self.bCursorTipShown = False
+
+	def hideCursorTooltip( self, screen ):
+		try:
+			if self.bCursorTipShown:
+				for szName in ("HudTipText", "HudTipBack2", "HudTipBack1"):
+					screen.hide(szName)
+					screen.deleteWidget(szName)
 		except:
 			pass
+		self.bCursorTipShown = False
+		self.szCursorTipText = u""
+
+	def updateCursorTooltip( self ):
+		# called every frame: the window goes away when the cursor has left its place (the game does not always say that a tooltip is gone)
+		if not self.bCursorTipShown:
+			return
+		try:
+			iDX = abs(gc.getGame().getCursorClientX() - self.tCursorTipAt[0])
+			iDY = abs(gc.getGame().getCursorClientY() - self.tCursorTipAt[1])
+			if iDX > 100 or iDY > 100 or CyInterface().isCityScreenUp():
+				self.hideCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE))
+		except:
+			self.bCursorTipShown = False
 
 	# Will update the help Strings
 	def updateHelpStrings( self ):
@@ -3795,9 +3821,10 @@ class CvMainInterface:
 
 		if ( CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_HIDE_ALL ):
 			screen.setHelpTextString("")
+			self.hideCursorTooltip(screen)
 		else:
 			szHelp = CyInterface().getHelpString()
-			self.placeHelpAtCursor(screen, szHelp)
+			self.showCursorTooltip(screen, szHelp)
 			screen.setHelpTextString( szHelp )
 
 		return 0
@@ -5161,6 +5188,7 @@ class CvMainInterface:
 		self.updatePioneerPlanEditor()
 		self.updateAutomatedFollow()
 		self.updateMessageMove()
+		self.updateCursorTooltip()
 		try:
 			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
 		except:
