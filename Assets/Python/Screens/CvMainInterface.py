@@ -790,7 +790,7 @@ class CvMainInterface:
 			screen.appendTableRow("EmphasizeTable")
 
 	# HELP TEXT AREA
-		screen.setHelpTextArea( HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, HELTTEXT_AREA_X_MARGIN, yResolution - SADDLE_HEIGHT, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
+		self.setGameHelpArea(screen, yResolution - SADDLE_HEIGHT)
 
 	# ADVISOR BUTTONS
 
@@ -3213,7 +3213,7 @@ class CvMainInterface:
 		else: # CITY SCREEN IS DOWN
 			self.MINIMAP_SIDE_MARGIN = MINIMAP_HEIGHT * 13 / 100
 			screen.placeMinimap(self.MINIMAP_SIDE_MARGIN, MINIMAP_HEIGHT - self.MINIMAP_SIDE_MARGIN, yResolution - MINIMAP_HEIGHT + self.MINIMAP_SIDE_MARGIN * 2, yResolution)
-			screen.setHelpTextArea( HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, HELTTEXT_AREA_X_MARGIN, yResolution - SADDLE_HEIGHT+HELPTEXT_AREA_Y_MARGIN, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH )
+			self.setGameHelpArea(screen, yResolution - SADDLE_HEIGHT+HELPTEXT_AREA_Y_MARGIN)
 
 			if ( CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW ):
 				self.setMinimapButtonVisibility(True)
@@ -4167,6 +4167,14 @@ class CvMainInterface:
 		except:
 			pass
 
+	# the help area of the game tooltip: while the own tooltip is on it is put far outside of the screen (the game still shows its tooltip of a
+	# HUD element for a moment before our window takes over)
+	def setGameHelpArea( self, screen, iY ):
+		iX = HELTTEXT_AREA_X_MARGIN
+		if self.bHoverTip:
+			iX = -5000
+		screen.setHelpTextArea( HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH )
+
 	def toggleHoverTip( self ):
 		# 0: hover tooltip at the cursor, 1: own tooltip window at the place of the game tooltip, 2: off (game tooltip)
 		self.iTipMode = (self.iTipMode + 1) % 3
@@ -4177,6 +4185,7 @@ class CvMainInterface:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			self.bHudHover = False
 			self.hideCursorTooltip(screen)
+			self.setGameHelpArea(screen, screen.getYResolution() - SADDLE_HEIGHT)
 			if self.iTipMode == 0:
 				szKey = "TXT_KEY_WTP_HOVER_TIP_ON"
 			elif self.iTipMode == 1:
