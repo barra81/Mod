@@ -737,6 +737,15 @@ def handleForward(screens):
 	return 0
 
 def getWidgetHelp(argsList):
+	szText = getWidgetHelpText(argsList)
+	# WTP: the own tooltip window at the cursor shows the same text
+	try:
+		mainInterface.widgetHelpSeen(szText)
+	except:
+		pass
+	return szText
+
+def getWidgetHelpText(argsList):
 	iScreen = argsList[0]
 	# WTP: the tooltips of the import / export window of the city screen
 	if (tradeRouteScreen.isOpen() and argsList[1] == WidgetTypes.WIDGET_GENERAL and argsList[2] >= 41001 and argsList[2] < 43000):

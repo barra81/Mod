@@ -323,6 +323,8 @@ class CvMainInterface:
 	dMessagePediaCache = {}
 	dMessageLineIndex = {}
 	bCursorTipShown = False
+	iCursorTipLines = 0
+	fWidgetHelpTime = 0.0
 	szCursorTipText = u""
 	tCursorTipAt = (-1000, -1000)
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
@@ -3747,8 +3749,11 @@ class CvMainInterface:
 
 	# WTP: own tooltip window at the mouse cursor (the tooltip of the game stays at its place). It shows the same text, is vertically
 	# centered on the cursor, right of it (left if there is no room) and lies in front of the HUD elements.
-	def showCursorTooltip( self, screen, szHelp ):
+	def showCursorTooltip( self, screen, szHelp, bWidget = False ):
 		try:
+			# the help of the map plot is not shown while the cursor is on a HUD element (the game reports the plot behind it)
+			if not bWidget and time.time() - self.fWidgetHelpTime < 0.7:
+				return
 			if CyInterface().isCityScreenUp() or len(szHelp) == 0:
 				self.hideCursorTooltip(screen)
 				return
@@ -3781,9 +3786,10 @@ class CvMainInterface:
 			iY = max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2))
 			screen.addPanel("HudTipBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			screen.addPanel("HudTipBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			szText = u"\n".join(aszLines)
-			screen.setText("HudTipText", "Background", self.setFontSize(szText, -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iY + iPad, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			for szName in ("HudTipBack1", "HudTipBack2", "HudTipText"):
+			self.iCursorTipLines = len(aszLines)
+			for i in range(len(aszLines)):
+				screen.setText("HudTipLine%d" % i, "Background", self.setFontSize(aszLines[i], -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iY + iPad + i * iLine, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			for szName in self.getCursorTipNames():
 				screen.show(szName)
 				screen.moveToFront(szName)
 			self.bCursorTipShown = True
@@ -3792,10 +3798,28 @@ class CvMainInterface:
 		except:
 			self.bCursorTipShown = False
 
+	def getCursorTipNames( self ):
+		aszNames = ["HudTipBack1", "HudTipBack2"]
+		for i in range(self.iCursorTipLines):
+			aszNames.append("HudTipLine%d" % i)
+		return aszNames
+
+	# called by the game when it asks for the help text of a widget under the cursor (CvScreensInterface.getWidgetHelp)
+	def widgetHelpSeen( self, szText ):
+		try:
+			self.fWidgetHelpTime = time.time()
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			if szText and len(szText) > 0:
+				self.showCursorTooltip(screen, szText, True)
+			else:
+				self.hideCursorTooltip(screen)
+		except:
+			pass
+
 	def hideCursorTooltip( self, screen ):
 		try:
 			if self.bCursorTipShown:
-				for szName in ("HudTipText", "HudTipBack2", "HudTipBack1"):
+				for szName in self.getCursorTipNames():
 					screen.hide(szName)
 					screen.deleteWidget(szName)
 		except:
