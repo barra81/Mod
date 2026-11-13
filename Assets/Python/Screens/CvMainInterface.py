@@ -321,6 +321,7 @@ class CvMainInterface:
 	aMessageSpecial = []
 	dMessageConcepts = {}
 	dMessagePediaCache = {}
+	dMessageLineIndex = {}
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -4045,8 +4046,13 @@ class CvMainInterface:
 				# a message of the panel that names a native tribe: its main settlement is centered (the game opens the diplomacy)
 				try:
 					if inputClass.getFunctionName().startswith("HudMsgLine"):
-						iPX, iPY = self.dMessageCapitals[inputClass.getData1()]
-						CyCamera().JustLookAtPlot(gc.getMap().plot(iPX, iPY))
+						if (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP):
+							# right click: the Colopedia (Ctrl: the second page), as with the other lines
+							if inputClass.getFunctionName() in self.dMessageLineIndex:
+								self.openMessagePedia(self.dMessageLineIndex[inputClass.getFunctionName()], inputClass.isCtrlKeyDown())
+						else:
+							iPX, iPY = self.dMessageCapitals[inputClass.getData1()]
+							CyCamera().JustLookAtPlot(gc.getMap().plot(iPX, iPY))
 				except:
 					pass
 
@@ -4520,6 +4526,7 @@ class CvMainInterface:
 				screen.hide(szName)
 			self.aszMessageLines = []
 			self.dMessageCapitals = {}
+			self.dMessageLineIndex = {}
 
 			# a denser background: the panel style is semi-transparent, several of them on top of each other are better to read
 			# (two when collapsed, three when expanded)
@@ -4561,6 +4568,7 @@ class CvMainInterface:
 					szName = "HudMsgLine%d" % iLabel
 					iLabel += 1
 					screen.setText(szName, "Background", self.setFontSize(szText, -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+					self.dMessageLineIndex[szName] = i
 					screen.show(szName)
 					screen.moveToFront(szName)
 					self.aszMessageLines.append(szName)
@@ -4576,6 +4584,7 @@ class CvMainInterface:
 						szName = "HudMsgLine%d" % iLabel
 						iLabel += 1
 						screen.setText(szName, "Background", self.setFontSize(szLine, -1), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+						self.dMessageLineIndex[szName] = i
 						screen.show(szName)
 						screen.moveToFront(szName)
 						self.aszMessageLines.append(szName)
