@@ -4187,7 +4187,7 @@ class CvMainInterface:
 		except:
 			pass
 
-	# the message panel is moved with Ctrl + Shift + W A S D (two keys at once: diagonal)
+	# the message panel is moved with Ctrl + Shift + I J K L (two keys at once: diagonal)
 	def isMessagePanelShown(self):
 		return self.tMessagePanelKey is not None
 
