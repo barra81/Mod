@@ -3800,8 +3800,11 @@ class CvMainInterface:
 			# the same text again with the cursor near the last place: the window stays as it is (no flicker)
 			if self.bCursorTipShown and szHelp == self.szCursorTipText and abs(iCursorX - self.tCursorTipAt[0]) < 80 and abs(iCursorY - self.tCursorTipAt[1]) < 80:
 				return
-			# tooltip delay: a first tooltip waits until the cursor has rested for the time of the option (it is replaced at once while one is shown)
-			if self.iTipDelay > 0 and not bFromPending and not self.bCursorTipShown:
+			# tooltip delay: a tooltip waits until the cursor has rested for the time of the option. Another text (the cursor has gone from one
+			# thing to the next) removes the tooltip that is shown and starts the time again
+			if self.iTipDelay > 0 and not bFromPending and (not self.bCursorTipShown or szHelp != self.szCursorTipText):
+				if self.bCursorTipShown:
+					self.hideCursorTooltip(screen)
 				if self.szPendingHelp is None:
 					self.fPendingStart = self.getTipNow()
 					self.tPendingPos = (iCursorX, iCursorY)
