@@ -315,6 +315,7 @@ class CvMainInterface:
 	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
 	BUTTON_MESSAGE_AUTO = 761 # WTP: message panel: auto expand at the start of a turn on / off
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
+	dMessagePediaChars = {}
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -4635,10 +4636,23 @@ class CvMainInterface:
 							szKey = szName.lower()
 							if not szKey in dNames:
 								dNames[szKey] = (szName, eScreen, i)
+				# the symbols (font characters) of goods and bonus resources
+				dChars = {}
+				for (eScreen, fNum, fInfo) in ((CvScreenEnums.PEDIA_YIELDS, gc.getNumYieldInfos, gc.getYieldInfo), (CvScreenEnums.PEDIA_BONUS, gc.getNumBonusInfos, gc.getBonusInfo)):
+					for i in range(fNum()):
+						try:
+							iChar = fInfo(i).getChar()
+							if iChar > 0:
+								dChars[unichr(iChar)] = (fInfo(i).getDescription(), eScreen, i)
+						except:
+							pass
+				self.dMessagePediaChars = dChars
 				self.dMessagePediaNames = dNames
 			dNames = self.dMessagePediaNames
-			for szSegment in re.findall(u"<color=[^>]*>(.*?)</color>", szMessage):
-				szSegment = re.sub(u"<[^>]*>", u"", szSegment)
+			dChars = self.dMessagePediaChars
+			aFound = [] # (position in the text, target)
+			for oMatch in re.finditer(u"<color=[^>]*>(.*?)</color>", szMessage):
+				szSegment = re.sub(u"<[^>]*>", u"", oMatch.group(1))
 				szSegment = re.compile(u"^[^\\w]+|[^\\w]+$", re.UNICODE).sub(u"", szSegment).lower()
 				if len(szSegment) < 3:
 					continue
@@ -4651,7 +4665,16 @@ class CvMainInterface:
 						tFound = dNames.get(szSegment[:-2])
 					if tFound is None and szSegment.endswith(u"s"):
 						tFound = dNames.get(szSegment[:-1])
-				if tFound is not None and not tFound in aResult:
+				if tFound is not None:
+					aFound.append((oMatch.start(), tFound))
+			# symbols
+			for iPos in range(len(szMessage)):
+				tFound = dChars.get(szMessage[iPos])
+				if tFound is not None:
+					aFound.append((iPos, tFound))
+			aFound.sort(key = lambda t: t[0])
+			for (iPos, tFound) in aFound:
+				if not tFound in aResult:
 					aResult.append(tFound)
 		except:
 			pass
