@@ -315,6 +315,8 @@ class CvMainInterface:
 	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
 	BUTTON_MESSAGE_AUTO = 761 # WTP: message panel: auto expand at the start of a turn on / off
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
+	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
+	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
 	PRIVATE_BUILD_RANGE = 3 # WTP: as CvPlayer::startPrivateBuild
 
@@ -4028,7 +4030,11 @@ class CvMainInterface:
 				self.iMessagePage = 0
 				self.updateMessagePanel()
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_LINE):
-				self.clickMessageLine(inputClass.getData2())
+				if (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP):
+					# right click: Colopedia page of the first named thing of the message, Ctrl + right click: of the second one
+					self.openMessagePedia(inputClass.getData2(), inputClass.isCtrlKeyDown())
+				else:
+					self.clickMessageLine(inputClass.getData2())
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_CONTACT_CIV and inputClass.getData1() in self.dMessageCapitals):
 				# a message of the panel that names a native tribe: its main settlement is centered (the game opens the diplomacy)
 				try:
@@ -4431,6 +4437,7 @@ class CvMainInterface:
 					aiY.append(game.getHudMessageY(i))
 			aatLines = [self.wrapMessage(szMessage, iCharsPerLine) for szMessage in aszMessages]
 			atTargets = self.getMessageTargets(aszMessages, aiX, aiY)
+			self.aszMessageTexts = aszMessages
 			self.atMessageTargets = atTargets
 
 			# which messages: collapsed the newest ones that fit; expanded pages of the full height of the panel, the newest page
@@ -4606,6 +4613,73 @@ class CvMainInterface:
 			if not getattr(self, "bMessagePanelErrorShown", False):
 				self.bMessagePanelErrorShown = True
 				CvUtil.pyPrint("Message panel failed: " + str(sys.exc_info()[1]))
+
+	def getMessagePediaTargets(self, iMessage):
+		# the things named (colored) in a message that have a Colopedia page: [(name, screen, id)] in the order of the text
+		aResult = []
+		try:
+			szMessage = self.aszMessageTexts[iMessage]
+			if self.dMessagePediaNames is None:
+				dNames = {}
+				# later entries must not overwrite earlier ones: units first, then professions, buildings, goods, bonuses, promotions
+				aKinds = ((CvScreenEnums.PEDIA_UNIT, gc.getNumUnitInfos, gc.getUnitInfo),
+					(CvScreenEnums.PEDIA_PROFESSION, gc.getNumProfessionInfos, gc.getProfessionInfo),
+					(CvScreenEnums.PEDIA_BUILDING, gc.getNumBuildingInfos, gc.getBuildingInfo),
+					(CvScreenEnums.PEDIA_YIELDS, gc.getNumYieldInfos, gc.getYieldInfo),
+					(CvScreenEnums.PEDIA_BONUS, gc.getNumBonusInfos, gc.getBonusInfo),
+					(CvScreenEnums.PEDIA_PROMOTION, gc.getNumPromotionInfos, gc.getPromotionInfo))
+				for (eScreen, fNum, fInfo) in aKinds:
+					for i in range(fNum()):
+						szName = fInfo(i).getDescription()
+						if szName and len(szName) >= 3:
+							szKey = szName.lower()
+							if not szKey in dNames:
+								dNames[szKey] = (szName, eScreen, i)
+				self.dMessagePediaNames = dNames
+			dNames = self.dMessagePediaNames
+			for szSegment in re.findall(u"<color=[^>]*>(.*?)</color>", szMessage):
+				szSegment = re.sub(u"<[^>]*>", u"", szSegment)
+				szSegment = re.sub(u"^[^\\w]+|[^\\w]+$", u"", szSegment, 0, re.UNICODE).lower()
+				if len(szSegment) < 3:
+					continue
+				tFound = dNames.get(szSegment)
+				if tFound is None:
+					# plural forms
+					if szSegment.endswith(u"ies"):
+						tFound = dNames.get(szSegment[:-3] + u"y")
+					if tFound is None and szSegment.endswith(u"es"):
+						tFound = dNames.get(szSegment[:-2])
+					if tFound is None and szSegment.endswith(u"s"):
+						tFound = dNames.get(szSegment[:-1])
+				if tFound is not None and not tFound in aResult:
+					aResult.append(tFound)
+		except:
+			pass
+		return aResult
+
+	def openMessagePedia(self, iMessage, bSecond):
+		try:
+			aTargets = self.getMessagePediaTargets(iMessage)
+			iIndex = 0
+			if bSecond:
+				iIndex = 1
+			if iIndex < len(aTargets):
+				szName, eScreen, iEntry = aTargets[iIndex]
+				CvScreensInterface.pediaMainScreen.pediaJump(eScreen, iEntry, True)
+		except:
+			pass
+
+	def getMessagePediaHelp(self, iMessage):
+		try:
+			aTargets = self.getMessagePediaTargets(iMessage)
+			if len(aTargets) == 0:
+				return u""
+			szText = localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP", (aTargets[0][0],))
+			if len(aTargets) > 1:
+				szText += u"\n" + localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP2", (aTargets[1][0],))
+			return szText
+		except:
+			return u""
 
 	def clickMessageLine(self, iMessage):
 		# centers the map on the place of the message
@@ -4973,6 +5047,8 @@ class CvMainInterface:
 				return localText.getText("TXT_KEY_INTERFACE_TERRITORIAL_INFLUENCE", ("Ctrl+I", ""));
 			elif iData1 == self.BUTTON_MESSAGE_AUTO:
 				return localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_AUTO_HELP", (self.iMsgX, self.iMsgY))
+			elif iData1 == self.BUTTON_MESSAGE_LINE:
+				return self.getMessagePediaHelp(iData2)
 			elif iData1 == self.BUTTON_PIONEER_PLAN:
 				return localText.getText("TXT_KEY_INTERFACE_PIONEER_PLAN", ());
 			elif iData1 == self.BUTTON_PIONEER_PLAN_BUILD:
