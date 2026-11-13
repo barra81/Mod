@@ -4618,21 +4618,32 @@ class CvMainInterface:
 		iLineIndent = 0
 		bImgRun = False
 		iImgIndent = 0
-		for szToken in re.split(u"(<[^>]*>)", szMessage):
+		aszTokens = re.split(u"(<[^>]*>)", szMessage)
+		for iToken in range(len(aszTokens)):
+			szToken = aszTokens[iToken]
 			if not szToken:
 				continue
 			if szToken[0] == u"<" and szToken[-1] == u">":
 				szLower = szToken.lower()
 				if szLower.startswith(u"<img="):
-					# a picture (the promotions of a unit): about as wide as an icon of the game font; a row of them goes on in the next line
-					# under the first one when the line is full
+					# a picture (the promotions of a unit): about as wide as an icon of the game font. A row of them that does not fit into the
+					# rest of the line goes into the next line as a whole (a row longer than a line is broken there)
 					if not bImgRun:
 						bImgRun = True
 						iImgIndent = 0
 						if bIconIndent:
-							iImgIndent = iVisible
-							if iImgIndent + 4 * self.fImgWidth > iCharsPerLine:
-								iImgIndent = 0
+							fRun = 0
+							for szNext in aszTokens[iToken:]:
+								if szNext.lower().startswith(u"<img="):
+									fRun += self.fImgWidth
+								elif szNext and szNext.lower() != u"</img>" and szNext.strip():
+									break
+							if iVisible > iLineIndent and iVisible + fRun > iCharsPerLine:
+								aszLines.append(szLine + u"</color>" * len(aszOpen))
+								aiIndent.append(iLineIndent)
+								szLine = u"".join(aszOpen)
+								iVisible = 0
+								iLineIndent = 0
 					if iVisible > iLineIndent and iVisible + self.fImgWidth > iCharsPerLine:
 						aszLines.append(szLine + u"</color>" * len(aszOpen))
 						aiIndent.append(iLineIndent)
