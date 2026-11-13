@@ -3851,6 +3851,8 @@ class CvMainInterface:
 	# the Colopedia page of the first thing named in it (Ctrl: the second), as in the message panel. Esc (or X again) closes it.
 	def freezeCursorTooltip( self ):
 		try:
+			if self.isPediaActive():
+				return False
 			if self.bTipFrozen:
 				self.unfreezeCursorTooltip()
 				return True
@@ -4041,8 +4043,15 @@ class CvMainInterface:
 		self.hideCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE))
 		return True
 
+	def isPediaActive( self ):
+		try:
+			return CvScreensInterface.pediaMainScreen.getScreen().isActive()
+		except:
+			return False
+
 	def isTipFrozen( self ):
-		return self.bTipFrozen
+		# (while the Colopedia is up, its keys are not ours: Esc closes the Colopedia and leaves the frozen window as it is)
+		return self.bTipFrozen and not self.isPediaActive()
 
 	def openTipPedia( self, iPara, bSecond ):
 		try:
@@ -4056,7 +4065,16 @@ class CvMainInterface:
 					self.openPediaTargets(aTargets, bSecond)
 		except:
 			pass
-		self.unfreezeCursorTooltip()
+		# the window stays frozen (to look up more lines after the Colopedia is closed); the wheel is given back, the second window goes
+		try:
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			self.hideSecondTip(screen)
+			self.tSecondTipKey = None
+			if self.bTipWheel:
+				self.bTipWheel = False
+				gc.getGame().setWheelCapture(False)
+		except:
+			pass
 
 	def getTipAvoidRect( self, iCursorX, iCursorY ):
 		# the own windows whose elements have a tooltip: the tooltip appears beside the window, not over it
