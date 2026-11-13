@@ -23,6 +23,8 @@ BTN_SEARCH = 41300 # the search field
 BTN_CLEAR_SEARCH = 41301
 BTN_MOVE = 41310 # +0 left, +1 right, +2 up, +3 down
 MOVE_STEP = 60
+MOVE_DELAY = 18 # frames until the key repeats
+MOVE_REPEAT = 3 # frames between the steps
 BTN_ROW = 42000 # + slot * 16 + field
 VIEW_ALL = 0
 VIEW_FAV = 1
@@ -274,6 +276,9 @@ class CvTradeRouteScreen:
 		self.aFav = [] # the favorite goods (yield types)
 		self.iView = VIEW_ALL
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
+		self.iMoveDir = -1 # the move button that is held (0 left, 1 right, 2 up, 3 down)
+		self.iMoveWait = 0
+		self.bMouseWasDown = False
 		self.iMoveX = 0 # the window moved by the player
 		self.iMoveY = 0
 		self.dBtn = {} # the buttons (name: [x, y, w, h, code, text, marked, font, dy, panels])
@@ -1004,6 +1009,49 @@ class CvTradeRouteScreen:
 		self.dBtn = {}
 		self.sHover = ""
 
+	# the pixels of a step: shift doubles, Ctrl halves, both together triple
+	def getMoveStep(self):
+		bShift = CyInterface().shiftKey()
+		bCtrl = CyInterface().ctrlKey()
+		if bShift and bCtrl:
+			return MOVE_STEP * 3
+		if bShift:
+			return MOVE_STEP * 2
+		if bCtrl:
+			return MOVE_STEP / 2
+		return MOVE_STEP
+
+	def moveStep(self, iDir, iStep):
+		self.moveWindow([-iStep, iStep, 0, 0][iDir], [0, 0, -iStep, iStep][iDir])
+
+	# the move buttons: one step when pressed, held: the steps go on until the mouse button is released (returns 1 if it moved)
+	def updateMove(self):
+		bDown = CyInterface().isLeftMouseDown()
+		if not bDown:
+			self.iMoveDir = -1
+			self.bMouseWasDown = False
+			return 0
+		if self.iMoveDir == -1:
+			if self.bMouseWasDown:
+				return 0
+			self.bMouseWasDown = True
+			iX = CyGame().getCursorClientX()
+			iY = CyGame().getCursorClientY()
+			for szName in self.dBtn.keys():
+				b = self.dBtn[szName]
+				if b[4] >= BTN_MOVE and b[4] < BTN_MOVE + 4 and iX >= b[0] and iX < b[0] + b[2] and iY >= b[1] and iY < b[1] + b[3]:
+					self.iMoveDir = b[4] - BTN_MOVE
+					self.iMoveWait = MOVE_DELAY
+					self.moveStep(self.iMoveDir, self.getMoveStep())
+					return 1
+			return 0
+		self.iMoveWait -= 1
+		if self.iMoveWait <= 0:
+			self.iMoveWait = MOVE_REPEAT
+			self.moveStep(self.iMoveDir, self.getMoveStep())
+			return 1
+		return 0
+
 	# moves the window and builds it again at the new place
 	def moveWindow(self, iDX, iDY):
 		self.iMoveX += iDX
@@ -1044,8 +1092,10 @@ class CvTradeRouteScreen:
 		if iKey == self.iKeyEsc:
 			self.finish(False, -1)
 		elif bCtrl and iKey in self.aKeyArrows:
-			iIndex = self.aKeyArrows.index(iKey)
-			self.moveWindow([-MOVE_STEP, MOVE_STEP, 0, 0][iIndex], [0, 0, -MOVE_STEP, MOVE_STEP][iIndex])
+			iStep = MOVE_STEP
+			if bShift:
+				iStep = MOVE_STEP * 2
+			self.moveStep(self.aKeyArrows.index(iKey), iStep)
 		else:
 			self.handleSearchKey(iKey, bShift)
 
@@ -1069,7 +1119,7 @@ class CvTradeRouteScreen:
 		elif iData == BTN_CANCEL:
 			self.finish(False, -1)
 		elif iData >= BTN_MOVE and iData < BTN_MOVE + 4:
-			self.moveWindow([-MOVE_STEP, MOVE_STEP, 0, 0][iData - BTN_MOVE], [0, 0, -MOVE_STEP, MOVE_STEP][iData - BTN_MOVE])
+			pass # (the move buttons work while the mouse button is down, see updateMove)
 		elif iData == BTN_CLEAR_SEARCH:
 			self.szQuery = u""
 			self.aConfirmed = []
@@ -1108,6 +1158,8 @@ class CvTradeRouteScreen:
 		if self.bFinished:
 			return 0
 		try:
+			if self.updateMove():
+				return 0
 			self.updateHover()
 			if self.iReload > 0:
 				self.iReload -= 1
