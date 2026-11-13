@@ -740,7 +740,7 @@ def getWidgetHelp(argsList):
 	szText = getWidgetHelpText(argsList)
 	# WTP: the own tooltip window at the cursor shows the same text
 	try:
-		mainInterface.widgetHelpSeen(szText)
+		mainInterface.widgetHelpSeen(szText, argsList[1])
 	except:
 		pass
 	return szText

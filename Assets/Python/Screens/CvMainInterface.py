@@ -322,6 +322,8 @@ class CvMainInterface:
 	dMessageConcepts = {}
 	dMessagePediaCache = {}
 	dMessageLineIndex = {}
+	tMsgRect = (0, 0, 0, 0)
+	iMsgW = 0
 	bCursorTipShown = False
 	iCursorTipLines = 0
 	fWidgetHelpTime = 0.0
@@ -3779,9 +3781,16 @@ class CvMainInterface:
 			iWidth = max(120, min(iMaxWidth, int(iLongest * iChar) + 2 * iPad + 8))
 			iHeight = len(aszLines) * iLine + 2 * iPad
 			iGap = max(48, int(yRes * 0.04))
-			iX = iCursorX + iGap
-			if iX + iWidth > xRes - 4:
-				iX = iCursorX - int(iGap * 0.6) - iWidth
+			tRect = self.getTipAvoidRect(iCursorX, iCursorY)
+			if tRect is not None:
+				# beside the window (right of it, left if there is no room), at the height of the cursor
+				iX = tRect[0] + tRect[2] + 12
+				if iX + iWidth > xRes - 4:
+					iX = tRect[0] - 12 - iWidth
+			else:
+				iX = iCursorX + iGap
+				if iX + iWidth > xRes - 4:
+					iX = iCursorX - int(iGap * 0.6) - iWidth
 			iX = max(4, iX)
 			iY = max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2))
 			screen.addPanel("HudTipBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
@@ -3798,6 +3807,24 @@ class CvMainInterface:
 		except:
 			self.bCursorTipShown = False
 
+	def getTipAvoidRect( self, iCursorX, iCursorY ):
+		# the own windows whose elements have a tooltip: the tooltip appears beside the window, not over it
+		aRects = []
+		try:
+			if CvScreensInterface.tradeRouteScreen.isOpen():
+				t = CvScreensInterface.tradeRouteScreen
+				aRects.append((t.OX, t.OY, t.W, t.H))
+			if CvScreensInterface.yieldAmountScreen.isOpen():
+				t = CvScreensInterface.yieldAmountScreen
+				aRects.append((t.iGX, t.iGY, t.W, t.H))
+			aRects.append(self.tMsgRect)
+		except:
+			pass
+		for (x, y, w, h) in aRects:
+			if w > 0 and iCursorX >= x and iCursorX < x + w and iCursorY >= y and iCursorY < y + h:
+				return (x, y, w, h)
+		return None
+
 	def getCursorTipNames( self ):
 		aszNames = ["HudTipBack1", "HudTipBack2"]
 		for i in range(self.iCursorTipLines):
@@ -3805,13 +3832,15 @@ class CvMainInterface:
 		return aszNames
 
 	# called by the game when it asks for the help text of a widget under the cursor (CvScreensInterface.getWidgetHelp)
-	def widgetHelpSeen( self, szText ):
+	def widgetHelpSeen( self, szText, eWidgetType ):
 		try:
-			self.fWidgetHelpTime = time.time()
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			if szText and len(szText) > 0:
+				self.fWidgetHelpTime = time.time()
 				self.showCursorTooltip(screen, szText, True)
-			else:
+			elif eWidgetType != WidgetTypes.WIDGET_GENERAL:
+				# a HUD element of the game itself (its text is not known here): only the tooltip of the game
+				self.fWidgetHelpTime = time.time()
 				self.hideCursorTooltip(screen)
 		except:
 			pass
@@ -4529,6 +4558,7 @@ class CvMainInterface:
 			self.iMsgMoveY = iY - iBaseY
 			self.iMsgX = iX
 			self.iMsgY = iY
+			self.iMsgW = iWidth
 			iHeaderHeight = int(max(14, int(yRes * 0.0135)) * 0.85)
 			iGap = int(iLine * 0.8) # a blank line between the header and the messages
 			iIndent = int(iLine * 0.95) # the lines after the first one of a message
@@ -4612,6 +4642,7 @@ class CvMainInterface:
 				iFooterHeight += iGap / 2
 			iTextHeight = int(iTextLines * iLine) + iPad / 2
 			iHeight = iHeaderHeight + iGap + iTextHeight + iFooterHeight + iPad
+			self.tMsgRect = (iX, iY, iWidth, iHeight)
 
 			if self.bMessagePanelExpanded:
 				if bPrevious:
