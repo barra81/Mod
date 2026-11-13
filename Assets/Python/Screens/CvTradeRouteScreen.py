@@ -175,6 +175,61 @@ def saveBuild(dBuild):
 		import traceback
 		logTrade(traceback.format_exc())
 
+# the market automatic preset: remembers (per city) the import settings of the goods the market asks for before it was switched on, so that
+# switching it off restores them: [[WTPMKT:cityId:TYPE@imp@feeder@maintain@limit,...;...]]
+MKT_PREFIX = "[[WTPMKT:"
+MKT_SUFFIX = "]]"
+
+def loadMarket():
+	dMarket = {}
+	try:
+		szData = getActivePlayer().getScriptData()
+		if szData == None:
+			szData = ""
+		iStart = szData.find(MKT_PREFIX)
+		if iStart != -1:
+			iStart += len(MKT_PREFIX)
+			iEnd = szData.find(MKT_SUFFIX, iStart)
+			if iEnd != -1:
+				for szEntry in szData[iStart:iEnd].split(";"):
+					if szEntry.find(":") == -1:
+						continue
+					szCity, szTypes = szEntry.split(":", 1)
+					aTypes = []
+					for szType in szTypes.split(","):
+						aPart = szType.strip().split("@")
+						if len(aPart) == 5:
+							aTypes.append([aPart[0], int(aPart[1]) != 0, int(aPart[2]) != 0, int(aPart[3]), int(aPart[4])])
+					dMarket[int(szCity)] = aTypes
+	except:
+		pass
+	return dMarket
+
+def saveMarket(dMarket):
+	try:
+		pPlayer = getActivePlayer()
+		szData = pPlayer.getScriptData()
+		if szData == None:
+			szData = ""
+		iStart = szData.find(MKT_PREFIX)
+		if iStart != -1:
+			iEnd = szData.find(MKT_SUFFIX, iStart)
+			if iEnd != -1:
+				szData = szData[:iStart] + szData[iEnd + len(MKT_SUFFIX):]
+		aEntries = []
+		for iCity in dMarket.keys():
+			aTypeEntries = []
+			for aType in dMarket[iCity]:
+				aTypeEntries.append("%s@%d@%d@%d@%d" % (aType[0], int(aType[1]), int(aType[2]), aType[3], aType[4]))
+			if len(aTypeEntries) > 0:
+				aEntries.append(str(iCity) + ":" + ",".join(aTypeEntries))
+		if len(aEntries) > 0:
+			szData = szData + MKT_PREFIX + ";".join(aEntries) + MKT_SUFFIX
+		pPlayer.setScriptData(szData)
+	except:
+		import traceback
+		logTrade(traceback.format_exc())
+
 # the keys of the search field: key name -> character
 SEARCH_KEY_NAMES = {}
 for _c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
@@ -451,6 +506,45 @@ class CvTradeRouteScreen:
 		if self.iView == VIEW_MARKED:
 			self.buildView()
 			self.drawPage()
+		self.drawRows()
+		self.iReload = 60
+
+	# market automatic: on remembers the settings of the goods the market asks for, off restores them
+	def toggleMarket(self):
+		pCity = self.getCity()
+		if pCity == None or pCity.isNone():
+			return
+		try:
+			dMarket = loadMarket()
+			if pCity.isAutoMarketImport():
+				self.apply() # (the settings made by hand are sent first)
+				aSaved = []
+				if dMarket.has_key(self.iCity):
+					aSaved = dMarket[self.iCity]
+					del dMarket[self.iCity]
+				CyMessageControl().sendDoTask(self.iCity, TaskTypes.TASK_TRADEROUTE_PRESET, 1, 0, False, False, False, False) # (switches it off)
+				for aType in aSaved:
+					iYield = self.getYieldByType(aType[0])
+					if iYield >= 0:
+						d = self.dData[iYield]
+						d["imp"] = aType[1]
+						d["feeder"] = aType[2]
+						d["maintain"] = aType[3]
+						d["impLimit"] = aType[4]
+				self.apply() # (restores them; the preset above is processed first)
+			else:
+				self.apply()
+				aSaved = []
+				for iYield in self.dData.keys():
+					if pCity.isMarketDemandYield(iYield):
+						d = self.dData[iYield]
+						aSaved.append([gc.getYieldInfo(iYield).getType(), d["imp"], d["feeder"], d["maintain"], d["impLimit"]])
+				dMarket[self.iCity] = aSaved
+				CyMessageControl().sendDoTask(self.iCity, TaskTypes.TASK_TRADEROUTE_PRESET, 1, 0, False, False, False, False)
+			saveMarket(dMarket)
+		except:
+			import traceback
+			logTrade(traceback.format_exc())
 		self.drawRows()
 		self.iReload = 60
 
@@ -818,6 +912,9 @@ class CvTradeRouteScreen:
 	def runPreset(self, iPreset):
 		if iPreset == 3:
 			self.toggleBuild()
+			return
+		if iPreset == 4:
+			self.toggleMarket()
 			return
 		try:
 			self.apply()
