@@ -3803,10 +3803,7 @@ class CvMainInterface:
 				aszWrapped = self.wrapMessage(aszParas[iPara], iCharsPerLine)
 				aszLines += aszWrapped
 				aiPara += [iPara] * len(aszWrapped)
-			iLongest = 0
-			for szLine in aszLines:
-				iLongest = max(iLongest, len(re.sub(u"<[^>]*>", u"", szLine)))
-			iWidth = max(120, min(iMaxWidth, int(iLongest * iChar) + 2 * iPad + 8))
+			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad)
 			iHeight = len(aszLines) * iLine + 2 * iPad
 			iGap = max(48, int(yRes * 0.04))
 			tRect = self.getTipAvoidRect(iCursorX, iCursorY)
@@ -3829,6 +3826,21 @@ class CvMainInterface:
 			self.tCursorTipAt = (iCursorX, iCursorY)
 		except:
 			self.bCursorTipShown = False
+
+	# width of a window for the lines: icons in the text (promotions, yields ...) are single characters of the game font, but as wide as a line is high
+	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad ):
+		iLongest = 0
+		iMostIcons = 0
+		for szLine in aszLines:
+			szPlain = re.sub(u"<[^>]*>", u"", szLine)
+			iIcons = 0
+			for c in szPlain:
+				if ord(c) > 0x2000:
+					iIcons += 1
+			iMostIcons = max(iMostIcons, iIcons)
+			# an icon is about as wide as 3 characters (it counted as one already)
+			iLongest = max(iLongest, len(szPlain) + 2 * iIcons)
+		return max(120, min(iMaxWidth + int(2 * iMostIcons * iChar), int(iLongest * iChar) + 2 * iPad + 8))
 
 	def drawCursorTip( self, screen, bClickable ):
 		(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = self.tTipLayout
@@ -3908,10 +3920,7 @@ class CvMainInterface:
 			aszLines = []
 			for szPart in szText.split(u"\n"):
 				aszLines += self.wrapMessage(szPart, iCharsPerLine)
-			iLongest = 0
-			for szLine in aszLines:
-				iLongest = max(iLongest, len(re.sub(u"<[^>]*>", u"", szLine)))
-			iWidth = max(120, min(iMaxWidth, int(iLongest * iChar) + 2 * iPad + 8))
+			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad)
 			iHeight = len(aszLines) * iLine + 2 * iPad
 			iX = iFX + iFW + 12
 			if iX + iWidth > xRes - 4:
