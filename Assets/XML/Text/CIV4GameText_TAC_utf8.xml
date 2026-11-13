@@ -3698,4 +3698,9 @@
 		<English>Hover tooltip: off</English>
 		<German>Hover-Tooltip: aus</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_FROZEN_HINT</Tag>
+		<English>[COLOR:140:255:40:255]Right click: Colopedia (Ctrl: 2nd) - Esc: close[COLOR_REVERT]</English>
+		<German>[COLOR:140:255:40:255]Rechtsklick: Colopedia (Strg: 2.) - Esc: schließen[COLOR_REVERT]</German>
+	</TEXT>
 </Civ4GameText>

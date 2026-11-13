@@ -314,6 +314,7 @@ class CvMainInterface:
 	BUTTON_BUILDING_UPGRADE_CLOSE = 760 # WTP: building upgrade panel of the city screen: close
 	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
 	BUTTON_MESSAGE_AUTO = 761 # WTP: message panel: auto expand at the start of a turn on / off
+	BUTTON_TIP_LINE = 758 # WTP: a line of a frozen hover tooltip (right click: Colopedia)
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
 	dMessagePediaChars = {}
 	aMessageConceptPatterns = []
@@ -330,6 +331,9 @@ class CvMainInterface:
 	fWidgetHelpTime = 0.0
 	iTick = 0 # counted in update() (time.time() of the game is far too coarse)
 	iWidgetHelpTick = -1000
+	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
+	tTipLayout = None
+	aszTipParas = []
 	bHoverTip = True # Ctrl+Shift+T switches the hover tooltip on and off
 	bHudHover = False # the cursor is on a HUD element / widget with its own help text (until the game reports "no widget" again)
 	tHudHoverAt = (0, 0)
@@ -3759,7 +3763,7 @@ class CvMainInterface:
 	# WTP: own tooltip window at the mouse cursor (the tooltip of the game stays at its place). It shows the same text, is vertically
 	# centered on the cursor, right of it (left if there is no room) and lies in front of the HUD elements.
 	def showCursorTooltip( self, screen, szHelp, bWidget = False ):
-		if not self.bHoverTip:
+		if self.bTipFrozen or not self.bHoverTip:
 			return
 		try:
 			# the help of the map plot is not shown while the cursor is on a HUD element (the game reports the plot behind it)
@@ -3782,8 +3786,12 @@ class CvMainInterface:
 			iMaxWidth = max(300, int(xRes * 0.2))
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
-			for szPart in szHelp.split(u"\n"):
-				aszLines += self.wrapMessage(szPart, iCharsPerLine)
+			aiPara = [] # the paragraph (text between two line breaks of the help) of every line: right click in the frozen window
+			aszParas = szHelp.split(u"\n")
+			for iPara in range(len(aszParas)):
+				aszWrapped = self.wrapMessage(aszParas[iPara], iCharsPerLine)
+				aszLines += aszWrapped
+				aiPara += [iPara] * len(aszWrapped)
 			iLongest = 0
 			for szLine in aszLines:
 				iLongest = max(iLongest, len(re.sub(u"<[^>]*>", u"", szLine)))
@@ -3802,19 +3810,79 @@ class CvMainInterface:
 					iX = iCursorX - int(iGap * 0.6) - iWidth
 			iX = max(4, iX)
 			iY = max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2))
-			screen.addPanel("HudTipBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			screen.addPanel("HudTipBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			self.iCursorTipLines = len(aszLines)
-			for i in range(len(aszLines)):
-				screen.setText("HudTipLine%d" % i, "Background", self.setFontSize(aszLines[i], -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iY + iPad + i * iLine, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			for szName in self.getCursorTipNames():
-				screen.show(szName)
-				screen.moveToFront(szName)
+			self.tTipLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
+			self.aszTipParas = aszParas
+			self.drawCursorTip(screen, False)
 			self.bCursorTipShown = True
 			self.szCursorTipText = szHelp
 			self.tCursorTipAt = (iCursorX, iCursorY)
 		except:
 			self.bCursorTipShown = False
+
+	def drawCursorTip( self, screen, bClickable ):
+		(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = self.tTipLayout
+		screen.addPanel("HudTipBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.addPanel("HudTipBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		self.iCursorTipLines = len(aszLines)
+		for i in range(len(aszLines)):
+			eWidget = WidgetTypes.WIDGET_GENERAL
+			iData1 = -1
+			iData2 = -1
+			if bClickable and aiPara[i] >= 0:
+				iData1 = self.BUTTON_TIP_LINE
+				iData2 = aiPara[i]
+			screen.setText("HudTipLine%d" % i, "Background", self.setFontSize(aszLines[i], -1), CvUtil.FONT_LEFT_JUSTIFY, iX + iPad, iY + iPad + i * iLine, -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+		for szName in self.getCursorTipNames():
+			screen.show(szName)
+			screen.moveToFront(szName)
+
+	# the key X freezes the hover tooltip that is shown: it stays where it is, the cursor can be moved onto it and a right click on a line opens
+	# the Colopedia page of the first thing named in it (Ctrl: the second), as in the message panel. Esc (or X again) closes it.
+	def freezeCursorTooltip( self ):
+		try:
+			if self.bTipFrozen:
+				self.unfreezeCursorTooltip()
+				return True
+			if not self.bHoverTip or not self.bCursorTipShown or self.tTipLayout is None:
+				return False
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = self.tTipLayout
+			# the windows is drawn again: its lines can be clicked, with a hint line at the end
+			for szName in self.getCursorTipNames():
+				screen.hide(szName)
+				screen.deleteWidget(szName)
+			szHint = localText.getText("TXT_KEY_WTP_TIP_FROZEN_HINT", ())
+			aszLines = list(aszLines) + [szHint]
+			aiPara = list(aiPara) + [-1]
+			iHeight += iLine
+			iWidth = max(iWidth, int(len(re.sub(u"<[^>]*>", u"", szHint)) * iLine * 0.32) + 2 * iPad + 8)
+			iY = max(4, min(screen.getYResolution() - iHeight - 4, iY))
+			iX = max(4, min(screen.getXResolution() - iWidth - 4, iX))
+			self.tTipLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
+			self.drawCursorTip(screen, True)
+			self.bTipFrozen = True
+			return True
+		except:
+			self.bTipFrozen = False
+		return False
+
+	def unfreezeCursorTooltip( self ):
+		if not self.bTipFrozen:
+			return False
+		self.bTipFrozen = False
+		self.hideCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE))
+		return True
+
+	def isTipFrozen( self ):
+		return self.bTipFrozen
+
+	def openTipPedia( self, iPara, bSecond ):
+		try:
+			if iPara >= 0 and iPara < len(self.aszTipParas):
+				self.openPediaTargets(self.getTextPediaTargets(self.aszTipParas[iPara]), bSecond)
+		except:
+			pass
+		self.unfreezeCursorTooltip()
 
 	def getTipAvoidRect( self, iCursorX, iCursorY ):
 		# the own windows whose elements have a tooltip: the tooltip appears beside the window, not over it
@@ -3856,6 +3924,7 @@ class CvMainInterface:
 
 	def toggleHoverTip( self ):
 		self.bHoverTip = not self.bHoverTip
+		self.bTipFrozen = False
 		try:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			self.bHudHover = False
@@ -3883,7 +3952,7 @@ class CvMainInterface:
 
 	# called by the game when it asks for the help text of a widget under the cursor (CvScreensInterface.getWidgetHelp)
 	def widgetHelpSeen( self, szText, eWidgetType ):
-		if not self.bHoverTip:
+		if not self.bHoverTip or self.bTipFrozen:
 			return
 		try:
 			if szText and len(szText) > 0:
@@ -3922,6 +3991,8 @@ class CvMainInterface:
 			pass
 
 	def hideCursorTooltip( self, screen ):
+		if self.bTipFrozen:
+			return
 		try:
 			if self.bCursorTipShown:
 				for szName in self.getCursorTipNames():
@@ -3934,6 +4005,11 @@ class CvMainInterface:
 
 	def updateCursorTooltip( self ):
 		# called every frame: the window goes away when the cursor has left its place (the game does not always say that a tooltip is gone)
+		if self.bTipFrozen:
+			# a frozen window stays until Esc / X, but not into the city screen
+			if CyInterface().isCityScreenUp() or CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_HIDE_ALL:
+				self.unfreezeCursorTooltip()
+			return
 		if not self.bCursorTipShown:
 			return
 		try:
@@ -4248,6 +4324,10 @@ class CvMainInterface:
 				self.bMessagePanelPrevious = not self.bMessagePanelPrevious
 				self.iMessagePage = 0
 				self.updateMessagePanel()
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_TIP_LINE):
+				if (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP):
+					# a line of the frozen hover tooltip: right click: Colopedia page of the first named thing of the line (Ctrl: the second)
+					self.openTipPedia(inputClass.getData2(), inputClass.isCtrlKeyDown())
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_LINE):
 				if (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP):
 					# right click: Colopedia page of the first named thing of the message, Ctrl + right click: of the second one
@@ -4844,10 +4924,15 @@ class CvMainInterface:
 				CvUtil.pyPrint("Message panel failed: " + str(sys.exc_info()[1]))
 
 	def getMessagePediaTargets(self, iMessage):
-		# the things named (colored) in a message that have a Colopedia page: [(name, screen, id)] in the order of the text
+		try:
+			return self.getTextPediaTargets(self.aszMessageTexts[iMessage])
+		except:
+			return []
+
+	def getTextPediaTargets(self, szMessage):
+		# the things named (colored) in a text that have a Colopedia page: [(name, screen, id)] in the order of the text
 		aResult = []
 		try:
-			szMessage = self.aszMessageTexts[iMessage]
 			if szMessage in self.dMessagePediaCache:
 				return self.dMessagePediaCache[szMessage]
 			if len(self.dMessagePediaCache) > 300:
@@ -5047,8 +5132,10 @@ class CvMainInterface:
 		return aResult
 
 	def openMessagePedia(self, iMessage, bSecond):
+		self.openPediaTargets(self.getMessagePediaTargets(iMessage), bSecond)
+
+	def openPediaTargets(self, aTargets, bSecond):
 		try:
-			aTargets = self.getMessagePediaTargets(iMessage)
 			iIndex = 0
 			if bSecond:
 				iIndex = 1
@@ -5063,8 +5150,16 @@ class CvMainInterface:
 			pass
 
 	def getMessagePediaHelp(self, iMessage):
+		return self.getPediaHelpForTargets(self.getMessagePediaTargets(iMessage))
+
+	def getTipPediaHelp(self, iPara):
 		try:
-			aTargets = self.getMessagePediaTargets(iMessage)
+			return self.getPediaHelpForTargets(self.getTextPediaTargets(self.aszTipParas[iPara]))
+		except:
+			return u""
+
+	def getPediaHelpForTargets(self, aTargets):
+		try:
 			if len(aTargets) == 0:
 				return u""
 			szText = localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP", (aTargets[0][0],))
@@ -5445,6 +5540,8 @@ class CvMainInterface:
 				return localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_AUTO_HELP", (self.iMsgX, self.iMsgY))
 			elif iData1 == self.BUTTON_MESSAGE_LINE:
 				return self.getMessagePediaHelp(iData2)
+			elif iData1 == self.BUTTON_TIP_LINE:
+				return self.getTipPediaHelp(iData2)
 			elif iData1 == self.BUTTON_PIONEER_PLAN:
 				return localText.getText("TXT_KEY_INTERFACE_PIONEER_PLAN", ());
 			elif iData1 == self.BUTTON_PIONEER_PLAN_BUILD:

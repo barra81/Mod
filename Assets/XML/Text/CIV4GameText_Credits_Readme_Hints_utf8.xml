@@ -1980,4 +1980,9 @@ Viel Spaß![NEWLINE]
 		<English>Press [COLOR:140:255:40:255]&lt; CTRL + SHIFT + T &gt;[COLOR_REVERT] to switch the hover tooltip on or off: the tooltip window that appears right at the mouse cursor.</English>
 		<German>Drücken Sie [COLOR:140:255:40:255]&lt; STRG + SHIFT + T &gt;[COLOR_REVERT], um den Hover-Tooltip ein- oder auszuschalten: das Tooltip-Fenster, das direkt am Mauszeiger erscheint.</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_70</Tag>
+		<English>Press [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] while a hover tooltip is shown to freeze it: move the cursor onto it and right click a line to open the Colopedia page of the first thing named there. [COLOR:140:255:40:255]&lt; ESC &gt;[COLOR_REVERT] closes it.</English>
+		<German>Drücken Sie [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT], während ein Hover-Tooltip angezeigt wird, um ihn einzufrieren: Fahren Sie mit dem Mauszeiger darauf und klicken Sie mit rechts auf eine Zeile, um die Colopedia-Seite des ersten genannten Begriffs zu öffnen. [COLOR:140:255:40:255]&lt; ESC &gt;[COLOR_REVERT] schließt ihn.</German>
+	</TEXT>
 </Civ4GameText>

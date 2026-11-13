@@ -246,6 +246,15 @@ class CvEventManager:
 					pass
 			return 1
 
+		# WTP: Esc closes the frozen hover tooltip
+		if (eventType == self.EventKeyDown):
+			try:
+				if int(key) == int(InputTypes.KB_ESCAPE) and CvScreensInterface.mainInterface.isTipFrozen():
+					CvScreensInterface.mainInterface.unfreezeCursorTooltip()
+					return 1
+			except:
+				pass
+
 		# WTP: Ctrl + Shift + W A S D move the message panel (two keys at once: diagonal)
 		aMoveKeys = [int(InputTypes.KB_A), int(InputTypes.KB_D), int(InputTypes.KB_W), int(InputTypes.KB_S)] # left, right, up, down
 		if (eventType == self.EventKeyUp):
@@ -283,6 +292,14 @@ class CvEventManager:
 					popupInfo.setText(u"showTransportRoutesOverview")
 					popupInfo.addPopup(gc.getGame().getActivePlayer())
 					return 1
+				except:
+					pass
+
+			# WTP: X freezes the hover tooltip that is shown (and closes a frozen one)
+			if (theKey == int(InputTypes.KB_X) and not self.bCtrl and not self.bShift and not self.bAlt):
+				try:
+					if CvScreensInterface.mainInterface.freezeCursorTooltip():
+						return 1
 				except:
 					pass
 
