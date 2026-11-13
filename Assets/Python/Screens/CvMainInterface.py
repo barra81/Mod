@@ -609,6 +609,9 @@ class CvMainInterface:
 		self.iMsgY = 0
 		self.aMsgHeld = [] # the arrow keys that are down
 		self.iMsgHoldWait = 0
+		self.iMsgCamKeep = 0 # frames the camera is kept where it was (the game turns it a little with Shift + arrow keys itself)
+		self.fMsgCamTurn = 0.0
+		self.fMsgCamPitch = 0.0
 		self.aszUpgradeWidgets = [] # WTP: building upgrade panel of the city screen
 		self.iUpgradeCity = -1
 		self.tMessagePanelKey = None
@@ -4194,6 +4197,13 @@ class CvMainInterface:
 	def pressMessageArrow(self, iDir):
 		if iDir in self.aMsgHeld:
 			return
+		if len(self.aMsgHeld) == 0 and self.iMsgCamKeep <= 0:
+			try:
+				self.fMsgCamTurn = CyCamera().GetBaseTurn()
+				self.fMsgCamPitch = CyCamera().GetBasePitch()
+			except:
+				pass
+		self.iMsgCamKeep = 40
 		self.aMsgHeld.append(iDir)
 		self.iMsgHoldWait = 18
 		self.moveMessagePanel([iDir])
@@ -4201,6 +4211,7 @@ class CvMainInterface:
 	def releaseMessageArrow(self, iDir):
 		if iDir in self.aMsgHeld:
 			self.aMsgHeld.remove(iDir)
+			self.iMsgCamKeep = 40
 
 	def moveMessagePanel(self, aDirs):
 		for iDir in aDirs:
@@ -4209,6 +4220,15 @@ class CvMainInterface:
 		self.updateMessagePanel()
 
 	def updateMessageMove(self):
+		# the camera stays where it was while the panel is moved (and a moment after, the game turns it back by itself)
+		if self.iMsgCamKeep > 0:
+			try:
+				CyCamera().SetBaseTurn(self.fMsgCamTurn)
+				CyCamera().SetBasePitch(self.fMsgCamPitch)
+			except:
+				pass
+			if len(self.aMsgHeld) == 0:
+				self.iMsgCamKeep -= 1
 		if len(self.aMsgHeld) == 0:
 			return
 		try:
