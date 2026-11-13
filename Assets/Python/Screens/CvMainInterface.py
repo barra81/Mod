@@ -4699,6 +4699,8 @@ class CvMainInterface:
 					self.dMessagePediaCache[szMessage] = aResult
 					return aResult
 			# the names of settlements are cut out of the text (Fort Nassau is a city, not a fort)
+			# exception: a settlement named like a Colopedia concept (Port Royal) keeps its link
+			aConceptNames = [t[0].lower() for t in self.dMessageConcepts.values()]
 			aCityNames = []
 			for ePlayer in range(gc.getMAX_PLAYERS()):
 				pPlayer = gc.getPlayer(ePlayer)
@@ -4708,7 +4710,7 @@ class CvMainInterface:
 					pCity = pPlayer.getCity(iCity)
 					if pCity is not None and not pCity.isNone():
 						szCity = pCity.getName().lower()
-						if len(szCity) >= 3 and not szCity in aCityNames:
+						if len(szCity) >= 3 and not szCity in aCityNames and not szCity in aConceptNames:
 							aCityNames.append(szCity)
 			aCityNames.sort(key = lambda t: -len(t))
 			def maskCities(szText):
