@@ -4683,9 +4683,25 @@ class CvMainInterface:
 						szText = szText[szText.index(u"\x01") + 1:szText.index(u"\x02")]
 						szText = re.sub(u"<[^>]*>", u"", szText).strip()
 						if len(szText) > 10:
-							aSpecial.append((szText, [dConcepts[t] for t in aTypes if t in dConcepts]))
+							aSpecial.append((szText, [dConcepts[t] for t in aTypes if t in dConcepts], False))
 					except:
 						pass
+				# the messages about a great general / admiral: the unit pages (the admiral first if the text names him)
+				try:
+					aGreat = []
+					for szUnit in ("UNIT_GREAT_GENERAL", "UNIT_GREAT_ADMIRAL"):
+						eUnit = gc.getInfoTypeForString(szUnit)
+						if eUnit >= 0:
+							aGreat.append((gc.getUnitInfo(eUnit).getDescription(), CvScreenEnums.PEDIA_UNIT, eUnit))
+					if len(aGreat) == 2:
+						for szKey in ("TXT_KEY_MISC_GP_BORN", "TXT_KEY_MISC_GP_BORN_SOMEWHERE", "TXT_KEY_MISC_GP_BORN_FIELD"):
+							aPieces = re.split(u"[\x01\x02]", localText.getText(szKey, (u"\x01", u"\x02")))
+							aPieces = [re.sub(u"<[^>]*>", u"", t).strip() for t in aPieces]
+							aPieces.sort(key = lambda t: -len(t))
+							if len(aPieces[0]) > 10:
+								aSpecial.append((aPieces[0], aGreat, True))
+				except:
+					pass
 				self.aMessageSpecial = aSpecial
 				self.dMessagePediaChars = dChars
 				aNameList = [(k, v) for (k, v) in dNames.items() if len(k) >= 3]
@@ -4693,9 +4709,11 @@ class CvMainInterface:
 				self.aMessageNameList = aNameList
 				self.dMessagePediaNames = dNames
 			szPlainAll = re.sub(u"<[^>]*>", u"", szMessage)
-			for (szFragment, aSpecialTargets) in self.aMessageSpecial:
+			for (szFragment, aSpecialTargets, bGreat) in self.aMessageSpecial:
 				if szFragment in szPlainAll:
 					aResult = list(aSpecialTargets)
+					if bGreat and len(aResult) == 2 and aResult[1][0].lower() in szPlainAll.lower():
+						aResult.reverse()
 					self.dMessagePediaCache[szMessage] = aResult
 					return aResult
 			# the names of settlements are cut out of the text (Fort Nassau is a city, not a fort)
