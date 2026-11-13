@@ -225,6 +225,11 @@ class CvEventManager:
 					CvScreensInterface.tradeRouteScreen.handleKey(int(key), self.bCtrl, self.bShift)
 				except:
 					pass
+			elif (eventType == self.EventKeyUp):
+				try:
+					CvScreensInterface.tradeRouteScreen.handleKeyUp(int(key))
+				except:
+					pass
 			return 1
 
 		# WTP: the amount dialog of the transfers (shift + transfer) takes all keys while it is open
@@ -232,6 +237,11 @@ class CvEventManager:
 			if (eventType == self.EventKeyDown):
 				try:
 					CvScreensInterface.yieldAmountScreen.handleKey(int(key), self.bCtrl, self.bShift, self.bAlt)
+				except:
+					pass
+			elif (eventType == self.EventKeyUp):
+				try:
+					CvScreensInterface.yieldAmountScreen.handleKeyUp(int(key))
 				except:
 					pass
 			return 1

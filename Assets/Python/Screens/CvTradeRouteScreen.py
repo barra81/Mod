@@ -278,6 +278,8 @@ class CvTradeRouteScreen:
 		self.aDrawn = [] # the names of the widgets that are drawn (to delete them again)
 		self.iMoveDir = -1 # the move button that is held (0 left, 1 right, 2 up, 3 down)
 		self.iMoveWait = 0
+		self.aHeld = [] # the arrow keys that are down
+		self.iHoldWait = 0
 		self.bMouseWasDown = False
 		self.bRepeatDone = False
 		self.iPendX = 0
@@ -635,6 +637,7 @@ class CvTradeRouteScreen:
 		self.iPendX = 0
 		self.iPendY = 0
 		self.iMoveDir = -1
+		self.aHeld = []
 		self.bFinished = False
 		self.buildLayout()
 		try:
@@ -1036,6 +1039,20 @@ class CvTradeRouteScreen:
 		except:
 			return (False, False)
 
+	# an arrow key goes down (the repeats of the keyboard are ignored: the held keys are handled in updateMove)
+	def pressArrow(self, iDir, bCtrl, bShift):
+		if iDir in self.aHeld:
+			return
+		self.aHeld.append(iDir)
+		self.iHoldWait = MOVE_DELAY
+		self.queueMove(iDir, self.getMoveStep(bCtrl, bShift))
+
+	def handleKeyUp(self, iKey):
+		if iKey in self.aKeyArrows:
+			iDir = self.aKeyArrows.index(iKey)
+			if iDir in self.aHeld:
+				self.aHeld.remove(iDir)
+
 	# the move buttons held down: the steps go on until the mouse button is released (the first step is the click itself)
 	def updateMove(self):
 		try:
@@ -1064,6 +1081,14 @@ class CvTradeRouteScreen:
 				self.bRepeatDone = True
 				aMod = self.getModifiers()
 				self.queueMove(self.iMoveDir, self.getMoveStep(aMod[0], aMod[1]))
+		# the arrow keys held: the window goes on moving, two keys at once move it diagonally
+		if len(self.aHeld) > 0:
+			self.iHoldWait -= 1
+			if self.iHoldWait <= 0:
+				self.iHoldWait = MOVE_REPEAT
+				aMod = self.getModifiers()
+				for iHeld in self.aHeld:
+					self.queueMove(iHeld, self.getMoveStep(aMod[0], aMod[1]))
 		if self.iPendX != 0 or self.iPendY != 0:
 			iX = self.iPendX
 			iY = self.iPendY
@@ -1113,7 +1138,7 @@ class CvTradeRouteScreen:
 		if iKey == self.iKeyEsc:
 			self.finish(False, -1)
 		elif iKey in self.aKeyArrows:
-			self.queueMove(self.aKeyArrows.index(iKey), self.getMoveStep(bCtrl, bShift))
+			self.pressArrow(self.aKeyArrows.index(iKey), bCtrl, bShift)
 		else:
 			self.handleSearchKey(iKey, bShift)
 
