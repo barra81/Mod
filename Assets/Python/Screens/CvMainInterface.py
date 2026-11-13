@@ -4698,13 +4698,35 @@ class CvMainInterface:
 					aResult = list(aSpecialTargets)
 					self.dMessagePediaCache[szMessage] = aResult
 					return aResult
+			# the names of settlements are cut out of the text (Fort Nassau is a city, not a fort)
+			aCityNames = []
+			for ePlayer in range(gc.getMAX_PLAYERS()):
+				pPlayer = gc.getPlayer(ePlayer)
+				if not pPlayer.isAlive():
+					continue
+				for iCity in range(pPlayer.getNumCities()):
+					pCity = pPlayer.getCity(iCity)
+					if pCity is not None and not pCity.isNone():
+						szCity = pCity.getName().lower()
+						if len(szCity) >= 3 and not szCity in aCityNames:
+							aCityNames.append(szCity)
+			aCityNames.sort(key = lambda t: -len(t))
+			def maskCities(szText):
+				szLower = szText.lower()
+				for szCity in aCityNames:
+					iPos = szLower.find(szCity)
+					while iPos >= 0:
+						szText = szText[:iPos] + u" " * len(szCity) + szText[iPos + len(szCity):]
+						szLower = szLower[:iPos] + u" " * len(szCity) + szLower[iPos + len(szCity):]
+						iPos = szLower.find(szCity, iPos + len(szCity))
+				return szText
 			dNames = self.dMessagePediaNames
 			dChars = self.dMessagePediaChars
 			aFound = [] # (position in the text, target)
 			for oMatch in re.finditer(u"<color=[^>]*>(.*?)</color>", szMessage):
 				szSegment = re.sub(u"<[^>]*>", u"", oMatch.group(1))
 				szSegment = re.compile(u"^[^\\w]+|[^\\w]+$", re.UNICODE).sub(u"", szSegment).lower()
-				if len(szSegment) < 3:
+				if len(szSegment) < 3 or szSegment in aCityNames:
 					continue
 				tFound = dNames.get(szSegment)
 				if tFound is None:
@@ -4727,7 +4749,7 @@ class CvMainInterface:
 				if not tFound in aResult:
 					aResult.append(tFound)
 			# names in the whole text (marked or not): whole words only, the longest names first, a found name is cut out of the text
-			szRest = re.sub(u"<[^>]*>", u"", szMessage).lower()
+			szRest = maskCities(re.sub(u"<[^>]*>", u"", szMessage)).lower()
 			aRest = []
 			oWord = re.compile(u"\\w", re.UNICODE)
 			for (szKey, tFound) in self.aMessageNameList:
@@ -4748,7 +4770,7 @@ class CvMainInterface:
 				if not tFound in aResult:
 					aResult.append(tFound)
 			# game concepts in the plain text (after the named things)
-			szPlain = re.sub(u"<[^>]*>", u"", szMessage)
+			szPlain = maskCities(re.sub(u"<[^>]*>", u"", szMessage))
 			aConcepts = []
 			for (oPattern, tConcept) in self.aMessageConceptPatterns:
 				oMatch = oPattern.search(szPlain)
