@@ -3650,8 +3650,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Click to move the window in this direction, hold the button to keep moving. Shift: double steps, Ctrl: half steps, both: a third.</English>
-		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Klick: Fenster in diese Richtung bewegen, Knopf gedrückt halten, um weiterzuschieben. Umschalt: doppelte Schritte, Strg: halbe Schritte, beide: ein Drittel.</German>
+		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Click to move the window in this direction, hold the button to keep moving.</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Klick: Fenster in diese Richtung bewegen, Knopf gedrückt halten, um weiterzuschieben.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP_KEYS</Tag>
