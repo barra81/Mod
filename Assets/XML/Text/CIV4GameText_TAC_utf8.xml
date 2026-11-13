@@ -3658,4 +3658,14 @@
 		<English>[COLOR_HIGHLIGHT_TEXT]Move window[COLOR_REVERT][NEWLINE]Moves the window; hold the button to keep moving. The arrow keys do the same. Shift: double steps, Ctrl: half steps, both: a third.[NEWLINE]Position: %d1, %d2</English>
 		<German>[COLOR_HIGHLIGHT_TEXT]Fenster verschieben[COLOR_REVERT][NEWLINE]Verschiebt das Fenster; Knopf gedrückt halten, um weiterzuschieben. Die Pfeiltasten machen dasselbe. Umschalt: doppelte Schritte, Strg: halbe Schritte, beide: ein Drittel.[NEWLINE]Position: %d1, %d2</German>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_AUTO_ON</Tag>
+		<English>[COLOR_FONT_CREAM]Auto expand: [COLOR_POSITIVE_TEXT]on[COLOR_REVERT]</English>
+		<German>[COLOR_FONT_CREAM]Auto-Ausklappen: [COLOR_POSITIVE_TEXT]an[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_AUTO_OFF</Tag>
+		<English>[COLOR_FONT_CREAM]Auto expand: [COLOR_NEGATIVE_TEXT]off[COLOR_REVERT]</English>
+		<German>[COLOR_FONT_CREAM]Auto-Ausklappen: [COLOR_NEGATIVE_TEXT]aus[COLOR_REVERT]</German>
+	</TEXT>
 </Civ4GameText>

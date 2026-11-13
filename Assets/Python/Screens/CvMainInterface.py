@@ -313,6 +313,7 @@ class CvMainInterface:
 	BUTTON_MESSAGE_MORE = 758 # WTP: message panel footer: the next older page of messages
 	BUTTON_BUILDING_UPGRADE_CLOSE = 760 # WTP: building upgrade panel of the city screen: close
 	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
+	BUTTON_MESSAGE_AUTO = 761 # WTP: message panel: auto expand at the start of a turn on / off
 	BUTTON_MESSAGE_LINE = 757 # WTP: a line of a message of the message panel (click: center the map on its place)
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
 	PRIVATE_BUILD_RANGE = 3 # WTP: as CvPlayer::startPrivateBuild
@@ -599,6 +600,9 @@ class CvMainInterface:
 		self.iPioneerPlanHoverY = 0
 		# WTP: message panel (the messages of the turn, click to expand)
 		self.bMessagePanelExpanded = False
+		self.bMessageAutoExpand = None # opens expanded at the start of a turn (saved with the game; None: not read yet)
+		self.iMessageTurn = -1
+		self.bMessageTurnPending = True
 		self.aszUpgradeWidgets = [] # WTP: building upgrade panel of the city screen
 		self.iUpgradeCity = -1
 		self.tMessagePanelKey = None
@@ -4000,6 +4004,9 @@ class CvMainInterface:
 				self.bMessagePanelPrevious = False
 				self.iMessagePage = 0
 				self.updateMessagePanel()
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_AUTO):
+				self.setMessageAutoExpand(not self.getMessageAutoExpand())
+				self.updateMessagePanel()
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_MORE):
 				self.iMessagePage += 1 # (the panel starts again with the newest messages after the last page)
 				self.updateMessagePanel()
@@ -4149,6 +4156,31 @@ class CvMainInterface:
 			atTargets.append(tTarget)
 		return atTargets
 
+	# the auto expand option of the message panel, kept in the script data of the player: [[WTPMSG:0]] / [[WTPMSG:1]] (on when nothing is saved)
+	def getMessageAutoExpand(self):
+		if self.bMessageAutoExpand is None:
+			self.bMessageAutoExpand = True
+			try:
+				szData = gc.getActivePlayer().getScriptData()
+				if szData is not None and szData.find("[[WTPMSG:0]]") != -1:
+					self.bMessageAutoExpand = False
+			except:
+				pass
+		return self.bMessageAutoExpand
+
+	def setMessageAutoExpand(self, bAuto):
+		self.bMessageAutoExpand = bAuto
+		try:
+			pPlayer = gc.getActivePlayer()
+			szData = pPlayer.getScriptData()
+			if szData is None:
+				szData = ""
+			szData = szData.replace("[[WTPMSG:0]]", "").replace("[[WTPMSG:1]]", "")
+			szData = szData + "[[WTPMSG:" + str(int(bAuto)) + "]]"
+			pPlayer.setScriptData(szData)
+		except:
+			pass
+
 	def hideMessagePanel(self, screen):
 		for szName in self.aszMessageLines:
 			screen.hide(szName)
@@ -4157,6 +4189,7 @@ class CvMainInterface:
 		screen.deleteWidget("HudMsgPanelBack1")
 		screen.deleteWidget("HudMsgPanelBack2")
 		screen.hide("HudMsgHeader")
+		screen.hide("HudMsgAuto")
 		screen.hide("HudMsgFooterMore")
 		screen.hide("HudMsgFooterPrevious")
 
@@ -4275,6 +4308,15 @@ class CvMainInterface:
 			game = gc.getGame()
 			iNumCurrent = game.getNumHudMessages()
 			iNumPrevious = game.getNumHudMessagesPrevious()
+			# a new turn: the panel opens expanded with its first messages (when the option is on)
+			if game.getGameTurn() != self.iMessageTurn:
+				self.iMessageTurn = game.getGameTurn()
+				self.bMessageTurnPending = True
+			if self.bMessageTurnPending and iNumCurrent > 0:
+				self.bMessageTurnPending = False
+				self.bMessagePanelExpanded = self.getMessageAutoExpand()
+				self.bMessagePanelPrevious = False
+				self.iMessagePage = 0
 			bPrevious = self.bMessagePanelPrevious and self.bMessagePanelExpanded
 			if bPrevious:
 				iNum = iNumPrevious
@@ -4284,6 +4326,7 @@ class CvMainInterface:
 			bShow = (iNumCurrent > 0
 				and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW and not CyInterface().isCityScreenUp())
 			if iNumCurrent == 0:
+				self.bMessageTurnPending = True
 				self.bMessagePanelExpanded = False
 				self.bMessagePanelPrevious = False
 				self.iMessagePage = 0
@@ -4300,7 +4343,7 @@ class CvMainInterface:
 				iNumPriority = game.getNumHudPriorityPrevious()
 			else:
 				iNumPriority = game.getNumHudPriority()
-			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, xRes, yRes)
+			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), xRes, yRes)
 			if tKey == self.tMessagePanelKey:
 				return
 			self.tMessagePanelKey = tKey
@@ -4488,6 +4531,14 @@ class CvMainInterface:
 			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
 			screen.show("HudMsgHeader")
 			screen.moveToFront("HudMsgHeader")
+			# the option at the top right corner
+			if self.getMessageAutoExpand():
+				szAuto = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_AUTO_ON", ())
+			else:
+				szAuto = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_AUTO_OFF", ())
+			screen.setText("HudMsgAuto", "Background", self.setFontSize(szAuto, -1), CvUtil.FONT_RIGHT_JUSTIFY, iX + iWidth - iPad, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_AUTO, -1)
+			screen.show("HudMsgAuto")
+			screen.moveToFront("HudMsgAuto")
 		except:
 			# the panel must never break the main interface
 			self.tMessagePanelKey = None
