@@ -4220,6 +4220,9 @@ class CvMainInterface:
 			szText = self.getPromotionTipText(aszLines[iLineIdx])
 			if len(szText) > 0:
 				self.showSecondTip(screen, szText, iCY)
+		elif iPara >= 0 and self.getCityCommand(aszTopParas, iPara) is not None:
+			# the command lines of a city tooltip: no Colopedia, a right click runs the command
+			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY)
 		elif iPara >= 0:
 			if iSel >= 0:
 				szText = self.getTipSecondText(iPara, iSel, aszTopParas)
@@ -4339,12 +4342,79 @@ class CvMainInterface:
 			return self.aszTipParas
 		return self.aNested[iLevel - 1][2]
 
+	# the command lines at the end of a city tooltip (select the city / all of the continent / all): (city, mode) or None
+	# a text without color tags and without the signs < > (written as &lt; &gt; in one text and as < > in the other), words separated by one space
+	def getPlainCommandText( self, szText ):
+		szText = re.sub(u"</?(color|font|img)[^>]*>", u"", szText)
+		szText = szText.replace(u"&lt;", u" ").replace(u"&gt;", u" ").replace(u"<", u" ").replace(u">", u" ")
+		return u" ".join(szText.split())
+
+	def getCityCommand( self, aszParas, iPara ):
+		try:
+			if iPara <= 0:
+				return None
+			szPara = self.getPlainCommandText(aszParas[iPara])
+			if len(szPara) == 0:
+				return None
+			szCtrl = self.getPlainCommandText(localText.getText("TXT_KEY_CITY_BAR_SELECT_CTRL", ()))
+			szAlt = self.getPlainCommandText(localText.getText("TXT_KEY_CITY_BAR_SELECT_ALT", ()))
+			if szPara != szCtrl and szPara != szAlt and szPara.find(u"%") >= 0:
+				return None
+			szName = self.getPlainCommandText(aszParas[0])
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			pCity = None
+			(loopCity, iter) = pPlayer.firstCity(False)
+			while loopCity:
+				if loopCity.getName() == szName:
+					pCity = loopCity
+					break
+				(loopCity, iter) = pPlayer.nextCity(iter, False)
+			if pCity is None:
+				self.tipLog("city command: no city named '%s'" % szName.encode("ascii", "replace"))
+				return None
+			if szPara == szCtrl:
+				return (pCity, 1)
+			if szPara == szAlt:
+				return (pCity, 2)
+			szSelect = self.getPlainCommandText(localText.getText("TXT_KEY_CITY_BAR_SELECT", (pCity.getName(),)))
+			if szPara == szSelect:
+				return (pCity, 0)
+			if iPara >= len(aszParas) - 3:
+				self.tipLog("city command: no match '%s' / '%s' / '%s' / '%s'" % (szPara.encode("ascii", "replace"), szSelect.encode("ascii", "replace"), szCtrl.encode("ascii", "replace"), szAlt.encode("ascii", "replace")))
+		except:
+			self.tipLog("city command error: %s" % str(sys.exc_info()[1]))
+		return None
+
+	# right click on such a line: the same as a click on the city banner (Ctrl: all cities of the continent, Alt: all cities): the cities are
+	# selected (to give them production orders), the city screen is not opened
+	def runCityCommand( self, aszParas, iPara ):
+		try:
+			tCommand = self.getCityCommand(aszParas, iPara)
+			if tCommand is None:
+				return False
+			(pCity, iMode) = tCommand
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			iArea = pCity.plot().getArea()
+			CyInterface().clearSelectedCities()
+			(loopCity, iter) = pPlayer.firstCity(False)
+			while loopCity:
+				if loopCity.getID() == pCity.getID() or iMode == 2 or (iMode == 1 and loopCity.plot().getArea() == iArea):
+					CyInterface().addSelectedCity(loopCity, False)
+				(loopCity, iter) = pPlayer.nextCity(iter, False)
+			self.unfreezeAllTips()
+			return True
+		except:
+			self.tipLog("runCityCommand error: %s" % str(sys.exc_info()[1]))
+		return False
+
 	def openTipPedia( self, iData, bSecond ):
 		try:
 			iLevel = iData / 1000
 			iPara = iData % 1000
 			aszParas = self.getLevelParas(iLevel)
 			if iPara >= 0 and iPara < len(aszParas):
+				if self.runCityCommand(aszParas, iPara):
+					return
 				aTargets = self.getTextPediaTargets(aszParas[iPara])
 				if iPara == self.iTipSelPara and iLevel == len(self.aNested):
 					aTargets = self.getTextPediaAllTargets(aszParas[iPara])
