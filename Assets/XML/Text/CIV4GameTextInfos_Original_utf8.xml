@@ -13146,10 +13146,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_CC_BORN</Tag>
-		<English>The sailors stationed in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] respect their captain for his leadership and tactics.</English>
+		<English>The sailors stationed in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] respect their [COLOR_UNIT_TEXT]Able Captain[COLOR_REVERT] for his leadership and tactics.</English>
 		<Portuguese>Os marinheiros estacionados em [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] respeitam seu capitão por sua liderança e táticas.</Portuguese>
 		<French>Les marins rattachés à  [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] respectent leur capitaine pour son sens tactique et son commandement.</French>
-		<German>Der fähiger Seemann gilt den in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] stationierten Kämpfern als ein Vorbild an Fähigkeit und Schläue.</German>
+		<German>Ein [COLOR_UNIT_TEXT]Fähiger Kapitän[COLOR_REVERT] gilt den in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] stationierten Kämpfern als ein Vorbild an Fähigkeit und Schläue.</German>
 		<Russian>Воины в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] уважают своего капитана за его умелое руководство и знания тактики.</Russian>
 		<Hungarian>[COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] tengerészei tisztelik a Kapitányukat a vezetési és taktikái képességeiért.</Hungarian>
 	</TEXT>
