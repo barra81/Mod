@@ -3949,7 +3949,10 @@ class CvMainInterface:
 				self.tipLog("isShiftKeyPressed error: %s" % str(sys.exc_info()[1]))
 		if bShift != self.bShiftLogged:
 			self.bShiftLogged = bShift
-			self.tipLog("frozen: shift=%s para=%d targets=%d" % (str(bShift), iPara, len(self.getTextPediaAllTargets(self.aszTipParas[iPara])) if iPara >= 0 else -1))
+			iLogTargets = -1
+			if iPara >= 0:
+				iLogTargets = len(self.getTextPediaAllTargets(self.aszTipParas[iPara]))
+			self.tipLog("frozen: shift=%s para=%d targets=%d" % (str(bShift), iPara, iLogTargets))
 		try:
 			if iPara >= 0 and bShift and len(self.getTextPediaAllTargets(self.aszTipParas[iPara])) > 0:
 				bWheel = True
