@@ -743,7 +743,7 @@ def getWidgetHelp(argsList):
 		return tradeRouteScreen.getHelp(argsList[2])
 	# WTP: the move buttons of the amount dialog
 	if (yieldAmountScreen.isOpen() and argsList[1] == WidgetTypes.WIDGET_GENERAL and argsList[2] >= 40010 and argsList[2] < 40014):
-		return CyTranslator().getText("TXT_KEY_WTP_TRADEROUTE_MOVE_HELP", ())
+		return CyTranslator().getText("TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP", ())
 	if (HandleMouseoverMap.has_key(iScreen)):
 		screen = HandleMouseoverMap.get(iScreen)
 		return screen.getWidgetHelp(argsList)
