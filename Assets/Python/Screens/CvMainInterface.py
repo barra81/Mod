@@ -322,6 +322,7 @@ class CvMainInterface:
 	dMessageConcepts = {}
 	dMessagePediaCache = {}
 	dMessageLineIndex = {}
+	szLastHelp = u""
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
 	PRIVATE_BUILD_COST = 500 # WTP: as CvPlayer::startPrivateBuild
@@ -3747,7 +3748,13 @@ class CvMainInterface:
 	def placeHelpAtCursor( self, screen, szHelp ):
 		try:
 			if CyInterface().isCityScreenUp() or len(szHelp) == 0:
+				self.szLastHelp = u""
 				return
+			# the game may report the same help text again and again while the mouse stays on a HUD element: placing the area anew
+			# each time makes the tooltip flicker, so it is placed only when the text is a new one
+			if szHelp == self.szLastHelp:
+				return
+			self.szLastHelp = szHelp
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
 			iCursorX = gc.getGame().getCursorClientX()
@@ -3774,7 +3781,7 @@ class CvMainInterface:
 			# vertically centered on the cursor: the area is anchored with its bottom edge at y
 			iY = iCursorY + iHeight / 2
 			iY = max(iHeight + 4, min(yRes - 4, iY))
-			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -2.2, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
+			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -8.0, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
 		except:
 			pass
 
