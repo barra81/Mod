@@ -3785,7 +3785,7 @@ class CvMainInterface:
 			# vertically centered on the cursor: the area is anchored with its bottom edge at y
 			iY = iCursorY + iHeight / 2
 			iY = max(iHeight + 4, min(yRes - 4, iY))
-			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -8.0, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
+			screen.setHelpTextArea(HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -8.0, False, "", True, True, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH)
 		except:
 			pass
 
