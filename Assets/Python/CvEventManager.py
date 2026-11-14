@@ -179,13 +179,6 @@ class CvEventManager:
 		bDummy = False
 		self.bDbg, bDummy, self.bAlt, self.bCtrl, self.bShift, self.bAllowCheats = argsList[idx:]
 		ret = 0
-		try:
-			# WTP debug log: every game event with its arguments (the keyboard, update and plot events are left out)
-			if tag not in ("kbdEvent", "gameUpdate", "plotPicked", "unitMove", "cityDoTurn", "unitDoTurn", "unitUpdate"):
-				import WTPBannerLog
-				WTPBannerLog.log("EVENT %s args=%s ctrl=%s alt=%s shift=%s" % (tag, str(argsList[1:idx])[:200], str(self.bCtrl), str(self.bAlt), str(self.bShift)))
-		except:
-			pass
 		if self.EventHandlerMap.has_key(tag):
 			fxn = self.EventHandlerMap[tag]
 			ret = fxn(argsList[1:idx])

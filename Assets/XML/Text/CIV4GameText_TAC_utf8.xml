@@ -3949,11 +3949,6 @@
 		<German>mehr...</German>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_WTP_TIP_DETAILS</Tag>
-		<English>[COLOR_CAT_MILITARY]Details[COLOR_REVERT]</English>
-		<German>[COLOR_CAT_MILITARY]Details[COLOR_REVERT]</German>
-	</TEXT>
-	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_TALK</Tag>
 		<English>Right click: Talk to [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
 		<German>Rechtsklick: Mit [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] sprechen</German>

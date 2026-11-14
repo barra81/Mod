@@ -357,7 +357,6 @@ class CvMainInterface:
 	iWidgetHelpCount = 0
 	bCursorTipShown = False
 	iCursorTipLines = 0
-	szHeaderLogged = u""
 	iPreviewPrefDY = 0
 	dFrozenPrefDY = {}
 	iRedrawFrozen = 0
@@ -368,7 +367,6 @@ class CvMainInterface:
 	iUnitGroupCounter = 0
 	iTipHintLines = 0
 	iPreviewHintLines = 0
-	fWidgetHelpTime = 0.0
 	iTick = 0 # counted in update() (time.time() of the game is far too coarse)
 	iWidgetHelpTick = -1000
 	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
@@ -397,19 +395,12 @@ class CvMainInterface:
 	iTipMode = aiTipSettings[0] # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
 	aiTipIndent = []
 	dTipDetails = {}
-	szFoldLogged = u""
-	tSelLogState = None
-	bSelLogError = False
 	aiWrapIndent = []
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
-	iSecondTipPara = -2
 	tSecondTipKey = None
 	iTipSelPara = -1 # the line of the frozen tooltip with a chosen target (shift + mouse wheel) and the index of the target
 	iTipSelIdx = 0
 	bTipWheel = False
-	szFrozenError = ""
-	bShiftErrorLogged = False
-	bShiftLogged = False
 	iSecondTipLines = 0
 	aszTipParas = []
 	bHoverTip = (aiTipSettings[0] != 2) # false: the game tooltip
@@ -3913,13 +3904,6 @@ class CvMainInterface:
 			self.tTipPlacedAt = (iCursorX, iCursorY)
 			self.tTipLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
 			self.aszTipParas = aszParas
-			try:
-				for i in range(len(aszLines)):
-					szPlain = re.sub(u"<[^>]*>", u"", aszLines[i])
-					if self.getLineWidth(aszLines[i]) > len(szPlain):
-						self.tipLog("tip line %d: %d chars, weighted %.1f, indent %d, budget %d chars, window %d px (max %d, char %.1f px, res %d)" % (i, len(szPlain), self.getLineWidth(aszLines[i]), aiIndent[i], iCharsPerLine, iWidth, iMaxWidth, iChar, xRes))
-			except:
-				pass
 			self.drawCursorTip(screen, False)
 			self.bCursorTipShown = True
 			self.szCursorTipText = szHelp
@@ -3986,14 +3970,6 @@ class CvMainInterface:
 			szCargoLine = self.getTipPrefix("TXT_KEY_UNIT_HELP_CARGO_SPACE", (0, 0))
 			szMove = self.getTipPrefix("TXT_KEY_FEATURE_MOVEMENT_COST", (0,))
 			szYellow = u"<color=255,255,0,255>"
-			try:
-				# (debug log: the paragraphs of a tooltip with a unit, once)
-				if self.szFoldLogged != aszParas[0] and (aszParas[0].find(szYellow) == 0 or self.isUnitHeader(aszParas[0])):
-					self.szFoldLogged = aszParas[0]
-					import WTPBannerLog
-					WTPBannerLog.log("FOLD paragraphs: %s" % repr([p[:70].encode("ascii", "replace") for p in aszParas[:16]]))
-			except:
-				pass
 			# a header with the promotion pictures at its end (ships, units of others): the pictures become a row of their own
 			aSplit = []
 			for szPara in aszParas:
@@ -4166,7 +4142,6 @@ class CvMainInterface:
 			return aNew
 		except:
 			self.dTipDetails = {}
-			self.tipLog("foldUnitDetails error: %s" % str(sys.exc_info()[1]))
 		return aszParas
 
 	# a line of the units that the game lists in groups (a plot with more than 10 units: "Free Colonist (3) 2, Master Potter (1) 2, ...")
@@ -4211,7 +4186,7 @@ class CvMainInterface:
 					aKeep.append(aFinal[k])
 			return aKeep
 		except:
-			self.tipLog("foldUnitGroups error: %s" % str(sys.exc_info()[1]))
+			pass
 		return aFinal
 
 	def getUnitTypeName( self, pUnit ):
@@ -4272,14 +4247,12 @@ class CvMainInterface:
 			for szName in dWant.keys():
 				iWant += dWant[szName]
 				if dHave.get(szName, 0) != dWant[szName]:
-					self.tipLog("grouped units: '%s' text %d plot %d" % (szName.encode("ascii", "replace"), dWant[szName], dHave.get(szName, 0)))
 					return None
 			if len(aGroup) != iWant:
-				self.tipLog("grouped units: text %d plot %d" % (iWant, len(aGroup)))
 				return None
 			return [(pUnit.getOwner(), pUnit.getID()) for pUnit in aGroup]
 		except:
-			self.tipLog("getGroupedUnits error: %s" % str(sys.exc_info()[1]))
+			pass
 		return None
 
 	# the line of a unit in the list of the child window: like the first line of a unit in a tooltip
@@ -4306,7 +4279,7 @@ class CvMainInterface:
 					pass
 			return szLine
 		except:
-			self.tipLog("getUnitListLine error: %s" % str(sys.exc_info()[1]))
+			pass
 		return None
 
 	# the text of a child window with units: as many units as fit into iBudget lines (the height of the parent window), the rest is behind
@@ -4381,7 +4354,7 @@ class CvMainInterface:
 			if len(aSet) > 0:
 				return (3, aMissing, aNeed, aSet)
 		except:
-			self.tipLog("getCityProductionState error: %s" % str(sys.exc_info()[1]))
+			pass
 		return (0, [], [], [])
 
 	# what a ship can carry (the type is the name in the brackets of the header line), None if the ship is not found
@@ -4421,7 +4394,7 @@ class CvMainInterface:
 							szRules = localText.getText("TXT_KEY_WTP_TIP_NO_OCEAN", ()) + u"\n" + szRules
 					return szRules
 		except:
-			self.tipLog("getCargoRulesText error: %s" % str(sys.exc_info()[1]))
+			pass
 		return None
 
 	# the tooltip of a city (banner): a line with the used storage above "Stored", the buildings in one line ("Buildings", the list when hovering)
@@ -4543,7 +4516,6 @@ class CvMainInterface:
 			return aNew
 		except:
 			self.dTipDetails = {}
-			self.tipLog("foldCityDetails error: %s" % str(sys.exc_info()[1]))
 		return None
 
 	# where a window of this size goes: mode 0 beside the cursor (right of it, left if there is no room; beside the own windows when the cursor is
@@ -4751,7 +4723,7 @@ class CvMainInterface:
 				self.deleteTipWindow(screen, szPrefix, len(tLayout[4]))
 				self.drawTipWindow(screen, szPrefix, tLayout, True, i, self.aFrozen[i][3])
 		except:
-			self.tipLog("redrawFrozenTips error: %s" % str(sys.exc_info()[1]))
+			pass
 
 	# the place of a map plot on the screen
 	def getPlotScreen( self, iPlotX, iPlotY ):
@@ -4847,7 +4819,7 @@ class CvMainInterface:
 			self.placeChildTips(screen)
 			return True
 		except:
-			self.tipLog("stackFrozenTips error: %s" % str(sys.exc_info()[1]))
+			pass
 		return False
 
 	# After the parent windows were moved every child window looks again for its own place: beside its parent (right, then left) at the height
@@ -4870,7 +4842,7 @@ class CvMainInterface:
 				tNow = self.aFrozen[i][1]
 				self.aFrozen[i][7] = (tNow[0] - iPX, tNow[1] - iPY)
 		except:
-			self.tipLog("placeChildTips error: %s" % str(sys.exc_info()[1]))
+			pass
 
 	def freezeCursorTooltip( self ):
 		try:
@@ -4892,7 +4864,7 @@ class CvMainInterface:
 			self.szPendingHelp = None
 			return True
 		except:
-			self.tipLog("freezeCursorTooltip error: %s" % str(sys.exc_info()[1]))
+			pass
 		return False
 
 	# the layout without the last lines (the hint that the tooltip can be frozen)
@@ -4922,7 +4894,7 @@ class CvMainInterface:
 				self.bTipWheel = False
 				gc.getGame().setWheelCapture(False)
 		except:
-			self.tipLog("freezePreview error: %s" % str(sys.exc_info()[1]))
+			pass
 
 	def getSecondTipNames( self ):
 		return self.getTipWindowNames(self.szPreviewPrefix, self.iSecondTipLines)
@@ -5056,28 +5028,18 @@ class CvMainInterface:
 		try:
 			bShift = gc.getGame().isShiftKeyPressed()
 		except:
-			if not self.bShiftErrorLogged:
-				self.bShiftErrorLogged = True
-				self.tipLog("isShiftKeyPressed error: %s" % str(sys.exc_info()[1]))
-		if bShift != self.bShiftLogged:
-			self.bShiftLogged = bShift
-			iLogTargets = -1
-			if iPara >= 0:
-				iLogTargets = len(self.getTextPediaAllTargets(aszTopParas[iPara]))
-			self.tipLog("frozen: shift=%s para=%d targets=%d" % (str(bShift), iPara, iLogTargets))
+			pass
 		try:
 			if iPara >= 0 and not bPromoLine and bShift and len(self.getTextPediaAllTargets(aszTopParas[iPara])) > 0:
 				bWheel = True
 		except:
 			pass
 		if bWheel != self.bTipWheel:
-			self.tipLog("wheel capture %s" % str(bWheel))
 			self.bTipWheel = bWheel
 			gc.getGame().setWheelCapture(bWheel)
 		if bWheel:
 			iNotches = gc.getGame().takeWheelNotches()
 			if iNotches != 0:
-				self.tipLog("wheel notches=%d para=%d" % (iNotches, iPara))
 				aTargets = self.getTextPediaAllTargets(aszTopParas[iPara])
 				if iPara != self.iTipSelPara or iFz != self.iTipSelLevel:
 					self.iTipSelPara = iPara
@@ -5183,7 +5145,7 @@ class CvMainInterface:
 						return szInfo + u"\n" + szBase
 					return szInfo
 		except:
-			self.tipLog("getTipSecondText error: %s" % str(sys.exc_info()[1]))
+			pass
 		return szBase
 
 	# the type of a unit of the first line of its tooltip: its name in the brackets
@@ -5229,7 +5191,7 @@ class CvMainInterface:
 			if hasattr(pInfo, "isRivalTerritory") and pInfo.isRivalTerritory():
 				aLines.append(localText.getText("TXT_KEY_WTP_TIP_IGNORE_BORDERS", ()))
 		except:
-			self.tipLog("getUnitMoveInfoText error: %s" % str(sys.exc_info()[1]))
+			pass
 		return u"\n".join(aLines)
 
 	# the own unit that a line of the first window names (the lines of the units of a plot: one line per unit, a right click selects the unit):
@@ -5248,7 +5210,6 @@ class CvMainInterface:
 				return None
 			if self.aFrozen[iLevel][6] >= 0 or not self.isUnitHeader(aszParas[iPara]):
 				return None
-			aSeen = []
 			szFirst = re.sub(u"<[^>]*>", u"", aszParas[iPara]).split(u",")[0].strip()
 			iNth = 0
 			for k in range(iPara):
@@ -5276,15 +5237,8 @@ class CvMainInterface:
 					aCands.append(pUnit)
 			if iNth < len(aCands) and aCands[iNth].getOwner() == gc.getGame().getActivePlayer():
 				return aCands[iNth]
-			if szFirst != self.szHeaderLogged:
-				# (debug log: the line that found no unit)
-				self.szHeaderLogged = szFirst
-				aNames = []
-				for k in range(pPlot.getNumUnits()):
-					aNames.append(pPlot.getUnit(k).getName().encode("ascii", "replace") + "/" + str(pPlot.getUnit(k).getOwner()))
-				self.tipLog("header unit: '%s' nth %d candidates %d plot %s" % (szFirst.encode("ascii", "replace"), iNth, len(aCands), str(aNames)))
 		except:
-			self.tipLog("getHeaderUnit error: %s" % str(sys.exc_info()[1]))
+			pass
 		return None
 
 	# the first part of the header line of a unit: its profession and the name of its type in brackets ("Colonial Militia (Veteran Infantry Soldier)"),
@@ -5462,7 +5416,6 @@ class CvMainInterface:
 					break
 				(loopCity, iter) = pPlayer.nextCity(iter, False)
 			if pCity is None:
-				self.tipLog("city command: no city named '%s'" % szName.encode("ascii", "replace"))
 				return None
 			if szPara == szCtrl:
 				return (pCity, 1)
@@ -5471,10 +5424,8 @@ class CvMainInterface:
 			szSelect = self.getPlainCommandText(localText.getText("TXT_KEY_CITY_BAR_SELECT", (pCity.getName(),)))
 			if szPara == szSelect:
 				return (pCity, 0)
-			if iPara >= len(aszParas) - 3:
-				self.tipLog("city command: no match '%s' / '%s' / '%s' / '%s'" % (szPara.encode("ascii", "replace"), szSelect.encode("ascii", "replace"), szCtrl.encode("ascii", "replace"), szAlt.encode("ascii", "replace")))
 		except:
-			self.tipLog("city command error: %s" % str(sys.exc_info()[1]))
+			pass
 		return None
 
 	# the command lines of the tooltip of a unit of the stack ("(< CTRL > to select all Treasure units)", "(< ALT > to select all units)"):
@@ -5546,7 +5497,7 @@ class CvMainInterface:
 			self.unfreezeAllTips()
 			return True
 		except:
-			self.tipLog("runUnitCommand error: %s" % str(sys.exc_info()[1]))
+			pass
 		return False
 
 	# right click on such a line: the same as a click on the city banner (Ctrl: all cities of the continent, Alt: all cities): the cities are
@@ -5568,7 +5519,7 @@ class CvMainInterface:
 			self.unfreezeAllTips()
 			return True
 		except:
-			self.tipLog("runCityCommand error: %s" % str(sys.exc_info()[1]))
+			pass
 		return False
 
 	def openTipPedia( self, iData, bSecond ):
@@ -5648,41 +5599,6 @@ class CvMainInterface:
 			aszNames.append("HudTipLine%d" % i)
 		return aszNames
 
-	# WTP: debug log of the tooltip events (WTP_TipLog.txt in the game folder, at most 600 lines), to be removed again
-	iTipLogLines = 0
-	iLastLogType = -1
-	# WTP debug log: which cities are selected (changes only)
-	def logCitySelection( self ):
-		try:
-			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
-			aszSel = []
-			(loopCity, iter) = pPlayer.firstCity(False)
-			while loopCity:
-				if CyInterface().isCitySelected(loopCity):
-					aszSel.append(loopCity.getName())
-				(loopCity, iter) = pPlayer.nextCity(iter, False)
-			tState = (CyInterface().isCityScreenUp(), tuple(aszSel))
-			if tState != self.tSelLogState:
-				self.tSelLogState = tState
-				import WTPBannerLog
-				WTPBannerLog.log("SELECTION cityScreenUp=%s selected=%s" % (str(tState[0]), str(aszSel)))
-		except:
-			if not self.bSelLogError:
-				self.bSelLogError = True
-				import WTPBannerLog
-				WTPBannerLog.log("SELECTION log error: %s" % str(sys.exc_info()[1]))
-
-	def tipLog( self, szMsg ):
-		try:
-			if self.iTipLogLines > 600:
-				return
-			self.iTipLogLines += 1
-			f = open("WTP_TipLog.txt", "a")
-			f.write("%.2f %s\n" % (time.time() % 1000, szMsg))
-			f.close()
-		except:
-			pass
-
 	# the help area of the game tooltip: while the own tooltip is on it is put far outside of the screen (the game still shows its tooltip of a
 	# HUD element for a moment before our window takes over)
 	def setGameHelpArea( self, screen, iY ):
@@ -5743,11 +5659,6 @@ class CvMainInterface:
 			if szText and len(szText) > 0 and int(eWidgetType) == int(WidgetTypes.WIDGET_CONTACT_CIV) and not self.isCursorInScoreTable():
 				# (log: after a click on a unit the game reports the contact help of the score table although the cursor is on the map)
 				return
-			if szText and len(szText) > 0:
-				self.tipLog("W type=%d len=%d xy=%d,%d text=%s" % (int(eWidgetType), len(szText), gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY(), repr(szText[:60].encode("ascii", "replace"))))
-			elif int(eWidgetType) != self.iLastLogType:
-				self.iLastLogType = int(eWidgetType)
-				self.tipLog("W(empty) type=%d xy=%d,%d" % (int(eWidgetType), gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()))
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 			if szText and len(szText) > 0:
 				self.iWidgetHelpTick = self.iTick
@@ -5788,7 +5699,6 @@ class CvMainInterface:
 				self.iClockSame += 1
 				if self.iClockSame > 120 and not self.bClockDead:
 					self.bClockDead = True
-					self.tipLog("tooltip delay: time.clock() does not advance, counting frames")
 			else:
 				self.iClockSame = 0
 				self.fLastClock = fNow
@@ -5872,13 +5782,7 @@ class CvMainInterface:
 				try:
 					self.updateFrozenTip()
 				except:
-					try:
-						szError = str(sys.exc_info()[1])
-						if szError != self.szFrozenError:
-							self.szFrozenError = szError
-							self.tipLog("updateFrozenTip error: %s" % szError)
-					except:
-						pass
+					pass
 			try:
 				if self.getFrozenAt(gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()) >= 0:
 					# the cursor is on a frozen window: no tooltip of the cursor
@@ -5925,8 +5829,6 @@ class CvMainInterface:
 			self.hideCursorTooltip(screen)
 		else:
 			szHelp = CyInterface().getHelpString()
-			if len(szHelp) > 0:
-				self.tipLog("H len=%d sinceWidget=%d xy=%d,%d text=%s" % (len(szHelp), self.iTick - self.iWidgetHelpTick, gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY(), repr(szHelp[:60].encode("ascii", "replace"))))
 			self.showCursorTooltip(screen, szHelp)
 			# while the cursor is on a HUD element the plot help behind it must not replace the help of the element
 			if not self.bHoverTip:
@@ -7449,7 +7351,6 @@ class CvMainInterface:
 		self.updateMessageMove()
 		self.updateCursorTooltip()
 		self.pollWidgetHelp()
-		self.logCitySelection()
 		try:
 			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
 		except:
