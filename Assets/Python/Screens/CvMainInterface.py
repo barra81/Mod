@@ -3924,7 +3924,10 @@ class CvMainInterface:
 		aNew = []
 		aOpen = []
 		for szPara in aszParas:
-			aNew.append(aOpen[-1] + szPara if len(aOpen) > 0 else szPara)
+			if len(aOpen) > 0:
+				aNew.append(aOpen[-1] + szPara)
+			else:
+				aNew.append(szPara)
 			for tTag in re.finditer(u"<color=[^>]*>|</color>", szPara):
 				if tTag.group(0) == u"</color>":
 					if len(aOpen) > 0:
