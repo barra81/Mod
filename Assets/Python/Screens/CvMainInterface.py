@@ -4075,6 +4075,20 @@ class CvMainInterface:
 						iAt = k
 						break
 				aFinal.insert(iAt, [szCulture, szDetails])
+			# the lines of the commands of a stack of units in one line
+			aCommands = []
+			iCmdAt = -1
+			aRest = []
+			for aEntry in aFinal:
+				if aEntry[1] is None and aEntry[0].find(u"(") >= 0 and self.isCommandText(aEntry[0]):
+					if iCmdAt < 0:
+						iCmdAt = len(aRest)
+					aCommands.append(aEntry[0])
+				else:
+					aRest.append(aEntry)
+			if len(aCommands) > 0:
+				aRest.insert(iCmdAt, [localText.getText("TXT_KEY_WTP_TIP_COMMANDS", ()), u"\n".join(aCommands)])
+				aFinal = aRest
 			aNew = []
 			for aEntry in aFinal:
 				if aEntry[1] is not None:
@@ -4161,8 +4175,14 @@ class CvMainInterface:
 				szList = self.normTipText(u", ".join(aBuildings))
 			aOut = []
 			bBuildings = False
-			for szPara in aszParas:
+			for iParaAt in range(len(aszParas)):
+				szPara = aszParas[iParaAt]
 				szNorm = self.normTipText(szPara)
+				if iParaAt >= n - 3:
+					# the three lines of the commands
+					if iParaAt == n - 3:
+						aOut.append([localText.getText("TXT_KEY_WTP_TIP_COMMANDS", ()), u"\n".join(aszParas[n - 3:])])
+					continue
 				if len(szStored) > 3 and szNorm.find(szStored) == 0:
 					iTotal = pCity.getTotalYieldStored()
 					iMax = pCity.getMaxYieldCapacity()
@@ -4700,7 +4720,7 @@ class CvMainInterface:
 		elif iPara >= 0 and dDetails.has_key(iPara):
 			# the line "Details" of a military unit: the lines folded into it
 			self.showSecondTip(screen, dDetails[iPara], iCY, tTop, iFz)
-		elif iPara >= 0 and (self.getCityCommand(aszTopParas, iPara) is not None or self.getUnitCommand(aszTopParas, iPara) is not None):
+		elif iPara >= 0 and self.isCommandLine(iFz, aszTopParas, iPara):
 			# the command lines of a city tooltip: no Colopedia, a right click runs the command
 			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY, tTop, iFz)
 		elif iPara >= 0:
@@ -4817,6 +4837,32 @@ class CvMainInterface:
 	# the paragraphs of a frozen window: level 0 is the first window, the others are the nested ones
 	def getLevelParas( self, iLevel ):
 		return self.aFrozen[iLevel][2]
+
+	# the paragraphs for a command of a line of a frozen window: the commands of a city tooltip are folded into a child window, the name of the
+	# city is the first line of its parent window
+	def getCommandParas( self, iLevel, aszParas, iPara ):
+		try:
+			iParent = self.aFrozen[iLevel][6]
+			if iParent >= 0:
+				return ([self.aFrozen[iParent][2][0]] + list(aszParas), iPara + 1)
+		except:
+			pass
+		return (aszParas, iPara)
+
+	def isCommandLine( self, iLevel, aszParas, iPara ):
+		(aszCmd, iCmd) = self.getCommandParas(iLevel, aszParas, iPara)
+		return self.getCityCommand(aszCmd, iCmd) is not None or self.getUnitCommand(aszParas, iPara) is not None
+
+	# the lines of the commands (select the city / all of the continent / all; select all units of the type / all units) in one line
+	def isCommandText( self, szText ):
+		try:
+			szPlain = self.getPlainCommandText(szText)
+			if szPlain == self.getPlainCommandText(localText.getText("TXT_KEY_MISC_ALT_SELECT", ())):
+				return True
+			szPre = self.getPlainCommandText(localText.getText("TXT_KEY_MISC_CTRL_SELECT", (u"QQQQ",))).split(u"QQQQ")[0].strip()
+			return len(szPre) > 3 and szPlain.find(szPre) == 0
+		except:
+			return False
 
 	# the command lines at the end of a city tooltip (select the city / all of the continent / all): (city, mode) or None
 	# a text without color tags and without the signs < > (written as &lt; &gt; in one text and as < > in the other), words separated by one space
@@ -4961,7 +5007,8 @@ class CvMainInterface:
 			iPara = iData % 1000
 			aszParas = self.getLevelParas(iLevel)
 			if iPara >= 0 and iPara < len(aszParas):
-				if self.runCityCommand(aszParas, iPara) or self.runUnitCommand(aszParas, iPara):
+				(aszCmd, iCmd) = self.getCommandParas(iLevel, aszParas, iPara)
+				if self.runCityCommand(aszCmd, iCmd) or self.runUnitCommand(aszParas, iPara):
 					return
 				aTargets = self.getTextPediaTargets(aszParas[iPara])
 				if iPara == self.iTipSelPara and iLevel == self.iTipSelLevel:

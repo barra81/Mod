@@ -3815,8 +3815,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_BUILDINGS</Tag>
-		<English>[COLOR_SELECTED_TEXT]Buildings[COLOR_REVERT]</English>
-		<German>[COLOR_SELECTED_TEXT]Gebäude[COLOR_REVERT]</German>
+		<English>[COLOR_SELECTED_TEXT]Buildings...[COLOR_REVERT]</English>
+		<German>[COLOR_SELECTED_TEXT]Gebäude...[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_STORED_FOLD</Tag>
@@ -3862,6 +3862,11 @@
 		<Tag>TXT_KEY_WTP_TIP_FREEZE_HINT</Tag>
 		<English>[COLOR:140:255:40:255]X: freeze this tooltip[COLOR_REVERT]</English>
 		<German>[COLOR:140:255:40:255]X: Tooltip einfrieren[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_COMMANDS</Tag>
+		<English>[COLOR:140:255:40:255]Commands...[COLOR_REVERT]</English>
+		<German>[COLOR:140:255:40:255]Kommandos...[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
