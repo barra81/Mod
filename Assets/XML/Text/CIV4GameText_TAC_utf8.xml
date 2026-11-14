@@ -3805,8 +3805,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_CULTURE</Tag>
-		<English>[COLOR_CAT_MILITARY]Culture %%[COLOR_REVERT]</English>
-		<German>[COLOR_CAT_MILITARY]Kultur %%[COLOR_REVERT]</German>
+		<English>[COLOR:255:120:200:255]Culture %%[COLOR_REVERT]</English>
+		<German>[COLOR:255:120:200:255]Kultur %%[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_DETAILS</Tag>
