@@ -380,6 +380,7 @@ class CvMainInterface:
 	bClockDead = False
 	iTipMode = aiTipSettings[0] # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
 	aiTipIndent = []
+	dTipDetails = {}
 	tSelLogState = None
 	bSelLogError = False
 	aiWrapIndent = []
@@ -3863,7 +3864,7 @@ class CvMainInterface:
 			aszLines = []
 			aiPara = [] # the paragraph (text between two line breaks of the help) of every line: right click in the frozen window
 			aiIndent = [] # indent of continued rows of icons (pixels)
-			aszParas = szHelp.split(u"\n")
+			aszParas = self.foldUnitDetails(szHelp.split(u"\n"))
 			for iPara in range(len(aszParas)):
 				aszWrapped = self.wrapMessage(aszParas[iPara], iCharsPerLine, True)
 				aszLines += aszWrapped
@@ -3890,6 +3891,41 @@ class CvMainInterface:
 			self.tCursorTipAt = (iCursorX, iCursorY)
 		except:
 			self.bCursorTipShown = False
+
+	# Military units (the ones with a "Barracks Space Needed" line): everything after that line up to the next unit (or the plot info) is
+	# folded into one line "Details" (blue). Its tooltip (frozen window, cursor on the line) lists the folded lines.
+	def foldUnitDetails( self, aszParas ):
+		self.dTipDetails = {}
+		try:
+			szKey = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_UNIT_BARRACKS_SPACE_NEEDED", (0, u"")))
+			szKey = szKey.split(u":")[0].strip()
+			szKey = u" ".join(szKey.split())
+			if len(szKey) < 4:
+				return aszParas
+			aszNew = []
+			i = 0
+			while i < len(aszParas):
+				aszNew.append(aszParas[i])
+				szPlain = u" ".join(re.sub(u"<[^>]*>", u"", aszParas[i]).split())
+				i += 1
+				if szPlain.find(szKey) < 0:
+					continue
+				aszFolded = []
+				while i < len(aszParas):
+					szNext = aszParas[i]
+					# the next unit starts with its name in yellow, the plot info with the share of the culture (95% Dutch)
+					if szNext.find(u"<color=255,255,0,255>") == 0 or re.match(u"^[0-9]+% ", re.sub(u"<[^>]*>", u"", szNext).strip()) is not None:
+						break
+					aszFolded.append(szNext)
+					i += 1
+				if len(aszFolded) > 0:
+					self.dTipDetails[len(aszNew)] = u"\n".join(aszFolded)
+					aszNew.append(localText.getText("TXT_KEY_WTP_TIP_DETAILS", ()))
+			return aszNew
+		except:
+			self.dTipDetails = {}
+			self.tipLog("foldUnitDetails error: %s" % str(sys.exc_info()[1]))
+		return aszParas
 
 	# where a window of this size goes: mode 0 beside the cursor (right of it, left if there is no room; beside the own windows when the cursor is
 	# on one) with its top at the lower end of the cursor; mode 1 at the place of the game tooltip (left, above the HUD, growing upwards)
@@ -4220,6 +4256,9 @@ class CvMainInterface:
 			szText = self.getPromotionTipText(aszLines[iLineIdx])
 			if len(szText) > 0:
 				self.showSecondTip(screen, szText, iCY)
+		elif iPara >= 0 and len(self.aNested) == 0 and self.dTipDetails.has_key(iPara):
+			# the line "Details" of a military unit: the lines folded into it
+			self.showSecondTip(screen, self.dTipDetails[iPara], iCY)
 		elif iPara >= 0 and self.getCityCommand(aszTopParas, iPara) is not None:
 			# the command lines of a city tooltip: no Colopedia, a right click runs the command
 			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY)
