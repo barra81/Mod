@@ -5300,7 +5300,8 @@ class CvMainInterface:
 				if szFirst == szProfession + u" (" + szName + u")" or szFirst == szProfession:
 					return True
 			szType = re.sub(u"<[^>]*>", u"", gc.getUnitInfo(pUnit.getUnitType()).getDescription())
-			if szFirst == szType or szFirst.find(u"(" + szType + u")") >= 0:
+			# (the type in the brackets only for a unit without an own name: units with names ("Tholen (War Galleon)") match by the name)
+			if szName == szType and (szFirst == szType or szFirst.find(u"(" + szType + u")") >= 0):
 				return True
 		except:
 			pass
