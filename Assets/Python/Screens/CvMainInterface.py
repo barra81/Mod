@@ -3919,7 +3919,12 @@ class CvMainInterface:
 	def isUnitHeader( self, szText ):
 		if szText.find(u"<color=") != 0:
 			return False
-		return re.search(u", [0-9][0-9./]*[\u2000-\uffff]", re.sub(u"<[^>]*>", u"", szText)) is not None
+		return re.search(u", [0-9][0-9./]*\\s*[\u2000-\uffff]", re.sub(u"<[^>]*>", u"", szText)) is not None
+
+	# a line of a list: it starts with the bullet (an icon of the game font)
+	def isBulletLine( self, szText ):
+		szPlain = re.sub(u"<[^>]*>", u"", szText).lstrip()
+		return len(szPlain) > 0 and ord(szPlain[0]) >= 0x2000
 
 	# the row of the promotion pictures of a unit (only pictures)
 	def isPromotionRow( self, szText ):
@@ -3993,13 +3998,17 @@ class CvMainInterface:
 				for k in range(iFold):
 					if k != iFortify:
 						aOut.append([aLines[k], None])
+				# only the list of the unit is folded (lines with a bullet): the lines after it (the commands "(< CTRL > to select ...)", the
+				# lines of the plot) stay where they are
 				aFolded = []
-				for k in range(iFold, len(aLines)):
-					if k != iFortify:
-						aFolded.append(aLines[k])
+				iSegEnd = iFold
+				while iSegEnd < len(aLines) and (iSegEnd == iFortify or self.isBulletLine(aLines[iSegEnd])):
+					if iSegEnd != iFortify:
+						aFolded.append(aLines[iSegEnd])
+					iSegEnd += 1
 				if len(aFolded) > 0:
 					aOut.append([localText.getText("TXT_KEY_WTP_TIP_PROMO_SUM", ()), u"\n".join(aFolded)])
-				i = iEnd
+				i = iStart + iSegEnd
 			# the shares of the cultures: one line above the movement cost
 			aFinal = []
 			aCulture = []
@@ -4488,7 +4497,7 @@ class CvMainInterface:
 		elif iPara >= 0 and dDetails.has_key(iPara):
 			# the line "Details" of a military unit: the lines folded into it
 			self.showSecondTip(screen, dDetails[iPara], iCY, tTop, iFz)
-		elif iPara >= 0 and self.getCityCommand(aszTopParas, iPara) is not None:
+		elif iPara >= 0 and (self.getCityCommand(aszTopParas, iPara) is not None or self.getUnitCommand(aszTopParas, iPara) is not None):
 			# the command lines of a city tooltip: no Colopedia, a right click runs the command
 			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY, tTop, iFz)
 		elif iPara >= 0:
@@ -4649,6 +4658,51 @@ class CvMainInterface:
 			self.tipLog("city command error: %s" % str(sys.exc_info()[1]))
 		return None
 
+	# the command lines of the tooltip of a unit of the stack ("(< CTRL > to select all Treasure units)", "(< ALT > to select all units)"):
+	# (mode, unit type) with mode 1: all units of that type on the plot, 2: all units on the plot; None: no command
+	def getUnitCommand( self, aszParas, iPara ):
+		try:
+			if iPara < 0 or iPara >= len(aszParas) or aszParas[iPara].find(u"(") < 0:
+				return None
+			pHead = CyInterface().getHeadSelectedUnit()
+			if pHead is None or pHead.isNone():
+				return None
+			szPara = self.getPlainCommandText(aszParas[iPara])
+			if szPara == self.getPlainCommandText(localText.getText("TXT_KEY_MISC_ALT_SELECT", ())):
+				return (2, -1)
+			pPlot = pHead.plot()
+			for k in range(pPlot.getNumUnits()):
+				eType = pPlot.getUnit(k).getUnitType()
+				if szPara == self.getPlainCommandText(localText.getText("TXT_KEY_MISC_CTRL_SELECT", (gc.getUnitInfo(eType).getTextKey(),))):
+					return (1, eType)
+		except:
+			pass
+		return None
+
+	def runUnitCommand( self, aszParas, iPara ):
+		try:
+			tCommand = self.getUnitCommand(aszParas, iPara)
+			if tCommand is None:
+				return False
+			(iMode, eType) = tCommand
+			ePlayer = gc.getGame().getActivePlayer()
+			pPlot = CyInterface().getHeadSelectedUnit().plot()
+			aUnits = []
+			for k in range(pPlot.getNumUnits()):
+				pUnit = pPlot.getUnit(k)
+				if pUnit.getOwner() == ePlayer and (iMode == 2 or pUnit.getUnitType() == eType):
+					aUnits.append(pUnit)
+			if len(aUnits) == 0:
+				return False
+			CyInterface().clearSelectionList()
+			for pUnit in aUnits:
+				CyInterface().selectUnit(pUnit, False, False, False)
+			self.unfreezeAllTips()
+			return True
+		except:
+			self.tipLog("runUnitCommand error: %s" % str(sys.exc_info()[1]))
+		return False
+
 	# right click on such a line: the same as a click on the city banner (Ctrl: all cities of the continent, Alt: all cities): the cities are
 	# selected (to give them production orders), the city screen is not opened
 	def runCityCommand( self, aszParas, iPara ):
@@ -4677,7 +4731,7 @@ class CvMainInterface:
 			iPara = iData % 1000
 			aszParas = self.getLevelParas(iLevel)
 			if iPara >= 0 and iPara < len(aszParas):
-				if self.runCityCommand(aszParas, iPara):
+				if self.runCityCommand(aszParas, iPara) or self.runUnitCommand(aszParas, iPara):
 					return
 				aTargets = self.getTextPediaTargets(aszParas[iPara])
 				if iPara == self.iTipSelPara and iLevel == self.iTipSelLevel:
