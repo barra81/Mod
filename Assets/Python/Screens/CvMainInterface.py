@@ -357,6 +357,7 @@ class CvMainInterface:
 	iWidgetHelpCount = 0
 	bCursorTipShown = False
 	iCursorTipLines = 0
+	iRedrawFrozen = 0
 	dUnitTypeByName = {}
 	iTipHintLines = 0
 	iPreviewHintLines = 0
@@ -4524,6 +4525,21 @@ class CvMainInterface:
 		self.aFrozen.append([szPrefix, tLayout, aszParas, aiIndent, dDetails, tAnchor, iParent, tRel])
 		self.bTipFrozen = True
 
+	# after the game window was activated again (alt-tab) the widgets of the frozen windows are gone: they are drawn again a few frames later
+	def windowActivated( self ):
+		if len(self.aFrozen) > 0:
+			self.iRedrawFrozen = 6
+
+	def redrawFrozenTips( self, screen ):
+		try:
+			for i in range(len(self.aFrozen)):
+				szPrefix = self.aFrozen[i][0]
+				tLayout = self.aFrozen[i][1]
+				self.deleteTipWindow(screen, szPrefix, len(tLayout[4]))
+				self.drawTipWindow(screen, szPrefix, tLayout, True, i, self.aFrozen[i][3])
+		except:
+			self.tipLog("redrawFrozenTips error: %s" % str(sys.exc_info()[1]))
+
 	# the place of a map plot on the screen
 	def getPlotScreen( self, iPlotX, iPlotY ):
 		pt = CyEngine().worldPointToScreenPoint(CyMap().plot(iPlotX, iPlotY).getPoint())
@@ -4729,6 +4745,10 @@ class CvMainInterface:
 	# chooses among all the things named in it (the window lists them, the chosen one in yellow; a right click opens its page)
 	def updateFrozenTip( self ):
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+		if self.iRedrawFrozen > 0:
+			self.iRedrawFrozen -= 1
+			if self.iRedrawFrozen == 0:
+				self.redrawFrozenTips(screen)
 		iCX = gc.getGame().getCursorClientX()
 		iCY = gc.getGame().getCursorClientY()
 		self.updateFrozenAnchors(screen)

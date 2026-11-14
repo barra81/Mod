@@ -537,6 +537,12 @@ class CvEventManager:
 	def onWindowActivation(self, argsList):
 		'Called when the game window activates or deactivates'
 		bActive = argsList[0]
+		# the frozen tooltips are drawn again (their widgets are gone after alt-tab)
+		try:
+			if bActive:
+				CvScreensInterface.mainInterface.windowActivated()
+		except:
+			pass
 
 	def onCityScreenOpen(self, argsList):
 		'Called when the game window activates or deactivates'
