@@ -3989,7 +3989,8 @@ class CvMainInterface:
 					elif iFortify < 0 and len(szFortify) > 3 and szNorm.find(szFortify) == 0 and aLines[k].find(u"<color") < 0:
 						iFortify = k
 				iFold = -1
-				if (bPromo or iBarracks >= 0) and iSocial >= 0:
+				if iSocial >= 0:
+					# (units with promotions in the header have no separate row: the bullet lines after the social status are folded in any case)
 					iFold = iSocial + 1
 				elif iBarracks >= 0:
 					# (also without a separate row of promotions: natives have their promotions at the end of the header)
