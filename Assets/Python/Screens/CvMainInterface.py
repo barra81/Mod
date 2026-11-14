@@ -3978,6 +3978,7 @@ class CvMainInterface:
 			szSocial = self.getTipPrefix("TXT_KEY_CITIZEN_STATUS_FREE", ())
 			szFortify = self.getTipPrefix("TXT_KEY_UNIT_HELP_FORTIFY_BONUS", (0,))
 			szEthn = self.getTipPrefix("TXT_KEY_ETHNICITY_EUROPEAN", ())
+			szCargoLine = self.getTipPrefix("TXT_KEY_UNIT_HELP_CARGO_SPACE", (0, 0))
 			szMove = self.getTipPrefix("TXT_KEY_FEATURE_MOVEMENT_COST", (0,))
 			szYellow = u"<color=255,255,0,255>"
 			try:
@@ -4020,6 +4021,7 @@ class CvMainInterface:
 				iSocial = -1
 				iFortify = -1
 				iEthn = -1
+				iCargo = -1
 				for k in range(len(aLines)):
 					szNorm = self.normTipText(aLines[k])
 					if iBarracks < 0 and len(szBarracks) > 3 and szNorm.find(szBarracks) >= 0:
@@ -4028,6 +4030,8 @@ class CvMainInterface:
 						iSocial = k
 					elif iEthn < 0 and len(szEthn) > 3 and szNorm.find(szEthn) == 0:
 						iEthn = k
+					elif iCargo < 0 and len(szCargoLine) > 3 and szNorm.find(szCargoLine) == 0:
+						iCargo = k
 					elif iFortify < 0 and len(szFortify) > 3 and szNorm.find(szFortify) == 0 and aLines[k].find(u"<color") < 0:
 						iFortify = k
 				iFold = -1
@@ -4037,6 +4041,9 @@ class CvMainInterface:
 				elif iBarracks >= 0:
 					# (also without a separate row of promotions: natives have their promotions at the end of the header)
 					iFold = iBarracks
+				elif iCargo >= 0:
+					# (a ship or a land transport: the bullet lines after the line "Cargo space" are folded, the slots of goods are not)
+					iFold = iCargo + 1
 				elif bPromo:
 					# (units of others have no line "Social Status": everything is folded)
 					iFold = 0
