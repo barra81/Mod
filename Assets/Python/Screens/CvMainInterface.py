@@ -357,6 +357,7 @@ class CvMainInterface:
 	iWidgetHelpCount = 0
 	bCursorTipShown = False
 	iCursorTipLines = 0
+	szHeaderLogged = u""
 	iPreviewPrefDY = 0
 	dFrozenPrefDY = {}
 	iRedrawFrozen = 0
@@ -5044,14 +5045,39 @@ class CvMainInterface:
 			aCands = []
 			for k in range(pPlot.getNumUnits()):
 				pUnit = pPlot.getUnit(k)
-				szName = pUnit.getName()
-				if szFirst == szName or szFirst.find(szName + u" (") == 0:
+				if self.unitMatchesHeader(pUnit, szFirst):
 					aCands.append(pUnit)
 			if iNth < len(aCands) and aCands[iNth].getOwner() == gc.getGame().getActivePlayer():
 				return aCands[iNth]
+			if szFirst != self.szHeaderLogged:
+				# (debug log: the line that found no unit)
+				self.szHeaderLogged = szFirst
+				aNames = []
+				for k in range(pPlot.getNumUnits()):
+					aNames.append(pPlot.getUnit(k).getName().encode("ascii", "replace") + "/" + str(pPlot.getUnit(k).getOwner()))
+				self.tipLog("header unit: '%s' nth %d candidates %d plot %s" % (szFirst.encode("ascii", "replace"), iNth, len(aCands), str(aNames)))
 		except:
 			self.tipLog("getHeaderUnit error: %s" % str(sys.exc_info()[1]))
 		return None
+
+	# the first part of the header line of a unit: its profession and the name of its type in brackets ("Colonial Militia (Veteran Infantry Soldier)"),
+	# the name of the type alone for a unit without a profession ("Treasure")
+	def unitMatchesHeader( self, pUnit, szFirst ):
+		try:
+			szName = re.sub(u"<[^>]*>", u"", pUnit.getName())
+			if szFirst == szName or szFirst.find(szName + u" (") == 0:
+				return True
+			eProfession = pUnit.getProfession()
+			if eProfession >= 0:
+				szProfession = re.sub(u"<[^>]*>", u"", gc.getProfessionInfo(eProfession).getDescription())
+				if szFirst == szProfession + u" (" + szName + u")" or szFirst == szProfession:
+					return True
+			szType = re.sub(u"<[^>]*>", u"", gc.getUnitInfo(pUnit.getUnitType()).getDescription())
+			if szFirst == szType or szFirst.find(u"(" + szType + u")") >= 0:
+				return True
+		except:
+			pass
+		return False
 
 	def getTipSecondTextBase( self, iPara, iSel = -1, aszParas = None, iLevel = -1 ):
 		try:
