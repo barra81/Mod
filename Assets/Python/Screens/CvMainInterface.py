@@ -4166,7 +4166,7 @@ class CvMainInterface:
 			szType = tName.group(1).strip()
 			for eType in range(gc.getNumUnitInfos()):
 				pInfo = gc.getUnitInfo(eType)
-				if pInfo.getCargoSpace() > 0 and pInfo.getDomainType() == DomainTypes.DOMAIN_SEA and pInfo.getDescription() == szType:
+				if pInfo.getCargoSpace() > 0 and (pInfo.getDomainType() == DomainTypes.DOMAIN_SEA or pInfo.getDomainType() == DomainTypes.DOMAIN_LAND) and pInfo.getDescription() == szType:
 					if pInfo.getSpecialCargo() >= 0:
 						szRules = localText.getText("TXT_KEY_WTP_TIP_CARGO_GOODS", ())
 					elif hasattr(pInfo, "isSlaveShip") and pInfo.isSlaveShip():
@@ -4178,7 +4178,7 @@ class CvMainInterface:
 					else:
 						szRules = localText.getText("TXT_KEY_WTP_TIP_CARGO_ALL", ())
 					# the ports over the sea that the ship can sail to (first line)
-					if hasattr(pInfo, "canSailToEurope") and hasattr(pInfo, "canSailToAfrica"):
+					if pInfo.getDomainType() == DomainTypes.DOMAIN_SEA and hasattr(pInfo, "canSailToEurope") and hasattr(pInfo, "canSailToAfrica"):
 						aPorts = []
 						if pInfo.canSailToEurope():
 							aPorts.append(localText.getText("TXT_KEY_WTP_TIP_PORT_EUROPE", ()))
