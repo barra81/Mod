@@ -3985,7 +3985,8 @@ class CvMainInterface:
 				iFold = -1
 				if (bPromo or iBarracks >= 0) and iSocial >= 0:
 					iFold = iSocial + 1
-				elif bPromo and iBarracks >= 0:
+				elif iBarracks >= 0:
+					# (also without a separate row of promotions: natives have their promotions at the end of the header)
 					iFold = iBarracks
 				elif bPromo:
 					# (units of others have no line "Social Status": everything is folded)
