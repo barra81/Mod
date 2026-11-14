@@ -4756,6 +4756,32 @@ class CvMainInterface:
 	dPromotionButtons = {}
 
 	# the text of the second window: what a right click opens, and all the hits of the line (the chosen one in yellow)
+	# the player (not the own one) whose unit is named in the first line of a tooltip (the leader is the last part of the line): -1 if none or
+	# if he cannot be talked to
+	def getTalkPlayer( self, aszParas, iPara ):
+		try:
+			if iPara != 0 or len(aszParas) == 0:
+				return -1
+			if aszParas[0].find(u"<color=255,255,0,255>") != 0 and not self.isUnitHeader(aszParas[0]):
+				return -1
+			szHead = re.sub(u"<[^>]*>", u"", aszParas[0])
+			szHead = u"".join([c for c in szHead if ord(c) < 0x2000])
+			aParts = [x.strip() for x in szHead.split(u",") if len(x.strip()) > 0]
+			if len(aParts) < 2:
+				return -1
+			szLeader = aParts[-1]
+			eActive = gc.getGame().getActivePlayer()
+			pActive = gc.getPlayer(eActive)
+			for ePlayer in range(gc.getMAX_PLAYERS()):
+				pPlayer = gc.getPlayer(ePlayer)
+				if ePlayer != eActive and pPlayer.isAlive() and pPlayer.getName() == szLeader:
+					if pActive.canContact(ePlayer):
+						return ePlayer
+					return -1
+		except:
+			pass
+		return -1
+
 	def getTipSecondText( self, iPara, iSel = -1, aszParas = None ):
 		try:
 			if aszParas is None:
@@ -4763,6 +4789,19 @@ class CvMainInterface:
 			szLine = aszParas[iPara]
 			aTargets = self.getTextPediaTargets(szLine)
 			aAll = self.getTextPediaAllTargets(szLine)
+			eTalk = -1
+			if iSel < 0:
+				eTalk = self.getTalkPlayer(aszParas, iPara)
+			if eTalk >= 0:
+				# a unit of another nation: a right click talks to the nation, the Colopedia is Ctrl + right click
+				szText = localText.getText("TXT_KEY_WTP_TIP_TALK", (gc.getPlayer(eTalk).getCivilizationShortDescription(0),))
+				if len(aTargets) > 0:
+					szText += u"\n" + localText.getText("TXT_KEY_WTP_TIP_PEDIA_HELP2", (aTargets[0][0],))
+				if len(aAll) > 1:
+					szText += u"\n" + localText.getText("TXT_KEY_WTP_TIP_PEDIA_LIST", ())
+					for i in range(len(aAll)):
+						szText += u"\n  " + aAll[i][0]
+				return szText
 			if len(aAll) == 0:
 				return u""
 			if iSel >= 0:
@@ -5011,7 +5050,17 @@ class CvMainInterface:
 				if self.runCityCommand(aszCmd, iCmd) or self.runUnitCommand(aszParas, iPara):
 					return
 				aTargets = self.getTextPediaTargets(aszParas[iPara])
-				if iPara == self.iTipSelPara and iLevel == self.iTipSelLevel:
+				eTalk = -1
+				if not (iPara == self.iTipSelPara and iLevel == self.iTipSelLevel):
+					eTalk = self.getTalkPlayer(aszParas, iPara)
+				if eTalk >= 0:
+					if bSecond:
+						self.openPediaTargetIndex(aTargets, 0)
+					else:
+						self.unfreezeAllTips()
+						gc.getPlayer(gc.getGame().getActivePlayer()).contact(eTalk)
+						return
+				elif iPara == self.iTipSelPara and iLevel == self.iTipSelLevel:
 					aTargets = self.getTextPediaAllTargets(aszParas[iPara])
 					# the target chosen with shift + mouse wheel
 					self.openPediaTargetIndex(aTargets, self.iTipSelIdx)
