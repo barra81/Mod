@@ -3831,12 +3831,12 @@
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_PRODUCED_MISSING</Tag>
 		<English>Produced...missing</English>
-		<German>Produziert...fehlt</German>
+		<German>Produziert...missing</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_PRODUCED_IMPORT</Tag>
 		<English>Produced...need imp.</English>
-		<German>Produziert...Import</German>
+		<German>Produziert...ben. Imp.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
