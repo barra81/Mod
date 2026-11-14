@@ -4159,7 +4159,15 @@ class CvMainInterface:
 						aOut.append([szStorage, None])
 					# the line of the stock in one line; red: no food or no lumber in the city
 					szLabel = localText.getText("TXT_KEY_WTP_TIP_STORED_FOLD", ())
-					if pCity.getYieldStored(YieldTypes.YIELD_FOOD) <= 0 or pCity.getYieldStored(YieldTypes.YIELD_LUMBER) <= 0:
+					bNoFood = pCity.getYieldStored(YieldTypes.YIELD_FOOD) <= 0
+					bNoWood = pCity.getYieldStored(YieldTypes.YIELD_LUMBER) <= 0
+					if bNoFood or bNoWood:
+						if bNoFood and bNoWood:
+							szLabel = localText.getText("TXT_KEY_WTP_TIP_STORED_BOTH", ())
+						elif bNoWood:
+							szLabel = localText.getText("TXT_KEY_WTP_TIP_STORED_WOOD", ())
+						else:
+							szLabel = localText.getText("TXT_KEY_WTP_TIP_STORED_FOOD", ())
 						szLabel = u"<color=255,0,0,255>" + szLabel + u"</color>"
 					aOut.append([szLabel, szPara])
 					continue

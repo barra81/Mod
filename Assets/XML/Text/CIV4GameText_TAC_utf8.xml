@@ -3839,6 +3839,21 @@
 		<German>Produziert...bent. Imp.</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_STORED_WOOD</Tag>
+		<English>Stored...wood</English>
+		<German>Gelagert...Holz</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_STORED_FOOD</Tag>
+		<English>Stored...food</English>
+		<German>Gelagert...Nahrung</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_STORED_BOTH</Tag>
+		<English>Stored...wood&amp;food</English>
+		<German>Gelagert...Holz&amp;Nahrung</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
 		<English>more...</English>
 		<German>mehr...</German>
