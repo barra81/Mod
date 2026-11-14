@@ -4077,8 +4077,8 @@ class CvMainInterface:
 			self.tipLog("foldUnitDetails error: %s" % str(sys.exc_info()[1]))
 		return aszParas
 
-	# (2, goods): a production of the city lacks raw materials (the red numbers of the city screen), the goods that are produced too little;
-	# (1, goods): a raw material is consumed more than produced, the goods made of it; (0, []): ok
+	# (state, goods missing, goods needing imports): 2 = a production of the city lacks raw materials (the red numbers of the city screen),
+	# 1 = only a raw material is consumed more than produced, 0 = ok
 	def getCityProductionState( self, pCity ):
 		try:
 			aMissing = []
@@ -4094,12 +4094,12 @@ class CvMainInterface:
 							if iOut >= 0 and iOut not in aImport:
 								aImport.append(iOut)
 			if len(aMissing) > 0:
-				return (2, aMissing)
+				return (2, aMissing, aImport)
 			if len(aImport) > 0:
-				return (1, aImport)
+				return (1, aMissing, aImport)
 		except:
 			self.tipLog("getCityProductionState error: %s" % str(sys.exc_info()[1]))
-		return (0, [])
+		return (0, [], [])
 
 	# the tooltip of a city (banner): a line with the used storage above "Stored", the buildings in one line ("Buildings", the list when hovering)
 	# returns the new paragraphs (self.dTipDetails set) or None if the text is not the tooltip of a city
@@ -4159,22 +4159,24 @@ class CvMainInterface:
 					# the line of the production in one line; red: the production lacks goods to work at its capacity,
 					# orange: the stock suffices, but the city produces less of a raw material than its production consumes (imports needed)
 					szLabel = localText.getText("TXT_KEY_WTP_TIP_PRODUCED_FOLD", ())
-					(iState, aYields) = self.getCityProductionState(pCity)
-					szColor = None
+					(iState, aMissing, aImport) = self.getCityProductionState(pCity)
 					if iState == 2:
 						szLabel = u"<color=255,0,0,255>" + localText.getText("TXT_KEY_WTP_TIP_PRODUCED_MISSING", ()) + u"</color>"
-						szColor = u"255,0,0,255"
 					elif iState == 1:
 						szLabel = u"<color=255,140,0,255>" + localText.getText("TXT_KEY_WTP_TIP_PRODUCED_IMPORT", ()) + u"</color>"
-						szColor = u"255,140,0,255"
-					if szColor is not None:
-						# the affected goods in the list in the color of the line
+					if iState > 0:
+						# the affected goods in the list: red (missing) before orange (imports); the same goods: red
 						aSeg = szPara.split(u", ")
 						for k in range(len(aSeg)):
-							for iYield in aYields:
+							szColor = None
+							for iYield in aImport:
 								if aSeg[k].find(unichr(gc.getYieldInfo(iYield).getChar())) >= 0:
-									aSeg[k] = u"<color=" + szColor + u">" + aSeg[k] + u"</color>"
-									break
+									szColor = u"255,140,0,255"
+							for iYield in aMissing:
+								if aSeg[k].find(unichr(gc.getYieldInfo(iYield).getChar())) >= 0:
+									szColor = u"255,0,0,255"
+							if szColor is not None:
+								aSeg[k] = u"<color=" + szColor + u">" + aSeg[k] + u"</color>"
 						szPara = u", ".join(aSeg)
 					aOut.append([szLabel, szPara])
 					continue
