@@ -3954,6 +3954,11 @@
 		<German>Rechtsklick: Mit [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] sprechen</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_SELECT_UNIT</Tag>
+		<English>Right click: Select [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
+		<German>Rechtsklick: [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] auswählen</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_PEDIA_HELP</Tag>
 		<English>Right click: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
 		<German>Rechtsklick: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</German>

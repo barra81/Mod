@@ -4903,9 +4903,9 @@ class CvMainInterface:
 			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY, tTop, iFz)
 		elif iPara >= 0:
 			if iSel >= 0:
-				szText = self.getTipSecondText(iPara, iSel, aszTopParas)
+				szText = self.getTipSecondText(iPara, iSel, aszTopParas, iFz)
 			else:
-				szText = self.getTipSecondText(iPara, -1, aszTopParas)
+				szText = self.getTipSecondText(iPara, -1, aszTopParas, iFz)
 			if len(szText) > 0:
 				self.showSecondTip(screen, szText, iCY, tTop, iFz)
 
@@ -4961,8 +4961,8 @@ class CvMainInterface:
 		return -1
 
 	# the child tooltip of a line: for the first line of a unit the draft of a ship and the ability to ignore borders, then the Colopedia
-	def getTipSecondText( self, iPara, iSel = -1, aszParas = None ):
-		szBase = self.getTipSecondTextBase(iPara, iSel, aszParas)
+	def getTipSecondText( self, iPara, iSel = -1, aszParas = None, iLevel = -1 ):
+		szBase = self.getTipSecondTextBase(iPara, iSel, aszParas, iLevel)
 		try:
 			if aszParas is not None and iSel < 0 and iPara >= 0 and iPara < len(aszParas) and self.isUnitHeader(aszParas[iPara]):
 				szInfo = self.getUnitMoveInfoText(aszParas[iPara])
@@ -5020,7 +5020,40 @@ class CvMainInterface:
 			self.tipLog("getUnitMoveInfoText error: %s" % str(sys.exc_info()[1]))
 		return u"\n".join(aLines)
 
-	def getTipSecondTextBase( self, iPara, iSel = -1, aszParas = None ):
+	# the own unit that a line of the first window names (the lines of the units of a plot: one line per unit, a right click selects the unit):
+	# the plot is the one that the window was frozen at
+	def getHeaderUnit( self, iLevel, aszParas, iPara ):
+		try:
+			if iLevel < 0 or iLevel >= len(self.aFrozen) or iPara < 0 or iPara >= len(aszParas):
+				return None
+			if self.aFrozen[iLevel][6] >= 0 or not self.isUnitHeader(aszParas[iPara]):
+				return None
+			aSeen = []
+			szFirst = re.sub(u"<[^>]*>", u"", aszParas[iPara]).split(u",")[0].strip()
+			iNth = 0
+			for k in range(iPara):
+				if self.isUnitHeader(aszParas[k]) and re.sub(u"<[^>]*>", u"", aszParas[k]).split(u",")[0].strip() == szFirst:
+					iNth += 1
+			tAnchor = self.aFrozen[iLevel][5]
+			if tAnchor is not None:
+				pPlot = CyMap().plot(tAnchor[0], tAnchor[1])
+			else:
+				pPlot = self.getStackPlot()
+			if pPlot is None or pPlot.isNone():
+				return None
+			aCands = []
+			for k in range(pPlot.getNumUnits()):
+				pUnit = pPlot.getUnit(k)
+				szName = pUnit.getName()
+				if szFirst == szName or szFirst.find(szName + u" (") == 0:
+					aCands.append(pUnit)
+			if iNth < len(aCands) and aCands[iNth].getOwner() == gc.getGame().getActivePlayer():
+				return aCands[iNth]
+		except:
+			self.tipLog("getHeaderUnit error: %s" % str(sys.exc_info()[1]))
+		return None
+
+	def getTipSecondTextBase( self, iPara, iSel = -1, aszParas = None, iLevel = -1 ):
 		try:
 			if aszParas is None:
 				aszParas = []
@@ -5030,9 +5063,15 @@ class CvMainInterface:
 			eTalk = -1
 			if iSel < 0:
 				eTalk = self.getTalkPlayer(aszParas, iPara)
-			if eTalk >= 0:
-				# a unit of another nation: a right click talks to the nation, the Colopedia is Ctrl + right click
-				szText = localText.getText("TXT_KEY_WTP_TIP_TALK", (gc.getPlayer(eTalk).getCivilizationShortDescription(0),))
+			pSelect = None
+			if iSel < 0 and eTalk < 0:
+				pSelect = self.getHeaderUnit(iLevel, aszParas, iPara)
+			if eTalk >= 0 or pSelect is not None:
+				# a unit of another nation: a right click talks to the nation; an own unit of a plot: it selects the unit; the Colopedia is Ctrl + right click
+				if eTalk >= 0:
+					szText = localText.getText("TXT_KEY_WTP_TIP_TALK", (gc.getPlayer(eTalk).getCivilizationShortDescription(0),))
+				else:
+					szText = localText.getText("TXT_KEY_WTP_TIP_SELECT_UNIT", (pSelect.getName(),))
 				if len(aTargets) > 0:
 					szText += u"\n" + localText.getText("TXT_KEY_WTP_TIP_PEDIA_HELP2", (aTargets[0][0],))
 				if len(aAll) > 1:
@@ -5289,9 +5328,19 @@ class CvMainInterface:
 					return
 				aTargets = self.getTextPediaTargets(aszParas[iPara])
 				eTalk = -1
+				pSelect = None
 				if not (iPara == self.iTipSelPara and iLevel == self.iTipSelLevel):
 					eTalk = self.getTalkPlayer(aszParas, iPara)
-				if eTalk >= 0:
+					if eTalk < 0:
+						pSelect = self.getHeaderUnit(iLevel, aszParas, iPara)
+				if pSelect is not None:
+					if bSecond:
+						self.openPediaTargetIndex(aTargets, 0)
+					else:
+						CyInterface().selectUnit(pSelect, True, False, False)
+						self.unfreezeAllTips()
+						return
+				elif eTalk >= 0:
 					if bSecond:
 						self.openPediaTargetIndex(aTargets, 0)
 					else:
