@@ -4205,6 +4205,101 @@ class CvMainInterface:
 			self.tipLog("stackFrozenTips error: %s" % str(sys.exc_info()[1]))
 		return False
 
+	def freezeCursorTooltip( self ):
+		try:
+			if self.isPediaActive():
+				return False
+			if not self.bHoverTip or not self.bCursorTipShown or self.tTipLayout is None:
+				return False
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			for szName in self.getCursorTipNames():
+				screen.hide(szName)
+				screen.deleteWidget(szName)
+			self.szSuppressHelp = self.szCursorTipText
+			(tLayout, aiIndent) = self.addFrozenHint(screen, self.tTipLayout, self.aiTipIndent)
+			self.addFrozenWindow(screen, tLayout, self.aszTipParas, aiIndent, dict(self.dTipDetails), self.makeAnchor(tLayout))
+			# the tooltip window of the cursor is free again for the next tooltip
+			self.bCursorTipShown = False
+			self.szCursorTipText = u""
+			self.szPendingHelp = None
+			return True
+		except:
+			self.tipLog("freezeCursorTooltip error: %s" % str(sys.exc_info()[1]))
+		return False
+
+	def freezePreview( self, screen ):
+		try:
+			self.deleteTipWindow(screen, self.szPreviewPrefix, self.iSecondTipLines)
+			(tLayout, aiIndent) = self.addFrozenHint(screen, self.tPreviewLayout, [0] * len(self.tPreviewLayout[4]))
+			iParent = self.iPreviewParent
+			if iParent >= len(self.aFrozen):
+				iParent = -1
+			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, {}, None, iParent)
+			self.bSecondTipShown = False
+			self.iSecondTipLines = 0
+			self.tSecondTipKey = None
+			self.iTipSelPara = -1
+			self.iTipSelIdx = 0
+			if self.bTipWheel:
+				self.bTipWheel = False
+				gc.getGame().setWheelCapture(False)
+		except:
+			self.tipLog("freezePreview error: %s" % str(sys.exc_info()[1]))
+
+	def getSecondTipNames( self ):
+		return self.getTipWindowNames(self.szPreviewPrefix, self.iSecondTipLines)
+
+	def hideSecondTip( self, screen ):
+		try:
+			if self.bSecondTipShown:
+				for szName in self.getSecondTipNames():
+					screen.hide(szName)
+					screen.deleteWidget(szName)
+		except:
+			pass
+		self.bSecondTipShown = False
+		self.iSecondTipLines = 0
+
+	def getFrozenAt( self, iCX, iCY ):
+		i = len(self.aFrozen) - 1
+		while i >= 0:
+			(iX, iY, iW, iH, aszLines, aiPara, iPad, iLine) = self.aFrozen[i][1]
+			if iCX >= iX and iCX < iX + iW and iCY >= iY and iCY < iY + iH:
+				return i
+			i -= 1
+		return -1
+
+	def showSecondTip( self, screen, szText, iCursorY, tAnchor, iParent = -1 ):
+		try:
+			(iFX, iFY, iFW, iFH, aszFLines, aiFPara, iPad, iLine) = tAnchor
+			xRes = screen.getXResolution()
+			yRes = screen.getYResolution()
+			iChar = iLine * 0.32
+			iMaxWidth = max(300, int(xRes * 0.2))
+			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
+			aszLines = []
+			aiPara = []
+			aszParas = szText.split(u"\n")
+			for iPart in range(len(aszParas)):
+				aszWrapped = self.wrapMessage(aszParas[iPart], iCharsPerLine)
+				aszLines += aszWrapped
+				aiPara += [iPart] * len(aszWrapped)
+			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad)
+			iHeight = len(aszLines) * iLine + 2 * iPad
+			iX = iFX + iFW + 12
+			if iX + iWidth > xRes - 4:
+				iX = iFX - 12 - iWidth
+			iX = max(4, iX)
+			iY = max(4, min(yRes - iHeight - 4, iCursorY + self.getCursorBottom(yRes)))
+			self.tPreviewLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
+			self.iPreviewParent = iParent
+			self.aszPreviewParas = aszParas
+			self.iSecondTipLines = len(aszLines)
+			self.drawTipWindow(screen, self.szPreviewPrefix, self.tPreviewLayout, False, 0, [])
+			self.bSecondTipShown = True
+		except:
+			self.bSecondTipShown = False
+
 	# every frame while frozen: the line of the frozen window under the cursor decides about the second window. Shift + mouse wheel on a line
 	# chooses among all the things named in it (the window lists them, the chosen one in yellow; a right click opens its page)
 	def updateFrozenTip( self ):
