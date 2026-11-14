@@ -3894,6 +3894,31 @@
 		<German>Lädt Einheiten und Waren</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PORTS</Tag>
+		<English>Ports: [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
+		<German>Häfen: [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_NO_OCEAN</Tag>
+		<English>[COLOR_WARNING_TEXT]Not ocean-going[COLOR_REVERT]</English>
+		<German>[COLOR_WARNING_TEXT]Nicht überseetauglich[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PORT_EUROPE</Tag>
+		<English>Europe</English>
+		<German>Europa</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PORT_AFRICA</Tag>
+		<English>Africa</English>
+		<German>Afrika</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PORT_ROYAL</Tag>
+		<English>Port Royal</English>
+		<German>Port Royal</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
 		<English>more...</English>
 		<German>mehr...</German>

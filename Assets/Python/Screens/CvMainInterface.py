@@ -4168,14 +4168,30 @@ class CvMainInterface:
 				pInfo = gc.getUnitInfo(eType)
 				if pInfo.getCargoSpace() > 0 and pInfo.getDomainType() == DomainTypes.DOMAIN_SEA and pInfo.getDescription() == szType:
 					if pInfo.getSpecialCargo() >= 0:
-						return localText.getText("TXT_KEY_WTP_TIP_CARGO_GOODS", ())
-					if hasattr(pInfo, "isSlaveShip") and pInfo.isSlaveShip():
-						return localText.getText("TXT_KEY_WTP_TIP_CARGO_SLAVE", ())
-					if hasattr(pInfo, "isTreasureShip") and pInfo.isTreasureShip():
-						return localText.getText("TXT_KEY_WTP_TIP_CARGO_TREASURE", ())
-					if hasattr(pInfo, "isTroopShip") and pInfo.isTroopShip():
-						return localText.getText("TXT_KEY_WTP_TIP_CARGO_TROOP", ())
-					return localText.getText("TXT_KEY_WTP_TIP_CARGO_ALL", ())
+						szRules = localText.getText("TXT_KEY_WTP_TIP_CARGO_GOODS", ())
+					elif hasattr(pInfo, "isSlaveShip") and pInfo.isSlaveShip():
+						szRules = localText.getText("TXT_KEY_WTP_TIP_CARGO_SLAVE", ())
+					elif hasattr(pInfo, "isTreasureShip") and pInfo.isTreasureShip():
+						szRules = localText.getText("TXT_KEY_WTP_TIP_CARGO_TREASURE", ())
+					elif hasattr(pInfo, "isTroopShip") and pInfo.isTroopShip():
+						szRules = localText.getText("TXT_KEY_WTP_TIP_CARGO_TROOP", ())
+					else:
+						szRules = localText.getText("TXT_KEY_WTP_TIP_CARGO_ALL", ())
+					# the ports over the sea that the ship can sail to (first line)
+					if hasattr(pInfo, "canSailToEurope") and hasattr(pInfo, "canSailToAfrica"):
+						aPorts = []
+						if pInfo.canSailToEurope():
+							aPorts.append(localText.getText("TXT_KEY_WTP_TIP_PORT_EUROPE", ()))
+						if pInfo.canSailToAfrica():
+							aPorts.append(localText.getText("TXT_KEY_WTP_TIP_PORT_AFRICA", ()))
+						bSlave = hasattr(pInfo, "isSlaveShip") and pInfo.isSlaveShip()
+						if pInfo.isHiddenNationality() or bSlave:
+							aPorts.append(localText.getText("TXT_KEY_WTP_TIP_PORT_ROYAL", ()))
+						if len(aPorts) > 0:
+							szRules = localText.getText("TXT_KEY_WTP_TIP_PORTS", (u", ".join(aPorts),)) + u"\n" + szRules
+						else:
+							szRules = localText.getText("TXT_KEY_WTP_TIP_NO_OCEAN", ()) + u"\n" + szRules
+					return szRules
 		except:
 			self.tipLog("getCargoRulesText error: %s" % str(sys.exc_info()[1]))
 		return None
