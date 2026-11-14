@@ -4035,6 +4035,7 @@ class CvMainInterface:
 					elif iFortify < 0 and len(szFortify) > 3 and szNorm.find(szFortify) == 0 and aLines[k].find(u"<color") < 0:
 						iFortify = k
 				iFold = -1
+				bCargoFold = False
 				if iSocial >= 0:
 					# (units with promotions in the header have no separate row: the bullet lines after the social status are folded in any case)
 					iFold = iSocial + 1
@@ -4044,6 +4045,7 @@ class CvMainInterface:
 				elif iCargo >= 0:
 					# (a ship or a land transport: the bullet lines after the line "Cargo space" are folded, the slots of goods are not)
 					iFold = iCargo + 1
+					bCargoFold = True
 				elif bPromo:
 					# (units of others have no line "Social Status": everything is folded)
 					iFold = 0
@@ -4064,11 +4066,11 @@ class CvMainInterface:
 				if iFold < 0:
 					i = iStart
 					continue
-				if iFortify >= 0 and (bSum or iFortify < iFold):
+				if iFortify >= 0 and (bSum or iFortify < iFold) and not bCargoFold:
 					aOut.append([aLines[iFortify], None])
 				bMerge = (iEthn >= 0 and iSocial > iEthn and iSocial < iFold)
 				for k in range(iFold):
-					if k == iFortify:
+					if k == iFortify and not bCargoFold:
 						continue
 					if bMerge and k == iEthn:
 						# ethnicity and social status in one line (the ethnicity), both when hovering
@@ -4085,6 +4087,9 @@ class CvMainInterface:
 					if iSegEnd != iFortify:
 						aFolded.append(aLines[iSegEnd])
 					iSegEnd += 1
+				if bCargoFold and iFortify >= iFold and iFortify < iSegEnd:
+					# (the fortify bonus stays a line of its own, below the cargo space)
+					aOut.append([aLines[iFortify], None])
 				if len(aFolded) > 0:
 					aOut.append([localText.getText("TXT_KEY_WTP_TIP_PROMO_SUM", ()), u"\n".join(aFolded)])
 				i = iStart + iSegEnd
