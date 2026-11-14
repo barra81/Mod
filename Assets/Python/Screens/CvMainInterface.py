@@ -4148,7 +4148,15 @@ class CvMainInterface:
 					if iTotal > iMax:
 						aOut.append([localText.getText("TXT_KEY_WTP_TIP_STORAGE_FULL", (iTotal, iMax)), None])
 					else:
-						aOut.append([localText.getText("TXT_KEY_WTP_TIP_STORAGE", (iTotal, iMax)), None])
+						szStorage = localText.getText("TXT_KEY_WTP_TIP_STORAGE", (iTotal, iMax))
+						# orange: only about 10 % free, or the maximum is reached within 5 turns with the current net yields
+						iNet = 0
+						for iYield in range(YieldTypes.NUM_YIELD_TYPES):
+							if not gc.getYieldInfo(iYield).isIgnoredForStorageCapacity() and gc.getYieldInfo(iYield).isCargo():
+								iNet += pCity.calculateNetYield(iYield)
+						if iTotal * 10 >= iMax * 9 or iTotal + 5 * iNet >= iMax:
+							szStorage = u"<color=255,140,0,255>" + szStorage + u"</color>"
+						aOut.append([szStorage, None])
 					# the line of the stock in one line; red: no food or no lumber in the city
 					szLabel = localText.getText("TXT_KEY_WTP_TIP_STORED_FOLD", ())
 					if pCity.getYieldStored(YieldTypes.YIELD_FOOD) <= 0 or pCity.getYieldStored(YieldTypes.YIELD_LUMBER) <= 0:
