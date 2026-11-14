@@ -3859,6 +3859,11 @@
 		<German>Produziert...Imp. ges.</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_FREEZE_HINT</Tag>
+		<English>[COLOR:140:255:40:255]X: freeze this tooltip[COLOR_REVERT]</English>
+		<German>[COLOR:140:255:40:255]X: Tooltip einfrieren[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
 		<English>more...</English>
 		<German>mehr...</German>

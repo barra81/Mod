@@ -357,6 +357,8 @@ class CvMainInterface:
 	iWidgetHelpCount = 0
 	bCursorTipShown = False
 	iCursorTipLines = 0
+	iTipHintLines = 0
+	iPreviewHintLines = 0
 	fWidgetHelpTime = 0.0
 	iTick = 0 # counted in update() (time.time() of the game is far too coarse)
 	iWidgetHelpTick = -1000
@@ -3888,6 +3890,12 @@ class CvMainInterface:
 				aiPara += [iPara] * len(aszWrapped)
 				for fIndent in self.aiWrapIndent:
 					aiIndent.append(int(fIndent * iChar))
+			# the hint at the end: the tooltip can be frozen with X (the frozen window does not have it)
+			aszHint = self.wrapMessage(localText.getText("TXT_KEY_WTP_TIP_FREEZE_HINT", ()), iCharsPerLine)
+			aszLines += aszHint
+			aiPara += [-1] * len(aszHint)
+			aiIndent += [0] * len(aszHint)
+			self.iTipHintLines = len(aszHint)
 			self.aiTipIndent = aiIndent
 			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad, aiIndent)
 			iHeight = len(aszLines) * iLine + 2 * iPad
@@ -4520,7 +4528,8 @@ class CvMainInterface:
 				screen.hide(szName)
 				screen.deleteWidget(szName)
 			self.szSuppressHelp = self.szCursorTipText
-			(tLayout, aiIndent) = self.addFrozenHint(screen, self.tTipLayout, self.aiTipIndent)
+			(tFLayout, aiFIndent) = self.removeFreezeHint(self.tTipLayout, self.aiTipIndent, self.iTipHintLines)
+			(tLayout, aiIndent) = self.addFrozenHint(screen, tFLayout, aiFIndent)
 			self.addFrozenWindow(screen, tLayout, self.aszTipParas, aiIndent, dict(self.dTipDetails), self.makeAnchor(tLayout))
 			# the tooltip window of the cursor is free again for the next tooltip
 			self.bCursorTipShown = False
@@ -4531,10 +4540,18 @@ class CvMainInterface:
 			self.tipLog("freezeCursorTooltip error: %s" % str(sys.exc_info()[1]))
 		return False
 
+	# the layout without the last lines (the hint that the tooltip can be frozen)
+	def removeFreezeHint( self, tLayout, aiIndent, iLines ):
+		if iLines <= 0:
+			return (tLayout, list(aiIndent))
+		(iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine) = tLayout
+		return ((iX, iY, iWidth, iHeight - iLines * iLine, list(aszLines[:-iLines]), list(aiPara[:-iLines]), iPad, iLine), list(aiIndent[:-iLines]))
+
 	def freezePreview( self, screen ):
 		try:
 			self.deleteTipWindow(screen, self.szPreviewPrefix, self.iSecondTipLines)
-			(tLayout, aiIndent) = self.addFrozenHint(screen, self.tPreviewLayout, [0] * len(self.tPreviewLayout[4]))
+			(tFLayout, aiFIndent) = self.removeFreezeHint(self.tPreviewLayout, [0] * len(self.tPreviewLayout[4]), self.iPreviewHintLines)
+			(tLayout, aiIndent) = self.addFrozenHint(screen, tFLayout, aiFIndent)
 			iParent = self.iPreviewParent
 			if iParent >= len(self.aFrozen):
 				iParent = -1
@@ -4588,6 +4605,10 @@ class CvMainInterface:
 				aszWrapped = self.wrapMessage(aszParas[iPart], iCharsPerLine)
 				aszLines += aszWrapped
 				aiPara += [iPart] * len(aszWrapped)
+			aszHint = self.wrapMessage(localText.getText("TXT_KEY_WTP_TIP_FREEZE_HINT", ()), iCharsPerLine)
+			aszLines += aszHint
+			aiPara += [-1] * len(aszHint)
+			self.iPreviewHintLines = len(aszHint)
 			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad)
 			iHeight = len(aszLines) * iLine + 2 * iPad
 			iX = iFX + iFW + 12
