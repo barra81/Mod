@@ -3804,9 +3804,9 @@
 		<German>[COLOR_CAT_MILITARY]Bef.-Details[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_WTP_TIP_CULTURE</Tag>
-		<English>[COLOR:255:120:200:255]Culture %%[COLOR_REVERT]</English>
-		<German>[COLOR:255:120:200:255]Kultur %%[COLOR_REVERT]</German>
+		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
+		<English>more...</English>
+		<German>mehr...</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_DETAILS</Tag>

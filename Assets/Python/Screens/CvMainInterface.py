@@ -3915,6 +3915,12 @@ class CvMainInterface:
 	def getTipPrefix( self, szKey, aArgs ):
 		return self.normTipText(localText.getText(szKey, aArgs)).split(u":")[0].strip()
 
+	# the first line of a unit: its name in a color (the color depends on the owner), then the strength and the moves with their icons
+	def isUnitHeader( self, szText ):
+		if szText.find(u"<color=") != 0:
+			return False
+		return re.search(u", [0-9][0-9./]*[\u2000-\uffff]", re.sub(u"<[^>]*>", u"", szText)) is not None
+
 	# the row of the promotion pictures of a unit (only pictures)
 	def isPromotionRow( self, szText ):
 		if szText.lower().find(u"<img=") < 0 and re.search(u"[\u2000-\uffff]", re.sub(u"<[^>]*>", u"", szText)) is None:
@@ -3940,7 +3946,7 @@ class CvMainInterface:
 			while i < n:
 				aOut.append([aszParas[i], None])
 				i += 1
-				if aszParas[i - 1].find(szYellow) != 0:
+				if aszParas[i - 1].find(szYellow) != 0 and not self.isUnitHeader(aszParas[i - 1]):
 					continue
 				# a unit: its lines end at the next unit or at the share of the cultures
 				iStart = i
@@ -3948,7 +3954,7 @@ class CvMainInterface:
 				if bPromo:
 					iStart = i + 1
 				iEnd = iStart
-				while iEnd < n and aszParas[iEnd].find(szYellow) != 0 and re.match(u"^[0-9]+% ", self.normTipText(aszParas[iEnd])) is None:
+				while iEnd < n and aszParas[iEnd].find(szYellow) != 0 and not self.isUnitHeader(aszParas[iEnd]) and re.match(u"^[0-9]+% ", self.normTipText(aszParas[iEnd])) is None:
 					iEnd += 1
 				aLines = aszParas[iStart:iEnd]
 				iBarracks = -1
@@ -3967,6 +3973,9 @@ class CvMainInterface:
 					iFold = iSocial + 1
 				elif bPromo and iBarracks >= 0:
 					iFold = iBarracks
+				elif bPromo:
+					# (units of others have no line "Social Status": everything is folded)
+					iFold = 0
 				if bPromo:
 					# the XP of the unit moves to the row of the promotions
 					szHeader = aOut[-1][0]
@@ -4000,13 +4009,25 @@ class CvMainInterface:
 				else:
 					aFinal.append(aEntry)
 			if len(aCulture) > 0:
-				szCulture = localText.getText("TXT_KEY_WTP_TIP_CULTURE", ()).replace(u"%%", u"%")
+				# the line of the culture with the highest share (with its colors), "more..." if there are others
+				iBest = 0
+				iBestShare = -1
+				for k in range(len(aCulture)):
+					iShare = int(re.match(u"^([0-9]+)% ", self.normTipText(aCulture[k])).group(1))
+					if iShare > iBestShare:
+						iBestShare = iShare
+						iBest = k
+				szCulture = aCulture[iBest]
+				szDetails = None
+				if len(aCulture) > 1:
+					szCulture = szCulture + u" " + localText.getText("TXT_KEY_WTP_TIP_MORE", ())
+					szDetails = u"\n".join(aCulture)
 				iAt = len(aFinal)
 				for k in range(len(aFinal)):
 					if len(szMove) > 3 and self.normTipText(aFinal[k][0]).find(szMove) == 0:
 						iAt = k
 						break
-				aFinal.insert(iAt, [szCulture, u"\n".join(aCulture)])
+				aFinal.insert(iAt, [szCulture, szDetails])
 			aNew = []
 			for aEntry in aFinal:
 				if aEntry[1] is not None:
