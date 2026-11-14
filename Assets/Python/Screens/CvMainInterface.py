@@ -362,6 +362,10 @@ class CvMainInterface:
 	dFrozenPrefDY = {}
 	iRedrawFrozen = 0
 	dUnitTypeByName = {}
+	# the lists of units of the child windows "more...units": the units of a window (by its lines) and the groups of units of its lines
+	dUnitWin = {}
+	dUnitGroups = {}
+	iUnitGroupCounter = 0
 	iTipHintLines = 0
 	iPreviewHintLines = 0
 	fWidgetHelpTime = 0.0
@@ -4145,6 +4149,7 @@ class CvMainInterface:
 			if len(aCommands) > 0:
 				aRest.insert(iCmdAt, [localText.getText("TXT_KEY_WTP_TIP_COMMANDS", ()), u"\n".join(aCommands)])
 				aFinal = aRest
+			aFinal = self.foldUnitGroups(aFinal)
 			aNew = []
 			for aEntry in aFinal:
 				if aEntry[1] is not None:
@@ -4155,6 +4160,185 @@ class CvMainInterface:
 			self.dTipDetails = {}
 			self.tipLog("foldUnitDetails error: %s" % str(sys.exc_info()[1]))
 		return aszParas
+
+	# a line of the units that the game lists in groups (a plot with more than 10 units: "Free Colonist (3) 2, Master Potter (1) 2, ...")
+	def isUnitGroupLine( self, szText ):
+		if szText.find(u"<color=") != 0 or self.isUnitHeader(szText):
+			return False
+		return re.match(u"^[^(),]+ \\([0-9]+\\)", re.sub(u"<[^>]*>", u"", szText)) is not None
+
+	# the lines of the groups of units become one line "more...units"; its child window lists the units one by one (a right click selects one)
+	def foldUnitGroups( self, aFinal ):
+		try:
+			aRun = []
+			for k in range(len(aFinal)):
+				if aFinal[k][1] is None and self.isUnitGroupLine(aFinal[k][0]):
+					aRun.append(k)
+			if len(aRun) == 0:
+				return aFinal
+			szPlain = u"\n".join([re.sub(u"<[^>]*>", u"", aFinal[k][0]) for k in aRun])
+			iTotal = 0
+			for szCount in re.findall(u"\\(([0-9]+)\\)", szPlain):
+				iTotal += int(szCount)
+			if iTotal < 2:
+				return aFinal
+			pPlot = CyInterface().getMouseOverPlot()
+			if pPlot is None or pPlot.isNone():
+				pPlot = self.getStackPlot()
+			aUnits = None
+			if pPlot is not None and not pPlot.isNone():
+				aUnits = self.getGroupedUnits(pPlot, szPlain)
+			if aUnits is None or len(aUnits) < 2:
+				return aFinal
+			self.iUnitGroupCounter += 1
+			if len(self.dUnitGroups) > 100:
+				self.dUnitGroups = {}
+			szMarker = u"@WTPUNITS%d" % self.iUnitGroupCounter
+			self.dUnitGroups[szMarker] = aUnits
+			aKeep = []
+			for k in range(len(aFinal)):
+				if k == aRun[0]:
+					aKeep.append([localText.getText("TXT_KEY_WTP_TIP_MORE_UNITS", ()), szMarker])
+				elif k not in aRun:
+					aKeep.append(aFinal[k])
+			return aKeep
+		except:
+			self.tipLog("foldUnitGroups error: %s" % str(sys.exc_info()[1]))
+		return aFinal
+
+	def getUnitTypeName( self, pUnit ):
+		return re.sub(u"<[^>]*>", u"", gc.getUnitInfo(pUnit.getUnitType()).getDescription())
+
+	# the units of a plot in the order of the tooltip of the game: the own ones first, a transport followed by its cargo
+	def getPlotUnitOrder( self, pPlot ):
+		aAll = []
+		eActive = gc.getGame().getActivePlayer()
+		eTeam = gc.getGame().getActiveTeam()
+		for iPass in range(2):
+			for k in range(pPlot.getNumUnits()):
+				pUnit = pPlot.getUnit(k)
+				if pUnit.isInvisible(eTeam, True) or pUnit.isCargo():
+					continue
+				if (pUnit.getOwner() == eActive) == (iPass == 0):
+					aAll.append(pUnit)
+					if pUnit.hasCargo():
+						for j in range(pPlot.getNumUnits()):
+							pCargo = pPlot.getUnit(j)
+							if pCargo.isInvisible(eTeam, True) or not pCargo.isCargo():
+								continue
+							pTransport = pCargo.getTransportUnit()
+							if pTransport is not None and not pTransport.isNone() and pTransport.getID() == pUnit.getID() and pTransport.getOwner() == pUnit.getOwner():
+								aAll.append(pCargo)
+		return aAll
+
+	# the units of the groups of the text (the game lists the first 10 units of a plot one by one, the unit of the tooltip is no part of the
+	# groups): [(owner, id)], None if the groups of the text and the units of the plot do not fit together
+	def getGroupedUnits( self, pPlot, szPlain ):
+		try:
+			aAll = self.getPlotUnitOrder(pPlot)
+			if len(aAll) <= 10:
+				return None
+			aGroup = aAll[10:]
+			dWant = {}
+			for tEntry in re.findall(u"(?:^|, )([^,()\n]+?) \\(([0-9]+)\\)", szPlain, re.M):
+				szName = tEntry[0].strip()
+				dWant[szName] = dWant.get(szName, 0) + int(tEntry[1])
+			dHave = {}
+			for pUnit in aGroup:
+				szName = self.getUnitTypeName(pUnit)
+				dHave[szName] = dHave.get(szName, 0) + 1
+			for szName in dHave.keys():
+				while dHave[szName] > dWant.get(szName, 0):
+					# (the unit of the tooltip itself: the selected one, else the last of its type)
+					iRemove = -1
+					for k in range(len(aGroup)):
+						if self.getUnitTypeName(aGroup[k]) == szName:
+							iRemove = k
+							if aGroup[k].IsSelected():
+								break
+					if iRemove < 0:
+						break
+					del aGroup[iRemove]
+					dHave[szName] -= 1
+			iWant = 0
+			for szName in dWant.keys():
+				iWant += dWant[szName]
+				if dHave.get(szName, 0) != dWant[szName]:
+					self.tipLog("grouped units: '%s' text %d plot %d" % (szName.encode("ascii", "replace"), dWant[szName], dHave.get(szName, 0)))
+					return None
+			if len(aGroup) != iWant:
+				self.tipLog("grouped units: text %d plot %d" % (iWant, len(aGroup)))
+				return None
+			return [(pUnit.getOwner(), pUnit.getID()) for pUnit in aGroup]
+		except:
+			self.tipLog("getGroupedUnits error: %s" % str(sys.exc_info()[1]))
+		return None
+
+	# the line of a unit in the list of the child window: like the first line of a unit in a tooltip
+	def getUnitListLine( self, tKey ):
+		try:
+			pUnit = gc.getPlayer(tKey[0]).getUnit(tKey[1])
+			if pUnit is None or pUnit.isNone():
+				return None
+			szLine = u"<color=255,255,0,255>" + pUnit.getNameAndProfession() + u"</color>"
+			if pUnit.canFight():
+				szLine += u", %d%c" % (pUnit.baseCombatStr(), CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR))
+			if pUnit.maxMoves() > 0:
+				szLine += u", %d%c" % (pUnit.baseMoves(), CyGame().getSymbolID(FontSymbols.MOVES_CHAR))
+			eActive = gc.getGame().getActivePlayer()
+			if pUnit.getOwner() == eActive:
+				if pUnit.getExperience() > 0:
+					szLine += localText.getText("TXT_KEY_UNIT_HELP_LEVEL", (pUnit.getExperience(), pUnit.experienceNeeded()))
+			else:
+				try:
+					if not gc.getUnitInfo(pUnit.getUnitType()).isHiddenNationality():
+						pOwner = gc.getPlayer(pUnit.getOwner())
+						szLine += u", <color=%d,%d,%d,%d>%s</color>" % (pOwner.getPlayerTextColorR(), pOwner.getPlayerTextColorG(), pOwner.getPlayerTextColorB(), pOwner.getPlayerTextColorA(), pOwner.getName())
+				except:
+					pass
+			return szLine
+		except:
+			self.tipLog("getUnitListLine error: %s" % str(sys.exc_info()[1]))
+		return None
+
+	# the text of a child window with units: as many units as fit into iBudget lines (the height of the parent window), the rest is behind
+	# a last line "more...units"; (text, [the unit of every line (None: no unit), the units of that last line, the number of that line])
+	def getUnitListText( self, aUnits, iCharsPerLine, iBudget ):
+		aLines = []
+		aKeys = []
+		iUsed = 0
+		iDone = 0
+		for k in range(len(aUnits)):
+			szLine = self.getUnitListLine(aUnits[k])
+			if szLine is None:
+				iDone = k + 1
+				continue
+			iNeed = len(self.wrapMessage(szLine, iCharsPerLine))
+			iReserve = 0
+			if k < len(aUnits) - 1:
+				iReserve = 1
+			if len(aLines) > 0 and iUsed + iNeed + iReserve > iBudget:
+				break
+			aLines.append(szLine)
+			aKeys.append(aUnits[k])
+			iUsed += iNeed
+			iDone = k + 1
+		aMore = aUnits[iDone:]
+		if len(aMore) == 1:
+			# (the last unit takes no more room than the line "more...units")
+			szLine = self.getUnitListLine(aMore[0])
+			if szLine is None:
+				aMore = []
+			elif iUsed + len(self.wrapMessage(szLine, iCharsPerLine)) <= iBudget:
+				aLines.append(szLine)
+				aKeys.append(aMore[0])
+				aMore = []
+		iMorePara = -1
+		if len(aMore) > 0:
+			iMorePara = len(aLines)
+			aLines.append(localText.getText("TXT_KEY_WTP_TIP_MORE_UNITS", ()))
+			aKeys.append(None)
+		return (u"\n".join(aLines), [aKeys, aMore, iMorePara])
 
 	# (state, goods missing, goods needing imports, goods with an import rule): state 2 = a production of the city lacks raw materials (the red
 	# numbers of the city screen), 1 = a raw material is consumed more than produced and has no import rule, 3 = the same, all with an import rule, 0 = ok
@@ -4779,7 +4963,7 @@ class CvMainInterface:
 				iBest = iOver
 		return tBest
 
-	def showSecondTip( self, screen, szText, iCursorY, tAnchor, iParent = -1 ):
+	def showSecondTip( self, screen, szText, iCursorY, tAnchor, iParent = -1, aUnits = None ):
 		try:
 			(iFX, iFY, iFW, iFH, aszFLines, aiFPara, iPad, iLine) = tAnchor
 			xRes = screen.getXResolution()
@@ -4789,7 +4973,16 @@ class CvMainInterface:
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = []
+			tUnitWin = None
+			if aUnits is not None:
+				# (a list of units: not higher than the parent window)
+				iHintLines = len(self.wrapMessage(localText.getText("TXT_KEY_WTP_TIP_FREEZE_HINT", ()), iCharsPerLine))
+				(szText, tUnitWin) = self.getUnitListText(aUnits, iCharsPerLine, max(3, len(aszFLines) - iHintLines))
 			aszParas = self.carryColors(szText.split(u"\n"))
+			if tUnitWin is not None:
+				if len(self.dUnitWin) > 200:
+					self.dUnitWin = {}
+				self.dUnitWin[tuple(aszParas)] = tUnitWin
 			for iPart in range(len(aszParas)):
 				aszWrapped = self.wrapMessage(aszParas[iPart], iCharsPerLine)
 				aszLines += aszWrapped
@@ -4892,13 +5085,23 @@ class CvMainInterface:
 			return
 		self.tSecondTipKey = tKey
 		self.hideSecondTip(screen)
+		tUnitWin = None
+		if iFz >= 0 and iPara >= 0:
+			tUnitWin = self.dUnitWin.get(tuple(aszTopParas))
 		if bPromoLine:
 			szText = self.getPromotionTipText(aszLines[iLineIdx])
 			if len(szText) > 0:
 				self.showSecondTip(screen, szText, iCY, tTop, iFz)
+		elif tUnitWin is not None and iPara == tUnitWin[2]:
+			# the last line of a list of units: the units that did not fit into its window
+			self.showSecondTip(screen, u"", iCY, tTop, iFz, tUnitWin[1])
 		elif iPara >= 0 and dDetails.has_key(iPara):
-			# the line "Details" of a military unit: the lines folded into it
-			self.showSecondTip(screen, dDetails[iPara], iCY, tTop, iFz)
+			if self.dUnitGroups.has_key(dDetails[iPara]):
+				# the line "more...units": the units that the game lists in groups
+				self.showSecondTip(screen, u"", iCY, tTop, iFz, self.dUnitGroups[dDetails[iPara]])
+			else:
+				# the line "Details" of a military unit: the lines folded into it
+				self.showSecondTip(screen, dDetails[iPara], iCY, tTop, iFz)
 		elif iPara >= 0 and self.isCommandLine(iFz, aszTopParas, iPara):
 			# the command lines of a city tooltip: no Colopedia, a right click runs the command
 			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY, tTop, iFz)
@@ -5026,6 +5229,14 @@ class CvMainInterface:
 	def getHeaderUnit( self, iLevel, aszParas, iPara ):
 		try:
 			if iLevel < 0 or iLevel >= len(self.aFrozen) or iPara < 0 or iPara >= len(aszParas):
+				return None
+			tUnitWin = self.dUnitWin.get(tuple(aszParas))
+			if tUnitWin is not None:
+				# a list of units ("more...units"): the unit of the line
+				if iPara < len(tUnitWin[0]) and tUnitWin[0][iPara] is not None:
+					pListed = gc.getPlayer(tUnitWin[0][iPara][0]).getUnit(tUnitWin[0][iPara][1])
+					if pListed is not None and not pListed.isNone() and pListed.getOwner() == gc.getGame().getActivePlayer():
+						return pListed
 				return None
 			if self.aFrozen[iLevel][6] >= 0 or not self.isUnitHeader(aszParas[iPara]):
 				return None
