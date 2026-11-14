@@ -3854,6 +3854,11 @@
 		<German>Gelagert...Holz&amp;Nahrung</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PRODUCED_IMPORT_SET</Tag>
+		<English>Produced...imp. set</English>
+		<German>Produziert...Imp. ges.</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
 		<English>more...</English>
 		<German>mehr...</German>
