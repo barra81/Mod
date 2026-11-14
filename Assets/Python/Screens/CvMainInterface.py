@@ -386,6 +386,7 @@ class CvMainInterface:
 	iTipMode = aiTipSettings[0] # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
 	aiTipIndent = []
 	dTipDetails = {}
+	szFoldLogged = u""
 	tSelLogState = None
 	bSelLogError = False
 	aiWrapIndent = []
@@ -3945,13 +3946,21 @@ class CvMainInterface:
 			szFortify = self.getTipPrefix("TXT_KEY_UNIT_HELP_FORTIFY_BONUS", (0,))
 			szMove = self.getTipPrefix("TXT_KEY_FEATURE_MOVEMENT_COST", (0,))
 			szYellow = u"<color=255,255,0,255>"
+			try:
+				# (debug log: the paragraphs of a tooltip with a unit, once)
+				if self.szFoldLogged != aszParas[0] and (aszParas[0].find(szYellow) == 0 or self.isUnitHeader(aszParas[0])):
+					self.szFoldLogged = aszParas[0]
+					import WTPBannerLog
+					WTPBannerLog.log("FOLD paragraphs: %s" % repr([p[:70].encode("ascii", "replace") for p in aszParas[:16]]))
+			except:
+				pass
 			aOut = [] # [text, folded lines or None]
 			n = len(aszParas)
 			i = 0
 			while i < n:
 				aOut.append([aszParas[i], None])
 				i += 1
-				if aszParas[i - 1].find(szYellow) != 0 and not self.isUnitHeader(aszParas[i - 1]):
+				if aszParas[i - 1].find(szYellow) != 0 and not self.isUnitHeader(aszParas[i - 1]) and not (i < n and self.isPromotionRow(aszParas[i])):
 					continue
 				# a unit: its lines end at the next unit or at the share of the cultures
 				iStart = i
@@ -4659,22 +4668,45 @@ class CvMainInterface:
 		return None
 
 	# the command lines of the tooltip of a unit of the stack ("(< CTRL > to select all Treasure units)", "(< ALT > to select all units)"):
-	# (mode, unit type) with mode 1: all units of that type on the plot, 2: all units on the plot; None: no command
+	# the plot of the stack of units (the one of the plot list)
+	def getStackPlot( self ):
+		pPlot = CyInterface().getSelectionPlot()
+		if pPlot is None or pPlot.isNone():
+			pHead = CyInterface().getHeadSelectedUnit()
+			if pHead is not None and not pHead.isNone():
+				pPlot = pHead.plot()
+		if pPlot is None or pPlot.isNone():
+			return None
+		return pPlot
+
+	# (mode, unit type) with mode 1: all units of that type on the plot, 2: all units of the domain (land / sea) of the unit of the tooltip;
+	# the type is the one of the line "(< CTRL > to select all ... units)" of the same tooltip (the unit of the tooltip); None: no command
 	def getUnitCommand( self, aszParas, iPara ):
 		try:
 			if iPara < 0 or iPara >= len(aszParas) or aszParas[iPara].find(u"(") < 0:
 				return None
-			pHead = CyInterface().getHeadSelectedUnit()
-			if pHead is None or pHead.isNone():
+			pPlot = self.getStackPlot()
+			if pPlot is None:
 				return None
 			szPara = self.getPlainCommandText(aszParas[iPara])
-			if szPara == self.getPlainCommandText(localText.getText("TXT_KEY_MISC_ALT_SELECT", ())):
-				return (2, -1)
-			pPlot = pHead.plot()
+			szAlt = self.getPlainCommandText(localText.getText("TXT_KEY_MISC_ALT_SELECT", ()))
+			eFound = -1
 			for k in range(pPlot.getNumUnits()):
 				eType = pPlot.getUnit(k).getUnitType()
-				if szPara == self.getPlainCommandText(localText.getText("TXT_KEY_MISC_CTRL_SELECT", (gc.getUnitInfo(eType).getTextKey(),))):
+				szCtrl = self.getPlainCommandText(localText.getText("TXT_KEY_MISC_CTRL_SELECT", (gc.getUnitInfo(eType).getTextKey(),)))
+				if szPara == szCtrl:
 					return (1, eType)
+				if eFound < 0:
+					for szOther in aszParas:
+						if szOther.find(u"(") >= 0 and self.getPlainCommandText(szOther) == szCtrl:
+							eFound = eType
+							break
+			if szPara == szAlt:
+				if eFound < 0:
+					pHead = CyInterface().getHeadSelectedUnit()
+					if pHead is not None and not pHead.isNone():
+						eFound = pHead.getUnitType()
+				return (2, eFound)
 		except:
 			pass
 		return None
@@ -4686,11 +4718,15 @@ class CvMainInterface:
 				return False
 			(iMode, eType) = tCommand
 			ePlayer = gc.getGame().getActivePlayer()
-			pPlot = CyInterface().getHeadSelectedUnit().plot()
+			pPlot = self.getStackPlot()
+			eDomain = -1
+			if iMode == 2 and eType >= 0:
+				eDomain = gc.getUnitInfo(eType).getDomainType()
 			aUnits = []
 			for k in range(pPlot.getNumUnits()):
 				pUnit = pPlot.getUnit(k)
-				if pUnit.getOwner() == ePlayer and (iMode == 2 or pUnit.getUnitType() == eType):
+				# (only units with moves left; Alt: the units of the same domain, land or sea)
+				if pUnit.getOwner() == ePlayer and pUnit.movesLeft() > 0 and ((iMode == 2 and (eDomain < 0 or pUnit.getDomainType() == eDomain)) or (iMode == 1 and pUnit.getUnitType() == eType)):
 					aUnits.append(pUnit)
 			if len(aUnits) == 0:
 				return False
