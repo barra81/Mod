@@ -3819,6 +3819,16 @@
 		<German>[COLOR_SELECTED_TEXT]Gebäude[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_STORED_FOLD</Tag>
+		<English>Stored...</English>
+		<German>Gelagert...</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PRODUCED_FOLD</Tag>
+		<English>Produced...</English>
+		<German>Produziert...</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
 		<English>more...</English>
 		<German>mehr...</German>

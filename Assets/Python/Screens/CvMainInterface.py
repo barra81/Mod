@@ -4077,6 +4077,20 @@ class CvMainInterface:
 			self.tipLog("foldUnitDetails error: %s" % str(sys.exc_info()[1]))
 		return aszParas
 
+	# 2: a production of the city lacks goods (the red numbers of the city screen), 1: a raw material is consumed more than produced, 0: ok
+	def getCityProductionState( self, pCity ):
+		try:
+			iState = 0
+			for iYield in range(YieldTypes.NUM_YIELD_TYPES):
+				if pCity.calculateActualYieldProduced(iYield) < pCity.getBaseRawYieldProduced(iYield):
+					return 2
+				if iYield != YieldTypes.YIELD_FOOD and pCity.getRawYieldConsumed(iYield) > pCity.getBaseRawYieldProduced(iYield):
+					iState = 1
+			return iState
+		except:
+			self.tipLog("getCityProductionState error: %s" % str(sys.exc_info()[1]))
+		return 0
+
 	# the tooltip of a city (banner): a line with the used storage above "Stored", the buildings in one line ("Buildings", the list when hovering)
 	# returns the new paragraphs (self.dTipDetails set) or None if the text is not the tooltip of a city
 	def foldCityDetails( self, aszParas ):
@@ -4106,6 +4120,7 @@ class CvMainInterface:
 			if pCity is None:
 				return None
 			szStored = self.getTipPrefix("TXT_KEY_CITY_BAR_STORED", (u"",))
+			szProducing = self.getTipPrefix("TXT_KEY_CITY_BAR_PRODUCING", (u"",))
 			szList = None
 			aBuildings = []
 			for eBuilding in range(gc.getNumBuildingInfos()):
@@ -4124,6 +4139,23 @@ class CvMainInterface:
 						aOut.append([localText.getText("TXT_KEY_WTP_TIP_STORAGE_FULL", (iTotal, iMax)), None])
 					else:
 						aOut.append([localText.getText("TXT_KEY_WTP_TIP_STORAGE", (iTotal, iMax)), None])
+					# the line of the stock in one line; red: no food or no lumber in the city
+					szLabel = localText.getText("TXT_KEY_WTP_TIP_STORED_FOLD", ())
+					if pCity.getYieldStored(YieldTypes.YIELD_FOOD) <= 0 or pCity.getYieldStored(YieldTypes.YIELD_LUMBER) <= 0:
+						szLabel = u"<color=255,0,0,255>" + szLabel + u"</color>"
+					aOut.append([szLabel, szPara])
+					continue
+				if len(szProducing) > 3 and szNorm.find(szProducing) == 0:
+					# the line of the production in one line; red: the production lacks goods to work at its capacity,
+					# orange: the stock suffices, but the city produces less of a raw material than its production consumes (imports needed)
+					szLabel = localText.getText("TXT_KEY_WTP_TIP_PRODUCED_FOLD", ())
+					iState = self.getCityProductionState(pCity)
+					if iState == 2:
+						szLabel = u"<color=255,0,0,255>" + szLabel + u"</color>"
+					elif iState == 1:
+						szLabel = u"<color=255,140,0,255>" + szLabel + u"</color>"
+					aOut.append([szLabel, szPara])
+					continue
 				if not bBuildings and szList is not None and szNorm == szList:
 					aOut.append([localText.getText("TXT_KEY_WTP_TIP_BUILDINGS", ()), szPara])
 					bBuildings = True
