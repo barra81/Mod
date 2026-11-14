@@ -3924,7 +3924,7 @@ class CvMainInterface:
 	# Folds the lines of the help text that are not needed at first sight (the lines are the paragraphs of the text); their tooltip lists them.
 	# - a unit with promotions: the XP goes into the row of the promotion pictures, the plain "Fortify bonus" line follows that row, and
 	#   everything from the line "Barracks Space Needed" on (without such a line: after the line "Social Status") up to the next unit is
-	#   folded into the line "Promotion sum."; a unit with a "Barracks Space Needed" line but no promotions gets a line "Details"
+	#   folded into the line "Promotion sum." (military units too; a unit without promotions is not changed)
 	# - the share of the cultures on a plot (82% Dutch ...) is folded into the line "Culture %" above the line "Movement Cost"
 	def foldUnitDetails( self, aszParas ):
 		self.dTipDetails = {}
@@ -3963,7 +3963,7 @@ class CvMainInterface:
 					elif iFortify < 0 and len(szFortify) > 3 and szNorm.find(szFortify) == 0 and aLines[k].find(u"<color") < 0:
 						iFortify = k
 				iFold = -1
-				if iBarracks >= 0:
+				if bPromo and iBarracks >= 0:
 					iFold = iBarracks
 				elif bPromo and iSocial >= 0:
 					iFold = iSocial + 1
@@ -3989,10 +3989,7 @@ class CvMainInterface:
 					if k != iFortify:
 						aFolded.append(aLines[k])
 				if len(aFolded) > 0:
-					szKey = "TXT_KEY_WTP_TIP_DETAILS"
-					if bPromo:
-						szKey = "TXT_KEY_WTP_TIP_PROMO_SUM"
-					aOut.append([localText.getText(szKey, ()), u"\n".join(aFolded)])
+					aOut.append([localText.getText("TXT_KEY_WTP_TIP_PROMO_SUM", ()), u"\n".join(aFolded)])
 				i = iEnd
 			# the shares of the cultures: one line above the movement cost
 			aFinal = []
