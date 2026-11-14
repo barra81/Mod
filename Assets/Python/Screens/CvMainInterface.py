@@ -3879,7 +3879,9 @@ class CvMainInterface:
 			aszLines = []
 			aiPara = [] # the paragraph (text between two line breaks of the help) of every line: right click in the frozen window
 			aiIndent = [] # indent of continued rows of icons (pixels)
-			aszParas = self.foldUnitDetails(szHelp.split(u"\n"))
+			aszParas = self.foldCityDetails(szHelp.split(u"\n"))
+			if aszParas is None:
+				aszParas = self.foldUnitDetails(szHelp.split(u"\n"))
 			for iPara in range(len(aszParas)):
 				aszWrapped = self.wrapMessage(aszParas[iPara], iCharsPerLine, True)
 				aszLines += aszWrapped
@@ -3944,6 +3946,7 @@ class CvMainInterface:
 			szBarracks = self.getTipPrefix("TXT_KEY_UNIT_BARRACKS_SPACE_NEEDED", (0, u""))
 			szSocial = self.getTipPrefix("TXT_KEY_CITIZEN_STATUS_FREE", ())
 			szFortify = self.getTipPrefix("TXT_KEY_UNIT_HELP_FORTIFY_BONUS", (0,))
+			szEthn = self.getTipPrefix("TXT_KEY_ETHNICITY_EUROPEAN", ())
 			szMove = self.getTipPrefix("TXT_KEY_FEATURE_MOVEMENT_COST", (0,))
 			szYellow = u"<color=255,255,0,255>"
 			try:
@@ -3974,12 +3977,15 @@ class CvMainInterface:
 				iBarracks = -1
 				iSocial = -1
 				iFortify = -1
+				iEthn = -1
 				for k in range(len(aLines)):
 					szNorm = self.normTipText(aLines[k])
 					if iBarracks < 0 and len(szBarracks) > 3 and szNorm.find(szBarracks) >= 0:
 						iBarracks = k
 					elif iSocial < 0 and len(szSocial) > 3 and szNorm.find(szSocial) >= 0:
 						iSocial = k
+					elif iEthn < 0 and len(szEthn) > 3 and szNorm.find(szEthn) == 0:
+						iEthn = k
 					elif iFortify < 0 and len(szFortify) > 3 and szNorm.find(szFortify) == 0 and aLines[k].find(u"<color") < 0:
 						iFortify = k
 				iFold = -1
@@ -3991,6 +3997,11 @@ class CvMainInterface:
 				elif bPromo:
 					# (units of others have no line "Social Status": everything is folded)
 					iFold = 0
+				bSum = True
+				if iFold < 0 and iEthn >= 0 and iSocial > iEthn:
+					# (no promotions to fold: only the lines of the ethnicity and the social status are put together)
+					iFold = iSocial + 1
+					bSum = False
 				if bPromo:
 					# the XP of the unit moves to the row of the promotions
 					szHeader = aOut[-1][0]
@@ -4003,16 +4014,24 @@ class CvMainInterface:
 				if iFold < 0:
 					i = iStart
 					continue
-				if iFortify >= 0:
+				if iFortify >= 0 and (bSum or iFortify < iFold):
 					aOut.append([aLines[iFortify], None])
+				bMerge = (iEthn >= 0 and iSocial > iEthn and iSocial < iFold)
 				for k in range(iFold):
-					if k != iFortify:
+					if k == iFortify:
+						continue
+					if bMerge and k == iEthn:
+						# ethnicity and social status in one line (the ethnicity), both when hovering
+						aOut.append([aLines[iEthn], aLines[iEthn] + u"\n" + aLines[iSocial]])
+					elif bMerge and k == iSocial:
+						pass
+					else:
 						aOut.append([aLines[k], None])
 				# only the list of the unit is folded (lines with a bullet): the lines after it (the commands "(< CTRL > to select ...)", the
 				# lines of the plot) stay where they are
 				aFolded = []
 				iSegEnd = iFold
-				while iSegEnd < len(aLines) and (iSegEnd == iFortify or self.isBulletLine(aLines[iSegEnd])):
+				while bSum and iSegEnd < len(aLines) and (iSegEnd == iFortify or self.isBulletLine(aLines[iSegEnd])):
 					if iSegEnd != iFortify:
 						aFolded.append(aLines[iSegEnd])
 					iSegEnd += 1
@@ -4057,6 +4076,69 @@ class CvMainInterface:
 			self.dTipDetails = {}
 			self.tipLog("foldUnitDetails error: %s" % str(sys.exc_info()[1]))
 		return aszParas
+
+	# the tooltip of a city (banner): a line with the used storage above "Stored", the buildings in one line ("Buildings", the list when hovering)
+	# returns the new paragraphs (self.dTipDetails set) or None if the text is not the tooltip of a city
+	def foldCityDetails( self, aszParas ):
+		try:
+			n = len(aszParas)
+			if n < 4:
+				return None
+			if self.getPlainCommandText(aszParas[n - 2]) != self.getPlainCommandText(localText.getText("TXT_KEY_CITY_BAR_SELECT_CTRL", ())):
+				return None
+			if self.getPlainCommandText(aszParas[n - 1]) != self.getPlainCommandText(localText.getText("TXT_KEY_CITY_BAR_SELECT_ALT", ())):
+				return None
+			szName = self.getPlainCommandText(aszParas[0])
+			pCity = None
+			for ePlayer in range(gc.getMAX_PLAYERS()):
+				pPlayer = gc.getPlayer(ePlayer)
+				if not pPlayer.isAlive():
+					continue
+				(loopCity, iter) = pPlayer.firstCity(False)
+				while loopCity:
+					if loopCity.getName() == szName:
+						pCity = loopCity
+						break
+					(loopCity, iter) = pPlayer.nextCity(iter, False)
+				if pCity is not None:
+					break
+			self.dTipDetails = {}
+			if pCity is None:
+				return None
+			szStored = self.getTipPrefix("TXT_KEY_CITY_BAR_STORED", (u"",))
+			szList = None
+			aBuildings = []
+			for eBuilding in range(gc.getNumBuildingInfos()):
+				if pCity.isHasRealBuilding(eBuilding):
+					aBuildings.append(gc.getBuildingInfo(eBuilding).getDescription())
+			if len(aBuildings) > 0:
+				szList = self.normTipText(u", ".join(aBuildings))
+			aOut = []
+			bBuildings = False
+			for szPara in aszParas:
+				szNorm = self.normTipText(szPara)
+				if len(szStored) > 3 and szNorm.find(szStored) == 0:
+					iTotal = pCity.getTotalYieldStored()
+					iMax = pCity.getMaxYieldCapacity()
+					if iTotal > iMax:
+						aOut.append([localText.getText("TXT_KEY_WTP_TIP_STORAGE_FULL", (iTotal, iMax)), None])
+					else:
+						aOut.append([localText.getText("TXT_KEY_WTP_TIP_STORAGE", (iTotal, iMax)), None])
+				if not bBuildings and szList is not None and szNorm == szList:
+					aOut.append([localText.getText("TXT_KEY_WTP_TIP_BUILDINGS", ()), szPara])
+					bBuildings = True
+					continue
+				aOut.append([szPara, None])
+			aNew = []
+			for aEntry in aOut:
+				if aEntry[1] is not None:
+					self.dTipDetails[len(aNew)] = aEntry[1]
+				aNew.append(aEntry[0])
+			return aNew
+		except:
+			self.dTipDetails = {}
+			self.tipLog("foldCityDetails error: %s" % str(sys.exc_info()[1]))
+		return None
 
 	# where a window of this size goes: mode 0 beside the cursor (right of it, left if there is no room; beside the own windows when the cursor is
 	# on one) with its top at the lower end of the cursor; mode 1 at the place of the game tooltip (left, above the HUD, growing upwards)

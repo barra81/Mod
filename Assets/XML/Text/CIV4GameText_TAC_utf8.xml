@@ -3804,6 +3804,21 @@
 		<German>[COLOR_CAT_MILITARY]Bef.-Details[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_STORAGE</Tag>
+		<English>Storage : %d1 / %d2</English>
+		<German>Lager : %d1 / %d2</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_STORAGE_FULL</Tag>
+		<English>[COLOR_NEGATIVE_TEXT]Storage : %d1 / %d2[COLOR_REVERT]</English>
+		<German>[COLOR_NEGATIVE_TEXT]Lager : %d1 / %d2[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_BUILDINGS</Tag>
+		<English>[COLOR_SELECTED_TEXT]Buildings[COLOR_REVERT]</English>
+		<German>[COLOR_SELECTED_TEXT]Gebäude[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
 		<English>more...</English>
 		<German>mehr...</German>
