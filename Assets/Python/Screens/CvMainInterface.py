@@ -3981,28 +3981,31 @@ class CvMainInterface:
 	# width of a window for the lines (icons of the game font are wider than letters: getMessageWidth, as the lines were wrapped)
 	# pixel width of a text of the tooltip font by character classes (fitted to measured lines of the game: a line of 50 characters is between 250
 	# and 350 pixels wide, so a character count is not good enough). The values are for a line distance of 22 pixels, the others are scaled.
+	# Width of the letters in thousandths of the font size (a serif font like Times: measured on the screenshots of the tooltips, the
+	# factor to pixels is 15.9 for a line of 22 pixels, the icons of the game font are 19.7 pixels wide)
+	TIP_CHAR_WIDTHS = {}
+	for szWtpChars, aiWtpWidths in (
+			(u"abcdefghijklmnopqrstuvwxyz", [444,500,444,500,444,333,500,500,278,278,500,278,778,500,500,500,500,333,389,278,500,500,722,500,500,444]),
+			(u"ABCDEFGHIJKLMNOPQRSTUVWXYZ", [722,667,667,722,611,556,722,722,333,389,722,611,889,722,722,556,722,667,556,611,722,722,944,722,722,611]),
+			(u"0123456789", [500,500,500,500,500,500,500,500,500,500]),
+			(u" ,.:;-()%/+'!|\"", [250,250,250,278,278,333,333,333,833,278,564,180,333,200,408])):
+		for iWtpChar in range(len(szWtpChars)):
+			TIP_CHAR_WIDTHS[szWtpChars[iWtpChar]] = aiWtpWidths[iWtpChar]
+
 	def getTextPixels( self, szPlain, iLine ):
 		fSum = 0.0
 		szPlain = szPlain.replace(u"&lt;", u"<").replace(u"&gt;", u">").replace(u"&amp;", u"&")
 		for c in szPlain:
-			if ord(c) >= 0x2000:
-				fSum += 13.0 # icon of the game font (measured: 12 to 14 pixels)
-			elif c == u" ":
-				fSum += 4.0
-			elif c in u"ijl.,:;!'|":
-				fSum += 5.9
-			elif c in u"()\"-ftr":
-				fSum += 2.7
-			elif c in u"mwMW":
-				fSum += 13.4
+			if c == u"\u2022":
+				fSum += 8.0 # the bullet of a list
+			elif ord(c) >= 0x2000:
+				fSum += 19.7 # icon of the game font
+			elif self.TIP_CHAR_WIDTHS.has_key(c):
+				fSum += self.TIP_CHAR_WIDTHS[c] * 0.0159
 			elif c.isupper():
 				fSum += 10.3
-			elif c.isdigit():
-				fSum += 8.9
-			elif c in u"+%/":
-				fSum += 7.1
 			else:
-				fSum += 7.7
+				fSum += 7.1 # other letters (accents)
 		return fSum * iLine / 22.0
 
 	def getTipTextWidth( self, aszLines, iChar, iMaxWidth, iPad, aiIndent = None ):
@@ -4013,8 +4016,8 @@ class CvMainInterface:
 			if aiIndent is not None and i < len(aiIndent):
 				fThis += aiIndent[i]
 			fPixel = max(fPixel, fThis)
-		# a little reserve (1 % + 2 pixels) and the border; the lines were wrapped by a character count, so wide letters can make a line wider than the maximum
-		return max(120, min(int(iMaxWidth * 1.15), int(fPixel * 1.01) + 2 * iPad + 4))
+		# a little reserve (4.5 % + 4 pixels) and the border; the lines were wrapped by a character count, so wide letters can make a line wider than the maximum
+		return max(120, min(int(iMaxWidth * 1.15), int(fPixel * 1.045) + 2 * iPad + 4))
 
 	def drawCursorTip( self, screen, bClickable ):
 		self.iCursorTipLines = len(self.tTipLayout[4])
