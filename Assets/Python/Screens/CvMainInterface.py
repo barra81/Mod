@@ -357,6 +357,8 @@ class CvMainInterface:
 	iWidgetHelpCount = 0
 	bCursorTipShown = False
 	iCursorTipLines = 0
+	iPreviewPrefDY = 0
+	dFrozenPrefDY = {}
 	iRedrawFrozen = 0
 	dUnitTypeByName = {}
 	iTipHintLines = 0
@@ -4634,10 +4636,33 @@ class CvMainInterface:
 					# (the window stays at its new place of the map)
 					self.aFrozen[i][5] = self.makeAnchor(self.aFrozen[i][1], (tAnchor[0], tAnchor[1]))
 			self.updateFrozenAnchors(screen)
+			self.placeChildTips(screen)
 			return True
 		except:
 			self.tipLog("stackFrozenTips error: %s" % str(sys.exc_info()[1]))
 		return False
+
+	# After the parent windows were moved every child window looks again for its own place: beside its parent (right, then left) at the height
+	# that it had been given, then the other places (see showSecondTip); a place that was taken away from it earlier may be free again.
+	def placeChildTips( self, screen ):
+		try:
+			xRes = screen.getXResolution()
+			yRes = screen.getYResolution()
+			for i in range(len(self.aFrozen)):
+				iParent = self.aFrozen[i][6]
+				if iParent < 0:
+					continue
+				(iPX, iPY, iPW, iPH) = self.aFrozen[iParent][1][:4]
+				(iX, iY, iW, iH) = self.aFrozen[i][1][:4]
+				iDY = self.dFrozenPrefDY.get(self.aFrozen[i][0], iY - iPY)
+				iRight = iPX + iPW + 12
+				iLeft = iPX - 12 - iW
+				(iNX, iNY) = self.pickFreeSpot([(iRight, iPY + iDY), (iLeft, iPY + iDY), (iRight, iPY), (iLeft, iPY), (iRight, iPY + iPH - iH), (iLeft, iPY + iPH - iH), (iPX, iPY + iPH + 12), (iPX, iPY - 12 - iH)], iW, iH, xRes, yRes, i)
+				self.moveFrozenWindow(screen, i, iNX, iNY)
+				tNow = self.aFrozen[i][1]
+				self.aFrozen[i][7] = (tNow[0] - iPX, tNow[1] - iPY)
+		except:
+			self.tipLog("placeChildTips error: %s" % str(sys.exc_info()[1]))
 
 	def freezeCursorTooltip( self ):
 		try:
@@ -4678,6 +4703,8 @@ class CvMainInterface:
 			if iParent >= len(self.aFrozen):
 				iParent = -1
 			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, {}, None, iParent)
+			if iParent >= 0:
+				self.dFrozenPrefDY[self.aFrozen[-1][0]] = self.iPreviewPrefDY
 			self.bSecondTipShown = False
 			self.iSecondTipLines = 0
 			self.tSecondTipKey = None
@@ -4714,15 +4741,17 @@ class CvMainInterface:
 
 	# the first of the places (x, y) where a window of this size covers no frozen window (kept on the screen); the one that covers the least if
 	# there is none
-	def pickFreeSpot( self, aCands, iWidth, iHeight, xRes, yRes ):
+	def pickFreeSpot( self, aCands, iWidth, iHeight, xRes, yRes, iExclude = -1 ):
 		tBest = None
 		iBest = -1
 		for (iX, iY) in aCands:
 			iX = max(4, min(xRes - iWidth - 4, iX))
 			iY = max(4, min(yRes - iHeight - 4, iY))
 			iOver = 0
-			for aFz in self.aFrozen:
-				(iFX, iFY, iFW, iFH) = aFz[1][:4]
+			for iFz in range(len(self.aFrozen)):
+				if iFz == iExclude:
+					continue
+				(iFX, iFY, iFW, iFH) = self.aFrozen[iFz][1][:4]
 				iDX = min(iX + iWidth, iFX + iFW) - max(iX, iFX)
 				iDY = min(iY + iHeight, iFY + iFH) - max(iY, iFY)
 				if iDX > 0 and iDY > 0:
@@ -4763,6 +4792,8 @@ class CvMainInterface:
 			# it does not cover another frozen window: beside the window (right, left), then above and below it
 			iRight = iFX + iFW + 12
 			iLeft = iFX - 12 - iWidth
+			# (the place that the window would like to have: its distance below the top of its parent window)
+			self.iPreviewPrefDY = iY - iFY
 			(iX, iY) = self.pickFreeSpot([(iX, iY), (iRight, iY), (iLeft, iY), (iRight, iFY), (iLeft, iFY), (iRight, iFY + iFH - iHeight), (iLeft, iFY + iFH - iHeight), (iFX, iFY + iFH + 12), (iFX, iFY - 12 - iHeight)], iWidth, iHeight, xRes, yRes)
 			self.tPreviewLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
 			self.iPreviewParent = iParent
