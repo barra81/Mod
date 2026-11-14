@@ -4356,6 +4356,12 @@ class CvMainInterface:
 				iX = iCursorX - int(iGap * 0.6) - iWidth
 		iX = max(4, iX)
 		iY = max(4, min(yRes - iHeight - 4, iCursorY + self.getCursorBottom(yRes)))
+		if len(self.aFrozen) > 0 and tRect is None:
+			# it does not cover a frozen window: the other side of the cursor, then below and above the cursor
+			iRight = iCursorX + iGap
+			iLeft = iCursorX - int(iGap * 0.6) - iWidth
+			iBelow = iCursorY + self.getCursorBottom(yRes)
+			(iX, iY) = self.pickFreeSpot([(iX, iY), (iRight, iY), (iLeft, iY), (iX, iBelow + 2 * iGap), (iX, iCursorY - iHeight - iGap)], iWidth, iHeight, xRes, yRes)
 		return (iX, iY)
 
 	# the window follows the cursor: the game asks for the same text again only now and then, and a window that stays where it was made
@@ -4706,6 +4712,28 @@ class CvMainInterface:
 			i -= 1
 		return -1
 
+	# the first of the places (x, y) where a window of this size covers no frozen window (kept on the screen); the one that covers the least if
+	# there is none
+	def pickFreeSpot( self, aCands, iWidth, iHeight, xRes, yRes ):
+		tBest = None
+		iBest = -1
+		for (iX, iY) in aCands:
+			iX = max(4, min(xRes - iWidth - 4, iX))
+			iY = max(4, min(yRes - iHeight - 4, iY))
+			iOver = 0
+			for aFz in self.aFrozen:
+				(iFX, iFY, iFW, iFH) = aFz[1][:4]
+				iDX = min(iX + iWidth, iFX + iFW) - max(iX, iFX)
+				iDY = min(iY + iHeight, iFY + iFH) - max(iY, iFY)
+				if iDX > 0 and iDY > 0:
+					iOver += iDX * iDY
+			if iOver == 0:
+				return (iX, iY)
+			if tBest is None or iOver < iBest:
+				tBest = (iX, iY)
+				iBest = iOver
+		return tBest
+
 	def showSecondTip( self, screen, szText, iCursorY, tAnchor, iParent = -1 ):
 		try:
 			(iFX, iFY, iFW, iFH, aszFLines, aiFPara, iPad, iLine) = tAnchor
@@ -4732,6 +4760,10 @@ class CvMainInterface:
 				iX = iFX - 12 - iWidth
 			iX = max(4, iX)
 			iY = max(4, min(yRes - iHeight - 4, iCursorY + self.getCursorBottom(yRes)))
+			# it does not cover another frozen window: beside the window (right, left), then above and below it
+			iRight = iFX + iFW + 12
+			iLeft = iFX - 12 - iWidth
+			(iX, iY) = self.pickFreeSpot([(iX, iY), (iRight, iY), (iLeft, iY), (iRight, iFY), (iLeft, iFY), (iRight, iFY + iFH - iHeight), (iLeft, iFY + iFH - iHeight), (iFX, iFY + iFH + 12), (iFX, iFY - 12 - iHeight)], iWidth, iHeight, xRes, yRes)
 			self.tPreviewLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
 			self.iPreviewParent = iParent
 			self.aszPreviewParas = aszParas
