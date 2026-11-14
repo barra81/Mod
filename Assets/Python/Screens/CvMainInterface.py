@@ -362,7 +362,11 @@ class CvMainInterface:
 	iWidgetHelpTick = -1000
 	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
 	tTipLayout = None
-	aNested = [] # nested tooltips: the frozen windows after the first one: (widget name prefix, layout, paragraphs, indents)
+	aFrozen = [] # the frozen windows (key X), the last one on top: (widget name prefix, layout, paragraphs, indents, details)
+	iFzCounter = 0
+	szSuppressHelp = u"" # the text of the window that was just frozen: the tooltip of the same thing does not appear again at once
+	iTipSelLevel = -1
+	tScoreRect = None
 	tPreviewLayout = None # the window beside the top frozen window (it can be frozen too): layout, paragraphs, widget name prefix
 	aszPreviewParas = []
 	szPreviewPrefix = "HudTipC1"
@@ -3813,6 +3817,7 @@ class CvMainInterface:
 				if not pHeadSelectedCity:
 					# width of the longest entry plus room for the table border and the scroll bar (never wider than before)
 					iWidth = min(iWidth, iMaxTextWidth + 20)
+					self.tScoreRect = (xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - (iBtnHeight * 7), iWidth, (iBtnHeight * 7))
 					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - (iBtnHeight * 7), iWidth, (iBtnHeight * 7), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
 					screen.enableSelect("ScoreBackground", False)
 					screen.setTableColumnHeader("ScoreBackground", 0, "", iWidth - 10)
@@ -3824,15 +3829,23 @@ class CvMainInterface:
 	# WTP: own tooltip window at the mouse cursor (the tooltip of the game stays at its place). It shows the same text, is vertically
 	# centered on the cursor, right of it (left if there is no room) and lies in front of the HUD elements.
 	def showCursorTooltip( self, screen, szHelp, bWidget = False, bFromPending = False ):
-		if self.bTipFrozen or not self.bHoverTip:
+		if not self.bHoverTip:
+			return
+		# (the cursor on a frozen window: its lines have tooltips of their own, the plot under the window is not interesting)
+		if self.bTipFrozen and self.getFrozenAt(gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()) >= 0:
 			return
 		try:
 			# the help of the map plot is not shown while the cursor is on a HUD element (the game reports the plot behind it)
 			if not bWidget and self.isHudHover():
 				return
 			if CyInterface().isCityScreenUp() or len(szHelp) == 0:
+				self.szSuppressHelp = u""
 				self.hideCursorTooltip(screen)
 				return
+			# the tooltip of the thing that was just frozen does not appear a second time at once
+			if szHelp == self.szSuppressHelp:
+				return
+			self.szSuppressHelp = u""
 			iCursorX = gc.getGame().getCursorClientX()
 			iCursorY = gc.getGame().getCursorClientY()
 			# the same text again with the cursor near the last place: the window stays as it is (no flicker)
@@ -4082,56 +4095,60 @@ class CvMainInterface:
 			pass
 		return True
 
-	# short press of X
+	# short press of X: the window beside a frozen one is frozen; otherwise the tooltip that is shown at the cursor (several can be frozen, to
+	# compare them)
 	def pressX( self ):
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
-		if self.szPendingHelp is not None and not self.bTipFrozen:
+		if self.bSecondTipShown:
+			self.freezePreview(screen)
+		elif self.szPendingHelp is not None:
 			# the tooltip still waits for its delay: X shows it at once
 			szHelp = self.szPendingHelp
 			bWidget = self.bPendingWidget
 			self.szPendingHelp = None
 			self.showCursorTooltip(screen, szHelp, bWidget, True)
-		elif not self.bTipFrozen:
+		elif self.bCursorTipShown:
 			self.freezeCursorTooltip()
-		elif self.bSecondTipShown:
-			self.freezePreview(screen)
+
+	# a frozen window: its widgets get names of their own, its lines can be clicked
+	def addFrozenWindow( self, screen, tLayout, aszParas, aiIndent, dDetails ):
+		iLevel = len(self.aFrozen)
+		self.iFzCounter += 1
+		szPrefix = "HudFz%d" % self.iFzCounter
+		self.drawTipWindow(screen, szPrefix, tLayout, True, iLevel, aiIndent)
+		self.aFrozen.append((szPrefix, tLayout, aszParas, aiIndent, dDetails))
+		self.bTipFrozen = True
 
 	def freezeCursorTooltip( self ):
 		try:
 			if self.isPediaActive():
 				return False
-			if self.bTipFrozen:
-				return False
 			if not self.bHoverTip or not self.bCursorTipShown or self.tTipLayout is None:
 				return False
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
-			# the window is drawn again: its lines can be clicked, with a hint line at the end
 			for szName in self.getCursorTipNames():
 				screen.hide(szName)
 				screen.deleteWidget(szName)
-			(self.tTipLayout, self.aiTipIndent) = self.addFrozenHint(screen, self.tTipLayout, self.aiTipIndent)
-			self.aNested = []
-			self.szPreviewPrefix = "HudTipC1"
-			self.drawCursorTip(screen, True)
-			self.bTipFrozen = True
+			self.szSuppressHelp = self.szCursorTipText
+			(tLayout, aiIndent) = self.addFrozenHint(screen, self.tTipLayout, self.aiTipIndent)
+			self.addFrozenWindow(screen, tLayout, self.aszTipParas, aiIndent, dict(self.dTipDetails))
+			# the tooltip window of the cursor is free again for the next tooltip
+			self.bCursorTipShown = False
+			self.szCursorTipText = u""
+			self.szPendingHelp = None
 			return True
 		except:
-			self.bTipFrozen = False
+			self.tipLog("freezeCursorTooltip error: %s" % str(sys.exc_info()[1]))
 		return False
 
-	# the window beside the top frozen window becomes a frozen window itself (its lines have tooltips of their own)
+	# the window beside a frozen window becomes a frozen window itself (its lines have tooltips of their own)
 	def freezePreview( self, screen ):
 		try:
-			iLevel = len(self.aNested) + 1
-			szPrefix = self.szPreviewPrefix
-			self.deleteTipWindow(screen, szPrefix, self.iSecondTipLines)
+			self.deleteTipWindow(screen, self.szPreviewPrefix, self.iSecondTipLines)
 			(tLayout, aiIndent) = self.addFrozenHint(screen, self.tPreviewLayout, [0] * len(self.tPreviewLayout[4]))
-			self.drawTipWindow(screen, szPrefix, tLayout, True, iLevel, aiIndent)
-			self.aNested.append((szPrefix, tLayout, self.aszPreviewParas, aiIndent))
-			# (the widgets now belong to the frozen window, the next window beside it gets new names)
+			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, {})
 			self.bSecondTipShown = False
 			self.iSecondTipLines = 0
-			self.szPreviewPrefix = "HudTipC%d" % (iLevel + 1)
 			self.tSecondTipKey = None
 			self.iTipSelPara = -1
 			self.iTipSelIdx = 0
@@ -4155,18 +4172,20 @@ class CvMainInterface:
 		self.bSecondTipShown = False
 		self.iSecondTipLines = 0
 
-	# layout and paragraphs of the top frozen window (the first one, or the last of the nested ones)
-	def getTopTip( self ):
-		if len(self.aNested) > 0:
-			(szPrefix, tLayout, aszParas, aiIndent) = self.aNested[-1]
-			return (tLayout, aszParas)
-		return (self.tTipLayout, self.aszTipParas)
+	# the frozen window (the top one first) under the cursor, -1: none
+	def getFrozenAt( self, iCX, iCY ):
+		i = len(self.aFrozen) - 1
+		while i >= 0:
+			(iX, iY, iW, iH, aszLines, aiPara, iPad, iLine) = self.aFrozen[i][1]
+			if iCX >= iX and iCX < iX + iW and iCY >= iY and iCY < iY + iH:
+				return i
+			i -= 1
+		return -1
 
-	# a window beside the top frozen one: the tooltip of the line under the cursor (the Colopedia hint), at the height of the cursor
-	def showSecondTip( self, screen, szText, iCursorY ):
+	# a window beside a frozen one: the tooltip of the line under the cursor (the Colopedia hint), at the height of the cursor
+	def showSecondTip( self, screen, szText, iCursorY, tAnchor ):
 		try:
-			(tTop, aszTopParas) = self.getTopTip()
-			(iFX, iFY, iFW, iFH, aszFLines, aiFPara, iPad, iLine) = tTop
+			(iFX, iFY, iFW, iFH, aszFLines, aiFPara, iPad, iLine) = tAnchor
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
 			iChar = iLine * 0.32
@@ -4189,7 +4208,7 @@ class CvMainInterface:
 			self.tPreviewLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
 			self.aszPreviewParas = aszParas
 			self.iSecondTipLines = len(aszLines)
-			self.drawTipWindow(screen, self.szPreviewPrefix, self.tPreviewLayout, False, len(self.aNested) + 1, [])
+			self.drawTipWindow(screen, self.szPreviewPrefix, self.tPreviewLayout, False, 0, [])
 			self.bSecondTipShown = True
 		except:
 			self.bSecondTipShown = False
@@ -4198,14 +4217,22 @@ class CvMainInterface:
 	# chooses among all the things named in it (the window lists them, the chosen one in yellow; a right click opens its page)
 	def updateFrozenTip( self ):
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
-		(tTop, aszTopParas) = self.getTopTip()
-		(iX, iY, iW, iH, aszLines, aiPara, iPad, iLine) = tTop
 		iCX = gc.getGame().getCursorClientX()
 		iCY = gc.getGame().getCursorClientY()
+		iFz = self.getFrozenAt(iCX, iCY)
 		iPara = -1
 		iLineIdx = -1
 		bPromoLine = False
-		if iCX >= iX and iCX < iX + iW and iCY >= iY + iPad and iCY < iY + iPad + len(aszLines) * iLine:
+		aszLines = []
+		aszTopParas = []
+		dDetails = {}
+		tTop = None
+		if iFz >= 0:
+			tTop = self.aFrozen[iFz][1]
+			aszTopParas = self.aFrozen[iFz][2]
+			dDetails = self.aFrozen[iFz][4]
+			(iX, iY, iW, iH, aszLines, aiPara, iPad, iLine) = tTop
+		if iFz >= 0 and iCY >= iY + iPad and iCY < iY + iPad + len(aszLines) * iLine:
 			iLineIdx = int((iCY - iY - iPad) / iLine)
 			iPara = aiPara[iLineIdx]
 			# the line with the promotion pictures of a unit: its tooltip lists the promotions and what they do (nothing for the Colopedia)
@@ -4239,15 +4266,16 @@ class CvMainInterface:
 			if iNotches != 0:
 				self.tipLog("wheel notches=%d para=%d" % (iNotches, iPara))
 				aTargets = self.getTextPediaAllTargets(aszTopParas[iPara])
-				if iPara != self.iTipSelPara:
+				if iPara != self.iTipSelPara or iFz != self.iTipSelLevel:
 					self.iTipSelPara = iPara
+					self.iTipSelLevel = iFz
 					self.iTipSelIdx = 0
 				# the wheel towards the user: the next one, away from the user: the one before
 				self.iTipSelIdx = (self.iTipSelIdx - iNotches) % len(aTargets)
 		iSel = -1
-		if iPara >= 0 and iPara == self.iTipSelPara and not bPromoLine:
+		if iPara >= 0 and iPara == self.iTipSelPara and iFz == self.iTipSelLevel and not bPromoLine:
 			iSel = self.iTipSelIdx
-		tKey = (len(self.aNested), iPara, iSel, iLineIdx, bPromoLine)
+		tKey = (iFz, iPara, iSel, iLineIdx, bPromoLine)
 		if tKey == self.tSecondTipKey:
 			return
 		self.tSecondTipKey = tKey
@@ -4255,20 +4283,20 @@ class CvMainInterface:
 		if bPromoLine:
 			szText = self.getPromotionTipText(aszLines[iLineIdx])
 			if len(szText) > 0:
-				self.showSecondTip(screen, szText, iCY)
-		elif iPara >= 0 and len(self.aNested) == 0 and self.dTipDetails.has_key(iPara):
+				self.showSecondTip(screen, szText, iCY, tTop)
+		elif iPara >= 0 and dDetails.has_key(iPara):
 			# the line "Details" of a military unit: the lines folded into it
-			self.showSecondTip(screen, self.dTipDetails[iPara], iCY)
+			self.showSecondTip(screen, dDetails[iPara], iCY, tTop)
 		elif iPara >= 0 and self.getCityCommand(aszTopParas, iPara) is not None:
 			# the command lines of a city tooltip: no Colopedia, a right click runs the command
-			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY)
+			self.showSecondTip(screen, localText.getText("TXT_KEY_WTP_TIP_RUN_COMMAND", ()), iCY, tTop)
 		elif iPara >= 0:
 			if iSel >= 0:
 				szText = self.getTipSecondText(iPara, iSel, aszTopParas)
 			else:
 				szText = self.getTipSecondText(iPara, -1, aszTopParas)
 			if len(szText) > 0:
-				self.showSecondTip(screen, szText, iCY)
+				self.showSecondTip(screen, szText, iCY, tTop)
 
 	# the promotions named by the pictures of a line (<img=button path size=16>): their names and what they do
 	def getPromotionTipText( self, szLine ):
@@ -4298,7 +4326,7 @@ class CvMainInterface:
 	def getTipSecondText( self, iPara, iSel = -1, aszParas = None ):
 		try:
 			if aszParas is None:
-				aszParas = self.aszTipParas
+				aszParas = []
 			szLine = aszParas[iPara]
 			aTargets = self.getTextPediaTargets(szLine)
 			aAll = self.getTextPediaAllTargets(szLine)
@@ -4333,13 +4361,14 @@ class CvMainInterface:
 			return u""
 
 	def unfreezeAllTips( self ):
-		while self.bTipFrozen:
+		while len(self.aFrozen) > 0:
 			if not self.unfreezeCursorTooltip():
 				break
 
-	# Esc: the last frozen window is unfrozen (the window is gone, the one before it stays frozen)
+	# Esc: the last frozen window is unfrozen (the window is gone, the ones before it stay frozen)
 	def unfreezeCursorTooltip( self ):
-		if not self.bTipFrozen:
+		if len(self.aFrozen) == 0:
+			self.bTipFrozen = False
 			return False
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
 		self.hideSecondTip(screen)
@@ -4352,17 +4381,14 @@ class CvMainInterface:
 				gc.getGame().setWheelCapture(False)
 			except:
 				pass
-		if len(self.aNested) > 0:
-			(szPrefix, tLayout, aszParas, aiIndent) = self.aNested.pop()
-			try:
-				self.deleteTipWindow(screen, szPrefix, len(tLayout[4]))
-			except:
-				pass
-			self.szPreviewPrefix = "HudTipC%d" % (len(self.aNested) + 1)
-			return True
-		self.szPreviewPrefix = "HudTipC1"
-		self.bTipFrozen = False
-		self.hideCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE))
+		(szPrefix, tLayout, aszParas, aiIndent, dDetails) = self.aFrozen.pop()
+		try:
+			self.deleteTipWindow(screen, szPrefix, len(tLayout[4]))
+		except:
+			pass
+		self.bTipFrozen = (len(self.aFrozen) > 0)
+		if not self.bTipFrozen:
+			self.szSuppressHelp = u""
 		return True
 
 	def isPediaActive( self ):
@@ -4377,9 +4403,7 @@ class CvMainInterface:
 
 	# the paragraphs of a frozen window: level 0 is the first window, the others are the nested ones
 	def getLevelParas( self, iLevel ):
-		if iLevel <= 0:
-			return self.aszTipParas
-		return self.aNested[iLevel - 1][2]
+		return self.aFrozen[iLevel][2]
 
 	# the command lines at the end of a city tooltip (select the city / all of the continent / all): (city, mode) or None
 	# a text without color tags and without the signs < > (written as &lt; &gt; in one text and as < > in the other), words separated by one space
@@ -4455,7 +4479,7 @@ class CvMainInterface:
 				if self.runCityCommand(aszParas, iPara):
 					return
 				aTargets = self.getTextPediaTargets(aszParas[iPara])
-				if iPara == self.iTipSelPara and iLevel == len(self.aNested):
+				if iPara == self.iTipSelPara and iLevel == self.iTipSelLevel:
 					aTargets = self.getTextPediaAllTargets(aszParas[iPara])
 					# the target chosen with shift + mouse wheel
 					self.openPediaTargetIndex(aTargets, self.iTipSelIdx)
@@ -4589,9 +4613,14 @@ class CvMainInterface:
 
 	# called by the game when it asks for the help text of a widget under the cursor (CvScreensInterface.getWidgetHelp)
 	def widgetHelpSeen( self, szText, eWidgetType ):
-		if not self.bHoverTip or self.bTipFrozen:
+		if not self.bHoverTip:
 			return
 		try:
+			if self.bTipFrozen and self.getFrozenAt(gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()) >= 0:
+				return
+			if szText and len(szText) > 0 and int(eWidgetType) == int(WidgetTypes.WIDGET_CONTACT_CIV) and not self.isCursorInScoreTable():
+				# (log: after a click on a unit the game reports the contact help of the score table although the cursor is on the map)
+				return
 			if szText and len(szText) > 0:
 				self.tipLog("W type=%d len=%d xy=%d,%d text=%s" % (int(eWidgetType), len(szText), gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY(), repr(szText[:60].encode("ascii", "replace"))))
 			elif int(eWidgetType) != self.iLastLogType:
@@ -4687,9 +4716,15 @@ class CvMainInterface:
 	iTipDelayIndex = aiTipSettings[1]
 	bTipQuick = (aiTipSettings[2] == 1) # options screen: the next tooltip appears without delay while a tooltip is shown
 
+	def isCursorInScoreTable( self ):
+		if self.tScoreRect is None:
+			return True
+		(iX, iY, iW, iH) = self.tScoreRect
+		iCX = gc.getGame().getCursorClientX()
+		iCY = gc.getGame().getCursorClientY()
+		return iCX >= iX - 10 and iCX < iX + iW + 10 and iCY >= iY - 10 and iCY < iY + iH + 10
+
 	def hideCursorTooltip( self, screen ):
-		if self.bTipFrozen:
-			return
 		self.szPendingHelp = None
 		try:
 			if self.bCursorTipShown:
@@ -4722,7 +4757,14 @@ class CvMainInterface:
 							self.tipLog("updateFrozenTip error: %s" % szError)
 					except:
 						pass
-			return
+			try:
+				if self.getFrozenAt(gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()) >= 0:
+					# the cursor is on a frozen window: no tooltip of the cursor
+					if self.bCursorTipShown or self.szPendingHelp is not None:
+						self.hideCursorTooltip(CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE))
+					return
+			except:
+				pass
 		if self.bHoverTip and self.bHudHover and not self.isHudHover():
 			# the cursor has left the HUD element: the help of what is under it now (map plot) takes the place of the element help at once
 			try:
