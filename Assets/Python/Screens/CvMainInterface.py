@@ -3906,36 +3906,116 @@ class CvMainInterface:
 		except:
 			self.bCursorTipShown = False
 
-	# Military units (the ones with a "Barracks Space Needed" line): everything after that line up to the next unit (or the plot info) is
-	# folded into one line "Details" (blue). Its tooltip (frozen window, cursor on the line) lists the folded lines.
+	# a text without color tags and icons, words separated by one space
+	def normTipText( self, szText ):
+		szText = re.sub(u"<[^>]*>", u"", szText)
+		szText = u"".join([c for c in szText if ord(c) < 0x2000])
+		return u" ".join(szText.split())
+
+	def getTipPrefix( self, szKey, aArgs ):
+		return self.normTipText(localText.getText(szKey, aArgs)).split(u":")[0].strip()
+
+	# the row of the promotion pictures of a unit (only pictures)
+	def isPromotionRow( self, szText ):
+		if szText.lower().find(u"<img=") < 0 and re.search(u"[\u2000-\uffff]", re.sub(u"<[^>]*>", u"", szText)) is None:
+			return False
+		return len(self.normTipText(szText)) == 0
+
+	# Folds the lines of the help text that are not needed at first sight (the lines are the paragraphs of the text); their tooltip lists them.
+	# - a unit with promotions: the XP goes into the row of the promotion pictures, the plain "Fortify bonus" line follows that row, and
+	#   everything from the line "Barracks Space Needed" on (without such a line: after the line "Social Status") up to the next unit is
+	#   folded into the line "Promotion sum."; a unit with a "Barracks Space Needed" line but no promotions gets a line "Details"
+	# - the share of the cultures on a plot (82% Dutch ...) is folded into the line "Culture %" above the line "Movement Cost"
 	def foldUnitDetails( self, aszParas ):
 		self.dTipDetails = {}
 		try:
-			szKey = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_UNIT_BARRACKS_SPACE_NEEDED", (0, u"")))
-			szKey = szKey.split(u":")[0].strip()
-			szKey = u" ".join(szKey.split())
-			if len(szKey) < 4:
-				return aszParas
-			aszNew = []
+			szBarracks = self.getTipPrefix("TXT_KEY_UNIT_BARRACKS_SPACE_NEEDED", (0, u""))
+			szSocial = self.getTipPrefix("TXT_KEY_CITIZEN_STATUS_FREE", ())
+			szFortify = self.getTipPrefix("TXT_KEY_UNIT_HELP_FORTIFY_BONUS", (0,))
+			szMove = self.getTipPrefix("TXT_KEY_FEATURE_MOVEMENT_COST", (0,))
+			szYellow = u"<color=255,255,0,255>"
+			aOut = [] # [text, folded lines or None]
+			n = len(aszParas)
 			i = 0
-			while i < len(aszParas):
-				aszNew.append(aszParas[i])
-				szPlain = u" ".join(re.sub(u"<[^>]*>", u"", aszParas[i]).split())
+			while i < n:
+				aOut.append([aszParas[i], None])
 				i += 1
-				if szPlain.find(szKey) < 0:
+				if aszParas[i - 1].find(szYellow) != 0:
 					continue
-				aszFolded = []
-				while i < len(aszParas):
-					szNext = aszParas[i]
-					# the next unit starts with its name in yellow, the plot info with the share of the culture (95% Dutch)
-					if szNext.find(u"<color=255,255,0,255>") == 0 or re.match(u"^[0-9]+% ", re.sub(u"<[^>]*>", u"", szNext).strip()) is not None:
+				# a unit: its lines end at the next unit or at the share of the cultures
+				iStart = i
+				bPromo = (i < n and self.isPromotionRow(aszParas[i]))
+				if bPromo:
+					iStart = i + 1
+				iEnd = iStart
+				while iEnd < n and aszParas[iEnd].find(szYellow) != 0 and re.match(u"^[0-9]+% ", self.normTipText(aszParas[iEnd])) is None:
+					iEnd += 1
+				aLines = aszParas[iStart:iEnd]
+				iBarracks = -1
+				iSocial = -1
+				iFortify = -1
+				for k in range(len(aLines)):
+					szNorm = self.normTipText(aLines[k])
+					if iBarracks < 0 and len(szBarracks) > 3 and szNorm.find(szBarracks) >= 0:
+						iBarracks = k
+					elif iSocial < 0 and len(szSocial) > 3 and szNorm.find(szSocial) >= 0:
+						iSocial = k
+					elif iFortify < 0 and len(szFortify) > 3 and szNorm.find(szFortify) == 0 and aLines[k].find(u"<color") < 0:
+						iFortify = k
+				iFold = -1
+				if iBarracks >= 0:
+					iFold = iBarracks
+				elif bPromo and iSocial >= 0:
+					iFold = iSocial + 1
+				if bPromo:
+					# the XP of the unit moves to the row of the promotions
+					szHeader = aOut[-1][0]
+					tXP = re.search(u",\\s*((?:<[^>]*>)*[^,<:()]{1,10}:\\s*\\(\\s*[0-9]+\\s*/\\s*[0-9]+\\s*\\)(?:<[^>]*>)*)\\s*$", szHeader)
+					szRow = aszParas[i]
+					if tXP is not None:
+						aOut[-1][0] = szHeader[:tXP.start()]
+						szRow = szRow + u" " + tXP.group(1)
+					aOut.append([szRow, None])
+				if iFold < 0:
+					i = iStart
+					continue
+				if iFortify >= 0 and iFortify >= iFold:
+					aOut.append([aLines[iFortify], None])
+				for k in range(iFold):
+					if k != iFortify:
+						aOut.append([aLines[k], None])
+				aFolded = []
+				for k in range(iFold, len(aLines)):
+					if k != iFortify:
+						aFolded.append(aLines[k])
+				if len(aFolded) > 0:
+					szKey = "TXT_KEY_WTP_TIP_DETAILS"
+					if bPromo:
+						szKey = "TXT_KEY_WTP_TIP_PROMO_SUM"
+					aOut.append([localText.getText(szKey, ()), u"\n".join(aFolded)])
+				i = iEnd
+			# the shares of the cultures: one line above the movement cost
+			aFinal = []
+			aCulture = []
+			for aEntry in aOut:
+				if aEntry[1] is None and re.match(u"^[0-9]+% ", self.normTipText(aEntry[0])) is not None:
+					aCulture.append(aEntry[0])
+				else:
+					aFinal.append(aEntry)
+			if len(aCulture) > 0:
+				szCulture = localText.getText("TXT_KEY_WTP_TIP_CULTURE", ()).replace(u"%%", u"%")
+				iAt = len(aFinal)
+				for k in range(len(aFinal)):
+					if len(szMove) > 3 and self.normTipText(aFinal[k][0]).find(szMove) == 0:
+						iAt = k
 						break
-					aszFolded.append(szNext)
-					i += 1
-				if len(aszFolded) > 0:
-					self.dTipDetails[len(aszNew)] = u"\n".join(aszFolded)
-					aszNew.append(localText.getText("TXT_KEY_WTP_TIP_DETAILS", ()))
-			return aszNew
+				aFinal.insert(iAt, [szCulture, u"\n".join(aCulture)])
+			aNew = []
+			for aEntry in aFinal:
+				if aEntry[1] is not None:
+					self.dTipDetails[len(aNew)] = aEntry[1]
+				aNew.append(aEntry[0])
+			return aNew
 		except:
 			self.dTipDetails = {}
 			self.tipLog("foldUnitDetails error: %s" % str(sys.exc_info()[1]))

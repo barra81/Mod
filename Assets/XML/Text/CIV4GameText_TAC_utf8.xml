@@ -3799,6 +3799,16 @@
 		<German>Rechtsklick: diesen Befehl ausführen</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PROMO_SUM</Tag>
+		<English>[COLOR_CAT_MILITARY]Promotion sum.[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_MILITARY]Bef.-Details[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_CULTURE</Tag>
+		<English>[COLOR_CAT_MILITARY]Culture %%[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_MILITARY]Kultur %%[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_DETAILS</Tag>
 		<English>[COLOR_CAT_MILITARY]Details[COLOR_REVERT]</English>
 		<German>[COLOR_CAT_MILITARY]Details[COLOR_REVERT]</German>
