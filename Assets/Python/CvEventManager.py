@@ -263,6 +263,10 @@ class CvEventManager:
 				if int(key) == int(InputTypes.KB_X) and not self.bCtrl and not self.bShift and not self.bAlt:
 					if CvScreensInterface.mainInterface.keyXDown():
 						return 1
+				if int(key) == int(InputTypes.KB_X) and self.bShift and not self.bCtrl and not self.bAlt and CvScreensInterface.mainInterface.isTipFrozen():
+					# Shift + X stacks the frozen tooltips
+					if CvScreensInterface.mainInterface.stackFrozenTips():
+						return 1
 			except:
 				pass
 		elif (eventType == self.EventKeyUp):

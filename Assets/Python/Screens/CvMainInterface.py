@@ -4112,12 +4112,16 @@ class CvMainInterface:
 			self.freezeCursorTooltip()
 
 	# a frozen window: its widgets get names of their own, its lines can be clicked
-	def addFrozenWindow( self, screen, tLayout, aszParas, aiIndent, dDetails, tAnchor = None ):
+	def addFrozenWindow( self, screen, tLayout, aszParas, aiIndent, dDetails, tAnchor = None, iParent = -1 ):
 		iLevel = len(self.aFrozen)
 		self.iFzCounter += 1
 		szPrefix = "HudFz%d" % self.iFzCounter
 		self.drawTipWindow(screen, szPrefix, tLayout, True, iLevel, aiIndent)
-		self.aFrozen.append([szPrefix, tLayout, aszParas, aiIndent, dDetails, tAnchor])
+		tRel = None
+		if iParent >= 0:
+			# a child window keeps its place to its parent window
+			tRel = (tLayout[0] - self.aFrozen[iParent][1][0], tLayout[1] - self.aFrozen[iParent][1][1])
+		self.aFrozen.append([szPrefix, tLayout, aszParas, aiIndent, dDetails, tAnchor, iParent, tRel])
 		self.bTipFrozen = True
 
 	# the place of a map plot on the screen
@@ -4141,127 +4145,65 @@ class CvMainInterface:
 		except:
 			return None
 
-	# every frame: the frozen windows of the map follow the map
+	# a frozen window moves to a place (its widgets are drawn again)
+	def moveFrozenWindow( self, screen, i, iNX, iNY ):
+		tLayout = self.aFrozen[i][1]
+		if iNX == tLayout[0] and iNY == tLayout[1]:
+			return
+		szPrefix = self.aFrozen[i][0]
+		self.deleteTipWindow(screen, szPrefix, len(tLayout[4]))
+		tNew = (iNX, iNY, tLayout[2], tLayout[3], tLayout[4], tLayout[5], tLayout[6], tLayout[7])
+		self.aFrozen[i][1] = tNew
+		self.drawTipWindow(screen, szPrefix, tNew, True, i, self.aFrozen[i][3])
+
+	# every frame: the frozen windows of the map follow the map, the child windows follow their parent window
 	def updateFrozenAnchors( self, screen ):
 		for i in range(len(self.aFrozen)):
+			iParent = self.aFrozen[i][6]
 			tAnchor = self.aFrozen[i][5]
-			if tAnchor is None:
-				continue
 			try:
-				(iSX, iSY) = self.getPlotScreen(tAnchor[0], tAnchor[1])
+				if iParent >= 0:
+					self.moveFrozenWindow(screen, i, self.aFrozen[iParent][1][0] + self.aFrozen[i][7][0], self.aFrozen[iParent][1][1] + self.aFrozen[i][7][1])
+				elif tAnchor is not None:
+					(iSX, iSY) = self.getPlotScreen(tAnchor[0], tAnchor[1])
+					self.moveFrozenWindow(screen, i, iSX + tAnchor[2], iSY + tAnchor[3])
 			except:
-				continue
-			tLayout = self.aFrozen[i][1]
-			iNX = iSX + tAnchor[2]
-			iNY = iSY + tAnchor[3]
-			if iNX == tLayout[0] and iNY == tLayout[1]:
-				continue
-			szPrefix = self.aFrozen[i][0]
-			self.deleteTipWindow(screen, szPrefix, len(tLayout[4]))
-			tNew = (iNX, iNY, tLayout[2], tLayout[3], tLayout[4], tLayout[5], tLayout[6], tLayout[7])
-			self.aFrozen[i][1] = tNew
-			self.drawTipWindow(screen, szPrefix, tNew, True, i, self.aFrozen[i][3])
+				pass
 
-	def freezeCursorTooltip( self ):
+	# Shift + X: the frozen parent windows are stacked: one below the other, starting at the place of the first one (a new column to the right
+	# when the screen is full). Their child windows follow them.
+	def stackFrozenTips( self ):
 		try:
-			if self.isPediaActive():
-				return False
-			if not self.bHoverTip or not self.bCursorTipShown or self.tTipLayout is None:
-				return False
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
-			for szName in self.getCursorTipNames():
-				screen.hide(szName)
-				screen.deleteWidget(szName)
-			self.szSuppressHelp = self.szCursorTipText
-			(tLayout, aiIndent) = self.addFrozenHint(screen, self.tTipLayout, self.aiTipIndent)
-			self.addFrozenWindow(screen, tLayout, self.aszTipParas, aiIndent, dict(self.dTipDetails), self.makeAnchor(tLayout))
-			# the tooltip window of the cursor is free again for the next tooltip
-			self.bCursorTipShown = False
-			self.szCursorTipText = u""
-			self.szPendingHelp = None
+			aiParents = []
+			for i in range(len(self.aFrozen)):
+				if self.aFrozen[i][6] < 0:
+					aiParents.append(i)
+			if len(aiParents) < 2:
+				return len(self.aFrozen) > 0
+			yRes = screen.getYResolution()
+			iX = self.aFrozen[aiParents[0]][1][0]
+			iY = self.aFrozen[aiParents[0]][1][1]
+			iColumnY = iY
+			iColumnWidth = 0
+			for i in aiParents:
+				tLayout = self.aFrozen[i][1]
+				if iY != iColumnY and iY + tLayout[3] > yRes - 4:
+					iX += iColumnWidth + 8
+					iY = iColumnY
+					iColumnWidth = 0
+				self.moveFrozenWindow(screen, i, iX, iY)
+				tAnchor = self.aFrozen[i][5]
+				if tAnchor is not None:
+					# (the window stays at its new place of the map)
+					self.aFrozen[i][5] = self.makeAnchor(self.aFrozen[i][1], (tAnchor[0], tAnchor[1]))
+				iColumnWidth = max(iColumnWidth, tLayout[2])
+				iY += tLayout[3] + 8
+			self.updateFrozenAnchors(screen)
 			return True
 		except:
-			self.tipLog("freezeCursorTooltip error: %s" % str(sys.exc_info()[1]))
+			self.tipLog("stackFrozenTips error: %s" % str(sys.exc_info()[1]))
 		return False
-
-	# the window beside a frozen window becomes a frozen window itself (its lines have tooltips of their own)
-	def freezePreview( self, screen ):
-		try:
-			self.deleteTipWindow(screen, self.szPreviewPrefix, self.iSecondTipLines)
-			(tLayout, aiIndent) = self.addFrozenHint(screen, self.tPreviewLayout, [0] * len(self.tPreviewLayout[4]))
-			tParent = None
-			if self.iPreviewParent >= 0 and self.iPreviewParent < len(self.aFrozen):
-				tParent = self.aFrozen[self.iPreviewParent][5]
-			tAnchor = None
-			if tParent is not None:
-				tAnchor = self.makeAnchor(tLayout, (tParent[0], tParent[1]))
-			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, {}, tAnchor)
-			self.bSecondTipShown = False
-			self.iSecondTipLines = 0
-			self.tSecondTipKey = None
-			self.iTipSelPara = -1
-			self.iTipSelIdx = 0
-			if self.bTipWheel:
-				self.bTipWheel = False
-				gc.getGame().setWheelCapture(False)
-		except:
-			self.tipLog("freezePreview error: %s" % str(sys.exc_info()[1]))
-
-	def getSecondTipNames( self ):
-		return self.getTipWindowNames(self.szPreviewPrefix, self.iSecondTipLines)
-
-	def hideSecondTip( self, screen ):
-		try:
-			if self.bSecondTipShown:
-				for szName in self.getSecondTipNames():
-					screen.hide(szName)
-					screen.deleteWidget(szName)
-		except:
-			pass
-		self.bSecondTipShown = False
-		self.iSecondTipLines = 0
-
-	# the frozen window (the top one first) under the cursor, -1: none
-	def getFrozenAt( self, iCX, iCY ):
-		i = len(self.aFrozen) - 1
-		while i >= 0:
-			(iX, iY, iW, iH, aszLines, aiPara, iPad, iLine) = self.aFrozen[i][1]
-			if iCX >= iX and iCX < iX + iW and iCY >= iY and iCY < iY + iH:
-				return i
-			i -= 1
-		return -1
-
-	# a window beside a frozen one: the tooltip of the line under the cursor (the Colopedia hint), at the height of the cursor
-	def showSecondTip( self, screen, szText, iCursorY, tAnchor, iParent = -1 ):
-		try:
-			(iFX, iFY, iFW, iFH, aszFLines, aiFPara, iPad, iLine) = tAnchor
-			xRes = screen.getXResolution()
-			yRes = screen.getYResolution()
-			iChar = iLine * 0.32
-			iMaxWidth = max(300, int(xRes * 0.2))
-			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
-			aszLines = []
-			aiPara = []
-			aszParas = szText.split(u"\n")
-			for iPart in range(len(aszParas)):
-				aszWrapped = self.wrapMessage(aszParas[iPart], iCharsPerLine)
-				aszLines += aszWrapped
-				aiPara += [iPart] * len(aszWrapped)
-			iWidth = self.getTipTextWidth(aszLines, iChar, iMaxWidth, iPad)
-			iHeight = len(aszLines) * iLine + 2 * iPad
-			iX = iFX + iFW + 12
-			if iX + iWidth > xRes - 4:
-				iX = iFX - 12 - iWidth
-			iX = max(4, iX)
-			iY = max(4, min(yRes - iHeight - 4, iCursorY + self.getCursorBottom(yRes)))
-			self.tPreviewLayout = (iX, iY, iWidth, iHeight, aszLines, aiPara, iPad, iLine)
-			self.iPreviewParent = iParent
-			self.aszPreviewParas = aszParas
-			self.iSecondTipLines = len(aszLines)
-			self.drawTipWindow(screen, self.szPreviewPrefix, self.tPreviewLayout, False, 0, [])
-			self.bSecondTipShown = True
-		except:
-			self.bSecondTipShown = False
 
 	# every frame while frozen: the line of the frozen window under the cursor decides about the second window. Shift + mouse wheel on a line
 	# chooses among all the things named in it (the window lists them, the chosen one in yellow; a right click opens its page)
@@ -4432,7 +4374,7 @@ class CvMainInterface:
 				gc.getGame().setWheelCapture(False)
 			except:
 				pass
-		(szPrefix, tLayout, aszParas, aiIndent, dDetails, tAnchor) = self.aFrozen.pop()
+		(szPrefix, tLayout, aszParas, aiIndent, dDetails, tAnchor, iParent, tRel) = self.aFrozen.pop()
 		try:
 			self.deleteTipWindow(screen, szPrefix, len(tLayout[4]))
 		except:
