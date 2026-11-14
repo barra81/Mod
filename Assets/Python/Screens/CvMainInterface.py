@@ -4004,6 +4004,14 @@ class CvMainInterface:
 						aSplit.append(szPara[iImg:])
 						continue
 				aSplit.append(szPara)
+			# a unit with an attached leader: the line "commanded by" stands between its header and the row of its promotions; the row comes first
+			szCommanded = self.normTipText(localText.getText("TXT_KEY_UNIT_HELP_COMMANDED_BY", ()))
+			if len(szCommanded) > 3:
+				for k in range(len(aSplit) - 2):
+					if (aSplit[k].find(szYellow) == 0 or self.isUnitHeader(aSplit[k])) and self.normTipText(aSplit[k + 1]).find(szCommanded) == 0 and self.isPromotionRow(aSplit[k + 2]):
+						szSwap = aSplit[k + 1]
+						aSplit[k + 1] = aSplit[k + 2]
+						aSplit[k + 2] = szSwap
 			aszParas = aSplit
 			aOut = [] # [text, folded lines or None]
 			n = len(aszParas)
