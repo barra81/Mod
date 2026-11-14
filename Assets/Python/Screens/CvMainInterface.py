@@ -357,6 +357,7 @@ class CvMainInterface:
 	iWidgetHelpCount = 0
 	bCursorTipShown = False
 	iCursorTipLines = 0
+	dUnitTypeByName = {}
 	iTipHintLines = 0
 	iPreviewHintLines = 0
 	fWidgetHelpTime = 0.0
@@ -4861,7 +4862,67 @@ class CvMainInterface:
 			pass
 		return -1
 
+	# the child tooltip of a line: for the first line of a unit the draft of a ship and the ability to ignore borders, then the Colopedia
 	def getTipSecondText( self, iPara, iSel = -1, aszParas = None ):
+		szBase = self.getTipSecondTextBase(iPara, iSel, aszParas)
+		try:
+			if aszParas is not None and iSel < 0 and iPara >= 0 and iPara < len(aszParas) and self.isUnitHeader(aszParas[iPara]):
+				szInfo = self.getUnitMoveInfoText(aszParas[iPara])
+				if len(szInfo) > 0:
+					if len(szBase) > 0:
+						return szInfo + u"\n" + szBase
+					return szInfo
+		except:
+			self.tipLog("getTipSecondText error: %s" % str(sys.exc_info()[1]))
+		return szBase
+
+	# the type of a unit of the first line of its tooltip: its name in the brackets
+	def getUnitTypeOfHeader( self, szHeader ):
+		try:
+			szFirst = re.sub(u"<[^>]*>", u"", szHeader).split(u",")[0].strip()
+			tName = re.search(u"\\(([^()]*)\\)\\s*$", szFirst)
+			if tName is None:
+				return -1
+			if len(self.dUnitTypeByName) == 0:
+				for eType in range(gc.getNumUnitInfos()):
+					szName = gc.getUnitInfo(eType).getDescription()
+					if not self.dUnitTypeByName.has_key(szName):
+						self.dUnitTypeByName[szName] = eType
+			return self.dUnitTypeByName.get(tName.group(1).strip(), -1)
+		except:
+			return -1
+
+	# the draft of a ship (the waters that it cannot enter) and the ability to ignore borders; "" if there is nothing to tell
+	def getUnitMoveInfoText( self, szHeader ):
+		aLines = []
+		eType = self.getUnitTypeOfHeader(szHeader)
+		if eType < 0:
+			return u""
+		pInfo = gc.getUnitInfo(eType)
+		try:
+			if pInfo.getDomainType() == DomainTypes.DOMAIN_SEA:
+				aWaters = []
+				for eTerrain in range(gc.getNumTerrainInfos()):
+					if pInfo.getTerrainImpassable(eTerrain) and gc.getTerrainInfo(eTerrain).isWater():
+						aWaters.append(gc.getTerrainInfo(eTerrain).getDescription())
+				aFeatures = []
+				for eFeature in range(gc.getNumFeatureInfos()):
+					if pInfo.getFeatureImpassable(eFeature):
+						aFeatures.append(gc.getFeatureInfo(eFeature).getDescription())
+				aAll = aWaters + aFeatures
+				if len(aWaters) > 0:
+					aLines.append(localText.getText("TXT_KEY_WTP_TIP_DRAFT_DEEP", (u", ".join(aAll),)))
+				elif len(aFeatures) > 0:
+					aLines.append(localText.getText("TXT_KEY_WTP_TIP_DRAFT_SHALLOW_LIM", (u", ".join(aAll),)))
+				else:
+					aLines.append(localText.getText("TXT_KEY_WTP_TIP_DRAFT_SHALLOW", ()))
+			if hasattr(pInfo, "isRivalTerritory") and pInfo.isRivalTerritory():
+				aLines.append(localText.getText("TXT_KEY_WTP_TIP_IGNORE_BORDERS", ()))
+		except:
+			self.tipLog("getUnitMoveInfoText error: %s" % str(sys.exc_info()[1]))
+		return u"\n".join(aLines)
+
+	def getTipSecondTextBase( self, iPara, iSel = -1, aszParas = None ):
 		try:
 			if aszParas is None:
 				aszParas = []

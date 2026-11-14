@@ -3919,6 +3919,26 @@
 		<German>Port Royal</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_DRAFT_DEEP</Tag>
+		<English>Draft: [COLOR_HIGHLIGHT_TEXT]deep[COLOR_REVERT] - cannot enter: %s1</English>
+		<German>Tiefgang: [COLOR_HIGHLIGHT_TEXT]tief[COLOR_REVERT] - kein Zugang zu: %s1</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_DRAFT_SHALLOW_LIM</Tag>
+		<English>Draft: [COLOR_HIGHLIGHT_TEXT]shallow[COLOR_REVERT] - cannot enter: %s1</English>
+		<German>Tiefgang: [COLOR_HIGHLIGHT_TEXT]flach[COLOR_REVERT] - kein Zugang zu: %s1</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_DRAFT_SHALLOW</Tag>
+		<English>Draft: [COLOR_HIGHLIGHT_TEXT]shallow[COLOR_REVERT]</English>
+		<German>Tiefgang: [COLOR_HIGHLIGHT_TEXT]flach[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_IGNORE_BORDERS</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Ignores borders[COLOR_REVERT]</English>
+		<German>[COLOR_HIGHLIGHT_TEXT]Ignoriert Grenzen[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
 		<English>more...</English>
 		<German>mehr...</German>
