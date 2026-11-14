@@ -3881,9 +3881,10 @@ class CvMainInterface:
 			aszLines = []
 			aiPara = [] # the paragraph (text between two line breaks of the help) of every line: right click in the frozen window
 			aiIndent = [] # indent of continued rows of icons (pixels)
-			aszParas = self.foldCityDetails(szHelp.split(u"\n"))
+			aszRaw = self.carryColors(szHelp.split(u"\n"))
+			aszParas = self.foldCityDetails(aszRaw)
 			if aszParas is None:
-				aszParas = self.foldUnitDetails(szHelp.split(u"\n"))
+				aszParas = self.foldUnitDetails(aszRaw)
 			for iPara in range(len(aszParas)):
 				aszWrapped = self.wrapMessage(aszParas[iPara], iCharsPerLine, True)
 				aszLines += aszWrapped
@@ -3916,6 +3917,21 @@ class CvMainInterface:
 			self.tCursorTipAt = (iCursorX, iCursorY)
 		except:
 			self.bCursorTipShown = False
+
+	# A color of the game text can go over several lines ("[COLOR_CYAN]...[NEWLINE]...[COLOR_REVERT]"), but every line is drawn on its own: a line
+	# that begins inside of a color gets the color again.
+	def carryColors( self, aszParas ):
+		aNew = []
+		aOpen = []
+		for szPara in aszParas:
+			aNew.append(aOpen[-1] + szPara if len(aOpen) > 0 else szPara)
+			for tTag in re.finditer(u"<color=[^>]*>|</color>", szPara):
+				if tTag.group(0) == u"</color>":
+					if len(aOpen) > 0:
+						aOpen.pop()
+				else:
+					aOpen.append(tTag.group(0))
+		return aNew
 
 	# a text without color tags and icons, words separated by one space
 	def normTipText( self, szText ):
@@ -4680,7 +4696,7 @@ class CvMainInterface:
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = []
-			aszParas = szText.split(u"\n")
+			aszParas = self.carryColors(szText.split(u"\n"))
 			for iPart in range(len(aszParas)):
 				aszWrapped = self.wrapMessage(aszParas[iPart], iCharsPerLine)
 				aszLines += aszWrapped
