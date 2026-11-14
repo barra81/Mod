@@ -3993,7 +3993,7 @@ class CvMainInterface:
 				if iFold < 0:
 					i = iStart
 					continue
-				if iFortify >= 0 and iFortify >= iFold:
+				if iFortify >= 0:
 					aOut.append([aLines[iFortify], None])
 				for k in range(iFold):
 					if k != iFortify:
