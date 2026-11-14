@@ -4148,6 +4148,9 @@ class CvMainInterface:
 	# a frozen window moves to a place (its widgets are drawn again)
 	def moveFrozenWindow( self, screen, i, iNX, iNY ):
 		tLayout = self.aFrozen[i][1]
+		# a window is pushed along by the edges of the screen (all four), the place of the map it belongs to is kept (see updateFrozenAnchors)
+		iNX = max(4, min(screen.getXResolution() - tLayout[2] - 4, iNX))
+		iNY = max(4, min(screen.getYResolution() - tLayout[3] - 4, iNY))
 		if iNX == tLayout[0] and iNY == tLayout[1]:
 			return
 		szPrefix = self.aFrozen[i][0]
@@ -4170,8 +4173,8 @@ class CvMainInterface:
 			except:
 				pass
 
-	# Shift + X: the frozen parent windows are stacked: one below the other, starting at the place of the first one (a new column to the right
-	# when the screen is full). Their child windows follow them.
+	# Shift + X: the frozen parent windows are stacked diagonally, each one below the one before and beside it (to the left, to the right if
+	# there is no room), so that the child windows beside them do not get in the way of each other. The first window stays where it is.
 	def stackFrozenTips( self ):
 		try:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
@@ -4181,24 +4184,33 @@ class CvMainInterface:
 					aiParents.append(i)
 			if len(aiParents) < 2:
 				return len(self.aFrozen) > 0
-			yRes = screen.getYResolution()
-			iX = self.aFrozen[aiParents[0]][1][0]
-			iY = self.aFrozen[aiParents[0]][1][1]
-			iColumnY = iY
-			iColumnWidth = 0
-			for i in aiParents:
+			tFirst = self.aFrozen[aiParents[0]][1]
+			iNeeded = 0
+			for i in aiParents[1:]:
+				iNeeded += self.aFrozen[i][1][2] + 8
+			bLeft = (tFirst[0] - iNeeded >= 4)
+			iPrevX = tFirst[0]
+			iPrevY = tFirst[1]
+			iPrevW = tFirst[2]
+			iPrevH = tFirst[3]
+			for i in aiParents[1:]:
 				tLayout = self.aFrozen[i][1]
-				if iY != iColumnY and iY + tLayout[3] > yRes - 4:
-					iX += iColumnWidth + 8
-					iY = iColumnY
-					iColumnWidth = 0
+				iY = iPrevY + iPrevH + 8
+				if bLeft:
+					iX = iPrevX - tLayout[2] - 8
+				else:
+					iX = iPrevX + iPrevW + 8
 				self.moveFrozenWindow(screen, i, iX, iY)
+				tNow = self.aFrozen[i][1]
+				iPrevX = tNow[0]
+				iPrevY = tNow[1]
+				iPrevW = tNow[2]
+				iPrevH = tNow[3]
+			for i in aiParents:
 				tAnchor = self.aFrozen[i][5]
 				if tAnchor is not None:
 					# (the window stays at its new place of the map)
 					self.aFrozen[i][5] = self.makeAnchor(self.aFrozen[i][1], (tAnchor[0], tAnchor[1]))
-				iColumnWidth = max(iColumnWidth, tLayout[2])
-				iY += tLayout[3] + 8
 			self.updateFrozenAnchors(screen)
 			return True
 		except:
