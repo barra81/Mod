@@ -5042,9 +5042,17 @@ class CvMainInterface:
 				pPlot = self.getStackPlot()
 			if pPlot is None or pPlot.isNone():
 				return None
-			aCands = []
+			# the tooltip lists the selected units first, then the others in the order of the plot
+			aSelected = []
+			aOthers = []
 			for k in range(pPlot.getNumUnits()):
 				pUnit = pPlot.getUnit(k)
+				if pUnit.IsSelected():
+					aSelected.append(pUnit)
+				else:
+					aOthers.append(pUnit)
+			aCands = []
+			for pUnit in aSelected + aOthers:
 				if self.unitMatchesHeader(pUnit, szFirst):
 					aCands.append(pUnit)
 			if iNth < len(aCands) and aCands[iNth].getOwner() == gc.getGame().getActivePlayer():
