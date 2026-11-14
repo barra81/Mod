@@ -4597,8 +4597,9 @@ class CvMainInterface:
 			except:
 				pass
 
-	# Shift + X: the frozen parent windows are stacked diagonally, each one below the one before and beside it (to the left, to the right if
-	# there is no room), so that the child windows beside them do not get in the way of each other. The first window stays where it is.
+	# Shift + X: the frozen parent windows are brought to the cursor and stacked diagonally there, each one below the one before and beside it
+	# (to the left, to the right if there is no room), so that the child windows beside them do not get in the way of each other. The oldest
+	# window is at the cursor.
 	def stackFrozenTips( self ):
 		try:
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
@@ -4606,8 +4607,10 @@ class CvMainInterface:
 			for i in range(len(self.aFrozen)):
 				if self.aFrozen[i][6] < 0:
 					aiParents.append(i)
-			if len(aiParents) < 2:
+			if len(aiParents) < 1:
 				return len(self.aFrozen) > 0
+			# the first window goes to the cursor, the others are stacked from there
+			self.moveFrozenWindow(screen, aiParents[0], gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY() + self.getCursorBottom(screen.getYResolution()))
 			tFirst = self.aFrozen[aiParents[0]][1]
 			iNeeded = 0
 			for i in aiParents[1:]:
