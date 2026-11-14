@@ -197,6 +197,9 @@ void CyInfoPythonInterface1()
 		.def("isAnimal", &CvUnitInfo::isAnimal, "bool ()")
 		// < JAnimals Mod End >
 		.def("isGatherBoat", &CvUnitInfo::isGatherBoat, "bool ()")  //TAC Whaling, ray
+		.def("isSlaveShip", &CvUnitInfo::isSlaveShip, "bool ()") // WTP: the tooltip of a ship tells what it can carry
+		.def("isTreasureShip", &CvUnitInfo::isTreasureShip, "bool ()")
+		.def("isTroopShip", &CvUnitInfo::isTroopShip, "bool ()")
 		.def("getUnitMaxSpeed", &CvUnitInfo::getUnitMaxSpeed, "float ()")
 		.def("getUnitPadTime", &CvUnitInfo::getUnitPadTime, "float ()")
 		// Arrays

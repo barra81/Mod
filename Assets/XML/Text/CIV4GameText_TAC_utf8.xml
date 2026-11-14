@@ -3869,6 +3869,31 @@
 		<German>[COLOR:140:255:40:255]Kommandos...[COLOR_REVERT]</German>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_CARGO_GOODS</Tag>
+		<English>Carries goods only (no units)</English>
+		<German>Lädt nur Waren (keine Einheiten)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_CARGO_SLAVE</Tag>
+		<English>Carries slaves and goods only (no regular units)</English>
+		<German>Lädt nur Sklaven und Waren (keine regulären Einheiten)</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_CARGO_TREASURE</Tag>
+		<English>Carries treasures and goods only</English>
+		<German>Lädt nur Schätze und Waren</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_CARGO_TROOP</Tag>
+		<English>Carries military units and goods only</English>
+		<German>Lädt nur Militäreinheiten und Waren</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_CARGO_ALL</Tag>
+		<English>Carries units and goods</English>
+		<German>Lädt Einheiten und Waren</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_MORE</Tag>
 		<English>more...</English>
 		<German>mehr...</German>

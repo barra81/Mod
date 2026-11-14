@@ -3965,6 +3965,17 @@ class CvMainInterface:
 					WTPBannerLog.log("FOLD paragraphs: %s" % repr([p[:70].encode("ascii", "replace") for p in aszParas[:16]]))
 			except:
 				pass
+			# a header with the promotion pictures at its end (ships, units of others): the pictures become a row of their own
+			aSplit = []
+			for szPara in aszParas:
+				if (szPara.find(szYellow) == 0 or self.isUnitHeader(szPara)) and szPara.lower().find(u"<img=") > 0:
+					iImg = szPara.lower().find(u"<img=")
+					if self.isPromotionRow(szPara[iImg:]):
+						aSplit.append(szPara[:iImg])
+						aSplit.append(szPara[iImg:])
+						continue
+				aSplit.append(szPara)
+			aszParas = aSplit
 			aOut = [] # [text, folded lines or None]
 			n = len(aszParas)
 			i = 0
@@ -4075,6 +4086,15 @@ class CvMainInterface:
 						iAt = k
 						break
 				aFinal.insert(iAt, [szCulture, szDetails])
+			# the line "Cargo space" of a ship: what it can carry (child tooltip)
+			szCargo = self.getTipPrefix("TXT_KEY_UNIT_HELP_CARGO_SPACE", (0, 0))
+			szLastHeader = None
+			for aEntry in aFinal:
+				if aEntry[1] is None:
+					if self.isUnitHeader(aEntry[0]):
+						szLastHeader = aEntry[0]
+					elif szLastHeader is not None and len(szCargo) > 3 and self.normTipText(aEntry[0]).find(szCargo) == 0:
+						aEntry[1] = self.getCargoRulesText(szLastHeader)
 			# the lines of the commands of a stack of units in one line
 			aCommands = []
 			iCmdAt = -1
@@ -4135,6 +4155,30 @@ class CvMainInterface:
 		except:
 			self.tipLog("getCityProductionState error: %s" % str(sys.exc_info()[1]))
 		return (0, [], [], [])
+
+	# what a ship can carry (the type is the name in the brackets of the header line), None if the ship is not found
+	def getCargoRulesText( self, szHeader ):
+		try:
+			szFirst = re.sub(u"<[^>]*>", u"", szHeader).split(u",")[0].strip()
+			tName = re.search(u"\\(([^()]*)\\)\\s*$", szFirst)
+			if tName is None:
+				return None
+			szType = tName.group(1).strip()
+			for eType in range(gc.getNumUnitInfos()):
+				pInfo = gc.getUnitInfo(eType)
+				if pInfo.getCargoSpace() > 0 and pInfo.getDomainType() == DomainTypes.DOMAIN_SEA and pInfo.getDescription() == szType:
+					if pInfo.getSpecialCargo() >= 0:
+						return localText.getText("TXT_KEY_WTP_TIP_CARGO_GOODS", ())
+					if hasattr(pInfo, "isSlaveShip") and pInfo.isSlaveShip():
+						return localText.getText("TXT_KEY_WTP_TIP_CARGO_SLAVE", ())
+					if hasattr(pInfo, "isTreasureShip") and pInfo.isTreasureShip():
+						return localText.getText("TXT_KEY_WTP_TIP_CARGO_TREASURE", ())
+					if hasattr(pInfo, "isTroopShip") and pInfo.isTroopShip():
+						return localText.getText("TXT_KEY_WTP_TIP_CARGO_TROOP", ())
+					return localText.getText("TXT_KEY_WTP_TIP_CARGO_ALL", ())
+		except:
+			self.tipLog("getCargoRulesText error: %s" % str(sys.exc_info()[1]))
+		return None
 
 	# the tooltip of a city (banner): a line with the used storage above "Stored", the buildings in one line ("Buildings", the list when hovering)
 	# returns the new paragraphs (self.dTipDetails set) or None if the text is not the tooltip of a city
