@@ -3870,13 +3870,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_CARGO_GOODS</Tag>
-		<English>Carries goods only (no units)</English>
-		<German>Lädt nur Waren (keine Einheiten)</German>
+		<English>Carries goods only</English>
+		<German>Lädt nur Waren</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_CARGO_SLAVE</Tag>
-		<English>Carries slaves and goods only (no regular units)</English>
-		<German>Lädt nur Sklaven und Waren (keine regulären Einheiten)</German>
+		<English>Carries slaves and goods only</English>
+		<German>Lädt nur Sklaven und Waren</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_CARGO_TREASURE</Tag>
