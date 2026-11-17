@@ -32,6 +32,20 @@
 #include "CvSavegame.h"
 #include "BetterBTSAI.h"
 
+// TEST (branch test/auto-traderoute-packing): log of the packing of import limit / maintain level in handleAutoTraderouteSetup
+#define WTP_LOG_TRADEROUTE_PACKING
+#ifdef WTP_LOG_TRADEROUTE_PACKING
+static void logTradeRoutePacking(char const* format, ...)
+{
+	static char buf[1024];
+	va_list args;
+	va_start(args, format);
+	_vsnprintf(buf, 1024-4, format, args);
+	va_end(args);
+	gDLL->logMsg("WTP_TradeRoutePacking.log", buf);
+}
+#endif
+
 // Public Functions...
 
 #pragma warning( disable: 4355 ) // using this as initializer in constructor
@@ -13966,6 +13980,9 @@ void CvCity::setAutoExport(YieldTypes eYield, bool bExport)
 
 void CvCity::handleAutoTraderouteSetup(bool bReset, bool bImportAll, bool bAutoExportAll)
 {
+#ifdef WTP_LOG_TRADEROUTE_PACKING
+	logTradeRoutePacking("handleAutoTraderouteSetup city %S: reset %d importAll %d autoExportAll %d", getName().GetCString(), (int)bReset, (int)bImportAll, (int)bAutoExportAll);
+#endif
 	// reset import/export for any yields that cannot be transported
 	// they might have been accidentally added to import/exports if XML settings were changed inbetween
 	// they cannot be added/removed manually
@@ -14010,7 +14027,22 @@ void CvCity::handleAutoTraderouteSetup(bool bReset, bool bImportAll, bool bAutoE
 				int iBuffer = iMaintainLevel & 0xFFFF; // lowest 16 bits
 				iBuffer |= (iImportLimitLevel & 0xFFFF) << 16; // next 16 bits
 
+#ifdef WTP_LOG_TRADEROUTE_PACKING
+				logTradeRoutePacking("city %S yield %d: before: importLimit %d maintain %d, buffer 0x%08X (maintain in the lower, importLimit in the upper 16 bits)", getName().GetCString(), (int)eYield, iImportLimitLevel, iMaintainLevel, iBuffer);
+#endif
 				doTask(TASK_YIELD_TRADEROUTE, eYield, iBuffer, bImport, bExport, bMaintainImport, bAutoExport);
+#ifdef WTP_LOG_TRADEROUTE_PACKING
+				{
+					const int iLimitAfter = getImportsLimit(eYield);
+					const int iMaintainAfter = getMaintainLevel(eYield);
+					const char* szVerdict = "OK";
+					if (iLimitAfter != iImportLimitLevel || iMaintainAfter != iMaintainLevel)
+					{
+						szVerdict = (iLimitAfter == iMaintainLevel && iMaintainAfter == iImportLimitLevel) ? "SWAPPED" : "CHANGED";
+					}
+					logTradeRoutePacking("city %S yield %d: after: importLimit %d maintain %d -> %s%s", getName().GetCString(), (int)eYield, iLimitAfter, iMaintainAfter, szVerdict, (iImportLimitLevel == iMaintainLevel) ? " (both values equal, a swap would not show)" : "");
+				}
+#endif
 			}
 		}
 	}
