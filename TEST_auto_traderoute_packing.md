@@ -27,7 +27,11 @@ import limit in the lower, maintain level in the upper 16 bits. So both values s
 
 | commit | button | good | before (limit / maintain) | after (limit / maintain) | log verdict |
 |---|---|---|---|---|---|
-| 10072f73a | Import all | | | | |
-| 10072f73a | Auto export all | | | | |
+| 10072f73a | Import all | yield 3 and 4 | 50 / 100 | 100 / 50 | SWAPPED |
+| 10072f73a | Auto export all | yield 3 and 4 | 100 / 50 (state after the first button) | 50 / 100 | SWAPPED |
 | c781bfa3a | Import all | | | | |
 | c781bfa3a | Auto export all | | | | |
+
+Commit 1 (21 Nov 2026 test run, city Jamestown, new game): confirmed. The popup showed the same swap as the log: after "Import all" the two goods
+went from 50 / 100 to 100 / 50, after "Auto export all" back to 50 / 100. All other goods (0 / 0) are unaffected, as expected.
+Commit 2 (fix): still to be tested.
