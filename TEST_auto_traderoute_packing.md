@@ -29,9 +29,11 @@ import limit in the lower, maintain level in the upper 16 bits. So both values s
 |---|---|---|---|---|---|
 | 10072f73a | Import all | yield 3 and 4 | 50 / 100 | 100 / 50 | SWAPPED |
 | 10072f73a | Auto export all | yield 3 and 4 | 100 / 50 (state after the first button) | 50 / 100 | SWAPPED |
-| c781bfa3a | Import all | | | | |
-| c781bfa3a | Auto export all | | | | |
+| c781bfa3a | Import all | yield 3 and 4 | 50 / 100 | 50 / 100 | OK |
+| c781bfa3a | Auto export all | yield 3 and 4 | 50 / 100 | 50 / 100 | OK (pressed twice, 2 log blocks) |
 
 Commit 1 (21 Nov 2026 test run, city Jamestown, new game): confirmed. The popup showed the same swap as the log: after "Import all" the two goods
 went from 50 / 100 to 100 / 50, after "Auto export all" back to 50 / 100. All other goods (0 / 0) are unaffected, as expected.
-Commit 2 (fix): still to be tested.
+Commit 2 (fix, same day, city Jamestown): confirmed. 294 log lines, all verdict OK, no SWAPPED. The popup kept 50 / 100 after "Import all" and after "Auto export all".
+
+Conclusion: the swap is a bug of the original mod (develop ea3b1aaf3); the fix of commit 2 removes it. Both builds are one-line-class changes in `CvCity::handleAutoTraderouteSetup`.
