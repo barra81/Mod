@@ -14024,11 +14024,15 @@ void CvCity::handleAutoTraderouteSetup(bool bReset, bool bImportAll, bool bAutoE
 				int iMaintainLevel   = getMaintainLevel(eYield);
 				int iImportLimitLevel= getImportsLimit(eYield);
 
-				int iBuffer = iMaintainLevel & 0xFFFF; // lowest 16 bits
-				iBuffer |= (iImportLimitLevel & 0xFFFF) << 16; // next 16 bits
+				// same layout as CvDLLButtonPopup::OnOkClicked() and the reader in doTask(TASK_YIELD_TRADEROUTE): the import limit in the lower,
+				// the maintain level in the upper 16 bits (it was the other way round here, which swapped both values for every good)
+				NetworkDataTradeRouteInts bufferInts;
+				bufferInts.iImportLimitLevel = (unsigned short)iImportLimitLevel;
+				bufferInts.iMaintainLevel    = (unsigned short)iMaintainLevel;
+				int iBuffer = bufferInts.iNetwork;
 
 #ifdef WTP_LOG_TRADEROUTE_PACKING
-				logTradeRoutePacking("city %S yield %d: before: importLimit %d maintain %d, buffer 0x%08X (maintain in the lower, importLimit in the upper 16 bits)", getName().GetCString(), (int)eYield, iImportLimitLevel, iMaintainLevel, iBuffer);
+				logTradeRoutePacking("city %S yield %d: before: importLimit %d maintain %d, buffer 0x%08X (importLimit in the lower, maintain in the upper 16 bits)", getName().GetCString(), (int)eYield, iImportLimitLevel, iMaintainLevel, iBuffer);
 #endif
 				doTask(TASK_YIELD_TRADEROUTE, eYield, iBuffer, bImport, bExport, bMaintainImport, bAutoExport);
 #ifdef WTP_LOG_TRADEROUTE_PACKING
