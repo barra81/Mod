@@ -1052,15 +1052,14 @@ def _dispatchPickNative(player, city):
 	return iBest
 
 def _dispatchBoycottYield(player):
-	# Goods (without food) in the capital that are still tradable in Europe, ordered by value (king's buy price), cheapest first.
-	# The cheapest good is the candidate; every dearer good with a LARGER stock than the current candidate takes its place
-	# (2nd cheapest beats the cheapest if it has more stock, a 3rd beats both if it has more, and so on).
+	# goods in ascending order of the king's buy price (food excluded); the cheapest is taken, but a dearer good replaces
+	# the current choice as soon as its stock in the capital is larger than the stock of the current choice
 	capital = player.getCapitalCity()
 	if capital is None or capital.isNone():
 		return -1
 	king = gc.getPlayer(player.getParent())
 	iFood = gc.getInfoTypeForString("YIELD_FOOD")
-	lGoods = []
+	lCandidates = []
 	for iYield in range(gc.getNumYieldInfos()):
 		if iYield == iFood:
 			continue
@@ -1068,15 +1067,15 @@ def _dispatchBoycottYield(player):
 			continue
 		if not player.isYieldEuropeTradable(iYield):
 			continue
-		iStock = capital.getYieldStored(iYield)
-		if iStock <= 0:
+		if capital.getYieldStored(iYield) <= 0:
 			continue
-		lGoods.append((king.getYieldBuyPrice(iYield), iYield, iStock))
-	lGoods.sort()
+		lCandidates.append((king.getYieldBuyPrice(iYield), iYield))
+	lCandidates.sort()
 	iBest = -1
 	iBestStock = 0
-	for (iPrice, iYield, iStock) in lGoods:
-		if iStock > iBestStock:
+	for (iPrice, iYield) in lCandidates:
+		iStock = capital.getYieldStored(iYield)
+		if iBest == -1 or iStock > iBestStock:
 			iBest = iYield
 			iBestStock = iStock
 	return iBest
