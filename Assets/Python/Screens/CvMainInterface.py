@@ -420,6 +420,7 @@ class CvMainInterface:
 	aTradeReturn = [] # the views the jumps from the tooltips of the import / export window started from (the last one is the one to go back to)
 	dTraderLines = {} # the lines of the traders in the tooltips: text without colors -> id of the city
 	dTraderWin = {} # frozen windows with such lines: prefix -> the good
+	bForceTradeTip = False # the tooltip of a good is made although the cursor is not on its picture (refreshTradeTips)
 	dNetLines = {} # the line "all colonies, net per turn" in the tooltips: text without colors -> the good
 	iTradeTipYield = -1
 	szTradeTipText = u""
@@ -3713,7 +3714,7 @@ class CvMainInterface:
 				self.szSuppressHelp = u""
 				self.hideCursorTooltip(screen)
 				return
-			if (CyInterface().isCityScreenUp() and not (bWidget and self.isTradeIconHover())) or len(szHelp) == 0:
+			if (CyInterface().isCityScreenUp() and not (bWidget and (self.isTradeIconHover() or self.bForceTradeTip))) or len(szHelp) == 0:
 				self.szSuppressHelp = u""
 				self.hideCursorTooltip(screen)
 				return
@@ -9032,6 +9033,42 @@ class CvMainInterface:
 				self.freezeCursorTooltip()
 		except:
 			self.tPostJump = None
+
+	# a change in the import / export window: the frozen tooltips of the good (all goods: -1) are made again with the new state (colonies that
+	# import / export it, the sum) and stand where they stood; their child windows are closed
+	def refreshTradeTips( self, iYieldOnly = -1 ):
+		try:
+			if not self.isTradeWindowOpen():
+				return
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			aTargets = []
+			for tFz in self.aFrozen:
+				if self.dTraderWin.has_key(tFz[0]) and tFz[6] < 0 and (iYieldOnly < 0 or self.dTraderWin[tFz[0]] == iYieldOnly):
+					aTargets.append((self.dTraderWin[tFz[0]], tFz[1][0], tFz[1][1], tFz[5]))
+			tWin = CvScreensInterface.tradeRouteScreen
+			for (iYield, iOldX, iOldY, tAnchor) in aTargets:
+				for i in range(len(self.aFrozen)):
+					if self.dTraderWin.get(self.aFrozen[i][0], -1) == iYield and self.aFrozen[i][6] < 0:
+						self.closeFrozenChild(screen, i)
+						break
+				szHelp = gc.getGame().getWidgetHelpFor(int(WidgetTypes.WIDGET_HELP_YIELD), iYield, tWin.iCity, False)
+				if not szHelp or len(szHelp) == 0:
+					continue
+				szHelp = self.addRawNote(szHelp, iYield)
+				self.szSuppressHelp = u""
+				self.szCursorTipText = u""
+				self.bCursorTipShown = False
+				self.bForceTradeTip = True
+				try:
+					self.showCursorTooltip(screen, szHelp, True, True)
+				finally:
+					self.bForceTradeTip = False
+				if self.bCursorTipShown and self.freezeCursorTooltip() and len(self.aFrozen) > 0:
+					iNew = len(self.aFrozen) - 1
+					self.aFrozen[iNew][5] = tAnchor
+					self.moveFrozenWindow(screen, iNew, iOldX, iOldY)
+		except:
+			self.tipError("refreshTradeTips")
 
 	# the window of the starting colony is open again: the camera and the selected unit of the map, the frozen tooltip and the cursor as they were
 	def restoreMapView( self, tR ):
