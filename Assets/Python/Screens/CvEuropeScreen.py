@@ -123,6 +123,7 @@ class CvEuropeScreen:
 		bShowTradeBox = sdToolKit.sdGetVal('komaScreens', player.getID(), 'TradeBox')
 		self.EuropeUnitsList = []
 		self.OutboundUnitsList = []
+		self.bSailAllShips = False # WTP: Shift + click on sail to the New World: all the ships that reach the chosen port sail
 		self.EuropePlotList = []
 		self.PreviewPlotList = []
 				
@@ -715,6 +716,7 @@ class CvEuropeScreen:
 					CyInterface().addPopup(popupInfo, gc.getGame().getActivePlayer(), True, False)
 
 				elif (inputClass.getData1() == self.SAIL_TO_NEW_WORLD) :
+					self.bSailAllShips = inputClass.isShiftKeyDown()
 					self.sailToNewWorld(inputClass.getData2())
 					
 				elif (inputClass.getData1() == self.SAIL_EAST) :
@@ -746,6 +748,8 @@ class CvEuropeScreen:
 								CyMessageControl().sendDoCommand(inputClass.getData2(), CommandTypes.COMMAND_SAIL_TO_EUROPE, UnitTravelStates.UNIT_TRAVEL_STATE_FROM_EUROPE, -1, False)
 								self.EuropeUnitsList.remove(inputClass.getData2())
 								self.setSound(UNIT_SOUND_ORDER)
+								if self.bSailAllShips:
+									self.sailOtherShipsToCity(inputClass.getData2(), pCity)
 
 					self.hideDialogBox(index)
 				
@@ -963,7 +967,7 @@ class CvEuropeScreen:
 		
 		screen.addUnitGraphicGFC("DialogMap" + "Water", UnitTypes.UNIT_CARAVEL, -1, self.DIALOG_X + self.MAP_X, self.DIALOG_Y + self.MAP_Y, self.MAP_SIZE, self.MAP_SIZE, WidgetTypes.WIDGET_GENERAL, -1, -1, 0, 0, 0, True)
 		screen.addDDSGFC("DialogMap", "Art/Interface/Screens/Europe/DialogMapAmerica.dds", self.DIALOG_X + self.MAP_X, self.DIALOG_Y + self.MAP_Y, self.MAP_SIZE, self.MAP_SIZE, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		screen.setLabelAt(self.getNextWidgetName(), "DialogMap", u"<font=4>" + localText.getText("TXT_KEY_EU_SAIL", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.MAP_SIZE / 2, self.STANDARD_MARGIN * 3 / 2, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabelAt(self.getNextWidgetName(), "DialogMap", u"<font=4>" + localText.getText(self.bSailAllShips and "TXT_KEY_EU_SAIL_ALL" or "TXT_KEY_EU_SAIL", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.MAP_SIZE / 2, self.STANDARD_MARGIN * 3 / 2, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		self.createBorder(0, 0, self.MAP_SIZE, self.MAP_SIZE, self.BORDER_SIZE, "DialogMap", True)
 		# R&R, vetiarvind, Navigation Sectors - START
 		#The first param in setImageButtonAt's chars needs to have a name followed by a unique digit to be processed by handleInput(which removes the digit in it's method)
@@ -1011,6 +1015,28 @@ class CvEuropeScreen:
 			iI += 1
 		
 		
+	def sailOtherShipsToCity(self, iMainUnit, pCity):
+		# WTP: Shift + click on sail to the New World: after the port has been chosen, all the other ships in the port that can reach it sail there too
+		player = self.player
+		for iOther in list(self.EuropeUnitsList):
+			if iOther == iMainUnit:
+				continue
+			pOther = player.getUnit(iOther)
+			if pOther.isNone() or pOther.isDelayedDeath() or pOther.isCargo():
+				continue
+			if gc.getUnitInfo(pOther.getUnitType()).getDomainType() != DomainTypes.DOMAIN_SEA:
+				continue
+			if pOther.getUnitTravelState() != UnitTravelStates.UNIT_TRAVEL_STATE_IN_EUROPE:
+				continue
+			pGroup = pOther.getGroup()
+			if not (pGroup.generatePath(self.pPlotEastCheck, pCity.plot(), 0, False, None) or pGroup.generatePath(self.pPlotWestCheck, pCity.plot(), 0, False, None)):
+				continue
+			pPlot = self.getBestCityPlot(pCity.plot(), pOther)
+			CyMessageControl().sendApplyEvent(CvUtil.EventDoEuropeScreen, EventContextTypes.EVENTCONTEXT_ALL, (SEND_TO_NEW_WORLD_CITY, iOther, pPlot.getX(), pPlot.getY(), pCity.plot().getX(), pCity.plot().getY(), -1, -1, -1))
+			CyMessageControl().sendDoCommand(iOther, CommandTypes.COMMAND_SAIL_TO_EUROPE, UnitTravelStates.UNIT_TRAVEL_STATE_FROM_EUROPE, -1, False)
+			self.EuropeUnitsList.remove(iOther)
+
+
 	def sailToEastOrWest(self, iUnit, pPlot):
 		CyMessageControl().sendApplyEvent(CvUtil.EventDoEuropeScreen, EventContextTypes.EVENTCONTEXT_ALL, (SEND_TO_EAST_OR_WEST, iUnit, pPlot.getX(), pPlot.getY(), -1, -1, -1, -1, -1))
 		CyMessageControl().sendDoCommand(iUnit, CommandTypes.COMMAND_SAIL_TO_EUROPE, UnitTravelStates.UNIT_TRAVEL_STATE_FROM_EUROPE, -1, False)
@@ -1097,6 +1123,7 @@ class CvEuropeScreen:
 
 	def hideDialogBox (self, index):
 		screen = self.getScreen()
+		self.bSailAllShips = False
 		screen.hide("DialogBackground")
 		screen.hide("DialogTable")
 		screen.hide("DialogMap")
@@ -1241,6 +1268,8 @@ class CvEuropeScreen:
 		if plotWest == None:
 			plotWest = self.getNextOceanPlot(pCenterPlot, self.EuropePlotList)
 		
+		self.pPlotEastCheck = plotEast
+		self.pPlotWestCheck = plotWest
 		#City list
 		self.CityPlotList = []
 			

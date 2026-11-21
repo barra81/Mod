@@ -2549,6 +2549,12 @@
 		<Hungarian>Válaszd ki az úticélt az [COLOR_HIGHLIGHT_TEXT]Újvilágban[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_EU_SAIL_ALL</Tag>
+		<English>Select destination in the [COLOR_HIGHLIGHT_TEXT]New World[COLOR_REVERT] for [COLOR_HIGHLIGHT_TEXT]all ships[COLOR_REVERT] that can reach it</English>
+		<German>Reiseziel in der [COLOR_HIGHLIGHT_TEXT]Neuen Welt[COLOR_REVERT] für [COLOR_HIGHLIGHT_TEXT]alle Schiffe[COLOR_REVERT] auswählen, die es erreichen können</German>
+		<Russian>Выберите порт в [COLOR_HIGHLIGHT_TEXT]Новом мире[COLOR_REVERT] для [COLOR_HIGHLIGHT_TEXT]всех кораблей[COLOR_REVERT], которые могут до него дойти</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_EU_PREVIEW_MODE</Tag>
 		<English>Switch preview mode</English>
 		<Portuguese>Alternar modo de visualização</Portuguese>
