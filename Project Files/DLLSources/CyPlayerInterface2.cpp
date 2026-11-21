@@ -65,6 +65,7 @@ void CyPlayerPythonInterface2(python::class_<CyPlayer>& x)
 		// TAC - Python Export - Ray - START
 		.def("NBMOD_IncreaseMaxTaxRate", &CyPlayer::NBMOD_IncreaseMaxTaxRate, "void ()")
 		.def("NBMOD_DecreaseMaxTaxRate", &CyPlayer::NBMOD_DecreaseMaxTaxRate, "void ()")
+		.def("NBMOD_ChangeMaxTaxRate", &CyPlayer::NBMOD_ChangeMaxTaxRate, "int (int iChange)")
 		// TAC - Python Export - Ray - END
 		// R&R, ray, Bargaining - Start
 		.def("tryGetNewBargainPriceSell", &CyPlayer::tryGetNewBargainPriceSell, "bool ()")
