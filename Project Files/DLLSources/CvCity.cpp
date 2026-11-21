@@ -7918,6 +7918,8 @@ void CvCity::doYields()
 		case YIELD_EDUCATION:
 			{
 				std::vector<CvUnit*> apStudents;
+				// WTP: the students that finish in 1 or 2 turns are counted per city: one message for each of the two times (plural when more than one)
+				int aiGraduating[3] = { 0, 0, 0 };
 				for (uint i = 0; i < m_aPopulationUnits.size(); ++i)
 				{
 					CvUnit* pLoopUnit = m_aPopulationUnits[i];
@@ -7934,22 +7936,36 @@ void CvCity::doYields()
 							pLoopUnit->setYieldStored(pLoopUnit->getYieldStored() + std::max(iStudentOutput, 1));
 
 							// TAC - Messages - Ray - START
-							BuildingTypes eSchoolBuilding = getYieldBuilding(YIELD_EDUCATION);
 							int iEducationNeeded = educationThreshold() - pLoopUnit->getYieldStored();
 
 							int rStudentOutput = std::max(iStudentOutput, 1);
 							int iTurns = std::max(0, (iEducationNeeded + rStudentOutput - 1) / rStudentOutput);  // round up
 
 							if (iTurns == 2 || iTurns == 1) {
-								CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_STUDENT_ALMOST_GRADUATED", iTurns, getNameKey(), GC.getBuildingInfo(eSchoolBuilding).getTextKeyWide());
-								WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
-								gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_CULTUREEXPANDS", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(YIELD_EDUCATION).getButton(), COLOR_WHITE, true, true);
-								WtpHudMessages::setPriority(false);
-
+								aiGraduating[iTurns]++;
 							}
 							// TAC - Messages - Ray - END
 
 						}
+					}
+				}
+				for (int iGraduateTurns = 1; iGraduateTurns <= 2; ++iGraduateTurns)
+				{
+					if (aiGraduating[iGraduateTurns] > 0)
+					{
+						const BuildingTypes eSchoolBuilding = getYieldBuilding(YIELD_EDUCATION);
+						CvWString szBuffer;
+						if (aiGraduating[iGraduateTurns] == 1)
+						{
+							szBuffer = gDLL->getText("TXT_KEY_MISC_STUDENT_ALMOST_GRADUATED", iGraduateTurns, getNameKey(), GC.getBuildingInfo(eSchoolBuilding).getTextKeyWide());
+						}
+						else
+						{
+							szBuffer = gDLL->getText("TXT_KEY_MISC_STUDENTS_ALMOST_GRADUATED", iGraduateTurns, getNameKey(), GC.getBuildingInfo(eSchoolBuilding).getTextKeyWide(), aiGraduating[iGraduateTurns]);
+						}
+						WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
+						gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_CULTUREEXPANDS", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(YIELD_EDUCATION).getButton(), COLOR_WHITE, true, true);
+						WtpHudMessages::setPriority(false);
 					}
 				}
 			}

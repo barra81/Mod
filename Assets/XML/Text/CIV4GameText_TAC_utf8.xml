@@ -1699,6 +1699,12 @@
 		<Hungarian>%s2_city : Egy ügyes lakos %d1_Num [NUM1:kör:kör] múlva befejezi a városi %s3_building falai között a tanulmányait.</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_MISC_STUDENTS_ALMOST_GRADUATED</Tag>
+		<English>[COLOR_CAT_RESEARCH]%s2_city : %d4 striving citizens will finish their education at the %s3_building in %d1_Num [NUM1:turn:turns].[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_RESEARCH]%s2_city : In %d1 [NUM1:Runde:Runden] werden %d4 strebsame Bürger an der %s3_building ihre Ausbildung beenden.[COLOR_REVERT]</German>
+		<Russian>[COLOR_CAT_RESEARCH]%s2_city : Способные горожане (%d4) закончат обучение в %s3_building через %d1_Num [NUM1:ход:хода].[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_LBD_EXPERT</Tag>
 		<English>[COLOR_POSITIVE_TEXT]A free colonist who has worked in his profession for many years now has enough knowledge to be considered an %s1_expert.[COLOR_REVERT]</English>
 		<Portuguese>[COLOR_POSITIVE_TEXT]Um colono livre que atua em sua profissão há muitos anos agora possui conhecimento suficiente para ser considerado um %s1_expert.[COLOR_REVERT]</Portuguese>
