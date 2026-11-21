@@ -1248,6 +1248,17 @@ int CyPlayer::getMissionaryPoints(int /*PlayerTypes*/ ePlayer) const
 {
 	return m_pPlayer ? m_pPlayer->getMissionaryPoints((PlayerTypes) ePlayer) : -1;
 }
+int CyPlayer::getNativeWaypoint(int iPlotIndex) const
+{
+	return m_pPlayer ? m_pPlayer->getNativeWaypoint(iPlotIndex) : -1;
+}
+void CyPlayer::setNativeWaypoint(int iPlotIndex, int iCityId)
+{
+	if (m_pPlayer)
+	{
+		pointer(CREATE_ASSERT_DATA)->setNativeWaypoint(iPlotIndex, iCityId);
+	}
+}
 int CyPlayer::missionaryThreshold(int /*PlayerTypes*/ ePlayer) const
 {
 	return m_pPlayer ? m_pPlayer->missionaryThreshold((PlayerTypes) ePlayer) : -1;

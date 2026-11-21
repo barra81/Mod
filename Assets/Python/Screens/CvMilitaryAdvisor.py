@@ -300,6 +300,16 @@ class CvMilitaryAdvisor:
 					self.toggleGroupCheckBoxes(inputClass.getData2())
 			if (inputClass.getData1() == self.UNIT_TOGGLE):
 				self.toggleUnitCheckBox(inputClass.getData2())
+				# WTP: double click on a unit: jump to it on the map
+				fNow = time.time()
+				if (inputClass.getData2() == getattr(self, "iLastUnitClick", -2) and fNow - getattr(self, "fLastUnitClick", 0.0) < 0.5):
+					self.iLastUnitClick = -2
+					self.jumpToUnit(inputClass.getData2())
+				else:
+					self.iLastUnitClick = inputClass.getData2()
+					self.fLastUnitClick = fNow
+		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_DBL_CLICKED and inputClass.getData1() == self.UNIT_TOGGLE):
+			self.jumpToUnit(inputClass.getData2())
 		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_LISTBOX_ITEM_SELECTED):
 			if(inputClass.getFunctionName() == self.groupSelectionName):
 				iIndex = screen.getSelectedPullDownID(self.groupSelectionName)
@@ -310,6 +320,33 @@ class CvMilitaryAdvisor:
 				self.iShiftKeyDown = inputClass.getID()
 
 		return 0
+
+	def jumpToUnit(self, unitIndex):
+		try:
+			if unitIndex < 0 or unitIndex >= len(self.unitList):
+				return
+			pUnit = self.unitList[unitIndex]
+			if pUnit is None or pUnit.isNone():
+				return
+			# a citizen working in a city: open the city screen
+			if pUnit.getOwner() == self.iActivePlayer:
+				(pCity, iter) = self.pActivePlayer.firstCity(True)
+				while (pCity):
+					for iCitizen in range(pCity.getPopulation()):
+						pCitizen = pCity.getPopulationUnitByIndex(iCitizen)
+						if (not pCitizen.isNone()) and pCitizen.getID() == pUnit.getID():
+							self.hideScreen()
+							CyInterface().selectCity(pCity, True)
+							return
+					(pCity, iter) = self.pActivePlayer.nextCity(iter, True)
+			if pUnit.plot().isNone():
+				return
+			self.hideScreen()
+			if pUnit.getOwner() == self.iActivePlayer:
+				CyInterface().selectUnit(pUnit, True, False, True)
+			pUnit.centerCamera()
+		except:
+			pass
 
 	def toggleUnitCheckBox(self, unitIndex):
 		screen = self.getScreen()

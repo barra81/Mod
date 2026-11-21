@@ -61,6 +61,8 @@ public:
 	void updateCitySight(bool bIncrement);
 
 	DllExport void updateSelectionList();
+	// WTP: a transport that was just automated (R menu / full automation) stays selected for the rest of the turn
+	void keepSelectedAutomated(int iUnitId);
 	DllExport void updateTestEndTurn();
 
 	DllExport void testExtendedGame();

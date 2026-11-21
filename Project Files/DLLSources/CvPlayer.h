@@ -65,6 +65,7 @@ public:
 protected:
 	std::vector<AchieveTypes> m_achievesGained;
 	std::vector<int> m_achievesTurn;
+	std::vector<int> m_aiNativeWaypoints; // WTP: pairs: plot index of the native settlement, id of the city
 	int m_iNumCombatsWon;
 	int m_iNumSeaCombatsWon;
 public:
@@ -861,6 +862,11 @@ public:
 	int missionaryThreshold(PlayerTypes ePlayer) const;
 	// WTP, Schmiddie, Trade Post Mestizo - START
 	void applyTradePostMestizoPoints(CvCity* pCity);
+	// WTP: waypoint of a native settlement: units that this player's mission / trading post creates there head for one of his cities
+	int getNativeWaypoint(int iPlotIndex) const; // id of the city, -1 if none
+	void setNativeWaypoint(int iPlotIndex, int iCityId); // -1 removes the waypoint
+	// sends the unit to the waypoint; returns the sentence about it for the message of the settlement (empty if there is no waypoint)
+	CvWString sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity);
 	int getTradePostMestizoPoints(PlayerTypes ePlayer) const;
 	void changeTradePostMestizoPoints(PlayerTypes ePlayer, int iChange);
 	int getTradePostMestizoThresholdMultiplier(PlayerTypes ePlayer) const;

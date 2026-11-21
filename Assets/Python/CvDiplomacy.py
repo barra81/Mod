@@ -7,6 +7,27 @@ DebugLogging = False
 
 gc = CyGlobalContext()
 
+# WTP: wraps the diplomacy screen: when it is closed and was opened from the native info tab of the domestic advisor, the advisor opens again
+class WtpDiploScreen:
+	def __init__(self, diploScreen):
+		self._diploScreen = diploScreen
+
+	def __getattr__(self, szName):
+		return getattr(self._diploScreen, szName)
+
+	def closeScreen(self):
+		self._diploScreen.closeScreen()
+		try:
+			import CvScreensInterface
+			if CvScreensInterface.bReturnToDomesticAfterDiplomacy:
+				CvScreensInterface.bReturnToDomesticAfterDiplomacy = False
+				popupInfo = CyPopupInfo()
+				popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+				popupInfo.setText(u"showDomesticAdvisor")
+				popupInfo.addPopup(CyGame().getActivePlayer())
+		except:
+			pass
+
 class CvDiplomacy:
 	"Code used by Civ Diplomacy interface"
 
@@ -897,7 +918,7 @@ class CvDiplomacy:
 		# this will automatically declare leaving async mode when the instance goes out of scope
 		DesyncDetectorInstance = gc.startDesyncMonitor()
 
-		diploScreen = CyDiplomacy()
+		diploScreen = WtpDiploScreen(CyDiplomacy())
 
 		# If we accept peace
 		if (self.isComment(eComment, "USER_DIPLOCOMMENT_PEACE")):

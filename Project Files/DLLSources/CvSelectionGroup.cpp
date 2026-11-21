@@ -3670,6 +3670,19 @@ void CvSelectionGroup::setAutomateType(AutomateTypes eNewValue, bool bImplicit)
 		{
 			clearTradeRoutes();
 		}
+
+		// WTP: a transport automated by the player while selected stays selected (the game does not jump on to the next unit)
+		if ((eNewValue == AUTOMATE_TRANSPORT_FULL || eNewValue == AUTOMATE_TRANSPORT_ROUTES) && getHeadUnit() != NULL
+			&& isHuman() && getOwnerINLINE() == GC.getGameINLINE().getActivePlayer() && IsSelected())
+		{
+			GC.getGameINLINE().keepSelectedAutomated(getHeadUnit()->getID());
+		}
+
+		// WTP: full transport automation switched on by the player: offer a name (Autoroute n)
+		if (eNewValue == AUTOMATE_TRANSPORT_FULL && !bImplicit)
+		{
+			offerTransportName(true);
+		}
 	}
 }
 
@@ -4554,9 +4567,24 @@ void CvSelectionGroup::assignTradeRoute(int iRouteID, bool bAssign)
 		else
 		{
 			setAutomateType(AUTOMATE_TRANSPORT_ROUTES);
+			offerTransportName(false); // WTP: first trade route: offer a name (Handelsroute n)
 		}
 	}
 	gDLL->getInterfaceIFace()->setDirty(Domestic_Advisor_DIRTY_BIT, true);
+}
+
+// WTP: the python side (CvTransportRoutesOverview) opens the popup with the numbered name (nothing for names that are already numbered)
+void CvSelectionGroup::offerTransportName(bool bAuto)
+{
+	CvUnit* pHead = getHeadUnit();
+	if (pHead == NULL || !isHuman() || getOwnerINLINE() != GC.getGameINLINE().getActivePlayer())
+	{
+		return;
+	}
+	CyArgsList argsList;
+	argsList.add(pHead->getID());
+	argsList.add(bAuto ? 1 : 0);
+	gDLL->getPythonIFace()->callFunction(PYScreensModule, "askTransportName", argsList.makeFunctionArgs());
 }
 
 bool CvSelectionGroup::isAssignedTradeRoute(int iRouteId) const

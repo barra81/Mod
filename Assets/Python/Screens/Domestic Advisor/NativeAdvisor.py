@@ -15,6 +15,9 @@ gc = CyGlobalContext()
 ArtFileMgr = CyArtFileMgr()
 localText = CyTranslator()
 
+# the order of the rows (names) when the table was left: the sorting is kept when the advisor is opened again
+g_NativeRowOrder = []
+
 class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 	def __init__(self, parent):
 		BaseAdvisorWindow.BaseAdvisorWindow.__init__(self, parent, "NativeStateClass")
@@ -47,6 +50,75 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 				knownList.append(pLoopCity)
 		return knownList
 
+	def contactNation(self, iRow, iPlotIndex = -1):
+		try:
+			pCityOfRow = self.getCityOfRow(iRow)
+			if pCityOfRow is None:
+				return False
+			iNative = pCityOfRow.getOwner()
+			player = gc.getPlayer(gc.getGame().getActivePlayer())
+			if not player.canContact(iNative):
+				return False
+			self.parent.getScreen().hideScreen()
+			# back to the native info tab when the diplomacy screen is closed (see CvDiplomacy)
+			import CvScreensInterface
+			CvScreensInterface.bReturnToDomesticAfterDiplomacy = True
+			player.contact(iNative)
+			return True
+		except:
+			return False
+
+	def saveRowOrder(self):
+		global g_NativeRowOrder
+		try:
+			iRows = len(self.getKnownSettlementList())
+			aNames = []
+			for iRow in range(iRows):
+				aNames.append(self.tableManager.getScreen().getTableText(self.tableManager.currentPageName(), 1, iRow))
+			g_NativeRowOrder = aNames
+		except:
+			pass
+
+	def getCityOfRow(self, iRow):
+		# the table can be sorted: the row is found by the name that is displayed in it
+		citylist = self.getKnownSettlementList()
+		try:
+			szName = self.tableManager.getScreen().getTableText(self.tableManager.currentPageName(), 1, iRow)
+			for pCity in citylist:
+				if pCity.getName() == szName:
+					return pCity
+		except:
+			pass
+		if iRow >= 0 and iRow < len(citylist):
+			return citylist[iRow]
+		return None
+
+	def hasOwnPresence(self, pNativeCity, player):
+		if pNativeCity.getTradePostPlayer() == player.getID():
+			return True
+		if pNativeCity.getMissionaryPlayer() == player.getID() and pNativeCity.getMissionaryRate() > 0:
+			return True
+		return False
+
+	def openWaypointPopup(self, iRow, iPlotIndex = -1):
+		try:
+			pNative = self.getCityOfRow(iRow)
+			if pNative is None:
+				return False
+			player = gc.getPlayer(gc.getGame().getActivePlayer())
+			if not self.hasOwnPresence(pNative, player):
+				return False
+			self.parent.getScreen().hideScreen()
+			popupInfo = CyPopupInfo()
+			popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_CHOOSEPRODUCTION)
+			popupInfo.setData1(pNative.plot().getIndex())
+			popupInfo.setData2(1002)
+			popupInfo.addPopup(player.getID())
+			return True
+		except:
+			pass
+			return False
+
 	def lookAtSettlement(self, iPlotID):
 		plot = gc.getMap().plotByIndex(iPlotID)
 		if plot is None or plot.isNone():
@@ -55,7 +127,20 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 		CyCamera().JustLookAtPlot(plot)
 		
 	def drawTableContent(self):
-		citylist = self.getKnownSettlementList()		
+		citylist = self.getKnownSettlementList()
+		# keep the sorting of the last visit
+		if len(g_NativeRowOrder) > 0:
+			aSorted = []
+			aRest = []
+			for szName in g_NativeRowOrder:
+				for pCity in citylist:
+					if pCity.getName() == szName and pCity not in aSorted:
+						aSorted.append(pCity)
+						break
+			for pCity in citylist:
+				if pCity not in aSorted:
+					aRest.append(pCity)
+			citylist = aSorted + aRest
 		
 		self.tableManager.setNumRows(len(citylist))
 		
@@ -72,7 +157,8 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 			if True:
 				self.tableManager.addPanelButton(self.settlementIcon, WidgetTypes.WIDGET_JUMP_TO_SETTLEMENT, pLoopCity.plot().getIndex(), iNativeCity)
 				self.tableManager.addText(pLoopCity.getName())
-				self.tableManager.addText(gc.getPlayer(pLoopCity.getOwner()).getCivilizationShortDescription(0))
+				# clickable: opens the diplomacy screen (symbol in front)
+				self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.OPEN_BORDERS_CHAR) + gc.getPlayer(pLoopCity.getOwner()).getCivilizationShortDescription(0), pLoopCity.plot().getIndex())
 				self.tableManager.addInt(pLoopCity.getPopulation())
 				
 				if bIsVisited:
@@ -103,6 +189,19 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 					self.tableManager.addText(gc.getUnitInfo(pLoopCity.getTeachUnit()).getDescription(), pLoopCity.getTeachUnit(), -1, WidgetTypes.WIDGET_PEDIA_JUMP_TO_UNIT)
 				else:
 					self.tableManager.skipCell()
+
+				# WTP: waypoint for units created here by a mission / trading post of the player (click to set / remove)
+				if self.hasOwnPresence(pLoopCity, player):
+					iWaypoint = player.getNativeWaypoint(pLoopCity.plot().getIndex())
+					pWaypointCity = None
+					if iWaypoint >= 0:
+						pWaypointCity = player.getCity(iWaypoint)
+					if pWaypointCity is not None and not pWaypointCity.isNone():
+						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.MOVES_CHAR) + pWaypointCity.getName(), pLoopCity.plot().getIndex())
+					else:
+						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.OPEN_BORDERS_CHAR) + localText.getText("TXT_KEY_WTP_WAYPOINT_COLUMN", ()), pLoopCity.plot().getIndex())
+				else:
+					self.tableManager.skipCell()
 	
 	def getWidgetHelp(self, argsList):
 		iScreen, eWidgetType, iData1, iData2, bOption = argsList
@@ -117,9 +216,18 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 	
 	def handleInput (self, inputClass):
 		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_LISTBOX_ITEM_SELECTED):
+			self.saveRowOrder()
 			if (inputClass.getMouseX() == 0):
 				self.lookAtSettlement(inputClass.getData1())
 				return 0
+			# WTP: a click on the civ column opens the diplomacy screen of this nation
+			if (inputClass.getMouseX() == 2):
+				if self.contactNation(inputClass.getMouseY(), inputClass.getData1()):
+					return 0
+			# WTP: waypoint column
+			if (inputClass.getMouseX() == 8):
+				if self.openWaypointPopup(inputClass.getMouseY(), inputClass.getData1()):
+					return 0
 			return -1
 
 		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED):
@@ -151,3 +259,4 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 		
 		self.tableManager.addHeaderChar(gc.getYieldInfo(YieldTypes.YIELD_CROSSES).getChar(), iCrossWidth)
 		self.tableManager.addHeaderTxt("TXT_KEY_PEDIA_SPECIAL_ABILITIES", 200)
+		self.tableManager.addHeaderTxt("TXT_KEY_WTP_WAYPOINT_COLUMN", 160)

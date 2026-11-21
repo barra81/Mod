@@ -327,6 +327,8 @@ enum SavegameVariableTypes
 	PlayerSave_TradePostMestizoThresholdMultiplier,
 	// WTP, Schmiddie, Trade Post Mestizo - END
 
+
+	PlayerSave_NativeWaypoints, // WTP
 	NUM_SAVE_ENUM_VALUES,
 };
 
@@ -535,6 +537,7 @@ const char* getSavedEnumNamePlayer(SavegameVariableTypes eType)
 	// WTP, Schmiddie, Slave Emancipation - START
 	case PlayerSave_SlaveEmancipationCount: return "PlayerSave_SlaveEmancipationCount";
 	case PlayerSave_SlaveEmancipationCooldownEndTurn: return "PlayerSave_SlaveEmancipationCooldownEndTurn";
+	case PlayerSave_NativeWaypoints: return "PlayerSave_NativeWaypoints";
 	// WTP, Schmiddie, Slave Emancipation - END
 	// WTP, Schmiddie, Trade Post Mestizo - START
 	case PlayerSave_TradePostMestizoPoints: return "PlayerSave_TradePostMestizoPoints";
@@ -754,6 +757,7 @@ void CvPlayer::resetSavedData(PlayerTypes eID, bool bConstructorCall)
 	m_aDocksNextUnits.clear();
 	m_achievesGained.clear();
 	m_achievesTurn.clear();
+	m_aiNativeWaypoints.clear();
 	m_triggersFired.clear();
 
 	// R&R, ray, Bargaining - START
@@ -1036,6 +1040,7 @@ void CvPlayer::read(CvSavegameReader reader)
 		case PlayerSave_chievesGained: reader.Read(m_achievesGained); break;
 		case PlayerSave_chievesTurn: reader.Read(m_achievesTurn); break;
 		case PlayerSave_triggersFired: reader.Read(m_triggersFired); break;
+		case PlayerSave_NativeWaypoints: reader.Read(m_aiNativeWaypoints); break;
 
 		case PlayerSave_OppressometerDiscriminationModifier: reader.Discard<int>(); break;
 		case PlayerSave_OppressometerForcedLaborModifier: reader.Discard<int>(); break;
@@ -1332,6 +1337,7 @@ void CvPlayer::write(CvSavegameWriter writer)
 	writer.Write(PlayerSave_chievesGained, m_achievesGained);
 	writer.Write(PlayerSave_chievesTurn, m_achievesTurn);
 	writer.Write(PlayerSave_triggersFired, m_triggersFired);
+	writer.Write(PlayerSave_NativeWaypoints, m_aiNativeWaypoints);
 
 	// forces a cache update on read
 	// Anything relying on CivEffect should be below this

@@ -68,6 +68,7 @@ void CyGamePythonInterface2(python::class_<CyGame>& x)
 		.def("getReplayMessageColor", &CyGame::getReplayMessageColor)
 		.def("getReplayMessageText", &CyGame::getReplayMessageText)
 		.def("getNumReplayMessages", &CyGame::getNumReplayMessages)
+		.def("openDomesticMarket", &CyGame::openDomesticMarket, "void (int iCityID) - opens the domestic market popup of the city")
 		.def("getReplayInfo", &CyGame::getReplayInfo, python::return_value_policy<python::manage_new_object>())
 		;
 }

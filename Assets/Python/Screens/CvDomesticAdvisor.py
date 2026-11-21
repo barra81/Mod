@@ -4,6 +4,7 @@ from CvPythonExtensions import *
 import CvUtil
 import ScreenInput
 import CvScreenEnums
+import time
 
 import BuildingAdvisor
 import DomesticDemandAdvisor
@@ -44,6 +45,9 @@ import TradeCountAdvisor
 gc = CyGlobalContext()
 ArtFileMgr = CyArtFileMgr()
 localText = CyTranslator()
+
+# WTP: which trade routes a transport can serve is expensive to find out (pathfinding), it is kept for the turn: key of a transport -> viable route ids
+g_ViableRoutesCache = {"turn": -1, "data": {}}
 
 class CvDomesticAdvisor:
 	"Domestic Advisor Screen"
@@ -884,6 +888,11 @@ class CvDomesticAdvisor:
 
 		# Route validity matrix
 		self.RouteValidity = []
+		iTurn = gc.getGame().getGameTurn()
+		if g_ViableRoutesCache["turn"] != iTurn:
+			g_ViableRoutesCache["turn"] = iTurn
+			g_ViableRoutesCache["data"] = {}
+		tRouteIds = tuple([Route.getID() for Route in self.Routes])
 		for iTransport in range(len(self.Transports)):
 			Transport = self.Transports[iTransport]
 
@@ -892,9 +901,15 @@ class CvDomesticAdvisor:
 
 			pHeadUnit = Transport.getHeadUnit()
 			if pHeadUnit != None:
-				viable_routes = player.getViableTradeRoutes(pHeadUnit)
-				for r in viable_routes:
-					viable_ids[r.getID()] = 1
+				# WTP: the same transport at the same place with the same routes has the same viable routes during the turn
+				tKey = (pHeadUnit.getID(), pHeadUnit.getX(), pHeadUnit.getY(), pHeadUnit.getUnitType(), Transport.getNumUnits(), tRouteIds)
+				if tKey in g_ViableRoutesCache["data"]:
+					viable_ids = g_ViableRoutesCache["data"][tKey]
+				else:
+					viable_routes = player.getViableTradeRoutes(pHeadUnit)
+					for r in viable_routes:
+						viable_ids[r.getID()] = 1
+					g_ViableRoutesCache["data"][tKey] = viable_ids
 
 			RouteValidArray = []
 			for Route in self.Routes:
@@ -950,6 +965,12 @@ class CvDomesticAdvisor:
 		screen.setStyle( szTableName, "Table_StandardCiv_Style" )
 		screen.hide( szTableName )
 
+		# WTP: button for the overview of the trade route assignments of all transports (symbol of the automate trade routes command), in the lower row after the tab buttons
+		iOverviewSize = self.iButtonSize * 4 / 3 # the symbol has more empty border than the round tab buttons
+		iOverviewX = self.nScreenWidth * 843 / 1000
+		screen.setImageButton("TransportOverviewButton", "Art/Interface/Game Hud/Actions/automate_city_high_res.dds", iOverviewX, self.Y_LOWER_ROW + self.iButtonSize / 2 - iOverviewSize / 2, iOverviewSize, iOverviewSize, WidgetTypes.WIDGET_GENERAL, 10002, -1)
+		screen.show("TransportOverviewButton")
+
 		screen.setTableColumnHeader( szTableName, 0, localText.getText("TXT_KEY_SOURCE", ()), (150 * self.nTableWidth) / self.nNormalizedTableWidth)
 		screen.setTableColumnHeader( szTableName, 1, localText.getText("TXT_KEY_DESTINATION", ()), (150 * self.nTableWidth) / self.nNormalizedTableWidth)
 		screen.setTableColumnHeader( szTableName, 2, localText.getText("TXT_KEY_YIELD", ()), (65 * self.nTableWidth) / self.nNormalizedTableWidth)
@@ -980,18 +1001,30 @@ class CvDomesticAdvisor:
 				gc.setGameFontDebug(inputClass.getData()+8483)
 			elif self.CurrentState != self.TRADEROUTE_STATE and self.CurrentState != self.NATIVE_STATE:
 			## R&R, Robert Surcouf,  Domestic Advisor Screen END
-				if (inputClass.getMouseX() == 0):
-					screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
-					screen.hideScreen()
+				if self.CurrentState == self.TRADE_COUNT_STATE:
+					# WTP: exported goods: a click on the Europe / Africa / Port Royal row opens the trade screen
+					self.openTradeLocation(inputClass.getMouseY())
+				elif (inputClass.getMouseX() == 0):
+					if self.CurrentState == self.TOTAL_PRODUCTION_STATE:
+						# unchanged original behavior
+						screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+						screen.hideScreen()
 
-					CyInterface().selectCity(gc.getPlayer(inputClass.getData1()).getCity(inputClass.getData2()), True);
+						CyInterface().selectCity(gc.getPlayer(inputClass.getData1()).getCity(inputClass.getData2()), True);
 
-					popupInfo = CyPopupInfo()
-					popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
-					popupInfo.setText(u"showDomesticAdvisor")
-					popupInfo.addPopup(inputClass.getData1())
+						popupInfo = CyPopupInfo()
+						popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+						popupInfo.setText(u"showDomesticAdvisor")
+						popupInfo.addPopup(inputClass.getData1())
+					else:
+						self.openCity(gc.getPlayer(inputClass.getData1()).getCity(inputClass.getData2()))
 				else:
-					self.updateAppropriateCitySelection()
+					# WTP: a click on any cell of a city row opens the city (ctrl/shift keeps the multi selection)
+					iRow = inputClass.getMouseY()
+					if (self.CurrentState != self.TOTAL_PRODUCTION_STATE and not inputClass.isCtrlKeyDown() and not inputClass.isShiftKeyDown() and iRow >= 0 and iRow < len(self.Cities)):
+						self.openCity(self.Cities[iRow])
+					else:
+						self.updateAppropriateCitySelection()
 
 		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED):
 			if (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL):
@@ -1001,6 +1034,8 @@ class CvDomesticAdvisor:
 						if self.StateWindow[self.CurrentState] != None:
 							self.StateWindow[self.CurrentState].hide()
 						screen.hide(self.StatePages[self.CurrentState][self.CurrentPage] + "ListBackground")
+						if self.CurrentState == self.TRADEROUTE_STATE:
+							screen.hide("TransportOverviewButton")
 						if self.CurrentState not in self.YieldPages or iData not in self.YieldPages:
 							self.CurrentPage = 0
 						self.CurrentState = iData
@@ -1024,7 +1059,14 @@ class CvDomesticAdvisor:
 							self.CurrentPage = new_page
 							self.drawContents()
 				# auto-generated list creation - end - Nightinggale
+				elif (iData == 10002):
+					# WTP: overview of the trade route assignments of all transports
+					self.openTransportOverview()
+					return 0
 				elif (iData == 10001):
+					# WTP: a click on a transport selects it on the map (shift + click: select it here to assign trade routes)
+					if (not inputClass.isShiftKeyDown() and self.selectTransportOnMap(inputClass.getData2())):
+						return 0
 					if (self.selectedSelectionGroupHeadUnitID == inputClass.getData2()):
 						self.selectedSelectionGroupHeadUnitID = -1
 						self.drawContents()
@@ -1032,6 +1074,87 @@ class CvDomesticAdvisor:
 						self.selectedSelectionGroupHeadUnitID = inputClass.getData2()
 						self.drawContents()
 		return 0
+
+	def openTradeLocation(self, iRow):
+		# rows of the exported goods tab: 0 Europe, 1 Africa, 2 Port Royal
+		tScreen = {0: ("showEuropeScreen", "europeScreen", CvScreenEnums.EUROPE_SCREEN), 1: ("showAfricaScreen", "africaScreen", CvScreenEnums.AFRICA_SCREEN), 2: ("showPortRoyalScreen", "portroyalScreen", CvScreenEnums.PORT_ROYAL_SCREEN)}.get(iRow)
+		if tScreen is None:
+			return
+		try:
+			import CvScreensInterface
+			screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+			screen.hideScreen()
+			getattr(CvScreensInterface, tScreen[0])((-1,))
+			# back to the advisor when the trade screen is closed (only if it really opened)
+			if getattr(CvScreensInterface, tScreen[1]).getScreen().isActive():
+				CvScreensInterface.iReturnToDomesticScreen = tScreen[2]
+		except:
+			pass
+
+	def openCity(self, pCity):
+		screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+		screen.hideScreen()
+
+		CyInterface().selectCity(pCity, True)
+
+		# route planning tab: open the governor tab of the city
+		if self.CurrentState == self.IMPORTEXPORT_STATE:
+			try:
+				import CvMainInterface
+				CvMainInterface.AUTOMATION_MANAGMENT_PANEL_UP = True
+				CvMainInterface.BUILDING_MANAGMENT_PANEL_UP = False
+				CvMainInterface.MAP_MANAGMENT_PANEL_UP = False
+			except:
+				pass
+		# domestic market tab: open the domestic market of the city (needs the new DLL, otherwise only the city opens)
+		elif self.CurrentState == self.DOMESTIC_DEMAND_STATE:
+			try:
+				CyGame().openDomesticMarket(pCity.getID())
+			except:
+				pass
+
+		# the advisor opens again when the city screen is left (same as the zoom button of the first column)
+		popupInfo = CyPopupInfo()
+		popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+		popupInfo.setText(u"showDomesticAdvisor")
+		popupInfo.addPopup(pCity.getOwner())
+
+	def openTransportOverview(self):
+		try:
+			if len(self.Transports) == 0:
+				return False
+			import CvTransportRoutesOverview
+			CvTransportRoutesOverview.g_FromHotkey = False
+			screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+			screen.hideScreen()
+			popupInfo = CyPopupInfo()
+			popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+			popupInfo.setText(u"showTransportRoutesOverview")
+			popupInfo.addPopup(gc.getGame().getActivePlayer())
+			return True
+		except:
+			return False
+
+	def selectTransportOnMap(self, iUnitID):
+		try:
+			pUnit = gc.getPlayer(gc.getGame().getActivePlayer()).getUnit(iUnitID)
+			if pUnit is None or pUnit.isNone():
+				return False
+			screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+			screen.hideScreen()
+			CyInterface().selectUnit(pUnit, True, False, True)
+			pUnit.centerCamera()
+			# trade routes tab: open the assign trade routes screen (R); it returns to the advisor when closed
+			if self.CurrentState == self.TRADEROUTE_STATE:
+				import CvScreensInterface
+				CvScreensInterface.tradeRoutesAdvisor.fReturnToDomesticTime = time.time()
+				popupInfo = CyPopupInfo()
+				popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
+				popupInfo.setText(u"showTradeRoutesAdvisor")
+				popupInfo.addPopup(pUnit.getOwner())
+			return True
+		except:
+			return False
 
 	def updateAppropriateCitySelection(self):
 		nCities = gc.getPlayer(gc.getGame().getActivePlayer()).getNumCities()
@@ -1067,6 +1190,8 @@ class CvDomesticAdvisor:
 		iScreen, eWidgetType, iData1, iData2, bOption = argsList
 
 		if eWidgetType == WidgetTypes.WIDGET_GENERAL:
+			if iData1 == 10002:
+				return localText.getText("TXT_KEY_WTP_TRANSPORT_OVERVIEW_BUTTON", ())
 			if iData1 == self.GENERAL_STATE:
 				return localText.getText("TXT_KEY_DOMESTIC_ADVISOR_STATE_GENERAL", ())
 			elif iData1 == self.DOMESTIC_DEMAND_STATE:

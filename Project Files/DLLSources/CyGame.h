@@ -167,6 +167,7 @@ public:
 	ColorTypes getReplayMessageColor(int i) const;
 	std::wstring getReplayMessageText(int i) const;
 	uint getNumReplayMessages() const;
+	void openDomesticMarket(int iCityID) const; // WTP: opens the domestic market popup of a city
 	CyReplayInfo* getReplayInfo() const;
 	void saveReplay(int iPlayer);
 	void addPlayer(int /*PlayerTypes*/ eNewPlayer, int /*LeaderHeadTypes*/ eLeader, int /*CivilizationTypes*/ eCiv);

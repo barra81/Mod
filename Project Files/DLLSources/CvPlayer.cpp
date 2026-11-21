@@ -597,7 +597,7 @@ int CvPlayer::startingPlotRange() const
 
 	// PatchMod: Spread out start locs START
 	iRange = (GC.getMap().maxStepDistance() + 60);
-//	iRange = (GC.getMapINLINE().maxStepDistance() + 40);
+//	iRange = (GC.getMap().maxStepDistance() + 40);
 	// PatchMod: Spread out start locs END
 
 	iRange *= GLOBAL_DEFINE_STARTING_DISTANCE_PERCENT;
@@ -19954,6 +19954,84 @@ bool CvPlayer::isIndependenceMilitaryUnit(const CvUnit& kUnit)
 	return kUnit.getDomainType() == DOMAIN_LAND && !kUnit.isOnlyDefensive() && !kUnit.isUnarmed();
 }
 
+// WTP: waypoint of a native settlement
+int CvPlayer::getNativeWaypoint(int iPlotIndex) const
+{
+	for (size_t i = 0; i + 1 < m_aiNativeWaypoints.size(); i += 2)
+	{
+		if (m_aiNativeWaypoints[i] == iPlotIndex)
+		{
+			return m_aiNativeWaypoints[i + 1];
+		}
+	}
+	return -1;
+}
+
+void CvPlayer::setNativeWaypoint(int iPlotIndex, int iCityId)
+{
+	// the banner of the settlement shows the waypoint marker
+	CvPlot* pWpPlot = GC.getMap().plotByIndexINLINE(iPlotIndex);
+	if (pWpPlot != NULL && pWpPlot->isCity())
+	{
+		pWpPlot->getPlotCity()->setBillboardDirty(true);
+	}
+
+	for (size_t i = 0; i + 1 < m_aiNativeWaypoints.size(); i += 2)
+	{
+		if (m_aiNativeWaypoints[i] == iPlotIndex)
+		{
+			if (iCityId < 0)
+			{
+				m_aiNativeWaypoints.erase(m_aiNativeWaypoints.begin() + i, m_aiNativeWaypoints.begin() + i + 2);
+			}
+			else
+			{
+				m_aiNativeWaypoints[i + 1] = iCityId;
+			}
+			return;
+		}
+	}
+	if (iCityId >= 0)
+	{
+		m_aiNativeWaypoints.push_back(iPlotIndex);
+		m_aiNativeWaypoints.push_back(iCityId);
+	}
+}
+
+// a unit that was just created in a native settlement of this player's mission / trading post: it goes to the waypoint. The returned sentence
+// is added to the message of the settlement (which centers on the settlement, where the unit is)
+CvWString CvPlayer::sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity)
+{
+	CvWString szResult;
+	if (pUnit == NULL || pNativeCity == NULL || !isHuman())
+	{
+		return szResult;
+	}
+	const int iCityId = getNativeWaypoint(GC.getMap().plotNum(pNativeCity->getX_INLINE(), pNativeCity->getY_INLINE()));
+	if (iCityId < 0)
+	{
+		return szResult;
+	}
+	CvCity* pTarget = getCity(iCityId);
+	CvSelectionGroup* pGroup = pUnit->getGroup();
+	if (pTarget == NULL || pGroup == NULL)
+	{
+		return szResult;
+	}
+	int iPathTurns = 0;
+	const bool bPath = pGroup->generatePath(pUnit->plot(), pTarget->plot(), 0, false, &iPathTurns);
+	pGroup->pushMission(MISSION_MOVE_TO, pTarget->getX_INLINE(), pTarget->getY_INLINE());
+	if (bPath)
+	{
+		szResult = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT", pUnit->getNameKey(), pTarget->getNameKey(), std::max(1, iPathTurns));
+	}
+	else
+	{
+		szResult = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT_NOPATH", pUnit->getNameKey(), pTarget->getNameKey());
+	}
+	return szResult;
+}
+
 void CvPlayer::applyMissionaryPoints(CvCity* pCity)
 {
 	FAssert(pCity->getOwnerINLINE() == getID());
@@ -19987,6 +20065,12 @@ void CvPlayer::applyMissionaryPoints(CvCity* pCity)
 								gDLL->getEventReporterIFace()->missionaryConvertedUnit(pUnit);
 
 								CvWString szBuffer = gDLL->getText("TXT_KEY_NATIVES_CONVERTED", pCity->getNameKey());
+								// WTP: the unit goes to the waypoint of the settlement, the message tells it
+								const CvWString szWaypoint = GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pUnit, pCity);
+								if (!szWaypoint.empty())
+								{
+									szBuffer += L" " + szWaypoint;
+								}
 								gDLL->UI().addPlayerMessage(ePlayer, true, GC.getEVENT_MESSAGE_TIME(), szBuffer, pCity, "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, GC.getUnitInfo(eUnit).getButton(), COLOR_UNIT_TEXT, true, true);
 
 								changeMissionaryPoints(ePlayer, -iThreshold);
@@ -20126,6 +20210,12 @@ void CvPlayer::applyTradePostMestizoPoints(CvCity* pCity)
 							gDLL->getEventReporterIFace()->missionaryConvertedUnit(pUnit);
 
 							CvWString szBuffer = gDLL->getText("TXT_KEY_TRADE_POST_MESTIZO_CREATED", pCity->getNameKey());
+							// WTP: the unit goes to the waypoint of the settlement, the message tells it
+							const CvWString szWaypoint = GET_PLAYER(ePlayer).sendUnitToNativeWaypoint(pUnit, pCity);
+							if (!szWaypoint.empty())
+							{
+								szBuffer += L" " + szWaypoint;
+							}
 							gDLL->UI().addPlayerMessage(ePlayer, true, GC.getEVENT_MESSAGE_TIME(), szBuffer, pCity, "AS2D_UNIT_GREATPEOPLE", MESSAGE_TYPE_INFO, GC.getUnitInfo(eUnit).getButton(), COLOR_UNIT_TEXT, true, true);
 
 							changeTradePostMestizoPoints(ePlayer, -iThreshold);

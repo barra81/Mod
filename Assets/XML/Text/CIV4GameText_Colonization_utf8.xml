@@ -225,6 +225,42 @@
 		<Hungarian>Település megvizsgálása</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_HEADER</Tag>
+		<English>Waypoint for units from %s1_Village: choose the destination city</English>
+		<German>Wegpunkt für Einheiten aus %s1_Village: Zielstadt wählen</German>
+		<Russian>Путевая точка для юнитов из %s1_Village: выберите город назначения</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_REMOVE</Tag>
+		<English>Remove waypoint</English>
+		<German>Wegpunkt entfernen</German>
+		<Russian>Удалить путевую точку</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_UNIT_SENT</Tag>
+		<English>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] is on its way to %s2_City (waypoint), about %d3 turns.</English>
+		<German>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] ist auf dem Weg nach %s2_City (Wegpunkt), voraussichtlich %d3 Runden.</German>
+		<Russian>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] направляется в %s2_City (путевая точка), ходов в пути: около %d3.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_UNIT_SENT_NOPATH</Tag>
+		<English>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] is on its way to %s2_City (waypoint).</English>
+		<German>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] ist auf dem Weg nach %s2_City (Wegpunkt).</German>
+		<Russian>[COLOR_YELLOW]%s1_Unit[COLOR_REVERT] направляется в %s2_City (путевая точка).</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_COLUMN</Tag>
+		<English>Waypoint</English>
+		<German>Wegpunkt</German>
+		<Russian>Путевая точка</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_BANNER</Tag>
+		<English> [ICON_MOVES]</English>
+		<German> [ICON_MOVES]</German>
+		<Russian> [ICON_MOVES]</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_SETTLE_NEW_CITY_NAME</Tag>
 		<English>Settlement name :</English>
 		<Portuguese>Nome da colônia:</Portuguese>
@@ -2224,13 +2260,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ACTION_AUTOMATE_TRANSPORT_FULL_HELP</Tag>
-		<English>Fully automate the transport</English>
+		<English>Fully automate the transport[NEWLINE][NEWLINE]Trade Route Manager: [COLOR:140:255:40:255]Shift+Alt+T[COLOR_REVERT]</English>
 		<Portuguese>Automatizar transporte</Portuguese>
 		<French>Automatiser complètement le transport</French>
-		<German>Einheit transportiert Waren komplett automatisch zwischen den Siedlungen</German>
+		<German>Einheit transportiert Waren komplett automatisch zwischen den Siedlungen[NEWLINE][NEWLINE]Handelsrouten-Manager: [COLOR:140:255:40:255]Shift+Alt+T[COLOR_REVERT]</German>
 		<Italian>Automatizza totalmente il trasporto</Italian>
 		<Spanish>Automatizar completamente el transporte</Spanish>
-		<Russian>Автоматизировать транспорт для доставки товаров</Russian>
+		<Russian>Автоматизировать транспорт для доставки товаров[NEWLINE][NEWLINE]Менеджер торговых маршрутов: [COLOR:140:255:40:255]Shift+Alt+T[COLOR_REVERT]</Russian>
 		<Hungarian>A szállítás teljes automatizálása</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -2652,6 +2688,17 @@
 		<Hungarian> - kevés élelem</Hungarian>
 	</TEXT>
 	<TEXT>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_INTERFACE_TRADE_ROUTE_MANAGER</Tag>
+		<English>[COLOR_YELLOW]Trade Route Manager[COLOR_REVERT]: the overview of all transports and their trade routes. Hotkey: [COLOR:140:255:40:255]%s1[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_YELLOW]Gerenciador de rotas comerciais[COLOR_REVERT]: a visão geral de todos os transportes e suas rotas comerciais. Tecla de atalho: [COLOR:140:255:40:255]%s1[COLOR_REVERT]</Portuguese>
+		<French>[COLOR_YELLOW]Gestionnaire de routes commerciales[COLOR_REVERT] : l'aperçu de tous les transports et de leurs routes commerciales. Raccourci : [COLOR:140:255:40:255]%s1[COLOR_REVERT]</French>
+		<German>[COLOR_YELLOW]Handelsrouten-Manager[COLOR_REVERT]: die Übersicht aller Transporte und ihrer Handelsrouten. Tastenkürzel: [COLOR:140:255:40:255]%s1[COLOR_REVERT]</German>
+		<Italian>[COLOR_YELLOW]Gestore delle rotte commerciali[COLOR_REVERT]: la panoramica di tutti i trasporti e delle loro rotte commerciali. Scorciatoia: [COLOR:140:255:40:255]%s1[COLOR_REVERT]</Italian>
+		<Spanish>[COLOR_YELLOW]Gestor de rutas comerciales[COLOR_REVERT]: la vista general de todos los transportes y sus rutas comerciales. Atajo: [COLOR:140:255:40:255]%s1[COLOR_REVERT]</Spanish>
+		<Russian>[COLOR_YELLOW]Менеджер торговых маршрутов[COLOR_REVERT]: обзор всех транспортов и их торговых маршрутов. Горячая клавиша: [COLOR:140:255:40:255]%s1[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_YELLOW]Kereskedelmi útvonalak kezelője[COLOR_REVERT]: az összes szállítás és kereskedelmi útvonaluk áttekintése. Gyorsbillentyű: [COLOR:140:255:40:255]%s1[COLOR_REVERT]</Hungarian>
 		<Tag>TXT_KEY_AUTO_ASSIGN_MENU_LOW_FOOD</Tag>
 		<English> - little [ICON_FOOD]</English>
 		<Portuguese> - pouca [ICON_FOOD]</Portuguese>

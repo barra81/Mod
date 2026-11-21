@@ -4,6 +4,8 @@
 
 //#include "CvEnums.h"
 
+static const int WTP_NATIVE_WAYPOINT_POPUP = 1002; // data1 = plot index of the native settlement
+static const int WTP_NATIVE_WAYPOINT_REMOVE = 9999; // button id: remove the waypoint
 class CvSavegameReader;
 class CvSavegameWriter;
 

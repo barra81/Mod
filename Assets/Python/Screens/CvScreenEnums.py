@@ -42,6 +42,8 @@ TRADE_ROUTES_ADVISOR = 31
 AFRICA_SCREEN = 32
 # RaR, ray, Port Royal
 PORT_ROYAL_SCREEN = 33
+# WTP: overview of the trade route assignments of all transports
+TRANSPORT_ROUTES_OVERVIEW = 34
 
 MAIN_INTERFACE = 99
 

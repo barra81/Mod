@@ -9621,6 +9621,15 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 		szBuffer.append(CvWString::format(L" %c", GC.getCivilizationInfo(GET_PLAYER(pCity->getMissionaryPlayer()).getCivilizationType()).getMissionaryChar()));
 	}
 
+	// WTP: marker for a native settlement with a waypoint of the active player
+	if (GC.getGameINLINE().getActivePlayer() != NO_PLAYER && GET_PLAYER(pCity->getOwnerINLINE()).isNative())
+	{
+		if (GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getNativeWaypoint(GC.getMap().plotNumINLINE(pCity->getX_INLINE(), pCity->getY_INLINE())) >= 0)
+		{
+			szBuffer.append(CvWString::format(L" %c", GC.getYieldInfo(YIELD_HORSES).getChar()));
+		}
+	}
+
 	// WTP, ray, Native Trade Posts - START
 	if (pCity->getTradePostPlayer() != NO_PLAYER)
 	{
