@@ -550,16 +550,56 @@ class CvMainInterface:
 		return (szText[:iPos], szNumber, szText[iPos + len(szNumber):])
 
 	# width of a text of the HUD font in pixels (the game measures it; if it cannot, an estimate by the characters)
-	def getHudTextWidth( self, szText ):
+	def getHudTextWidth( self, szText, iFont = None ):
 		if len(szText) == 0:
 			return 0
 		try:
-			iWidth = CyInterface().determineWidth(self.setFontSize(szText, 0))
+			if iFont is None:
+				iFont = STANDARD_FONT_SIZE
+			iWidth = CyInterface().determineWidth(u"<font=%s>%s</font>" % (iFont, szText))
 			if iWidth > 0:
 				return iWidth
 		except:
 			pass
 		return int(len(szText) * 11)
+
+	# WTP: the geometry of the top left corner follows the round buttons of the top HUD: their middle is half the height of the top HUD (8 percent
+	# of the screen height), their size is twice SMALL_BUTTON_SIZE and the visible circle is about 0.61 of it
+	# On a screen of 1300 pixels of height and more (1440p) the corner keeps its old layout: gold at 17 / 17, the pile at 60 / 8, the two lines in
+	# the standard font at 42 and 62. Below that the corner follows the buttons.
+	def isHudLegacy( self ):
+		try:
+			return CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE).getYResolution() >= 1300
+		except:
+			return False
+
+	def getHudCenterY( self ):
+		return TOP_CENTER_HUD_HEIGHT / 2
+
+	def getHudLeft( self ):
+		if self.isHudLegacy():
+			return 17
+		return 8
+
+	def getGoldTextY( self ):
+		if self.isHudLegacy():
+			return 17
+		return self.getHudCenterY() - 14
+
+	def getGoldPileSize( self ):
+		if self.isHudLegacy() or SMALL_BUTTON_SIZE >= 36:
+			return 50
+		return 40
+
+	def getGoldPileX( self ):
+		if self.isHudLegacy():
+			return 60
+		return 51
+
+	def getGoldPileY( self ):
+		if self.isHudLegacy():
+			return 8
+		return self.getHudCenterY() - self.getGoldPileSize() / 2
 
 	def hideUpkeepLine( self, screen, szName ):
 		for szPart in ("Text", "Sign", "Amount", "Rest"):
@@ -885,7 +925,7 @@ class CvMainInterface:
 			screen.hide( szButtonID )
 
 	# GOLD PILE
-		screen.addDDSGFC("GoldPile", ArtFileMgr.getInterfaceArtInfo("SCREEN_GOLD_PILE").getPath(), 60, 8, 50, 50, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.addDDSGFC("GoldPile", ArtFileMgr.getInterfaceArtInfo("SCREEN_GOLD_PILE").getPath(), self.getGoldPileX(), self.getGoldPileY(), self.getGoldPileSize(), self.getGoldPileSize(), WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.setImageShape("GoldPile", ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 		screen.setHitMargins("GoldPile", 30, 30)
 		self.appendtoHideState(screen, "GoldPile", HIDE_TYPE_MAP, HIDE_LEVEL_HIDE)
@@ -2502,27 +2542,46 @@ class CvMainInterface:
 
 			if (gc.getPlayer(ePlayer).isAlive()):
 				szText = CyGameTextMgr().getGoldStr(ePlayer)
-				screen.setLabel("GoldText", "Background", self.setFontSize(szText, 1), CvUtil.FONT_LEFT_JUSTIFY, 17, 17, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TIMETEXT_ID, -1 )
+				screen.setLabel("GoldText", "Background", self.setFontSize(szText, 1), CvUtil.FONT_LEFT_JUSTIFY, self.getHudLeft(), self.getGoldTextY(), -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TIMETEXT_ID, -1 )
 				# WTP: the gold pile icon follows the amount: up to 4 digits it keeps its place, from 5 digits every digit moves it 11 pixels to the right (5 = 75, 6 = 86), so the amount only just touches it
 				try:
 					iDigits = len([c for c in unicode(szText) if c.isdigit()])
-					iPileX = 60
+					iPileX = self.getGoldPileX()
 					if iDigits > 4:
-						iPileX = 20 + iDigits * 11
-					screen.moveItem("GoldPile", iPileX, 8, -0.3)
+						iPileX = self.getGoldPileX() - 40 + iDigits * 11
+					screen.moveItem("GoldPile", iPileX, self.getGoldPileY(), -0.3)
 				except:
 					pass
+				# WTP: the gold amount and the pile are centered on the round buttons of the top HUD (their middle is 42 pixels from the top)
 				# WTP: below the gold the military upkeep, below that the domestic market income of the last turn
 				pPlayer = gc.getPlayer(ePlayer)
 				iUpkeep = pPlayer.getMilitaryUpkeep()
 				# the two amounts end at the same place (right aligned): every line is split at its number into text, amount and rest
 				iIncome = pPlayer.getDomesticMarketIncome()
+				# on a screen below 1300 pixels of height the two lines use the font one step smaller, so they stay clear of the buttons of the top HUD
+				iHudFont = STANDARD_FONT_SIZE
+				if yResolution < 1300:
+					iHudFont = STANDARD_FONT_SIZE - 1
+				# in bold (the font tag 3b is the bold one of font 3)
+				iHudSize = iHudFont
+				iHudFont = u"%db" % iHudFont
+				if self.isHudLegacy():
+					iHudFont = u"%d" % iHudSize # (1440p: the standard font, not bold, as before)
+				# the first line starts right below the lower edge of the round buttons (the visible circle is 0.61 of the button), the second one a
+				# line further (the line distance follows the font: 20 pixels from font 3 on, 17 below)
+				iLineY1 = self.getHudCenterY() + int(0.31 * 2 * SMALL_BUTTON_SIZE) - 1
+				iLineY2 = iLineY1 + 20
+				if iHudSize < 3:
+					iLineY2 = iLineY1 + 17
+				if self.isHudLegacy():
+					iLineY1 = 42
+					iLineY2 = 62
 				aLines = []
 				if (iUpkeep > 0):
-					aLines.append(("MilitaryUpkeep", 42, self.splitAtNumber(localText.getText("TXT_KEY_MILITARY_UPKEEP_GOLD_STR", (iUpkeep,)), iUpkeep)))
+					aLines.append(("MilitaryUpkeep", iLineY1, self.splitAtNumber(localText.getText("TXT_KEY_MILITARY_UPKEEP_GOLD_STR", (iUpkeep,)), iUpkeep)))
 				else:
 					self.hideUpkeepLine(screen, "MilitaryUpkeep")
-				aLines.append(("DomesticIncome", 62, self.splitAtNumber(localText.getText("TXT_KEY_DOMESTIC_MARKET_INCOME_STR", (iIncome,)), iIncome)))
+				aLines.append(("DomesticIncome", iLineY2, self.splitAtNumber(localText.getText("TXT_KEY_DOMESTIC_MARKET_INCOME_STR", (iIncome,)), iIncome)))
 				# the sign (+ / -) of a line is its own label, the signs end at the same place, then a gap, then the amounts end at the same place
 				iPrefixW = 0
 				iSignW = 0
@@ -2536,16 +2595,16 @@ class CvMainInterface:
 						szSign = szPrefix[-1]
 						szPrefix = szPrefix[:-1].rstrip()
 					aSplit.append((szName, iY, szPrefix, szSign, aParts[1], aParts[2]))
-					iPrefixW = max(iPrefixW, self.getHudTextWidth(szPrefix))
-					iSignW = max(iSignW, self.getHudTextWidth(szSign))
-					iAmountW = max(iAmountW, self.getHudTextWidth(aParts[1]))
-				iSignX = 17 + iPrefixW + iGap + iSignW
+					iPrefixW = max(iPrefixW, self.getHudTextWidth(szPrefix, iHudFont))
+					iSignW = max(iSignW, self.getHudTextWidth(szSign, iHudFont))
+					iAmountW = max(iAmountW, self.getHudTextWidth(aParts[1], iHudFont))
+				iSignX = self.getHudLeft() + iPrefixW + iGap + iSignW
 				iRightX = iSignX + iGap + iAmountW
 				for (szName, iY, szPrefix, szSign, szAmount, szRest) in aSplit:
-					screen.setLabel(szName + "Text", "Background", self.setFontSize(szPrefix, 0), CvUtil.FONT_LEFT_JUSTIFY, 17, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-					screen.setLabel(szName + "Sign", "Background", self.setFontSize(szSign, 0), CvUtil.FONT_RIGHT_JUSTIFY, iSignX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-					screen.setLabel(szName + "Amount", "Background", self.setFontSize(szAmount, 0), CvUtil.FONT_RIGHT_JUSTIFY, iRightX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-					screen.setLabel(szName + "Rest", "Background", self.setFontSize(szRest, 0), CvUtil.FONT_LEFT_JUSTIFY, iRightX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel(szName + "Text", "Background", (u"<font=%s>%s</font>" % (iHudFont, szPrefix)), CvUtil.FONT_LEFT_JUSTIFY, self.getHudLeft(), iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel(szName + "Sign", "Background", (u"<font=%s>%s</font>" % (iHudFont, szSign)), CvUtil.FONT_RIGHT_JUSTIFY, iSignX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel(szName + "Amount", "Background", (u"<font=%s>%s</font>" % (iHudFont, szAmount)), CvUtil.FONT_RIGHT_JUSTIFY, iRightX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel(szName + "Rest", "Background", (u"<font=%s>%s</font>" % (iHudFont, szRest)), CvUtil.FONT_LEFT_JUSTIFY, iRightX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 
 		return 0
 
