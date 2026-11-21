@@ -366,6 +366,7 @@ class CvMainInterface:
 	iTipHintLines = 0
 	iPreviewHintLines = 0
 	iTick = 0 # counted in update() (time.time() of the game is far too coarse)
+	fTopRingCheck = -10000.0 # WTP: the last check of the ships in the ports for the rings of the top bar (ms of getTipNow)
 	iWidgetHelpTick = -1000
 	bTipFrozen = False # the hover tooltip is frozen (key X): the cursor can be moved onto it, right click: Colopedia, Esc: close
 	tTipLayout = None
@@ -1062,18 +1063,21 @@ class CvMainInterface:
 		screen.setImageShape("EuropeScreenButton", ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 		screen.setHitMargins("EuropeScreenButton", self.ADVISOR_BUTTON_SIZE / 6, self.ADVISOR_BUTTON_SIZE / 6)
 		self.appendtoHideState(screen, "EuropeScreenButton", HIDE_TYPE_MAP, HIDE_LEVEL_HIDE)
+		self.addTopPortRing(screen, "WtpTopPortRingEurope", iBtnX, (TOP_CENTER_HUD_HEIGHT - self.ADVISOR_BUTTON_SIZE) / 2)
 		iBtnX += self.ADVISOR_BUTTON_SPACING
 
 		screen.setImageButton("AfricaScreenButton", ArtFileMgr.getInterfaceArtInfo("INTERFACE_AFRICA").getPath(), iBtnX, (TOP_CENTER_HUD_HEIGHT - self.ADVISOR_BUTTON_SIZE) / 2, self.ADVISOR_BUTTON_SIZE, self.ADVISOR_BUTTON_SIZE, WidgetTypes.WIDGET_ACTION, gc.getControlInfo(ControlTypes.CONTROL_AFRICA_SCREEN).getActionInfoIndex(), -1 )
 		screen.setImageShape("AfricaScreenButton", ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 		screen.setHitMargins("AfricaScreenButton", self.ADVISOR_BUTTON_SIZE / 6, self.ADVISOR_BUTTON_SIZE / 6)
 		self.appendtoHideState(screen, "AfricaScreenButton", HIDE_TYPE_MAP, HIDE_LEVEL_HIDE)
+		self.addTopPortRing(screen, "WtpTopPortRingAfrica", iBtnX, (TOP_CENTER_HUD_HEIGHT - self.ADVISOR_BUTTON_SIZE) / 2)
 		iBtnX += self.ADVISOR_BUTTON_SPACING
 
 		screen.setImageButton("PortRoyalScreenButton", ArtFileMgr.getInterfaceArtInfo("INTERFACE_PORT_ROYAL").getPath(), iBtnX, (TOP_CENTER_HUD_HEIGHT - self.ADVISOR_BUTTON_SIZE) / 2, self.ADVISOR_BUTTON_SIZE, self.ADVISOR_BUTTON_SIZE, WidgetTypes.WIDGET_ACTION, gc.getControlInfo(ControlTypes.CONTROL_PORT_ROYAL_SCREEN).getActionInfoIndex(), -1 )
 		screen.setImageShape("PortRoyalScreenButton", ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 		screen.setHitMargins("PortRoyalScreenButton", self.ADVISOR_BUTTON_SIZE / 6, self.ADVISOR_BUTTON_SIZE / 6)
 		self.appendtoHideState(screen, "PortRoyalScreenButton", HIDE_TYPE_MAP, HIDE_LEVEL_HIDE)
+		self.addTopPortRing(screen, "WtpTopPortRingPortRoyal", iBtnX, (TOP_CENTER_HUD_HEIGHT - self.ADVISOR_BUTTON_SIZE) / 2)
 		iBtnX += self.ADVISOR_BUTTON_SPACING
 
 		screen.setImageButton("DiplomacyButton", ArtFileMgr.getInterfaceArtInfo("INTERFACE_GENERAL_DIPLOMACY").getPath(), iBtnX, (TOP_CENTER_HUD_HEIGHT - self.ADVISOR_BUTTON_SIZE) / 2, self.ADVISOR_BUTTON_SIZE, self.ADVISOR_BUTTON_SIZE, WidgetTypes.WIDGET_ACTION, gc.getControlInfo(ControlTypes.CONTROL_DIPLOMACY).getActionInfoIndex(), -1 )
@@ -1757,6 +1761,7 @@ class CvMainInterface:
 			self.SetHideState(screen, HIDE_TYPE_GLOBAL, iLevel)
 		else:
 			self.SetHideState(screen, HIDE_TYPE_MAP, iLevel)
+			self.updateTopPortRings(True)
 
 		screen.updateMinimapVisibility()
 
@@ -2097,6 +2102,43 @@ class CvMainInterface:
 
 	# Will hide and show the selection buttons and their associated buttons
 	# WTP: is an own ship in the port of this sail command (Europe / Africa / Port Royal)?
+	# WTP: the yellow ring around the buttons of Europe, Africa and Port Royal in the top bar when an own ship lies in that port (the same ring as around
+	# the sail buttons of a transport). The rings are made with the buttons (hidden with them); this shows the ones of the ports with a ship.
+	def addTopPortRing(self, screen, szName, iX, iY):
+		iSize = self.ADVISOR_BUTTON_SIZE * 4 / 5
+		iPad = (self.ADVISOR_BUTTON_SIZE - iSize) / 2
+		screen.addDDSGFC(szName, "Art/Interface/Game Hud/Actions/port_ring.dds", iX + iPad, iY + iPad, iSize, iSize, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setHitTest(szName, HitTestTypes.HITTEST_NOHIT)
+		self.appendtoHideState(screen, szName, HIDE_TYPE_MAP, HIDE_LEVEL_HIDE)
+
+	def updateTopPortRings(self, bForce):
+		try:
+			if CyInterface().isCityScreenUp() or CyEngine().isGlobeviewUp():
+				return
+			if CyInterface().getShowInterface() not in (InterfaceVisibility.INTERFACE_SHOW, InterfaceVisibility.INTERFACE_HIDE):
+				return
+			fNow = self.getTipNow()
+			if not bForce and fNow - self.fTopRingCheck < 1000.0:
+				return
+			self.fTopRingCheck = fNow
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
+			dIn = {UnitTravelStates.UNIT_TRAVEL_STATE_IN_EUROPE: False, UnitTravelStates.UNIT_TRAVEL_STATE_IN_AFRICA: False, UnitTravelStates.UNIT_TRAVEL_STATE_IN_PORT_ROYAL: False}
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			(pUnit, iter) = pPlayer.firstUnit()
+			while (pUnit):
+				eState = pUnit.getUnitTravelState()
+				if eState in dIn and not dIn[eState]:
+					if gc.getUnitInfo(pUnit.getUnitType()).getDomainType() == DomainTypes.DOMAIN_SEA and not pUnit.isCargo() and not pUnit.isDelayedDeath():
+						dIn[eState] = True
+				(pUnit, iter) = pPlayer.nextUnit(iter)
+			for (szName, eState) in (("WtpTopPortRingEurope", UnitTravelStates.UNIT_TRAVEL_STATE_IN_EUROPE), ("WtpTopPortRingAfrica", UnitTravelStates.UNIT_TRAVEL_STATE_IN_AFRICA), ("WtpTopPortRingPortRoyal", UnitTravelStates.UNIT_TRAVEL_STATE_IN_PORT_ROYAL)):
+				if dIn[eState]:
+					screen.show(szName)
+				else:
+					screen.hide(szName)
+		except:
+			pass
+
 	def isOwnShipInPort(self, iAction):
 		try:
 			# the sail buttons are automate actions (AUTOMATE_SAIL_TO_*), recognized by their button art (the Africa / Port Royal
@@ -12097,6 +12139,7 @@ class CvMainInterface:
 			CyInterface().clearSelectionList()
 		self.checkReopenTradeWindow()
 		self.checkTradeCityChange()
+		self.updateTopPortRings(False)
 		self.iTick += 1
 		self.updateTerritorialInfluenceEditor()
 		self.updatePioneerPlanEditor()
