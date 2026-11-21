@@ -10000,16 +10000,22 @@ class CvMainInterface:
 				if pCapital is None:
 					pCapital = pCity
 				aCities.append((pCity.getName(), pCity.getX(), pCity.getY()))
-			if pPlayer.isNative() and pCapital is not None:
-				try:
-					pBest = pPlayer.getCapitalCity()
-					if pBest is not None and not pBest.isNone() and pBest.isRevealed(iTeam, False):
-						pCapital = pBest
-				except:
-					pass
+			if pPlayer.isNative():
+				# (a tribe whose village is not known yet is in the list too: its messages (raids) still offer the talk, only the place is missing)
+				iCapX = -1
+				iCapY = -1
+				if pCapital is not None:
+					try:
+						pBest = pPlayer.getCapitalCity()
+						if pBest is not None and not pBest.isNone() and pBest.isRevealed(iTeam, False):
+							pCapital = pBest
+					except:
+						pass
+					iCapX = pCapital.getX()
+					iCapY = pCapital.getY()
 				for szName in (pPlayer.getName(), pPlayer.getCivilizationShortDescription(0), pPlayer.getCivilizationAdjective(0)):
 					if szName and len(szName) >= 3:
-						aNatives.append((szName, ePlayer, pCapital.getX(), pCapital.getY()))
+						aNatives.append((szName, ePlayer, iCapX, iCapY))
 		aCities.sort(key = lambda t: -len(t[0]))
 
 		for i in range(len(aszMessages)):
