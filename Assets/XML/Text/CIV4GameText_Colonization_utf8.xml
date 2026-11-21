@@ -4118,11 +4118,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRADE_POST_FAILED</Tag>
-		<English>Your native trader failed to set up a trading post in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</English>
+		<English>Your native trader [COLOR_NEGATIVE_TEXT]failed to set up a trading post[COLOR_REVERT] in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</English>
 		<Portuguese>Seu comerciante nativo não conseguiu configurar uma feitoria em [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</Portuguese>
 		<French>Votre marchand a échoué à établir un comptoir de commerce à [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</French>
-		<German>Eurem Ureinwohnerhändler ist es nicht gelungen, in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] einen Handelsposten einzurichten.</German>
-		<Russian>Наш торговец с индейцами не смог договориться об установке торгового поста в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT]. Кажется, с него сняли скальп...</Russian>
+		<German>Eurem Ureinwohnerhändler ist es [COLOR_NEGATIVE_TEXT]nicht gelungen[COLOR_REVERT], in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] einen Handelsposten einzurichten.</German>
+		<Russian>Наш торговец с индейцами [COLOR_NEGATIVE_TEXT]не смог договориться[COLOR_REVERT] об установке торгового поста в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT]. Кажется, с него сняли скальп...</Russian>
 		<Hungarian>Az Indián kereskedőd nem tudott Kereskedelmi Állomást létesíteni [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] faluban.</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -4147,11 +4147,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISSION_FAILED</Tag>
-		<English>Milord, your missionary failed to establish a mission in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</English>
+		<English>Milord, your missionary [COLOR_NEGATIVE_TEXT]failed to establish a mission[COLOR_REVERT] in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</English>
 		<Portuguese>Milorde, seu missionário não conseguiu estabelecer uma missão em [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</Portuguese>
 		<French>Sire, votre missionnaire a échoué à établir une mission à [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</French>
-		<German>Milord, Eurem Missionar ist es nicht gelungen, in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] eine Mission zu errichten.</German>
-		<Russian>Милорд, нашему миссионеру не удалось договориться с индейцами об установке миссии в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT]. Помолимся за него, братья...</Russian>
+		<German>Milord, Eurem Missionar ist es [COLOR_NEGATIVE_TEXT]nicht gelungen[COLOR_REVERT], in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] eine Mission zu errichten.</German>
+		<Russian>Милорд, нашему миссионеру [COLOR_NEGATIVE_TEXT]не удалось договориться[COLOR_REVERT] с индейцами об установке миссии в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT]. Помолимся за него, братья...</Russian>
 		<Hungarian>Uram, a Misszionáriusodnak nem sikerült missziót alapítania [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] faluban.</Hungarian>
 	</TEXT>
 	<TEXT>
