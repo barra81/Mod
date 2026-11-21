@@ -41769,6 +41769,7 @@
 			<ImprovementsRequired/>
 			<RoutesRequired/>
 			<Events>
+				<Event>EVENT_CORRUPT_STATESMAN_4</Event>
 				<Event>EVENT_CORRUPT_STATESMAN_1</Event>
 				<Event>EVENT_CORRUPT_STATESMAN_2</Event>
 				<Event>EVENT_CORRUPT_STATESMAN_3</Event>

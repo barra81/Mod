@@ -1372,6 +1372,11 @@ void CyPlayer::NBMOD_DecreaseMaxTaxRate()
 	if (m_pPlayer)
 		pointer(CREATE_ASSERT_DATA)->NBMOD_DecreaseMaxTaxRate();
 }
+
+int CyPlayer::NBMOD_ChangeMaxTaxRate(int iChange)
+{
+	return m_pPlayer ? pointer(CREATE_ASSERT_DATA)->NBMOD_ChangeMaxTaxRate(iChange) : 0;
+}
 // TAC - Python Export - Ray - END
 
 

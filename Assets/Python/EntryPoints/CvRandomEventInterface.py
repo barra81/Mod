@@ -871,6 +871,57 @@ def getHelpFestivity5(argsList):
 	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_RELATION_KING_INCREASE", (event.getGenericParameter(3), king.getCivilizationAdjectiveKey()))
 	return szHelp
 
+CORRUPT4_TAX_DECREASE = 2
+CORRUPT4_MAX_DECREASE = 1
+
+def applyCorruptStatesman4(argsList):
+	eEvent = argsList[1]
+	event = gc.getEventInfo(eEvent)
+	kTriggeredData = argsList[0]
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	if player.isNone():
+		return
+	eking = player.getParent()
+	king = gc.getPlayer(eking)
+	player.AI_changeAttitudeExtra(eking, event.getGenericParameter(3))
+	king.AI_changeAttitudeExtra(kTriggeredData.ePlayer, event.getGenericParameter(3))
+	player.NBMOD_ChangeMaxTaxRate(-CORRUPT4_MAX_DECREASE)
+	iTaxDecrease = min(CORRUPT4_TAX_DECREASE, player.getTaxRate())
+	if iTaxDecrease > 0:
+		player.changeTaxRate(-iTaxDecrease)
+	city = player.getCity(kTriggeredData.iCityId)
+	if city is None or city.isNone() or city.getOwner() != player.getID():
+		return
+	iStatesmanClass = gc.getInfoTypeForString("UNITCLASS_STATESMAN")
+	if iStatesmanClass != -1:
+		_removeFirstUnitClassFromCityPopulation(city, iStatesmanClass)
+
+def canDoCorruptStatesman4(argsList):
+	eEvent = argsList[1]
+	event = gc.getEventInfo(eEvent)
+	kTriggeredData = argsList[0]
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	if player.isNone():
+		return False
+	if player.getGold() < -event.getGold():
+		return False
+	return True
+
+def getHelpCorruptStatesman4(argsList):
+	eEvent = argsList[1]
+	event = gc.getEventInfo(eEvent)
+	kTriggeredData = argsList[0]
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	king = gc.getPlayer(player.getParent())
+	iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - CORRUPT4_MAX_DECREASE)
+	szHelp = localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
+	iTaxDecrease = min(CORRUPT4_TAX_DECREASE, player.getTaxRate())
+	if iTaxDecrease > 0:
+		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_TAX_DECREASE", (iTaxDecrease, player.getTaxRate() - iTaxDecrease))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_RELATION_KING_INCREASE", (event.getGenericParameter(3), king.getCivilizationAdjectiveKey()))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_CORRUPT_STATESMAN_REMOVE_ONE_STATESMAN", ())
+	return szHelp
+
 def getHelpCounterblaste1(argsList):
 	eEvent = argsList[1]
 	event = gc.getEventInfo(eEvent)

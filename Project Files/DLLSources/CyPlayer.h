@@ -34,6 +34,7 @@ public:
 	// TAC - Python Export - Ray - START
 	void NBMOD_IncreaseMaxTaxRate();
 	void NBMOD_DecreaseMaxTaxRate();
+	int NBMOD_ChangeMaxTaxRate(int iChange);
 	// TAC - Python Export - Ray - END
 	// R&R, ray, Bargaining - Start
 	bool tryGetNewBargainPriceSell();

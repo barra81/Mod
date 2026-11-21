@@ -2467,6 +2467,14 @@ void CvPlayer::NBMOD_DecreaseMaxTaxRate()
     return ;
 }
 
+// WTP: change the maximum tax rate by an arbitrary amount (events); returns the change that was really applied
+int CvPlayer::NBMOD_ChangeMaxTaxRate(int iChange)
+{
+	const int iOld = m_iMaxTaxRate;
+	m_iMaxTaxRate = std::max(GC.getMIN_TAX_RATE(), std::min(GC.getMAX_TAX_RATE(), m_iMaxTaxRate + iChange));
+	return m_iMaxTaxRate - iOld;
+}
+
 /***************************************************************************/
 /**                                                                       **/
 /** int CvPlayer::NBMOD_GetNewTaxRate(int iWantedTax)                     **/
