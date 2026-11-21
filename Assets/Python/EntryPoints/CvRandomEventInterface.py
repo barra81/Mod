@@ -977,6 +977,242 @@ def getHelpHangButcher4(argsList):
 	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_REMOVE_ONE_BUTCHER", ())
 	return szHelp
 
+# ---- King's dispatch (maximum tax below the paid rate) ----
+DISPATCH_TAX_STEP = 2
+DISPATCH_FEVER_COCA = 400
+DISPATCH_FEVER_GOLD = 4000
+
+def _dispatchWarEnemy(player):
+	# True if the player is at war with a native tribe or another nation (not its own king)
+	eKing = player.getParent()
+	for iPlayer in range(gc.getMAX_PLAYERS()):
+		if iPlayer == player.getID() or iPlayer == eKing:
+			continue
+		loopPlayer = gc.getPlayer(iPlayer)
+		if not loopPlayer.isAlive():
+			continue
+		if loopPlayer.isEurope():
+			continue
+		if gc.getTeam(player.getTeam()).isAtWar(loopPlayer.getTeam()):
+			return True
+	return False
+
+def _dispatchCanTrigger(argsList, bWar):
+	ePlayer = argsList[1]
+	iCity = argsList[2]
+	player = gc.getPlayer(ePlayer)
+	if player.isNone() or not player.isPlayable() or player.isNative() or not player.isHuman():
+		return False
+	if player.isInRevolution():
+		return False
+	if not gc.getPlayer(player.getParent()).isEurope():
+		return False
+	city = player.getCity(iCity)
+	if city is None or city.isNone():
+		return False
+	capital = player.getCapitalCity()
+	if capital is None or capital.isNone() or capital.getID() != city.getID():
+		return False
+	if player.NBMOD_GetMaxTaxRate() >= player.getTaxRate():
+		return False
+	return _dispatchWarEnemy(player) == bWar
+
+def canTriggerKingDispatchWar(argsList):
+	return _dispatchCanTrigger(argsList, True)
+
+def canTriggerKingDispatchPeace(argsList):
+	return _dispatchCanTrigger(argsList, False)
+
+def _dispatchPickNative(player, city):
+	# bad-tempered tribe (attitude below zero towards us) on the same continent, not yet at war with us; worst attitude first
+	iArea = city.area().getID()
+	iBest = None
+	iBestVal = 0
+	for iPlayer in range(gc.getMAX_PLAYERS()):
+		loopPlayer = gc.getPlayer(iPlayer)
+		if not loopPlayer.isAlive() or not loopPlayer.isNative():
+			continue
+		if gc.getTeam(loopPlayer.getTeam()).isAtWar(player.getTeam()):
+			continue
+		iVal = loopPlayer.AI_getAttitudeVal(player.getID())
+		if iVal >= 0:
+			continue
+		bSameArea = False
+		(nCity, iter) = loopPlayer.firstCity(True)
+		while(nCity):
+			if nCity.area().getID() == iArea:
+				bSameArea = True
+				break
+			(nCity, iter) = loopPlayer.nextCity(iter, True)
+		if not bSameArea:
+			continue
+		if iBest is None or iVal < iBestVal:
+			iBest = iPlayer
+			iBestVal = iVal
+	return iBest
+
+def _dispatchBoycottYield(player):
+	# cheapest tradable good (king's buy price); among equal prices the one with the largest stock in the capital
+	capital = player.getCapitalCity()
+	if capital is None or capital.isNone():
+		return -1
+	king = gc.getPlayer(player.getParent())
+	iBest = -1
+	iBestPrice = 0
+	iBestStock = 0
+	for iYield in range(gc.getNumYieldInfos()):
+		if not gc.getYieldInfo(iYield).isCargo():
+			continue
+		if not player.isYieldEuropeTradable(iYield):
+			continue
+		iStock = capital.getYieldStored(iYield)
+		if iStock <= 0:
+			continue
+		iPrice = king.getYieldBuyPrice(iYield)
+		if iBest == -1 or iPrice < iBestPrice or (iPrice == iBestPrice and iStock > iBestStock):
+			iBest = iYield
+			iBestPrice = iPrice
+			iBestStock = iStock
+	return iBest
+
+def _dispatchCity(kTriggeredData):
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	city = player.getCity(kTriggeredData.iCityId)
+	if city is None or city.isNone():
+		return None
+	return city
+
+# option 1: the king finances our military -> maximum tax -2 (only at war)
+def applyKingDispatch1(argsList):
+	player = gc.getPlayer(argsList[0].ePlayer)
+	player.NBMOD_ChangeMaxTaxRate(-DISPATCH_TAX_STEP)
+
+def getHelpKingDispatch1(argsList):
+	player = gc.getPlayer(argsList[0].ePlayer)
+	iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - DISPATCH_TAX_STEP)
+	return localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
+
+# option 2: declare war on a bad-tempered tribe, paid tax -2
+def canDoKingDispatch2(argsList):
+	player = gc.getPlayer(argsList[0].ePlayer)
+	city = _dispatchCity(argsList[0])
+	if city is None:
+		return False
+	return _dispatchPickNative(player, city) is not None
+
+def applyKingDispatch2(argsList):
+	player = gc.getPlayer(argsList[0].ePlayer)
+	city = _dispatchCity(argsList[0])
+	if city is None:
+		return
+	iNative = _dispatchPickNative(player, city)
+	if iNative is not None:
+		native = gc.getPlayer(iNative)
+		gc.getTeam(native.getTeam()).declareWar(player.getTeam(), False, WarPlanTypes.WARPLAN_LIMITED)
+	iDecrease = min(DISPATCH_TAX_STEP, player.getTaxRate())
+	if iDecrease > 0:
+		player.changeTaxRate(-iDecrease)
+
+def getHelpKingDispatch2(argsList):
+	player = gc.getPlayer(argsList[0].ePlayer)
+	city = _dispatchCity(argsList[0])
+	szHelp = u""
+	if city is not None:
+		iNative = _dispatchPickNative(player, city)
+		if iNative is not None:
+			szHelp = localText.getText("TXT_KEY_EVENT_DISPATCH_DECLARE_WAR", (gc.getPlayer(iNative).getCivilizationDescription(0),))
+	iDecrease = min(DISPATCH_TAX_STEP, player.getTaxRate())
+	if iDecrease > 0:
+		if szHelp:
+			szHelp += u"\n"
+		szHelp += localText.getText("TXT_KEY_EVENT_TAX_DECREASE", (iDecrease, player.getTaxRate() - iDecrease))
+	return szHelp
+
+# option 3: the king's fever -> 400 coca leaves, 4000 gold (event gold), a doctor; favor +2, paid tax -2
+def canDoKingDispatch3(argsList):
+	kTriggeredData = argsList[0]
+	event = gc.getEventInfo(argsList[1])
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	city = _dispatchCity(kTriggeredData)
+	if city is None:
+		return False
+	if player.getGold() < -event.getGold():
+		return False
+	if city.getYieldStored(gc.getInfoTypeForString("YIELD_COCA_LEAVES")) < DISPATCH_FEVER_COCA:
+		return False
+	if _countUnitClassInCityPopulation(city, gc.getInfoTypeForString("UNITCLASS_DOCTOR")) < 1:
+		return False
+	return True
+
+def applyKingDispatch3(argsList):
+	kTriggeredData = argsList[0]
+	event = gc.getEventInfo(argsList[1])
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	eking = player.getParent()
+	king = gc.getPlayer(eking)
+	player.AI_changeAttitudeExtra(eking, event.getGenericParameter(3))
+	king.AI_changeAttitudeExtra(kTriggeredData.ePlayer, event.getGenericParameter(3))
+	iDecrease = min(DISPATCH_TAX_STEP, player.getTaxRate())
+	if iDecrease > 0:
+		player.changeTaxRate(-iDecrease)
+	city = _dispatchCity(kTriggeredData)
+	if city is None:
+		return
+	city.changeYieldStored(gc.getInfoTypeForString("YIELD_COCA_LEAVES"), -DISPATCH_FEVER_COCA)
+	iDoctorClass = gc.getInfoTypeForString("UNITCLASS_DOCTOR")
+	if iDoctorClass != -1:
+		_removeFirstUnitClassFromCityPopulation(city, iDoctorClass)
+
+def getHelpKingDispatch3(argsList):
+	kTriggeredData = argsList[0]
+	event = gc.getEventInfo(argsList[1])
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	king = gc.getPlayer(player.getParent())
+	city = _dispatchCity(kTriggeredData)
+	iCoca = gc.getInfoTypeForString("YIELD_COCA_LEAVES")
+	szHelp = u""
+	if city is not None:
+		szHelp = localText.getText("TXT_KEY_EVENT_YIELD_LOOSE", (-DISPATCH_FEVER_COCA, gc.getYieldInfo(iCoca).getChar(), city.getNameKey()))
+		szHelp += u"\n" + localText.getText("TXT_KEY_EVENT_REMOVE_ONE_DOCTOR", ())
+	iDecrease = min(DISPATCH_TAX_STEP, player.getTaxRate())
+	if iDecrease > 0:
+		szHelp += u"\n" + localText.getText("TXT_KEY_EVENT_TAX_DECREASE", (iDecrease, player.getTaxRate() - iDecrease))
+	szHelp += u"\n" + localText.getText("TXT_KEY_EVENT_RELATION_KING_INCREASE", (event.getGenericParameter(3), king.getCivilizationAdjectiveKey()))
+	return szHelp
+
+# option 4: refuse -> favor -2, paid and maximum tax +2, cheapest good with the largest stock in the capital is boycotted
+def applyKingDispatch4(argsList):
+	kTriggeredData = argsList[0]
+	event = gc.getEventInfo(argsList[1])
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	eking = player.getParent()
+	king = gc.getPlayer(eking)
+	player.AI_changeAttitudeExtra(eking, event.getGenericParameter(3))
+	king.AI_changeAttitudeExtra(kTriggeredData.ePlayer, event.getGenericParameter(3))
+	player.NBMOD_ChangeMaxTaxRate(DISPATCH_TAX_STEP)
+	iIncrease = max(0, min(DISPATCH_TAX_STEP, GlobalDefines.MAX_TAX_RATE - player.getTaxRate()))
+	if iIncrease > 0:
+		player.changeTaxRate(iIncrease)
+	iYield = _dispatchBoycottYield(player)
+	if iYield != -1:
+		player.setYieldEuropeTradable(iYield, False)
+
+def getHelpKingDispatch4(argsList):
+	kTriggeredData = argsList[0]
+	event = gc.getEventInfo(argsList[1])
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	king = gc.getPlayer(player.getParent())
+	iNewMax = min(GlobalDefines.MAX_TAX_RATE, player.NBMOD_GetMaxTaxRate() + DISPATCH_TAX_STEP)
+	szHelp = localText.getText("TXT_KEY_EVENT_DISPATCH_MAXTAX_INCREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
+	iIncrease = max(0, min(DISPATCH_TAX_STEP, GlobalDefines.MAX_TAX_RATE - player.getTaxRate()))
+	if iIncrease > 0:
+		szHelp += u"\n" + localText.getText("TXT_KEY_EVENT_DISPATCH_TAX_INCREASE", (iIncrease, player.getTaxRate() + iIncrease))
+	szHelp += u"\n" + localText.getText("TXT_KEY_EVENT_RELATION_KING_DECREASE", (event.getGenericParameter(3), king.getCivilizationAdjectiveKey()))
+	iYield = _dispatchBoycottYield(player)
+	if iYield != -1:
+		szHelp += u"\n" + localText.getText("TXT_KEY_EVENT_DISPATCH_BOYCOTT", (gc.getYieldInfo(iYield).getChar(), gc.getYieldInfo(iYield).getDescription()))
+	return szHelp
+
 def getHelpCounterblaste1(argsList):
 	eEvent = argsList[1]
 	event = gc.getEventInfo(eEvent)
