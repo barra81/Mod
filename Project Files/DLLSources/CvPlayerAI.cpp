@@ -23314,13 +23314,16 @@ bool CvPlayerAI::AI_isInForeignColonyRadius(const CvPlot& kPlot) const
 
 bool CvPlayerAI::AI_isFirstColonySiteAllowed(const CvPlot& kPlot) const
 {
-	// WTP: the longer we look for a first site, the more the soft rules are relaxed (the coast rule always stays):
-	// from 10 turns on map edge 5 -> 2 and foreign colonies 5 -> 3 plots, from 20 turns landmass 40 -> 20 and usable land 4 -> 3
+	// WTP: the longer we look for a first site, the more the soft rules are relaxed (the deep water coast rule always stays):
+	// from 10 turns on map edge 5 -> 2 and foreign colonies 5 -> 3 plots, from 20 turns landmass 40 -> 20 and usable land 4 -> 3.
+	// WTP (user 2026-11-21): in addition every rule gets one step easier per turn from the 12th turn of searching
+	// (landmass, map edge and usable land one less, distance to the way to Europe in the east one more), so it is never stuck
 	const int iSearchTurns = GC.getGameINLINE().getGameTurn() - GC.getGameINLINE().getStartTurn();
 	const bool bRelaxed = iSearchTurns >= 10;
 	const bool bVeryRelaxed = iSearchTurns >= 20;
+	const int iRelaxSteps = AI_firstColonyRelaxSteps();
 
-	if (kPlot.area()->getNumTiles() <= (bVeryRelaxed ? 20 : 40))
+	if (kPlot.area()->getNumTiles() <= std::max(0, std::min(bVeryRelaxed ? 20 : 40, 40 - iRelaxSteps)))
 	{
 		return false;
 	}
@@ -23347,7 +23350,7 @@ bool CvPlayerAI::AI_isFirstColonySiteAllowed(const CvPlot& kPlot) const
 	}
 	if (bMapHasEast)
 	{
-		const int iMaxEastDistance = 15;
+		const int iMaxEastDistance = 15 + iRelaxSteps;
 		bool bNearEast = false;
 		for (int iDX = -iMaxEastDistance; iDX <= iMaxEastDistance && !bNearEast; ++iDX)
 		{
@@ -23365,7 +23368,7 @@ bool CvPlayerAI::AI_isFirstColonySiteAllowed(const CvPlot& kPlot) const
 
 	// not within 5 plots of the map edge (wrapping directions have no edge)
 	const CvMap& kMap = GC.getMap();
-	const int iEdgeDistance = bRelaxed ? 2 : 5;
+	const int iEdgeDistance = std::max(0, std::min(bRelaxed ? 2 : 5, 5 - iRelaxSteps));
 	if (!kMap.isWrapXINLINE() && (kPlot.getX_INLINE() < iEdgeDistance || kPlot.getX_INLINE() >= kMap.getGridWidth() - iEdgeDistance))
 	{
 		return false;
@@ -23387,7 +23390,7 @@ bool CvPlayerAI::AI_isFirstColonySiteAllowed(const CvPlot& kPlot) const
 			++iUsableLand;
 		}
 	}
-	if (iUsableLand < (bVeryRelaxed ? 3 : 4))
+	if (iUsableLand < std::max(0, std::min(bVeryRelaxed ? 3 : 4, 4 - iRelaxSteps)))
 	{
 		return false;
 	}
@@ -23419,9 +23422,15 @@ bool CvPlayerAI::AI_isFirstColonySiteAllowed(const CvPlot& kPlot) const
 int CvPlayerAI::AI_firstColonyMinDistance()
 {
 	const int iFullDistance = 16;
-	const int iShrinkFromTurn = 12;
+	return std::max(0, iFullDistance - AI_firstColonyRelaxSteps());
+}
+
+// WTP: how many steps the first colony rules are relaxed: 0 for the first 11 turns of searching, then one more per turn
+int CvPlayerAI::AI_firstColonyRelaxSteps()
+{
+	const int iRelaxFromTurn = 12;
 	const int iSearchTurns = GC.getGameINLINE().getGameTurn() - GC.getGameINLINE().getStartTurn();
-	return std::max(0, iFullDistance - std::max(0, iSearchTurns - iShrinkFromTurn + 1));
+	return std::max(0, iSearchTurns - iRelaxFromTurn + 1);
 }
 
 int CvPlayerAI::AI_firstCityFoundValue(const CvPlot& kPlot)
@@ -23434,8 +23443,8 @@ int CvPlayerAI::AI_firstCityFoundValue(const CvPlot& kPlot)
 	if (getNumCities() != 0)
 		return 0;
 
-	// Do not settle the first city on an island
-	if (kPlot.area()->isIsland())
+	// Do not settle the first city on an island (WTP: unless the first colony rules are relaxed, then the landmass rule decides)
+	if (kPlot.area()->isIsland() && AI_firstColonyRelaxSteps() == 0)
 		return 0;
 
 	const TeamTypes eTeam = getTeam();
