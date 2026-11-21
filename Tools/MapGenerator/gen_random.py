@@ -2425,7 +2425,9 @@ for x, y in ALL:
     n = sum(adj)
     chance = {0: 5, 1: 10, 2: 20}.get(n, 30 if n <= 4 else (45 if n <= 6 else 55))
     if rng.random() * 100 < chance:
-        feature[i] = 'REMARKABLE_MOUNTAIN%d' % rng.randint(1, 3)
+        # 1 gold, 2 silver, 3 coal: the metal summits half as often as an even third each (user 2026-11-21), the rest coal
+        r = rng.random()
+        feature[i] = 'REMARKABLE_MOUNTAIN%d' % (1 if r < 1 / 6 else (2 if r < 1 / 3 else 3))
 
 # meteor crater in the tropical jungle
 crater = None
