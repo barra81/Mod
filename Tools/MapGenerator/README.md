@@ -77,10 +77,10 @@ Writes `Random New World Massive.ColonizationWBSave`, `preview.png`, `heightmap.
 - Europe plots (`europe_plots`): all open sea at least `EUROPE_DIST` = 7 tiles from the nearest land that is joined to a map edge through such sea, flooded from the east edge (Atlantic, `EUROPE_EAST`) and the west edge (Pacific, `EUROPE_WEST`) at once; each plot goes to the nearer edge. The access follows the coast, an island only pushes it back around itself.
 - Final checks: features that a late carving put onto a new coast or a changed terrain, or that lost their river, are fixed (rules from `CIV4FeatureInfos.xml`); small water bodies cut off from the sea become lakes.
 
-Two worlds are playable: `PrivateMaps/Random New World Massive.ColonizationWBSave` is seed 1, `PrivateMaps/Random New World 2 Massive.ColonizationWBSave` is seed 2; the map text key is `TXT_KEY_WORLDBUILDER_RANDOM_NEW_WORLD_DESC`. After each change to the generator, regenerate both with
+Six worlds are playable: `PrivateMaps/Random New World Massive.ColonizationWBSave` is seed 1, `PrivateMaps/Random New World N Massive.ColonizationWBSave` is seed N (2-6); the map text key is `TXT_KEY_WORLDBUILDER_RANDOM_NEW_WORLD_DESC`. After each change to the generator, regenerate all of them with
 
 ```
-python Tools/MapGenerator/publish_random.py     # runs gen_random.py and validate.py for seeds 1 and 2, copies both to PrivateMaps/
+python Tools/MapGenerator/publish_random.py     # runs gen_random.py and validate.py for seeds 1 to 6, copies them to PrivateMaps/
 ```
 
 The previews of each seed are in `Tools/MapGenerator/out_random/seed1` and `seed2`. For another world, run the generator with a different seed and copy the file to `PrivateMaps/`.
