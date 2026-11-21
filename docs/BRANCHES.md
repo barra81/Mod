@@ -44,13 +44,15 @@ flowchart LR
         art_cities["art-cities-improvements"]
     end
 
-    subgraph review["barra81's features (open pull requests)"]
+    subgraph review["barra81's features (for now on wtp-based/*)"]
+        ui_helpers["ui-helpers"]
         building_upgrade["building-upgrade"]
         nested_tooltip["nested-tooltip"]
         hud_message_panel["hud-message-panel"]
         import_export_window["import-export-window"]
         transfer_amount_window["transfer-amount-window"]
         qol_game_options["qol-and-game-options"]
+        game_options_upkeep["game-options-upkeep"]
         trade_route_logic["trade-route-logic"]
         trade_route_manager["trade-route-manager"]
     end
@@ -59,24 +61,25 @@ flowchart LR
     develop --> market_boom_event & bought_native_land_stays & military_upkeep & independent_fixes & performance
     develop --> trade_routes & patrol & human_pioneer_plan & forts_control_trade
     develop --> ai & maps & art_cities
-    develop --> building_upgrade & nested_tooltip & hud_message_panel & import_export_window
+    develop --> ui_helpers & qol_game_options
 
     trade_routes --> auto_market_imports
     ai --> forts_control_trade_ai
     forts_control_trade --> forts_control_trade_ai
     ai --> siege & colonist_automation & treasure_automation & human_action_log
 
-    independent_fixes --> transfer_amount_window
-    military_upkeep --> qol_game_options
-    balancing_misc --> qol_game_options
+    ui_helpers --> building_upgrade & hud_message_panel & import_export_window & transfer_amount_window
+    hud_message_panel --> nested_tooltip
+    auto_market_imports -. "needed, not merged in yet" .-> import_export_window
+    qol_game_options & military_upkeep --> game_options_upkeep
 
     ai & colonist_automation & performance & trade_routes & treasure_automation --> trade_route_logic
-    ai & colonist_automation & performance & trade_routes & treasure_automation --> trade_route_manager
+    trade_route_logic --> trade_route_manager
 
     classDef base fill:#ececec,stroke:#555,color:#000
     classDef pending stroke-dasharray: 5 5
     class develop base
-    class building_upgrade,nested_tooltip,hud_message_panel,import_export_window,transfer_amount_window,qol_game_options,trade_route_logic,trade_route_manager pending
+    class ui_helpers,building_upgrade,nested_tooltip,hud_message_panel,import_export_window,transfer_amount_window,qol_game_options,game_options_upkeep,trade_route_logic,trade_route_manager pending
 ```
 
 ## Other branches
@@ -86,6 +89,7 @@ flowchart LR
 | `develop` | unchanged mirror of WTP's `develop`; never commit to it |
 | `main` | `develop` + all merged `feature/*` branches; the play and release branch (protected, changes only by pull request) |
 | `test/all` | `main` + feature branches that are still being tested; rebuilt and force-pushed, never merged into `main`; do not base work on it |
+| `wtp-based/<name>` | barra81's features, built on `develop`; to be renamed into the `feature/<name>` structure |
 | `review/<name>` | the content of a pull request into `feature/<name>` (e.g. barra81's features); deleted after the merge |
 
 ## How a change gets in
