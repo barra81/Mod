@@ -13624,6 +13624,26 @@ bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_GOODY); // WTP: timing log
 	PROFILE_FUNC();
 
+	// WTP: a search that found nothing is not repeated in the same turn for the same unit at the same place with the same parameters (the
+	// unit AI is asked again and again in one turn; the search costs about 12 ms per call on a big map, the result does not change
+	// without the unit moving)
+	static int iNoGoodyTurn = -1;
+	static std::map<int, __int64> aiNoGoodyKey;
+	const int iNoGoodyUnit = (int)getOwnerINLINE() * 1000000 + getID();
+	const __int64 iNoGoodyKey = (((__int64)getX_INLINE() * 1000 + getY_INLINE()) * 64 + iRange) * 2 + (bIgnoreCity ? 1 : 0) + (__int64)iMaxPathTurns * 100000000;
+	if (iNoGoodyTurn != GC.getGameINLINE().getGameTurn())
+	{
+		iNoGoodyTurn = GC.getGameINLINE().getGameTurn();
+		aiNoGoodyKey.clear();
+	}
+	{
+		const std::map<int, __int64>::const_iterator itNoGoody = aiNoGoodyKey.find(iNoGoodyUnit);
+		if (itNoGoody != aiNoGoodyKey.end() && itNoGoody->second == iNoGoodyKey)
+		{
+			return false;
+		}
+	}
+
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
 	CvPlot* pBestExplorePlot = NULL;
@@ -13689,6 +13709,7 @@ bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 		return true;
 	}
 
+	aiNoGoodyKey[iNoGoodyUnit] = iNoGoodyKey; // WTP: nothing found: not asked again this turn from here
 	return false;
 
 }
