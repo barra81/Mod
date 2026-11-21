@@ -100,6 +100,9 @@
 //     the shared random number generator, the engine's drawing and Python calls) is shared and not thread safe, the order of the
 //     players is part of the game rules, and the workforce plan costs only about 1 s per player after the fix. Only read-only
 //     computations could be split (as TBB already does for the city job search).
+//  8. Turn 424 (big map, 3 European AIs, 3486 units): pathfinding 23 s with 447,000 searches; UNITAI_TRANSPORT_SEA 6.3 s with 387,000 searches
+//     (about 2,900 per ship, 0.014 ms each): something asks for a path far too often. The slots "in the unit AIs ... all callers" (ship
+//     functions AI_respondToPickup, AI_deliverUnits, AI_travelToPort, ...) show which function takes the time (inclusive, parts overlap).
 //  7. The long times matter more with more AI players (the tester plays with only 3 opponents because of the turn time): the plan
 //     scales about linearly with the number of European AIs, so the per player table is there to measure that.
 //
@@ -163,6 +166,17 @@ namespace WtpTiming
 		SLOT_WF_S3SETUP,
 		SLOT_WF_S4,
 		SLOT_WF_S5,
+		SLOT_SHIP_RETREAT,
+		SLOT_SHIP_AFRICA,
+		SLOT_SHIP_TRADECITY,
+		SLOT_SHIP_DELIVER,
+		SLOT_SHIP_PICKUP,
+		SLOT_SHIP_SAILPORT,
+		SLOT_SHIP_TRAVELPORT,
+		SLOT_SHIP_COLLECT,
+		SLOT_SHIP_TREASURE,
+		SLOT_SHIP_EXPLORE,
+		SLOT_SHIP_GOODY,
 		SLOT_COUNT
 	};
 
@@ -254,7 +268,18 @@ namespace WtpTiming
 		"      workforce plan step 2 (workforce)",
 		"      workforce plan step 3 set-up (before the pairs are chosen)",
 		"      workforce plan step 4 (seats now)",
-		"      workforce plan step 5 (carry out)"
+		"      workforce plan step 5 (carry out)",
+		"  in the unit AIs (ships and others, all callers): AI_retreatFromDanger",
+		"  in the unit AIs (ships and others, all callers): AI_sailForAfricaUnits",
+		"  in the unit AIs (ships and others, all callers): AI_tradeWithCity",
+		"  in the unit AIs (ships and others, all callers): AI_deliverUnits",
+		"  in the unit AIs (ships and others, all callers): AI_respondToPickup",
+		"  in the unit AIs (ships and others, all callers): AI_sailToPreferredPort",
+		"  in the unit AIs (ships and others, all callers): AI_travelToPort",
+		"  in the unit AIs (ships and others, all callers): AI_collectGoods",
+		"  in the unit AIs (ships and others, all callers): AI_treasureTransportMove",
+		"  in the unit AIs (ships and others, all callers): AI_exploreCoast / AI_exploreOcean / AI_exploreDeep",
+		"  in the unit AIs (ships and others, all callers): AI_goodyRange"
 	};
 
 	struct Data

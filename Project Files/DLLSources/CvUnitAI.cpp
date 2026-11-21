@@ -5092,6 +5092,7 @@ int CvUnitAI::AI_getCostDifferenceFreeVsSlave() const
 /// <summary>Find the best port given the conditions</summary>
 bool CvUnitAI::AI_sailToPreferredPort(bool bMove)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_SAILPORT); // WTP: timing log
 	if (!hasAnyUnitInCargo())
 	{
 		const CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
@@ -5620,6 +5621,7 @@ void CvUnitAI::AI_logShipTarget()
 // there is gone, user 2026-10-24.)
 bool CvUnitAI::AI_sailForAfricaUnits()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_AFRICA); // WTP: timing log
 	// (a goods-only ship such as the smuggling ship cannot bring the waiting units)
 	if (hasAnyUnitInCargo() || getDomainType() != DOMAIN_SEA || !canCarryPeople())
 	{
@@ -7917,6 +7919,7 @@ CvPlot* CvUnitAI::AI_europeTreasureTarget(CvPlot*& pArrival, bool& bFar)
 // can carry treasures respond.
 bool CvUnitAI::AI_treasureTransportMove()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_TREASURE); // WTP: timing log
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 	const bool bEmpty = !getGroup()->hasCargo();
 	if (getUnitAICargo(UNITAI_TREASURE) > 0)
@@ -8573,6 +8576,7 @@ CvPlot* CvUnitAI::findNearbyOceanPlot(const CvPlot& kPlot) const
 
 bool CvUnitAI::AI_travelToPort(int iMinPercent, int iMaxPath)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_TRAVELPORT); // WTP: timing log
 	PROFILE_FUNC();
 	//Later on I'll make it so it can completely full yield units, for now though not.
 	FAssert(!isFull());
@@ -8663,6 +8667,7 @@ bool CvUnitAI::AI_travelToPort(int iMinPercent, int iMaxPath)
 
 bool CvUnitAI::AI_collectGoods()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_COLLECT); // WTP: timing log
 	bool bLoaded = false;
 	CvCity* const pCity = plot()->getPlotCity();
 
@@ -8792,6 +8797,7 @@ bool CvUnitAI::AI_collectGoodsForAfrica()
 // Returns true if a cargo unit has pushed a mission for us, false otherwise. If eUnitAI is valid, then only units with this UnitAI will be allowed to push a mission.
 bool CvUnitAI::AI_deliverUnits(UnitAITypes eUnitAI)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_DELIVER); // WTP: timing log
 
 	CvUnit* pColonistUnit = NULL;
 
@@ -11382,6 +11388,7 @@ void CvUnitAI::AI_wakeTransportForPickup(const CvPlot* pPickupPlot)
 //This is very fast when no units need picking up.
 bool CvUnitAI::AI_respondToPickup(int iMaxPath, UnitAITypes eUnitAI, bool bAlongTheWay)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_PICKUP); // WTP: timing log
 	PROFILE_FUNC();
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
@@ -13614,6 +13621,7 @@ bool CvUnitAI::AI_goody(bool bIgnoreCity)
 
 bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_GOODY); // WTP: timing log
 	PROFILE_FUNC();
 
 	int iBestValue = 0;
@@ -14061,6 +14069,7 @@ bool CvUnitAI::AI_exploreFromShip(int iMaxPath)
 
 bool CvUnitAI::AI_exploreCoast(int iRange)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_EXPLORE); // WTP: timing log
 	PROFILE_FUNC();
 
 	CvPlot* pBestPlot = NULL;
@@ -14159,6 +14168,7 @@ bool CvUnitAI::AI_exploreCoast(int iRange)
 
 bool CvUnitAI::AI_exploreOcean(int iRange)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_EXPLORE); // WTP: timing log
 	PROFILE_FUNC();
 
 	CvPlot* pBestPlot = NULL;
@@ -14258,6 +14268,7 @@ bool CvUnitAI::AI_exploreOcean(int iRange)
 
 bool CvUnitAI::AI_exploreDeep()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_EXPLORE); // WTP: timing log
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
 	CvPlot* pBestExplorePlot = NULL;
@@ -17903,6 +17914,7 @@ bool CvUnitAI::AI_yieldNativeDestination(int iMaxPath)
 
 bool CvUnitAI::AI_tradeWithCity()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_TRADECITY); // WTP: timing log
 	bool bSaleMade = false;
 	CvPlayer& kOwner = GET_PLAYER(getOwnerINLINE());
 
@@ -21324,6 +21336,7 @@ bool CvUnitAI::AI_retreatToCity(bool bPrimary, int iMaxPath, bool bAvoidDanger)
 // TAC - AI Improved Naval AI - koma13 - START
 bool CvUnitAI::AI_retreatFromDanger()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_RETREAT); // WTP: timing log
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 
 	if (kOwner.isHuman())
