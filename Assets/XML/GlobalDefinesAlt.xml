@@ -2021,7 +2021,8 @@
 	<Define>
 		<!-- WTP: the pirate ships of the barbarian player (Wild Animals) have at most this many moves -->
 		<DefineName>PIRATE_BARBARIAN_MOVES</DefineName>
-		<iDefineIntVal>7
+		<iDefineIntVal>7</iDefineIntVal>
+	</Define>
 	<!-- WTP: factor for the map scroll speed (edge scrolling) while the shift key is held. 1.0 = no change, 2.5 = two and a half times as fast -->
 	<!-- WTP: military upkeep of the human player, gold per unit and turn (the Civilopedia text still shows the default numbers) -->
 	<Define>
@@ -2126,7 +2127,5 @@
 		<!-- Buildup mode -->
 		<DefineName>MILITARY_UPKEEP_SPEED_BUILDUP</DefineName>
 		<iDefineIntVal>100</iDefineIntVal>
-	</Define>
-</iDefineIntVal>
 	</Define>
 </Civ4Defines>
