@@ -863,7 +863,7 @@ def getHelpFestivity5(argsList):
 	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_GOLD_LOOSE", (-getFestivity5Gold(player),))
 	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_PRICE_INCREASE", (event.getGenericParameter(2), gc.getYieldInfo(iYield1).getChar(), king.getCivilizationShortDescriptionKey()))
 	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_PRICE_INCREASE", (event.getGenericParameter(2), gc.getYieldInfo(iYield2).getChar(), king.getCivilizationShortDescriptionKey()))
-	iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - event.getGenericParameter(4) * GlobalDefines.DECREASE_MAX_TAX_RATE)
+	iNewMax = max(gc.getDefineINT("MIN_TAX_RATE"), player.NBMOD_GetMaxTaxRate() - event.getGenericParameter(4) * GlobalDefines.DECREASE_MAX_TAX_RATE)
 	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
 	iTaxDecrease = min(FESTIVITY5_TAX_DECREASE, player.getTaxRate())
 	if iTaxDecrease > 0:
@@ -913,7 +913,7 @@ def getHelpCorruptStatesman4(argsList):
 	kTriggeredData = argsList[0]
 	player = gc.getPlayer(kTriggeredData.ePlayer)
 	king = gc.getPlayer(player.getParent())
-	iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - CORRUPT4_MAX_DECREASE)
+	iNewMax = max(gc.getDefineINT("MIN_TAX_RATE"), player.NBMOD_GetMaxTaxRate() - CORRUPT4_MAX_DECREASE)
 	szHelp = localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
 	iTaxDecrease = min(CORRUPT4_TAX_DECREASE, player.getTaxRate())
 	if iTaxDecrease > 0:
@@ -968,7 +968,7 @@ def getHelpHangButcher4(argsList):
 	kTriggeredData = argsList[0]
 	player = gc.getPlayer(kTriggeredData.ePlayer)
 	king = gc.getPlayer(player.getParent())
-	iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - BUTCHER4_MAX_DECREASE)
+	iNewMax = max(gc.getDefineINT("MIN_TAX_RATE"), player.NBMOD_GetMaxTaxRate() - BUTCHER4_MAX_DECREASE)
 	szHelp = localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
 	iTaxDecrease = min(BUTCHER4_TAX_DECREASE, player.getTaxRate())
 	if iTaxDecrease > 0:
@@ -1099,7 +1099,7 @@ def applyKingDispatch1(argsList):
 
 def getHelpKingDispatch1(argsList):
 	player = gc.getPlayer(argsList[0].ePlayer)
-	iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - DISPATCH_TAX_STEP)
+	iNewMax = max(gc.getDefineINT("MIN_TAX_RATE"), player.NBMOD_GetMaxTaxRate() - DISPATCH_TAX_STEP)
 	return localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
 
 # option 2: declare war on a bad-tempered tribe, paid tax -2
@@ -7505,7 +7505,7 @@ def getHelpKingPleased(argsList):
 		szHelp = localText.getText("TXT_KEY_EVENT_KING_ANGRY_HELP", ())
 	if event.getGenericParameter(4) > 0 :
 		# the steps of the decrease (parameter 4), not below the minimum
-		iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - event.getGenericParameter(4) * GlobalDefines.DECREASE_MAX_TAX_RATE)
+		iNewMax = max(gc.getDefineINT("MIN_TAX_RATE"), player.NBMOD_GetMaxTaxRate() - event.getGenericParameter(4) * GlobalDefines.DECREASE_MAX_TAX_RATE)
 		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
 	if event.getGenericParameter(4) < 0 :
 		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_MAXTAXINCREASE", (-GlobalDefines.INCREASE_MAX_TAX_RATE, player.NBMOD_GetMaxTaxRate()-GlobalDefines.INCREASE_MAX_TAX_RATE))
