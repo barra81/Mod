@@ -922,6 +922,59 @@ def getHelpCorruptStatesman4(argsList):
 	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_CORRUPT_STATESMAN_REMOVE_ONE_STATESMAN", ())
 	return szHelp
 
+BUTCHER4_TAX_DECREASE = 2
+BUTCHER4_MAX_DECREASE = 2
+
+def canDoHangButcher4(argsList):
+	kTriggeredData = argsList[0]
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	if player.isNone():
+		return False
+	city = player.getCity(kTriggeredData.iCityId)
+	if city is None or city.isNone():
+		return False
+	iButcherClass = gc.getInfoTypeForString("UNITCLASS_BUTCHER")
+	if iButcherClass == -1:
+		return False
+	return _countUnitClassInCityPopulation(city, iButcherClass) >= 1
+
+def applyHangButcher4(argsList):
+	eEvent = argsList[1]
+	event = gc.getEventInfo(eEvent)
+	kTriggeredData = argsList[0]
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	if player.isNone():
+		return
+	eking = player.getParent()
+	king = gc.getPlayer(eking)
+	player.AI_changeAttitudeExtra(eking, event.getGenericParameter(3))
+	king.AI_changeAttitudeExtra(kTriggeredData.ePlayer, event.getGenericParameter(3))
+	player.NBMOD_ChangeMaxTaxRate(-BUTCHER4_MAX_DECREASE)
+	iTaxDecrease = min(BUTCHER4_TAX_DECREASE, player.getTaxRate())
+	if iTaxDecrease > 0:
+		player.changeTaxRate(-iTaxDecrease)
+	city = player.getCity(kTriggeredData.iCityId)
+	if city is None or city.isNone() or city.getOwner() != player.getID():
+		return
+	iButcherClass = gc.getInfoTypeForString("UNITCLASS_BUTCHER")
+	if iButcherClass != -1:
+		_removeFirstUnitClassFromCityPopulation(city, iButcherClass)
+
+def getHelpHangButcher4(argsList):
+	eEvent = argsList[1]
+	event = gc.getEventInfo(eEvent)
+	kTriggeredData = argsList[0]
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	king = gc.getPlayer(player.getParent())
+	iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - BUTCHER4_MAX_DECREASE)
+	szHelp = localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
+	iTaxDecrease = min(BUTCHER4_TAX_DECREASE, player.getTaxRate())
+	if iTaxDecrease > 0:
+		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_TAX_DECREASE", (iTaxDecrease, player.getTaxRate() - iTaxDecrease))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_RELATION_KING_INCREASE", (event.getGenericParameter(3), king.getCivilizationAdjectiveKey()))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_REMOVE_ONE_BUTCHER", ())
+	return szHelp
+
 def getHelpCounterblaste1(argsList):
 	eEvent = argsList[1]
 	event = gc.getEventInfo(eEvent)

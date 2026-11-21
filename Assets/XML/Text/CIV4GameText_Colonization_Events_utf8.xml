@@ -2797,6 +2797,18 @@
 		<Hungarian>Uram! Több királyi tisztviselőt is rajtakaptak, amint egy kocsmában szerencsejátékot űztek, és úgy hírlik, hogy könnyűvérű nők is jelen voltak. Ha nem tesz semmit, ez rossz hírbe hozza a Koronát és a hivatalát.</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_EVENT_HANG_BUTCHER</Tag>
+		<English>Hang the butcher in the name of the King! Let everyone see that the Crown's justice reaches even the colonies.</English>
+		<German>Den Metzger im Namen des Königs hängen! Jeder soll sehen, dass die Gerechtigkeit der Krone auch bis in die Kolonien reicht.</German>
+		<Russian>Повесить мясника именем Короля! Пусть все видят, что правосудие Короны достигает даже колоний.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_REMOVE_ONE_BUTCHER</Tag>
+		<English>[ICON_BULLET]One butcher will disappear from the city.</English>
+		<German>[ICON_BULLET]Ein Metzger wird aus der Stadt entfernt.</German>
+		<Russian>[ICON_BULLET]Один мясник исчезнет из города.</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_EVENT_CORRUPT_STATESMAN_4</Tag>
 		<English>A show trial! The statesman must resign and will be sent far away. It costs us a fortune to keep this quiet, but the King will see that we keep order in the colonies.</English>
 		<German>Ein Scheinprozess! Der Staatsmann muss zurücktreten und zieht in die Ferne. Das Schweigen kostet uns ein Vermögen, aber der König wird sehen, dass wir in den Kolonien für Ordnung sorgen.</German>

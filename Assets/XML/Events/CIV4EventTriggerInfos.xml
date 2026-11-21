@@ -8357,6 +8357,7 @@
 			<ImprovementsRequired/>
 			<RoutesRequired/>
 			<Events>
+				<Event>EVENT_HANG_BUTCHER</Event>
 				<Event>EVENT_ACCEPT_BUTCHER</Event>
 				<Event>EVENT_HIDE_BUTCHER</Event>
 				<Event>EVENT_REFUSE_BUTCHER</Event>
