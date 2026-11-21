@@ -930,6 +930,8 @@ def canDoHangButcher4(argsList):
 	player = gc.getPlayer(kTriggeredData.ePlayer)
 	if player.isNone():
 		return False
+	if player.getGold() < -gc.getEventInfo(argsList[1]).getGold():
+		return False
 	city = player.getCity(kTriggeredData.iCityId)
 	if city is None or city.isNone():
 		return False
