@@ -5453,6 +5453,27 @@ void CvGame::addShipName(const CvWString& szName)
 
 void CvGame::doTurn()
 {
+	// WTP: the data of the timing report (map, players: type, civilization, cities, units)
+	WtpTiming::noteMap(GC.getMap().getGridWidthINLINE(), GC.getMap().getGridHeightINLINE());
+	WtpTiming::noteGame(
+		((int)getGameSpeedType() >= 0) ? GC.getGameSpeedInfo(getGameSpeedType()).getType() : "",
+		((int)getHandicapType() >= 0) ? GC.getHandicapInfo(getHandicapType()).getType() : "",
+		((int)GC.getMap().getWorldSize() >= 0) ? GC.getWorldInfo(GC.getMap().getWorldSize()).getType() : "",
+		((int)GC.getMap().getClimate() >= 0) ? GC.getClimateInfo(GC.getMap().getClimate()).getType() : "",
+		((int)GC.getMap().getSeaLevel() >= 0) ? GC.getSeaLevelInfo(GC.getMap().getSeaLevel()).getType() : "",
+		isGameMultiPlayer());
+	for (int iWtpPlayer = 0; iWtpPlayer < MAX_PLAYERS; ++iWtpPlayer)
+	{
+		const CvPlayer& kWtpPlayer = GET_PLAYER((PlayerTypes)iWtpPlayer);
+		if (kWtpPlayer.isAlive())
+		{
+			const char cWtpType = kWtpPlayer.isHuman() ? 'H' : (kWtpPlayer.isNative() ? 'N' : (kWtpPlayer.isEurope() ? 'K' : 'A'));
+			const char* szWtpCiv = (kWtpPlayer.getCivilizationType() != NO_CIVILIZATION) ? GC.getCivilizationInfo(kWtpPlayer.getCivilizationType()).getType() : "";
+			WtpTiming::notePlayer(iWtpPlayer, cWtpType, kWtpPlayer.getNumCities(), kWtpPlayer.getNumUnits(), szWtpCiv);
+		}
+	}
+	WtpTiming::flush(getGameTurn());
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_GAME_DOTURN);
 	MOD_PROFILE("CvGame::doTurn");
 	PROFILE_FUNC();
 
@@ -6027,6 +6048,7 @@ void CvGame::updateWar()
 
 void CvGame::updateMoves()
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_GAME_UPDATEMOVES);
 	MOD_PROFILE("CvGame::updateMoves");
 
 	CvSelectionGroup* pLoopSelectionGroup;
@@ -6779,8 +6801,8 @@ int CvGame::calculateSyncChecksum(CvString* pLogString) const
 		iValue += getNumCities();
 		iValue += getNumDeals();
 
-		iValue += GC.getMapINLINE().getOwnedPlots();
-		iValue += GC.getMapINLINE().getNumAreas();
+		iValue += GC.getMap().getOwnedPlots();
+		iValue += GC.getMap().getNumAreas();
 		*/
 
 		*pLogString += CvString::format("Map seed = %d\n", getMapRand().getSeed());
@@ -7034,6 +7056,7 @@ uint CvGame::getNumReplayMessages() const
 
 void CvGame::read(FDataStreamBase* pStream)
 {
+	WtpTiming::noteSaveLoaded(); // WTP: timing log: a savegame is loaded, the next report starts new
 	CvSavegameReaderBase readerbase(pStream);
 	CvSavegameReader reader(readerbase);
 
@@ -7597,7 +7620,7 @@ void CvGame::updateOceanDistances()
 	}
 
 	//DannyDaemonic fix
-	//OutputDebugStr(CvString::format("[CvGame::updateOceanDistances] Plots: %i, Visits: %i\n", GC.getMapINLINE().numPlotsINLINE(), iVisits).GetCString());
+	//OutputDebugStr(CvString::format("[CvGame::updateOceanDistances] Plots: %i, Visits: %i\n", GC.getMap().numPlotsINLINE(), iVisits).GetCString());
 	OutputDebugString(CvString::format("[CvGame::updateOceanDistances] Plots: %i, Visits: %i\n", GC.getMap().numPlotsINLINE(), iVisits).GetCString());
 	//end
 }

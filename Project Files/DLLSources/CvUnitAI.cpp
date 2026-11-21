@@ -80,6 +80,7 @@ void CvUnitAI::AI_reset()
 // Note that the PF is not reset here anymore since K-Mod PF will do that as needed in KmodPathFinder::SetSettings
 bool CvUnitAI::AI_update()
 {
+	WtpTiming::UnitScope wtpTimer((int)AI_getUnitAIType(), isNative(), (int)getOwnerINLINE(), getID(), getX_INLINE(), getY_INLINE());
 #ifdef PROFILING_ENABLED
 	// WTP: one sample per unit AI type, natives separately
 	static std::string aszProfileNames[2][NUM_UNITAI_TYPES + 1];
@@ -14571,6 +14572,8 @@ bool CvUnitAI::AI_moveToWhale()
 	CvPlot* pBestPlot = NULL;
 	CvPlot* pBestExplorePlot = NULL;
 
+	// WTP: a path for every resource plot of the map was slow; rate them by distance first and only find paths for the best ones
+	std::vector<std::pair<int, int> > aCandidates;
 	for (int iI = 0; iI < GC.getMap().numPlotsINLINE(); iI++)
 	{
 		CvPlot* pLoopPlot = GC.getMap().plotByIndexINLINE(iI);
@@ -14578,29 +14581,36 @@ bool CvUnitAI::AI_moveToWhale()
 		{
 			if (pLoopPlot->isRevealed(getTeam(), false) && !pLoopPlot->isVisibleEnemyDefender(this))
 			{
-				int iPlotValue = 0;
 				if (canGatherResource(pLoopPlot))
 				{
 					if (GET_PLAYER(getOwnerINLINE()).AI_plotTargetMissionAIs(pLoopPlot, MISSIONAI_WORKER_SEA, getGroup(), 3) == 0)
 					{
-						int iPathTurns;
-						if (generatePath(pLoopPlot, MOVE_BUST_FOG, true, &iPathTurns))
-						{
-							iPlotValue += 100;
-							iPlotValue += GC.getGameINLINE().getSorenRandNum(10, "AI find seafood deep search");
-							iPlotValue *= 100;
-							iPlotValue /= 100 + GET_PLAYER(getOwnerINLINE()).AI_cityDistance(pLoopPlot);
-							iPlotValue *= 10000;
-							iPlotValue /= 100 + getPathCost();
-							if (iPlotValue > iBestValue)
-							{
-								iBestValue = iPlotValue;
-								pBestPlot = getPathEndTurnPlot();
-								pBestExplorePlot = pLoopPlot;
-							}
-						}
+						const int iDistance = plotDistance(getX_INLINE(), getY_INLINE(), pLoopPlot->getX_INLINE(), pLoopPlot->getY_INLINE());
+						aCandidates.push_back(std::make_pair(10000 / (100 + GET_PLAYER(getOwnerINLINE()).AI_cityDistance(pLoopPlot)) * 100 / (1 + iDistance), iI));
 					}
 				}
+			}
+		}
+	}
+
+	std::sort(aCandidates.begin(), aCandidates.end(), std::greater<std::pair<int, int> >());
+	for (uint iCandidate = 0; iCandidate < aCandidates.size() && iCandidate < 10; ++iCandidate)
+	{
+		CvPlot* const pLoopPlot = GC.getMap().plotByIndexINLINE(aCandidates[iCandidate].second);
+		int iPathTurns;
+		if (generatePath(pLoopPlot, MOVE_BUST_FOG, true, &iPathTurns))
+		{
+			int iPlotValue = 100;
+			iPlotValue += GC.getGameINLINE().getSorenRandNum(10, "AI find seafood deep search");
+			iPlotValue *= 100;
+			iPlotValue /= 100 + GET_PLAYER(getOwnerINLINE()).AI_cityDistance(pLoopPlot);
+			iPlotValue *= 10000;
+			iPlotValue /= 100 + getPathCost();
+			if (iPlotValue > iBestValue)
+			{
+				iBestValue = iPlotValue;
+				pBestPlot = getPathEndTurnPlot();
+				pBestExplorePlot = pLoopPlot;
 			}
 		}
 	}
@@ -14620,6 +14630,8 @@ bool CvUnitAI::AI_exploreRessource()
 	CvPlot* pBestPlot = NULL;
 	CvPlot* pBestExplorePlot = NULL;
 
+	// WTP: a path for every resource plot of the map was slow; rate them by distance first and only find paths for the best ones
+	std::vector<std::pair<int, std::pair<int, int> > > aCandidates;
 	for (int iI = 0; iI < GC.getMap().numPlotsINLINE(); iI++)
 	{
 		CvPlot* pLoopPlot = GC.getMap().plotByIndexINLINE(iI);
@@ -14665,27 +14677,36 @@ bool CvUnitAI::AI_exploreRessource()
 					{
 						if (GET_PLAYER(getOwnerINLINE()).AI_plotTargetMissionAIs(pLoopPlot, MISSIONAI_WORKER_SEA, getGroup(), 3) == 0)
 						{
-							int iPathTurns;
-							if (generatePath(pLoopPlot, MOVE_BUST_FOG, true, &iPathTurns))
-							{
-								iPlotValue += GC.getGameINLINE().getSorenRandNum(10, "AI find seafood deep search");
-
-								iPlotValue *= 100;
-								iPlotValue /= 100 + GET_PLAYER(getOwnerINLINE()).AI_cityDistance(pLoopPlot);
-
-								iPlotValue *= 10000;
-								iPlotValue /= 100 + getPathCost();
-
-								if (iPlotValue > iBestValue)
-								{
-									iBestValue = iPlotValue;
-									pBestPlot = getPathEndTurnPlot();
-									pBestExplorePlot = pLoopPlot;
-								}
-							}
+							const int iDistance = plotDistance(getX_INLINE(), getY_INLINE(), pLoopPlot->getX_INLINE(), pLoopPlot->getY_INLINE());
+							aCandidates.push_back(std::make_pair(iPlotValue * 100 / (100 + GET_PLAYER(getOwnerINLINE()).AI_cityDistance(pLoopPlot)) * 100 / (1 + iDistance), std::make_pair(iPlotValue, iI)));
 						}
 					}
 				}
+			}
+		}
+	}
+
+	std::sort(aCandidates.begin(), aCandidates.end(), std::greater<std::pair<int, std::pair<int, int> > >());
+	for (uint iCandidate = 0; iCandidate < aCandidates.size() && iCandidate < 10; ++iCandidate)
+	{
+		CvPlot* const pLoopPlot = GC.getMap().plotByIndexINLINE(aCandidates[iCandidate].second.second);
+		int iPlotValue = aCandidates[iCandidate].second.first;
+		int iPathTurns;
+		if (generatePath(pLoopPlot, MOVE_BUST_FOG, true, &iPathTurns))
+		{
+			iPlotValue += GC.getGameINLINE().getSorenRandNum(10, "AI find seafood deep search");
+
+			iPlotValue *= 100;
+			iPlotValue /= 100 + GET_PLAYER(getOwnerINLINE()).AI_cityDistance(pLoopPlot);
+
+			iPlotValue *= 10000;
+			iPlotValue /= 100 + getPathCost();
+
+			if (iPlotValue > iBestValue)
+			{
+				iBestValue = iPlotValue;
+				pBestPlot = getPathEndTurnPlot();
+				pBestExplorePlot = pLoopPlot;
 			}
 		}
 	}
@@ -23895,7 +23916,7 @@ int CvUnitAI::AI_travelShipApproach(const CvUnit& kShip, const CvPlot& kPickup) 
 			int iBestSail = MAX_INT;
 			for (uint i = 0; i < aAboard.size(); ++i)
 			{
-				int iSail;
+				int iSail = MAX_INT;
 				CvPlot* const pShipPlot = (aAboard[i].first != NULL) ? travelShipPlot(kShip, *pAt, *aAboard[i].first, iSail) : NULL;
 				if (pShipPlot != NULL && iSail < iBestSail)
 				{

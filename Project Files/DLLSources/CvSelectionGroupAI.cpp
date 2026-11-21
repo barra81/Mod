@@ -48,6 +48,11 @@ void CvSelectionGroupAI::AI_reset()
 {
 	AI_uninit();
 	AI_resetSavedData();
+	m_kPriorityTarget = IDInfo();
+	m_iPriorityDetour = 0;
+	m_kTooltipStop = IDInfo();
+	m_bTooltipWaiting = false;
+	m_aiTooltipStopYields.clear();
 }
 
 
@@ -894,6 +899,77 @@ int CvSelectionGroupAI::AI_getYieldsLoaded(short* piYields) const
 	return iAmount;
 }
 
+int CvSelectionGroupAI::getPartialYieldSpace(YieldTypes eYield) const
+{
+	int iSpace = 0;
+	CLinkList<IDInfo> unitList;
+	buildCargoUnitList(unitList);
+	CLLNode<IDInfo>* pUnitNode = unitList.head();
+	while (pUnitNode != NULL)
+	{
+		CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
+		pUnitNode = unitList.next(pUnitNode);
+		if (pLoopUnit != NULL && pLoopUnit->getYield() != NO_YIELD && !pLoopUnit->getUnitInfo().isTreasure() && (eYield == NO_YIELD || pLoopUnit->getYield() == eYield))
+		{
+			iSpace += std::max(0, GC.getGameINLINE().getCargoYieldCapacity() - pLoopUnit->getYieldStored());
+		}
+	}
+	return iSpace;
+}
+
+// a detour only counts as worth it if at least this share of a slot is missing in a full transport's partly filled slots
+static const int WTP_DETOUR_MIN_SLOT_PERCENT = 20;
+// a detour of a transport to load more is only worth it if it has a free slot, or if the yields that are available on the detour can fill at
+// least 20% of a slot (of the game speed dependent capacity) in total in its partly filled slots: a single slot that needs less does not
+// justify a detour, several slots that are all filled further by the detour do
+bool CvSelectionGroupAI::isDetourWorthwhile(const int* aiAvailable) const
+{
+	if (!isFull())
+	{
+		return true;
+	}
+	int iFillable = 0;
+	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+	{
+		if (aiAvailable[eYield] > 0)
+		{
+			iFillable += std::min(aiAvailable[eYield], getPartialYieldSpace(eYield));
+		}
+	}
+	return iFillable * 100 >= WTP_DETOUR_MIN_SLOT_PERCENT * GC.getGameINLINE().getCargoYieldCapacity();
+}
+
+int CvSelectionGroupAI::getFreeSlotCount() const
+{
+	int iFreeSlots = 0;
+	CLLNode<IDInfo>* pFreeNode = headUnitNode();
+	while (pFreeNode != NULL)
+	{
+		CvUnit* const pFreeUnit = ::getUnit(pFreeNode->m_data);
+		pFreeNode = nextUnitNode(pFreeNode);
+		if (pFreeUnit != NULL && !pFreeUnit->isCargo() && pFreeUnit->cargoSpace() > pFreeUnit->getCargo())
+		{
+			iFreeSlots += pFreeUnit->cargoSpace() - pFreeUnit->getCargo();
+		}
+	}
+	return iFreeSlots;
+}
+
+bool CvSelectionGroupAI::canLoadYieldHere(YieldTypes eYield) const
+{
+	CLLNode<IDInfo>* pUnitNode = headUnitNode();
+	while (pUnitNode != NULL)
+	{
+		CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
+		pUnitNode = nextUnitNode(pUnitNode);
+		if (pLoopUnit != NULL && pLoopUnit->canLoadYield(plot(), eYield, false))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void CvSelectionGroupAI::processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo, int>& cityValues, std::vector<CvTradeRoute*>& routes, std::vector<int>& routeValues, std::vector<bool>& yieldsDelivered, std::vector<bool>& yieldsToUnload)
 {
 	routes.push_back(pRoute);
@@ -911,9 +987,148 @@ void CvSelectionGroupAI::processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo
 	cityValues[pRoute->getDestinationCity()] = 0;
 }
 
+// WTP: a human player's fully automated transport (Automate Transport) fills free cargo slots with yields for colonies that lie on
+// its way, and with mixed cargo it serves the nearest colony first. Set to false to get the old behavior (one destination per trip).
+static const bool WTP_TRADE_ROUTE_FILL_HOLD = true;
+// a colony counts as on the way if the trip over it takes at most this many turns more than the direct trip
+static const int WTP_FILL_HOLD_MAX_DETOUR_TURNS = 2;
+// WTP: pick-up stop: with free cargo slots the transport stops at a colony on its way that has yields for its destination, if it can load at least
+// a quarter of a cargo slot (game speed dependent: the capacity of a slot is 100 on the normal speed, 200 on epic)
+static const int WTP_PICKUP_STOP_MIN_SLOT_DIVISOR = 4;
+
+// WTP: the path of a transport of this unit type from a source city to a destination city, kept for the turn.
+// Every transport of every yield of every route asked for the same long coastal paths again and again.
+static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSourceCity, const CvCity* pDestinationCity, int iFlags, bool bIgnoreDanger, int* piTurns)
+{
+	static int iCacheTurn = -1;
+	static std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<bool, int> > aRoutePaths;
+	if (iCacheTurn != GC.getGameINLINE().getGameTurn())
+	{
+		iCacheTurn = GC.getGameINLINE().getGameTurn();
+		aRoutePaths.clear();
+	}
+	const std::pair<std::pair<int, int>, std::pair<int, int> > kRouteKey(
+		std::make_pair(((int)pGroup->getHeadUnit()->getUnitType() * 2 + (bIgnoreDanger ? 1 : 0)) * MAX_PLAYERS + pDestinationCity->getOwnerINLINE(), (int)pSourceCity->getOwnerINLINE()),
+		std::make_pair(pSourceCity->getID(), pDestinationCity->getID()));
+	std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<bool, int> >::const_iterator itRoute = aRoutePaths.find(kRouteKey);
+	if (itRoute != aRoutePaths.end())
+	{
+		*piTurns = itRoute->second.second;
+		return itRoute->second.first;
+	}
+	const bool bOk = pGroup->generatePath(pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, piTurns);
+	aRoutePaths[kRouteKey] = std::make_pair(bOk, *piTurns);
+	return bOk;
+}
+
+// WTP: rebuilds the orders of the transport after it has decided where to go (and loaded here): every yield on board is brought from
+// its source to its destination colony; an empty transport on its way to a source colony will fetch the yields of the best route from there
+void CvSelectionGroupAI::updateTradeOrders(const std::vector<CvTradeRoute*>& routes, const std::vector<int>& routeValues, const IDInfo& kBestDestination)
+{
+	std::vector<WtpTradeOrder> aNewOrders;
+	const CvCity* pPlotCity = plot()->getPlotCity();
+
+	short aiLoaded[NUM_YIELD_TYPES];
+	std::fill(aiLoaded, aiLoaded + NUM_YIELD_TYPES, 0);
+	AI_getYieldsLoaded(aiLoaded);
+
+	bool bAnyLoaded = false;
+	for (int iYield = 0; iYield < NUM_YIELD_TYPES; ++iYield)
+	{
+		if (aiLoaded[iYield] <= 0)
+		{
+			continue;
+		}
+		bAnyLoaded = true;
+		const YieldTypes eYield = (YieldTypes)iYield;
+
+		// an order that is still valid is kept (the yield was loaded earlier)
+		bool bKept = false;
+		for (uint i = 0; i < m_aTradeOrders.size(); ++i)
+		{
+			const WtpTradeOrder& kOld = m_aTradeOrders[i];
+			if (kOld.eYield == eYield && ::getCity(kOld.kDestination) != pPlotCity && ::getCity(kOld.kDestination) != NULL)
+			{
+				WtpTradeOrder kOrder = kOld;
+				kOrder.bLoaded = true;
+				aNewOrders.push_back(kOrder);
+				bKept = true;
+				break;
+			}
+		}
+		if (bKept)
+		{
+			continue;
+		}
+
+		// new cargo: the route of this yield from here (the best destination first), else any route to the best destination
+		int iBestRoute = -1;
+		int iBestPriority = 0;
+		for (uint i = 0; i < routes.size(); ++i)
+		{
+			if (routes[i]->getYield() != eYield || ::getCity(routes[i]->getDestinationCity()) == NULL || ::getCity(routes[i]->getDestinationCity()) == pPlotCity)
+			{
+				continue;
+			}
+			const bool bFromHere = (::getCity(routes[i]->getSourceCity()) == pPlotCity);
+			const bool bToBest = (routes[i]->getDestinationCity() == kBestDestination);
+			const int iPriority = (bFromHere ? 2 : 0) + (bToBest ? 4 : 0) + (bFromHere || bToBest ? 1 : 0);
+			if (iPriority > iBestPriority || (iPriority == iBestPriority && iBestRoute >= 0 && routeValues[i] > routeValues[iBestRoute]))
+			{
+				iBestPriority = iPriority;
+				iBestRoute = i;
+			}
+		}
+		if (iBestRoute >= 0)
+		{
+			WtpTradeOrder kOrder;
+			kOrder.eYield = eYield;
+			kOrder.kSource = routes[iBestRoute]->getSourceCity();
+			kOrder.kDestination = routes[iBestRoute]->getDestinationCity();
+			kOrder.bLoaded = true;
+			aNewOrders.push_back(kOrder);
+		}
+	}
+
+	if (!bAnyLoaded && kBestDestination.eOwner != NO_PLAYER)
+	{
+		// empty: on its way to fetch the yields of the best route that starts in the destination colony
+		int iBestRoute = -1;
+		for (uint i = 0; i < routes.size(); ++i)
+		{
+			if (routes[i]->getSourceCity() == kBestDestination && routeValues[i] > 0 && (iBestRoute < 0 || routeValues[i] > routeValues[iBestRoute]))
+			{
+				iBestRoute = i;
+			}
+		}
+		if (iBestRoute >= 0)
+		{
+			for (uint i = 0; i < routes.size(); ++i)
+			{
+				if (routes[i]->getSourceCity() == kBestDestination && routes[i]->getDestinationCity() == routes[iBestRoute]->getDestinationCity() && routeValues[i] > 0)
+				{
+					WtpTradeOrder kOrder;
+					kOrder.eYield = routes[i]->getYield();
+					kOrder.kSource = routes[i]->getSourceCity();
+					kOrder.kDestination = routes[i]->getDestinationCity();
+					kOrder.bLoaded = false;
+					aNewOrders.push_back(kOrder);
+				}
+			}
+		}
+	}
+
+	m_aTradeOrders = aNewOrders;
+}
+
 bool CvSelectionGroupAI::AI_tradeRoutes()
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_TRADE_ROUTES);
 	PROFILE_FUNC();
+
+	m_kTooltipStop = IDInfo();
+	m_bTooltipWaiting = false;
+	m_aiTooltipStopYields.clear();
 
 	const IDInfo kEurope(getOwnerINLINE(), CvTradeRoute::EUROPE_CITY_ID);
 
@@ -922,6 +1137,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	std::set<int>::iterator it;
 
 	std::map<IDInfo, int> cityValues;
+	std::map<IDInfo, std::pair<bool, int> > aGroupToDestPaths; // WTP: destination city -> (path from this group, turns)
 
 	std::vector<CvTradeRoute*> routes;
 	std::vector<int> routeValues;
@@ -938,6 +1154,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	// colony, from there to the destination, to its next destination)
 	static const int LAND_TRANSPORT_MAX_TRIP_TURNS = 10;
 	const bool bMaxTrip = isHuman() && getAutomateType() == AUTOMATE_TRANSPORT_FULL && getDomainType() == DOMAIN_LAND;
+	// WTP: Automate Transport and the assigned routes (R) fill the hold and stop at colonies on the way
+	const bool bFillHold = WTP_TRADE_ROUTE_FILL_HOLD && isHuman() && (getAutomateType() == AUTOMATE_TRANSPORT_FULL || getAutomateType() == AUTOMATE_TRANSPORT_ROUTES);
 
 	// Erik: We need to determine if we're dealing with a coastal transport
 	bool bCoastalTransport = false;
@@ -1122,7 +1340,17 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				if(pDestinationCity != NULL && pDestinationCity->getMaxImportAmount(eYield) > 0 && !routes[i]->isPrivate())
 				{
 					int turnsToReach = 0;
-					generatePath(plot(), pDestinationCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &turnsToReach);
+					// WTP: the path to a destination city is searched once per call (several yields go to the same city)
+					std::map<IDInfo, std::pair<bool, int> >::const_iterator itToDest = aGroupToDestPaths.find(routes[i]->getDestinationCity());
+					if (itToDest != aGroupToDestPaths.end())
+					{
+						turnsToReach = itToDest->second.second;
+					}
+					else
+					{
+						const bool bToDestOk = generatePath(plot(), pDestinationCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &turnsToReach);
+						aGroupToDestPaths[routes[i]->getDestinationCity()] = std::make_pair(bToDestOk, turnsToReach);
+					}
 					yieldsToUnload = std::min(yieldsToUnload, estimateYieldsToLoad(pDestinationCity, 9999, eYield, turnsToReach, 0));
 				}
 				//int iRouteValue = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), aiYieldsLoaded[routes[i]->getYield()]);
@@ -1146,8 +1374,56 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	//Basically this looks at the entire NEXT trade run (source-city to dest-city), with some bias given towards
 	//starting it from pPlotCity as sourceCity.
 	//If we are carrying cargo, only count cities where we can unload.
+
+	// WTP: an AI player has many routes, and every route with something to carry cost path searches (the AI's transports took up to half
+	// of the waiting time between turns). The routes are ranked by their value without any path (the paths can only lower it), and only the
+	// best WTP_AI_ROUTE_BATCH routes are evaluated with paths. The rest follows only if not a single one of the best routes is viable.
+	static const uint WTP_AI_ROUTE_BATCH = 12;
+	std::vector<bool> aRouteDeferred(routes.size(), false);
+	bool bAnyDeferred = false;
+	if (!isHuman() && routes.size() > WTP_AI_ROUTE_BATCH)
+	{
+		std::vector<std::pair<std::pair<int, int>, int> > aRank; // ((value, -distance), route index)
+		for (uint i = 0; i < routes.size(); ++i)
+		{
+			CvCity* pRankSource = ::getCity(routes[i]->getSourceCity());
+			if (pRankSource == NULL || !(bNoCargo || (cityValues[routes[i]->getSourceCity()] > 0)))
+			{
+				continue;
+			}
+			const int iRankAmount = pRankSource->getYieldStored(routes[i]->getYield()) - pRankSource->getAutoMaintainThreshold(routes[i]->getYield());
+			if (iRankAmount <= 0)
+			{
+				continue;
+			}
+			const int iRankExport = kOwner.AI_transferYieldValue(routes[i]->getSourceCity(), routes[i]->getYield(), -iRankAmount);
+			const int iRankImport = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), iRankAmount);
+			const int iRankValue = (iRankExport + iRankImport + 2 * std::min(iRankExport, iRankImport)) / 4;
+			aRank.push_back(std::make_pair(std::make_pair(iRankValue, -plotDistance(plot()->getX_INLINE(), plot()->getY_INLINE(), pRankSource->getX_INLINE(), pRankSource->getY_INLINE())), (int)i));
+		}
+		if (aRank.size() > WTP_AI_ROUTE_BATCH)
+		{
+			std::sort(aRank.begin(), aRank.end(), std::greater<std::pair<std::pair<int, int>, int> >());
+			for (uint k = WTP_AI_ROUTE_BATCH; k < aRank.size(); ++k)
+			{
+				aRouteDeferred[aRank[k].second] = true;
+			}
+			bAnyDeferred = true;
+		}
+	}
+
+	for (int iBatch = 0; iBatch < 2; ++iBatch)
+	{
+	if (iBatch == 1 && !(bAnyDeferred && bNoRoute && bNoCargo))
+	{
+		break;
+	}
 	for (uint i = 0; i < routes.size(); ++i)
 	{
+		if (aRouteDeferred[i] != (iBatch == 1))
+		{
+			continue;
+		}
 		CvCity* pSourceCity = ::getCity(routes[i]->getSourceCity());
 
 		if ((pSourceCity != NULL) && (bNoCargo || (cityValues[routes[i]->getSourceCity()] > 0)))
@@ -1160,7 +1436,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			int iAmount = pSourceCity->getYieldStored(eYield) - pSourceCity->getAutoMaintainThreshold(eYield);
 			// transport feeder - end - Nightinggale
 			// WTP: land transport with Automate Transport: no trip of more than 10 turns
-			if (bMaxTrip && pDestinationCity != NULL)
+			// WTP: a route with nothing to carry gets no path search: it could not add any value (most routes have nothing to move in a given turn)
+			if (bMaxTrip && pDestinationCity != NULL && iAmount > 0)
 			{
 				const int iFlags = (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY);
 				int iToSource = 0;
@@ -1173,7 +1450,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 			// R&R mod, vetiarvind, max yield import limit - start
 			// WTP: a private route loads without import limit (see below)
-			if(pDestinationCity != NULL && pDestinationCity->getMaxImportAmount(eYield) > 0 && !routes[i]->isPrivate())
+			if(pDestinationCity != NULL && iAmount > 0 && pDestinationCity->getMaxImportAmount(eYield) > 0 && !routes[i]->isPrivate())
 			{
 				int turnsToReachToSource = 0, turnsToReachFromSourceToDest = 0;
 				// WTP: the paths are kept: source to this group once per source city of this call, source to destination
@@ -1192,28 +1469,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					bSourceOk = generatePath(pSourceCity->plot(), plot(), iFlags, true, &turnsToReachToSource);
 					aSourcePaths[pSourceCity->getID()] = std::make_pair(bSourceOk, turnsToReachToSource);
 				}
-				static int iCacheTurn = -1;
-				static std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<bool, int> > aRoutePaths;
-				if (iCacheTurn != GC.getGameINLINE().getGameTurn())
-				{
-					iCacheTurn = GC.getGameINLINE().getGameTurn();
-					aRoutePaths.clear();
-				}
-				const std::pair<std::pair<int, int>, std::pair<int, int> > kRouteKey(
-					std::make_pair(((int)getHeadUnit()->getUnitType() * 2 + (bIgnoreDanger ? 1 : 0)) * MAX_PLAYERS + pDestinationCity->getOwnerINLINE(), (int)pSourceCity->getOwnerINLINE()),
-					std::make_pair(pSourceCity->getID(), pDestinationCity->getID()));
-				bool bDestOk;
-				std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<bool, int> >::const_iterator itRoute = aRoutePaths.find(kRouteKey);
-				if (itRoute != aRoutePaths.end())
-				{
-					bDestOk = itRoute->second.first;
-					turnsToReachFromSourceToDest = itRoute->second.second;
-				}
-				else
-				{
-					bDestOk = generatePath(pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, &turnsToReachFromSourceToDest);
-					aRoutePaths[kRouteKey] = std::make_pair(bDestOk, turnsToReachFromSourceToDest);
-				}
+				const bool bDestOk = WTP_getRoutePathCached(this, pSourceCity, pDestinationCity, iFlags, bIgnoreDanger, &turnsToReachFromSourceToDest);
 
 				if (!(bSourceOk && bDestOk))
 					// We require both of these paths to be valid. If not, we skip this route
@@ -1276,11 +1532,15 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 		}
 	}
+	} // iBatch
 
 	// We bail if there's not a single viable destination
 	// Transports with cargo should carry on because they might need to drop it off somewhere before they can start on normal traderoutes
 	if (bNoRoute && bNoCargo)
+	{
+		m_aTradeOrders.clear();
 		return false;
+	}
 
 	// TAC - Trade Routes Advisor - koma13 - START
 	// R&R mod, vetiarvind, max yield import limit - start
@@ -1291,8 +1551,41 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	IDInfo kBestDestination(NO_PLAYER, -1);
 	int iBestDestinationValue = 0;
 	//select best destination
-	for (std::map<IDInfo, int>::iterator it = cityValues.begin(); it != cityValues.end(); ++it)
+	// WTP: an AI player's transport tries the destinations in the order of their value without a path (the path can only lower it, except
+	// for the coastal transport, which tries the 8 best). Before every colony with a value got its own path search.
+	static const int WTP_AI_MAX_DESTINATION_PATHS = 8;
+	int iDestinationPaths = 0;
+	std::vector<std::pair<IDInfo, int> > aDestinations(cityValues.begin(), cityValues.end());
+	if (!isHuman() && aDestinations.size() > 1)
 	{
+		std::vector<std::pair<int, int> > aKeys; // (-value, index): ascending order is the best first
+		for (uint k = 0; k < aDestinations.size(); ++k)
+		{
+			int iKey = 0;
+			if (aDestinations[k].second > 0)
+			{
+				CvCity* pKeyCity = ::getCity(aDestinations[k].first);
+				if (pKeyCity != NULL)
+				{
+					iKey = aDestinations[k].second / (1 + kOwner.AI_plotTargetMissionAIs(pKeyCity->plot(), MISSIONAI_TRANSPORT, this, 0));
+				}
+			}
+			aKeys.push_back(std::make_pair(-iKey, (int)k));
+		}
+		std::sort(aKeys.begin(), aKeys.end());
+		std::vector<std::pair<IDInfo, int> > aSorted;
+		for (uint k = 0; k < aKeys.size(); ++k)
+		{
+			aSorted.push_back(aDestinations[aKeys[k].second]);
+		}
+		aDestinations.swap(aSorted);
+	}
+	for (std::vector<std::pair<IDInfo, int> >::iterator it = aDestinations.begin(); it != aDestinations.end(); ++it)
+	{
+		if (!isHuman() && iBestDestinationValue > 0 && (!bCoastalTransport || iDestinationPaths >= WTP_AI_MAX_DESTINATION_PATHS))
+		{
+			break;
+		}
 		int iValue = it->second;
 
 		if (iValue > 0)
@@ -1300,18 +1593,38 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			CvCity* pCity = ::getCity(it->first);
 			if (pCity != NULL)
 			{
+				++iDestinationPaths;
 				FAssert(!atPlot(pCity->plot()));
 				// TAC - Trade Routes Advisor - koma13 - START
 				//if (generatePath(plot(), pCity->plot(), MOVE_NO_ENEMY_TERRITORY, true))
 
 				CvPlot* pDestinationCityPlot = pCity->plot();
 
-				int iTurns;
-				if (generatePath(plot(), pDestinationCityPlot, (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iTurns)
+				int iTurns = 0;
+				bool bDestinationReachable;
+				std::map<IDInfo, std::pair<bool, int> >::const_iterator itToDest = aGroupToDestPaths.find(it->first);
+				if (itToDest != aGroupToDestPaths.end())
+				{
+					bDestinationReachable = itToDest->second.first;
+					iTurns = itToDest->second.second;
+				}
+				else
+				{
+					bDestinationReachable = generatePath(plot(), pDestinationCityPlot, (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iTurns);
+					aGroupToDestPaths[it->first] = std::make_pair(bDestinationReachable, iTurns);
+				}
+				if (bDestinationReachable
 					&& (!bMaxTrip || iTurns <= LAND_TRANSPORT_MAX_TRIP_TURNS)) // WTP: land transport: no trip of more than 10 turns
 				// TAC - Trade Routes Advisor - koma13 - END
 				{
 					iValue /= 1 + kOwner.AI_plotTargetMissionAIs(pDestinationCityPlot, MISSIONAI_TRANSPORT, this, 0);
+
+					// WTP: a human player's automated transport serves the nearest colony first (value per turn), with cargo on board as well as on
+					// the empty way to a colony whose yields are fetched (so it does not pass a near job for a far one of little more value)
+					if (bFillHold && iValue > 0)
+					{
+						iValue = std::max(1, iValue / std::max(1, iTurns));
+					}
 
 					if (bCoastalTransport)
 					{
@@ -1358,13 +1671,138 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 		}
 	}
 
+	// WTP: the priority target stays: a transport that stopped at a colony on its way continues to the target it had decided on
+	// (the stops on the way are secondary). The target is dropped when it is reached, or when it has nothing to deliver or fetch any more
+	if (m_kPriorityTarget.eOwner != NO_PLAYER)
+	{
+		CvCity* const pPriorityCity = ::getCity(m_kPriorityTarget);
+		if (!bFillHold || pPriorityCity == NULL || pPriorityCity == pPlotCity || cityValues[m_kPriorityTarget] <= 0)
+		{
+			m_kPriorityTarget = IDInfo();
+			m_iPriorityDetour = 0;
+		}
+		else
+		{
+			std::map<IDInfo, std::pair<bool, int> >::const_iterator itPriorityPath = aGroupToDestPaths.find(m_kPriorityTarget);
+			bool bPriorityOk;
+			if (itPriorityPath != aGroupToDestPaths.end())
+			{
+				bPriorityOk = itPriorityPath->second.first;
+			}
+			else
+			{
+				int iPriorityTurns = 0;
+				bPriorityOk = generatePath(plot(), pPriorityCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iPriorityTurns);
+				aGroupToDestPaths[m_kPriorityTarget] = std::make_pair(bPriorityOk, iPriorityTurns);
+			}
+			if (bPriorityOk)
+			{
+				kBestDestination = m_kPriorityTarget;
+			}
+			else
+			{
+				m_kPriorityTarget = IDInfo();
+				m_iPriorityDetour = 0;
+			}
+		}
+	}
+
 	if ((pPlotCity != NULL) && (kBestDestination.eOwner != NO_PLAYER))
 	{
 		//We need to keep looping and recalculating
 		//For example a city might have "101" of an item, we want to move the first 100 but not the 1.
 		//But it could also have 200, in which case we might want 2 loads of 100...
 		//But it could also have 200 of two resources, and we'd want to move 100 of each...
-		while (!isFull())
+		// WTP: pass 0 loads for the best destination. Pass 1 (human player's automated transport only) fills the free slots
+		// with yields for other colonies that lie on the way to it
+		std::set<IDInfo> aFillDestinations;
+		for (int iPass = 0; iPass < 2; ++iPass)
+		{
+		if (iPass == 1)
+		{
+			if (!bFillHold || (isFull() && getPartialYieldSpace(NO_YIELD) <= 0))
+			{
+				break;
+			}
+			CvCity* const pBestCity = ::getCity(kBestDestination);
+			if (pBestCity == NULL)
+			{
+				break;
+			}
+			const int iFillFlags = (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY);
+			int iToBest = 0;
+			bool bBestOk;
+			std::map<IDInfo, std::pair<bool, int> >::const_iterator itBestPath = aGroupToDestPaths.find(kBestDestination);
+			if (itBestPath != aGroupToDestPaths.end())
+			{
+				bBestOk = itBestPath->second.first;
+				iToBest = itBestPath->second.second;
+			}
+			else
+			{
+				bBestOk = generatePath(plot(), pBestCity->plot(), iFillFlags, true, &iToBest);
+				aGroupToDestPaths[kBestDestination] = std::make_pair(bBestOk, iToBest);
+			}
+			if (!bBestOk)
+			{
+				break;
+			}
+			for (uint i = 0; i < routes.size(); ++i)
+			{
+				const IDInfo kFillDestination = routes[i]->getDestinationCity();
+				if (kFillDestination == kBestDestination || ::getCity(routes[i]->getSourceCity()) != pPlotCity || (routes[i]->isPrivate() && getAutomateType() != AUTOMATE_TRANSPORT_ROUTES)
+					|| aFillDestinations.find(kFillDestination) != aFillDestinations.end())
+				{
+					continue;
+				}
+				CvCity* const pFillCity = ::getCity(kFillDestination);
+				if (pFillCity == NULL || pFillCity == pPlotCity)
+				{
+					continue;
+				}
+				int iToFill = 0;
+				bool bFillOk;
+				std::map<IDInfo, std::pair<bool, int> >::const_iterator itFillPath = aGroupToDestPaths.find(kFillDestination);
+				if (itFillPath != aGroupToDestPaths.end())
+				{
+					bFillOk = itFillPath->second.first;
+					iToFill = itFillPath->second.second;
+				}
+				else
+				{
+					bFillOk = generatePath(plot(), pFillCity->plot(), iFillFlags, true, &iToFill);
+					aGroupToDestPaths[kFillDestination] = std::make_pair(bFillOk, iToFill);
+				}
+				int iFillToBest = 0;
+				// the yields that the current city has for this destination
+				int aiFillAvailable[NUM_YIELD_TYPES];
+				std::fill(aiFillAvailable, aiFillAvailable + NUM_YIELD_TYPES, 0);
+				for (uint j = 0; j < routes.size(); ++j)
+				{
+					if (routes[j]->getDestinationCity() == kFillDestination && ::getCity(routes[j]->getSourceCity()) == pPlotCity)
+					{
+						int iFillAmount = std::max(0, pPlotCity->getYieldStored(routes[j]->getYield()) - pPlotCity->getAutoMaintainThreshold(routes[j]->getYield()));
+						// the import limit of the receiving colony (what is on board of this yield counts already)
+						if (iFillAmount > 0 && pFillCity->getMaxImportAmount(routes[j]->getYield()) > 0 && !routes[j]->isPrivate())
+						{
+							iFillAmount = estimateYieldsToLoad(pFillCity, iFillAmount, routes[j]->getYield(), iToFill, aiYieldsLoaded[routes[j]->getYield()]);
+						}
+						aiFillAvailable[routes[j]->getYield()] += iFillAmount;
+					}
+				}
+				if (bFillOk && WTP_getRoutePathCached(this, pFillCity, pBestCity, iFillFlags, bIgnoreDanger, &iFillToBest)
+					&& (iToFill + iFillToBest <= iToBest || (iToFill + iFillToBest <= iToBest + WTP_FILL_HOLD_MAX_DETOUR_TURNS && isDetourWorthwhile(aiFillAvailable))))
+				{
+					aFillDestinations.insert(kFillDestination);
+				}
+			}
+			if (aFillDestinations.empty())
+			{
+				break;
+			}
+		}
+		// WTP: also a full transport loads into a partly filled slot of the same yield (the game merges the load into it)
+		while (!isFull() || (bFillHold && getPartialYieldSpace(NO_YIELD) > 0))
 		{
 			int iBestRoute = -1;
 			int iBestRouteValue = 0;
@@ -1380,7 +1818,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 
 				const CvCity* pSourceCity = ::getCity(routes[i]->getSourceCity());
 				if ((pSourceCity != NULL && pSourceCity == pPlotCity) // R&R mod, vetiarvind, max yield import limit (move plot==srcCity check outside as optmztn)
-					&& (routes[i]->getDestinationCity() == kBestDestination))
+					&& (!bFillHold || canLoadYieldHere(routes[i]->getYield())) // WTP: nothing that cannot be loaded (partly filled slots of other yields)
+					&& (iPass == 0 ? (routes[i]->getDestinationCity() == kBestDestination) : (aFillDestinations.find(routes[i]->getDestinationCity()) != aFillDestinations.end())))
 				{
 					const CvCity* pDestinationCity = ::getCity(routes[i]->getDestinationCity());
 					const YieldTypes eYield = routes[i]->getYield();
@@ -1398,7 +1837,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					{
 						int turnsToReach = 0;
 						iOriginalAmount = iAmount = std::min(GC.getGameINLINE().getCargoYieldCapacity(), iAmount);
-						const bool r1 = generatePath(pSourceCity->plot(), pDestinationCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &turnsToReach);
+						const bool r1 = WTP_getRoutePathCached(this, pSourceCity, pDestinationCity, (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), bIgnoreDanger, &turnsToReach);
 						FAssertMsg(r1, "Path must be valid!");
 						// Erik: If the destination can be reached in the same turn, subtract a turn
 						turnsToReach = std::max(0, turnsToReach - 1);
@@ -1427,6 +1866,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 
 			if (iBestRouteValue > 0)
 			{
+				bool bLoadedAny = false; // WTP: a round without any load ends the loading (nothing could be loaded)
 				CLLNode<IDInfo>* pUnitNode = headUnitNode();
 				while (pUnitNode != NULL)
 				{
@@ -1440,15 +1880,20 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 							//pLoopUnit->loadYield(routes[iBestRoute]->getYield(), false);
 							int loaded = 0;
 							if(bImportLimitUsed)
-								loaded = pLoopUnit->loadYieldAmount(routes[iBestRoute]->getYield(), iBestRouteYieldAmount, false);
+								loaded = pLoopUnit->loadYieldAmount(routes[iBestRoute]->getYield(), std::min(iBestRouteYieldAmount, pLoopUnit->getMaxLoadYieldAmount(routes[iBestRoute]->getYield())), false);
 							else
 								loaded = pLoopUnit->loadYield(routes[iBestRoute]->getYield(), false);
 
 							// R&R mod, vetiarvind, max yield import limit - end
 							aiYieldsLoaded[routes[iBestRoute]->getYield()] += loaded;
+							bLoadedAny = (loaded > 0);
 							break;
 						}
 					}
+				}
+				if (!bLoadedAny)
+				{
+					break;
 				}
 			}
 			else
@@ -1456,7 +1901,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				break;
 			}
 		}
-		//XXX fill hold.
+		} // iPass
 	}
 
 	if ((kBestDestination.eOwner == NO_PLAYER) && hasCargo())
@@ -1478,6 +1923,227 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 		}
 	}
 
+	// WTP: pick-up stop. With free cargo slots the transport stops on its way to the destination at a colony that has yields for this
+	// destination (the trip over it takes at most WTP_FILL_HOLD_MAX_DETOUR_TURNS turns more). This applies to the way to a colony that
+	// receives cargo as well as to the empty way to a colony whose yields are fetched (the colonies on the way that deliver to it).
+	CvCity* pPickupStop = NULL;
+	if (bFillHold && (!isFull() || getPartialYieldSpace(NO_YIELD) > 0) && kBestDestination.eOwner != NO_PLAYER && kBestDestination != kEurope)
+	{
+		CvCity* const pTargetCity = ::getCity(kBestDestination);
+		if (pTargetCity != NULL && !atPlot(pTargetCity->plot()))
+		{
+			const int iPickupFlags = (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY);
+			int iToTarget = 0;
+			bool bTargetOk;
+			std::map<IDInfo, std::pair<bool, int> >::const_iterator itTargetPath = aGroupToDestPaths.find(kBestDestination);
+			if (itTargetPath != aGroupToDestPaths.end())
+			{
+				bTargetOk = itTargetPath->second.first;
+				iToTarget = itTargetPath->second.second;
+			}
+			else
+			{
+				bTargetOk = generatePath(plot(), pTargetCity->plot(), iPickupFlags, true, &iToTarget);
+				aGroupToDestPaths[kBestDestination] = std::make_pair(bTargetOk, iToTarget);
+			}
+			if (bTargetOk)
+			{
+				// free cargo space of the group in units of yield: the free slots times the capacity of a slot, plus per yield the free
+				// space in its partly filled slots (a new load of the same yield is merged into them by the game)
+				int iFreeSlots = 0;
+				CLLNode<IDInfo>* pFreeNode = headUnitNode();
+				while (pFreeNode != NULL)
+				{
+					CvUnit* const pFreeUnit = ::getUnit(pFreeNode->m_data);
+					pFreeNode = nextUnitNode(pFreeNode);
+					if (pFreeUnit != NULL && !pFreeUnit->isCargo() && pFreeUnit->cargoSpace() > pFreeUnit->getCargo())
+					{
+						iFreeSlots += pFreeUnit->cargoSpace() - pFreeUnit->getCargo();
+					}
+				}
+				const int iSlotCapacity = GC.getGameINLINE().getCargoYieldCapacity();
+				const int iFreeSlotCapacity = iFreeSlots * iSlotCapacity;
+				const int iFreeCapacity = iFreeSlotCapacity + getPartialYieldSpace(NO_YIELD);
+				const int iMinPickup = std::max(1, iSlotCapacity / WTP_PICKUP_STOP_MIN_SLOT_DIVISOR);
+				std::map<int, int> aPickupAmounts; // source city ID -> units that could be loaded for the target
+				std::map<int, std::vector<int> > aPickupByYield; // source city ID -> the same per yield
+				for (uint i = 0; i < routes.size(); ++i)
+				{
+					if (routes[i]->getDestinationCity() != kBestDestination)
+					{
+						continue;
+					}
+					CvCity* const pPickupCity = ::getCity(routes[i]->getSourceCity());
+					if (pPickupCity == NULL || pPickupCity == pPlotCity || pPickupCity == pTargetCity)
+					{
+						continue;
+					}
+					const YieldTypes ePickupYield = routes[i]->getYield();
+					int iPickupAmount = pPickupCity->getYieldStored(ePickupYield) - pPickupCity->getAutoMaintainThreshold(ePickupYield);
+					if (iPickupAmount > 0 && pTargetCity->getMaxImportAmount(ePickupYield) > 0 && !routes[i]->isPrivate())
+					{
+						iPickupAmount = estimateYieldsToLoad(pTargetCity, iPickupAmount, ePickupYield, iToTarget, aiYieldsLoaded[ePickupYield]);
+					}
+					// not more than the free slots and the partly filled slots of this yield can take
+					iPickupAmount = std::min(iPickupAmount, iFreeSlotCapacity + getPartialYieldSpace(ePickupYield));
+					if (iPickupAmount > 0)
+					{
+						aPickupAmounts[pPickupCity->getID()] += iPickupAmount;
+						std::vector<int>& aiByYield = aPickupByYield[pPickupCity->getID()];
+						aiByYield.resize(NUM_YIELD_TYPES, 0);
+						aiByYield[ePickupYield] += iPickupAmount;
+					}
+				}
+				// the detours of all stops on the way to the priority target together stay within the limit
+				const int iDetourLeft = WTP_FILL_HOLD_MAX_DETOUR_TURNS - m_iPriorityDetour;
+				int iBestPickupAmount = 0;
+				int iBestPickupEfficiency = 0;
+				int iBestPickupDetour = MAX_INT;
+				int iBestPickupTotal = 0;
+				std::vector<int> aiBestPickupYields;
+				for (std::map<int, int>::const_iterator itPickup = aPickupAmounts.begin(); itPickup != aPickupAmounts.end(); ++itPickup)
+				{
+					// not more than the free space can be loaded
+					const int iCandidateAmount = std::min(itPickup->second, iFreeCapacity);
+					if (iCandidateAmount < 1)
+					{
+						continue;
+					}
+					CvCity* const pCandidate = kOwner.getCity(itPickup->first);
+					if (pCandidate == NULL)
+					{
+						continue;
+					}
+					int iToCandidate = 0;
+					bool bCandidateOk;
+					const IDInfo kCandidate = pCandidate->getIDInfo();
+					std::map<IDInfo, std::pair<bool, int> >::const_iterator itCandidatePath = aGroupToDestPaths.find(kCandidate);
+					if (itCandidatePath != aGroupToDestPaths.end())
+					{
+						bCandidateOk = itCandidatePath->second.first;
+						iToCandidate = itCandidatePath->second.second;
+					}
+					else
+					{
+						bCandidateOk = generatePath(plot(), pCandidate->plot(), iPickupFlags, true, &iToCandidate);
+						aGroupToDestPaths[kCandidate] = std::make_pair(bCandidateOk, iToCandidate);
+					}
+					int iCandidateToTarget = 0;
+					if (bCandidateOk && WTP_getRoutePathCached(this, pCandidate, pTargetCity, iPickupFlags, bIgnoreDanger, &iCandidateToTarget))
+					{
+						const int iDetour = std::max(0, iToCandidate + iCandidateToTarget - iToTarget);
+						// the shorter detour wins, with the same detour the larger load
+						// without a detour every amount counts, with a detour it has to be a quarter of a slot and the detour has to be worth it
+						if (iDetour > 0 && (iCandidateAmount < iMinPickup || !isDetourWorthwhile(&aPickupByYield[itPickup->first][0])))
+						{
+							continue;
+						}
+						// slot efficiency: the units loaded per new slot that the stop needs (loads into partly filled slots need none)
+						int iNewSlots = 0;
+						const std::vector<int>& aiCandidateYields = aPickupByYield[itPickup->first];
+						for (YieldTypes eSlotYield = FIRST_YIELD; eSlotYield < NUM_YIELD_TYPES && eSlotYield < (YieldTypes)aiCandidateYields.size(); ++eSlotYield)
+						{
+							const int iBeyondPartial = aiCandidateYields[eSlotYield] - getPartialYieldSpace(eSlotYield);
+							if (iBeyondPartial > 0)
+							{
+								iNewSlots += (iBeyondPartial + iSlotCapacity - 1) / std::max(1, iSlotCapacity);
+							}
+						}
+						const int iCandidateEfficiency = iCandidateAmount * 10 / std::max(1, iNewSlots);
+						// the shorter detour wins, then the more efficient use of the slots, then the larger load
+						if (iDetour <= iDetourLeft && (iDetour < iBestPickupDetour
+							|| (iDetour == iBestPickupDetour && (iCandidateEfficiency > iBestPickupEfficiency
+								|| (iCandidateEfficiency == iBestPickupEfficiency && iCandidateAmount > iBestPickupAmount)))))
+						{
+							iBestPickupEfficiency = iCandidateEfficiency;
+							iBestPickupDetour = iDetour;
+							iBestPickupAmount = iCandidateAmount;
+							iBestPickupTotal = iDetour;
+							aiBestPickupYields = aiCandidateYields;
+							pPickupStop = pCandidate;
+						}
+					}
+				}
+				if (pPickupStop != NULL)
+				{
+					m_iPriorityDetour += iBestPickupTotal;
+					m_kTooltipStop = pPickupStop->getIDInfo();
+					m_aiTooltipStopYields = aiBestPickupYields;
+				}
+			}
+		}
+	}
+
+	// WTP: waiting counts like a detour. A transport with cargo and free space (slots or partly filled slots) waits a turn at a colony if
+	// the production of it for the same destination fills at least a quarter of a slot in that turn, within the detour budget, and if that is worth it
+	// (see isDetourWorthwhile). Stops without a detour come first.
+	if (bFillHold && pPickupStop == NULL && pPlotCity != NULL && kBestDestination.eOwner != NO_PLAYER && kBestDestination != kEurope
+		&& hasCargo() && (!isFull() || getPartialYieldSpace(NO_YIELD) > 0) && WTP_FILL_HOLD_MAX_DETOUR_TURNS - m_iPriorityDetour >= 1)
+	{
+		CvCity* const pWaitTarget = ::getCity(kBestDestination);
+		if (pWaitTarget != NULL && pWaitTarget != pPlotCity)
+		{
+			int iWaitToTarget = 0;
+			std::map<IDInfo, std::pair<bool, int> >::const_iterator itWaitPath = aGroupToDestPaths.find(kBestDestination);
+			if (itWaitPath != aGroupToDestPaths.end())
+			{
+				iWaitToTarget = itWaitPath->second.second;
+			}
+			const int iWaitSlotCapacity = GC.getGameINLINE().getCargoYieldCapacity();
+			const int iWaitFreeSlots = getFreeSlotCount() * iWaitSlotCapacity;
+			int aiExpected[NUM_YIELD_TYPES];
+			std::fill(aiExpected, aiExpected + NUM_YIELD_TYPES, 0);
+			int iExpectedTotal = 0;
+			for (uint i = 0; i < routes.size(); ++i)
+			{
+				if (routes[i]->getDestinationCity() != kBestDestination || ::getCity(routes[i]->getSourceCity()) != pPlotCity)
+				{
+					continue;
+				}
+				const YieldTypes eWaitYield = routes[i]->getYield();
+				// what the colony produces in a turn (what it stores now was loaded above as far as possible)
+				int iExpected = std::max(0, pPlotCity->getYieldRate(eWaitYield));
+				iExpected = std::min(iExpected, iWaitFreeSlots + getPartialYieldSpace(eWaitYield));
+				if (iExpected > 0 && pWaitTarget->getMaxImportAmount(eWaitYield) > 0 && !routes[i]->isPrivate())
+				{
+					iExpected = estimateYieldsToLoad(pWaitTarget, iExpected, eWaitYield, iWaitToTarget + 1, aiYieldsLoaded[eWaitYield]);
+				}
+				if (iExpected > 0)
+				{
+					aiExpected[eWaitYield] += iExpected;
+					iExpectedTotal += iExpected;
+				}
+			}
+			if (iExpectedTotal >= std::max(1, iWaitSlotCapacity / WTP_PICKUP_STOP_MIN_SLOT_DIVISOR) && isDetourWorthwhile(aiExpected))
+			{
+				m_kPriorityTarget = kBestDestination;
+				m_iPriorityDetour += 1;
+				m_kTooltipStop = pPlotCity->getIDInfo();
+				m_bTooltipWaiting = true;
+				m_aiTooltipStopYields.assign(aiExpected, aiExpected + NUM_YIELD_TYPES);
+				pushMission(MISSION_SKIP);
+				if (isHuman())
+				{
+					updateTradeOrders(routes, routeValues, kBestDestination);
+				}
+				return true;
+			}
+		}
+	}
+
+	// the priority target is remembered while the transport goes to a pick-up stop
+	m_kPriorityTarget = (pPickupStop != NULL) ? kBestDestination : IDInfo();
+	if (pPickupStop == NULL)
+	{
+		m_iPriorityDetour = 0;
+	}
+
+	// WTP: the orders shown in the tooltip of the transport (human player only)
+	if (isHuman())
+	{
+		updateTradeOrders(routes, routeValues, kBestDestination);
+	}
+
 	//As a final step, we could consider loading yields which would be useful as parts of delivery runs...
 	if (kBestDestination != kEurope)
 	{
@@ -1487,7 +2153,9 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			FAssert(!atPlot(pBestDestinationCity->plot()));
 			// TAC - Trade Routes Advisor - koma13 - START
 			//pushMission(MISSION_MOVE_TO, pBestDestinationCity->getX_INLINE(), pBestDestinationCity->getY_INLINE(), MOVE_NO_ENEMY_TERRITORY, false, false, MISSIONAI_TRANSPORT, pBestDestinationCity->plot());
-			pushMission(MISSION_MOVE_TO, pBestDestinationCity->getX_INLINE(), pBestDestinationCity->getY_INLINE(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), false, false, MISSIONAI_TRANSPORT, pBestDestinationCity->plot());
+			// WTP: with a pick-up stop the transport goes there first (and decides again there)
+			CvCity* const pMoveCity = (pPickupStop != NULL) ? pPickupStop : pBestDestinationCity;
+			pushMission(MISSION_MOVE_TO, pMoveCity->getX_INLINE(), pMoveCity->getY_INLINE(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), false, false, MISSIONAI_TRANSPORT, pMoveCity->plot());
 			// TAC - Trade Routes Advisor - koma13 - END
 			if (atPlot(pBestDestinationCity->plot()))
 			{
@@ -1633,7 +2301,14 @@ void CvSelectionGroupAI::unloadToCity(CvCity* pCity, CvUnit* unit, UnloadMode um
 	if (um == UnloadMode::NoForce && pCity->getImportsLimit(unit->getYield()) > 0)
 	{
 		const int totalStored = unit->getYieldStored();
-		const int toUnload = estimateYieldsToLoad(pCity, totalStored, unit->getYield(), 0, 0);
+		int toUnload = estimateYieldsToLoad(pCity, totalStored, unit->getYield(), 0, 0);
+
+		// WTP: a slight excess of the import limit is allowed if the slot of the transport becomes free by it (a rest of at most
+		// WTP_DETOUR_MIN_SLOT_PERCENT of a slot would keep the whole slot occupied)
+		if (toUnload < totalStored && (totalStored - toUnload) * 100 <= WTP_DETOUR_MIN_SLOT_PERCENT * GC.getGameINLINE().getCargoYieldCapacity())
+		{
+			toUnload = totalStored;
+		}
 
 		if (toUnload <= 0)
 		{

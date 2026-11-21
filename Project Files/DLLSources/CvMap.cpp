@@ -424,6 +424,7 @@ void CvMap::setAllPlotTypes(PlotTypes ePlotType)
 // XXX generalize these funcs? (macro?)
 void CvMap::doTurn()
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_MAP_DOTURN);
 	PROFILE_FUNC();
 
 	for (int iI = 0; iI < numPlotsINLINE(); iI++)

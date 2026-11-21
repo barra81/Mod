@@ -1485,6 +1485,11 @@ void CvUnit::updateCombat(bool bQuick)
 			setCombatUnit(pDefender, true);
 			pDefender->setCombatUnit(this, false);
 
+			if (bVisible)
+			{
+				WtpTiming::fightBegin(); // WTP: timing log: an animated fight with a human player starts
+			}
+
 			pDefender->getGroup()->clearMissionQueue();
 
 			bool bFocused = (bVisible && isCombatFocus() && gDLL->getInterfaceIFace()->isCombatFocus());
@@ -13946,6 +13951,11 @@ CvUnit* CvUnit::getCombatUnit() const
 
 void CvUnit::setCombatUnit(CvUnit* pCombatUnit, bool bAttacking)
 {
+	if (pCombatUnit == NULL)
+	{
+		WtpTiming::fightEnd(); // WTP: timing log: the fight is over (no effect when no animated fight with a human runs)
+	}
+
 	if (isCombatFocus())
 	{
 		gDLL->getInterfaceIFace()->setCombatFocus(false);

@@ -515,6 +515,7 @@ void CvCity::kill()
 
 void CvCity::doTurn()
 {
+	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_CITY_DOTURN);
 #ifdef PROFILING_ENABLED
 	Profiler profileSession(isNative() ? "CvCity::doTurn (native)" : "CvCity::doTurn");
 #endif

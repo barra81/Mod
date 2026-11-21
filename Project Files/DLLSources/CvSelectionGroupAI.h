@@ -67,6 +67,15 @@ public:
 	void AI_groupBombard();
 
 	int AI_getYieldsLoaded(short* piYields) const;
+	// WTP: free space in partly filled slots of a yield on board (a new load of the same yield is merged into them); NO_YIELD: of all yields
+	int getPartialYieldSpace(YieldTypes eYield) const;
+	// WTP: true if the group can load this yield here (free slot, or room in a partly filled slot of it)
+	bool canLoadYieldHere(YieldTypes eYield) const;
+	// WTP: a detour for loading is only worth it if a free slot is left, or if the yields available on it (per yield, NUM_YIELD_TYPES entries) can fill
+	// at least 20% of a slot in total in the partly filled slots of the transport
+	bool isDetourWorthwhile(const int* aiAvailable) const;
+	// WTP: number of free cargo slots of the group
+	int getFreeSlotCount() const;
 
 	bool AI_tradeRoutes();
 
@@ -107,12 +116,36 @@ protected:
 	bool getIgnoreDangerStatus() const;
 	// R&R mod, vetiarvind, max yield import limit - end
 
+public:
+	// WTP: the current orders of a human player's automated transport for the unit tooltip (not saved, rebuilt by AI_tradeRoutes):
+	// a yield on board is brought from a source colony to a destination colony, or (bLoaded false) it is to be fetched there
+	struct WtpTradeOrder
+	{
+		YieldTypes eYield;
+		IDInfo kSource;
+		IDInfo kDestination;
+		bool bLoaded;
+	};
+	const std::vector<WtpTradeOrder>& getTradeOrders() const { return m_aTradeOrders; }
+	const IDInfo& getTooltipStop() const { return m_kTooltipStop; }
+	bool isTooltipWaiting() const { return m_bTooltipWaiting; }
+	const std::vector<int>& getTooltipStopYields() const { return m_aiTooltipStopYields; }
+	std::vector<WtpTradeOrder> m_aTradeOrders;
+	// WTP: the priority target of an automated transport that makes a pick-up stop on its way (not saved: after loading a savegame it decides anew)
+	IDInfo m_kPriorityTarget;
+	// WTP: the stop on the way or the waiting of an automated transport for its tooltip (rebuilt by every AI_tradeRoutes call, not saved)
+	IDInfo m_kTooltipStop;
+	bool m_bTooltipWaiting;
+	std::vector<int> m_aiTooltipStopYields;
+	int m_iPriorityDetour; // turns of detour already used by the pick-up stops on the way to this target
+
 private:
 	// R&R mod, vetiarvind, max yield import limit - start
 	int estimateYieldsToLoad(const CvCity* pDestinationCity, int maxYieldsToLoad, YieldTypes eYield, int turnsToReach, int alreadyLoaded) const;
 	void unloadToCity(CvCity* pCity, CvUnit* unit, UnloadMode um = NoForce);
 	// R&R mod, vetiarvind, max yield import limit - end
 
+	void updateTradeOrders(const std::vector<CvTradeRoute*>& routes, const std::vector<int>& routeValues, const IDInfo& kBestDestination);
 	void processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo, int>& cityValues, std::vector<CvTradeRoute*>& routes, std::vector<int>& routeValues, std::vector<bool>& yieldsDelivered, std::vector<bool>& yieldsToUnload);
 };
 

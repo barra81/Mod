@@ -707,6 +707,7 @@ protected:
 	std::map<int, std::vector<int> > m_mapWfLandCost; // city ID -> movement cost of a colonist from each plot to the colony (MAX_INT: no way)
 	std::map<std::pair<int, int>, int> m_mapWfSeaTurns; // (port city ID, city ID) -> turns of a transport from the port to the colony
 	int m_iWfLandMoves; // movement points of a colonist per turn
+	std::vector<int> m_aiWfTravelKey; // WTP: [0] turn of the last calculation of the travel times, then the speed of the colonist and the colonies it was made for (not saved)
 	int m_iWfTravelTurn; // WTP: turn the travel times were made for a human player's colonist (not saved)
 	void AI_wfUpdateTravel(const CvUnit& kColonist);
 public:
