@@ -2320,6 +2320,8 @@
 		<Spanish>%s1 lleva %s2 a %s3</Spanish>
 		<Russian>%s1 привозит %s2 в %s3</Russian>
 		<Hungarian>%s1 elviszi ide: %s3 - %s2</Hungarian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_ACTION_AUTOMATE_ASSIGN_JOB</Tag>
 		<English>Auto Assign Job</English>
 		<Portuguese>Atribuir trabalho automaticamente</Portuguese>

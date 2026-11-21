@@ -3603,6 +3603,7 @@ void CvSelectionGroup::setAutomateType(AutomateTypes eNewValue, bool bImplicit)
 		else if (eOldValue == AUTOMATE_NATIVE_SUPPLY && eNewValue != AUTOMATE_NATIVE_TRADE && getHeadUnit() != NULL)
 		{
 			static_cast<CvUnitAI*>(getHeadUnit())->AI_clearNativeTradeHome();
+		}
 		// WTP: automatic job assignment: the colonist gets its job (none: the automation is off again); switched off, it drops it
 		if (eNewValue == AUTOMATE_ASSIGN_JOB && getHeadUnit() != NULL)
 		{
