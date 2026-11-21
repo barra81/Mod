@@ -179,7 +179,7 @@ def _log(*args):
 def _namespace(seed, xml):
 	def read_xml(path):
 		return xml[path.replace('\\', '/').split('/')[-1]]
-	return {'__name__': 'random_new_world', '__file__': 'Random New World.py', '_SEED': seed, '_read_xml': read_xml,
+	return {'__name__': 'random_new_world', '__file__': 'Random_New_World.py', '_SEED': seed, '_read_xml': read_xml,
 	        'any': _any, 'all': _all, 'max': _max, 'min': _min, 'round': _round, 'next': _next, 'Counter': _Counter,
 	        '_choices': _choices, '_log': _log}
 ## helpers end

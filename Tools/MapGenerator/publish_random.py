@@ -6,7 +6,7 @@ Seed 1 -> PrivateMaps/Random New World Massive.ColonizationWBSave
 Seed 2 -> PrivateMaps/Random New World 2 Massive.ColonizationWBSave
 Seed N (3-6) -> PrivateMaps/Random New World N Massive.ColonizationWBSave
 Previews of each seed stay in Tools/MapGenerator/out_random/seed<N>.
-Afterwards the in-game map script PrivateMaps/Random New World.py is rebuilt (make_mapscript.py, with its self test on seed 1).
+Afterwards the in-game map script PrivateMaps/Random_New_World.py is rebuilt (make_mapscript.py, with its self test on seed 1).
 """
 import os, shutil, subprocess, sys
 

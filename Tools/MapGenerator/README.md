@@ -87,7 +87,7 @@ The previews of each seed are in `Tools/MapGenerator/out_random/seed1` and `seed
 
 ### In-game map script (`make_mapscript.py`)
 
-`PrivateMaps/Random New World.py` makes a new world with this generator in every game (map script list in Custom Game, always 85x137, two plot colony radius). The game runs Python 2.4, so `make_mapscript.py` rewrites `noise.py`, `place_names.py` and `gen_random.py` (without its output part) into Python 2.4 code with the `ast` module and packs it, with `CIV4FeatureInfos.xml` and `CIV4BonusInfos.xml`, into the map script built from `mapscript_template.py`:
+`PrivateMaps/Random_New_World.py` makes a new world with this generator in every game (map script list in Custom Game, always 85x137, two plot colony radius). The game runs Python 2.4, so `make_mapscript.py` rewrites `noise.py`, `place_names.py` and `gen_random.py` (without its output part) into Python 2.4 code with the `ast` module and packs it, with `CIV4FeatureInfos.xml` and `CIV4BonusInfos.xml`, into the map script built from `mapscript_template.py`:
 
 ```
 python Tools/MapGenerator/make_mapscript.py [--test=1,2,3] [--dump]   # --test: the rewritten code must give the same map as gen_random.py; --dump: out_random/mapscript_code.py

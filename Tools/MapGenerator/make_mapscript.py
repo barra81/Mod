@@ -1,4 +1,4 @@
-"""Build the in-game map script "PrivateMaps/Random New World.py" from gen_random.py.
+"""Build the in-game map script "PrivateMaps/Random_New_World.py" from gen_random.py.
 
 python Tools/MapGenerator/make_mapscript.py
 
@@ -23,7 +23,7 @@ import zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MOD = os.path.normpath(os.path.join(HERE, '..', '..'))
-TARGET = os.path.join(MOD, 'PrivateMaps', 'Random New World.py')
+TARGET = os.path.join(MOD, 'PrivateMaps', 'Random_New_World.py')
 OUTPUT_MARK = '# ---------------------------------------------------------------- output'
 XML_FILES = {
     'CIV4FeatureInfos.xml': os.path.join(MOD, 'Assets', 'XML', 'Terrain', 'CIV4FeatureInfos.xml'),
