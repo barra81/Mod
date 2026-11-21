@@ -23965,16 +23965,12 @@ void CvPlayerAI::AI_humanFindJobs(const CvUnit& kUnit, std::vector<HumanJob>& aJ
 		bFoodWorker = eUnitClass == (UnitClassTypes)GC.getInfoTypeForString(aszFoodWorkers[k]);
 	}
 
-	std::map<int, int> mapIncoming; // city ID -> new citizens on their way (not replacing anybody)
-			else
-			{
-				++mapIncoming[kOther.AI_getWfCityID()];
-			}
 	// the jobs other colonists with the job automation are on their way to: their plots, their building slots (per colony and
 	// building) and the colonists they replace
 	std::set<std::pair<int, int> > aReservedPlots; // (city ID, plot number)
 	std::map<std::pair<int, int>, int> mapReservedSlots; // (city ID, special building) -> colonists on their way
 	std::set<int> aReplaced; // unit IDs
+	std::map<int, int> mapIncoming; // city ID -> new citizens on their way (not replacing anybody)
 	{
 		int iUnitLoop;
 		for (CvUnit* pLoopUnit = firstUnit(&iUnitLoop); pLoopUnit != NULL; pLoopUnit = nextUnit(&iUnitLoop))
@@ -23995,6 +23991,10 @@ void CvPlayerAI::AI_humanFindJobs(const CvUnit& kUnit, std::vector<HumanJob>& aJ
 			if (kOther.AI_getWfVillageX() >= 0)
 			{
 				aReplaced.insert(kOther.AI_getWfVillageX());
+			}
+			else
+			{
+				++mapIncoming[kOther.AI_getWfCityID()];
 			}
 		}
 	}
