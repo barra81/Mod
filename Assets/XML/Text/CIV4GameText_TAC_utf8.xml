@@ -4099,9 +4099,21 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_TRADERS_NET_ALL</Tag>
-		<English>All colonies, per turn: %s1</English>
-		<German>Alle Kolonien, pro Runde: %s1</German>
-		<Russian>Все колонии, за ход: %s1</Russian>
+		<English>All colonies, net per turn: %s1</English>
+		<German>Alle Kolonien, netto pro Runde: %s1</German>
+		<Russian>Все колонии, чистый итог за ход: %s1</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_TRADERS_NET_ALL_HELP</Tag>
+		<English>Net surplus of all your colonies together: production minus the use of the colonies themselves (consumption already deducted, planned use included). Green = more is made than used, red = more is used than made.</English>
+		<German>Netto-Überschuss aller deiner Kolonien zusammen: Produktion abzüglich des Eigenverbrauchs der Kolonien (Verbrauch ist bereits eingerechnet, geplanter Verbrauch inklusive). Grün = es wird mehr hergestellt als verbraucht, rot = es wird mehr verbraucht als hergestellt.</German>
+		<Russian>Чистый избыток всех ваших колоний вместе: производство за вычетом собственного потребления колоний (потребление уже учтено, включая плановый расход). Зелёный — производится больше, чем потребляется, красный — потребляется больше, чем производится.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_TRADERS_NET_NOTRADE</Tag>
+		<English>(no import / export)</English>
+		<German>(kein Import / Export)</German>
+		<Russian>(нет импорта / экспорта)</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_TRADERS_MORE</Tag>

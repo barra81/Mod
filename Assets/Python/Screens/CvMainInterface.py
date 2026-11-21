@@ -420,6 +420,7 @@ class CvMainInterface:
 	aTradeReturn = [] # the views the jumps from the tooltips of the import / export window started from (the last one is the one to go back to)
 	dTraderLines = {} # the lines of the traders in the tooltips: text without colors -> id of the city
 	dTraderWin = {} # frozen windows with such lines: prefix -> the good
+	dNetLines = {} # the line "all colonies, net per turn" in the tooltips: text without colors -> the good
 	iTradeTipYield = -1
 	szTradeTipText = u""
 	tPostJump = None # after a jump: the tooltip of the good is shown and frozen once the cursor is on its picture
@@ -6016,7 +6017,7 @@ class CvMainInterface:
 			dDetails = self.dTipDetails
 		aStops = []
 		for k in range(len(aszParas)):
-			if dDetails.has_key(k) or self.dTraderLines.has_key(self.normTipText(aszParas[k])):
+			if dDetails.has_key(k) or self.dTraderLines.has_key(self.normTipText(aszParas[k])) or self.dNetLines.has_key(self.normTipText(aszParas[k])):
 				aStops.append(k)
 		return aStops
 
@@ -6036,6 +6037,8 @@ class CvMainInterface:
 				szTrader = self.getTraderChildText(iYield, iCity)
 				if len(szTrader) > 0:
 					return szTrader
+			if self.dNetLines.has_key(self.normTipText(aszParas[iPara])):
+				return self.getNetHelpText(iYield)
 		return szDetail
 
 	# the child tooltip of the line of a colony in the tooltip of a good (import / export window): the name of the colony, its export settings
@@ -6831,6 +6834,15 @@ class CvMainInterface:
 			self.tPreviewUnit = None
 			self.tPreviewDetails = None
 			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, dict(dPreviewDetails), None, iParent)
+			try:
+				# (the child window of the line "all colonies, net per turn" in the tooltip of a good: its lines of colonies can be clicked, the jump)
+				if iParent >= 0 and self.dTraderWin.has_key(self.aFrozen[iParent][0]):
+					for szPara in self.aszPreviewParas:
+						if self.dTraderLines.has_key(self.normTipText(szPara)):
+							self.dTraderWin[self.aFrozen[-1][0]] = self.dTraderWin[self.aFrozen[iParent][0]]
+							break
+			except:
+				pass
 			if self.tPreviewKind is not None:
 				self.dFrozenKind[self.aFrozen[-1][0]] = self.tPreviewKind
 			self.tPreviewKind = None
@@ -7412,6 +7424,9 @@ class CvMainInterface:
 			szTraderChild = self.getTraderChildText(self.dTraderWin[self.aFrozen[iFz][0]], self.dTraderLines[self.normTipText(aszTopParas[iPara])])
 			if len(szTraderChild) > 0:
 				self.showSecondTip(screen, szTraderChild, iCY, tTop, iFz)
+		elif iPara >= 0 and iSel < 0 and self.dTraderWin.has_key(self.aFrozen[iFz][0]) and self.dNetLines.has_key(self.normTipText(aszTopParas[iPara])):
+			# the line "all colonies, net per turn" in the tooltip of a good: what the sum means (consumption already deducted)
+			self.showSecondTip(screen, self.getNetHelpText(self.dTraderWin[self.aFrozen[iFz][0]]), iCY, tTop, iFz)
 		elif tWp is not None and tWp["paras"].has_key(iPara):
 			# a line of waypoints: the list of the waypoints, or the choices of a waypoint (the one chosen with the wheel in yellow)
 			if bWpRow:
@@ -9108,6 +9123,52 @@ class CvMainInterface:
 		except:
 			pass
 
+	# what a colony adds to the sum "all colonies, net per turn": its net surplus of the good
+	def getCityNetShare( self, pCity, iYield ):
+		iNet = pCity.calculateNetYield(iYield)
+		if iYield != YieldTypes.YIELD_FOOD:
+			# (the planned use of the colony counts fully, also the part that is not used up at the moment because another raw material is missing)
+			iNet -= max(0, pCity.getRawYieldConsumed(iYield) - pCity.calculateActualYieldConsumed(iYield))
+		return iNet
+
+	# the child tooltip of that line: the explanation and every colony with what it adds; the colonies that neither import nor export the good
+	# (they are not in the list of the traders above) are grey with a note
+	def getNetHelpText( self, iYield ):
+		szText = localText.getText("TXT_KEY_WTP_TIP_TRADERS_NET_ALL_HELP", ())
+		try:
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			aTrade = []
+			aOther = []
+			(loopCity, iter) = pPlayer.firstCity(False)
+			while loopCity:
+				iShare = self.getCityNetShare(loopCity, iYield)
+				if iShare > 0:
+					szShare = u"<color=0,255,0,255>+%d</color>" % iShare
+				elif iShare < 0:
+					szShare = u"<color=255,0,0,255>%d</color>" % iShare
+				else:
+					szShare = u"0"
+				bTrade = loopCity.isExport(iYield) or loopCity.isImport(iYield)
+				tWin = CvScreensInterface.tradeRouteScreen
+				if tWin.isOpen() and tWin.iCity == loopCity.getID() and tWin.dData.has_key(iYield):
+					bTrade = tWin.dData[iYield]["exp"] or tWin.dData[iYield]["imp"]
+				if bTrade:
+					szLine = loopCity.getName() + u": " + szShare
+					aTrade.append(szLine)
+					self.dTraderLines[self.normTipText(szLine)] = loopCity.getID()
+				elif iShare != 0:
+					szLine = u"<color=170,170,170,255>" + loopCity.getName() + u"</color>: " + szShare + u" <color=170,170,170,255>" + localText.getText("TXT_KEY_WTP_TIP_TRADERS_NET_NOTRADE", ()) + u"</color>"
+					aOther.append(szLine)
+					# (the lines of the colonies can be clicked as the lines of the traders: the jump to the colony, the window opens with the good)
+					self.dTraderLines[self.normTipText(szLine)] = loopCity.getID()
+				(loopCity, iter) = pPlayer.nextCity(iter, False)
+			aLines = aTrade + aOther
+			if len(aLines) > 0:
+				szText += u"\n" + u"\n".join(aLines[:20])
+		except:
+			pass
+		return szText
+
 	# the line "all colonies: +N per turn" of the tooltip of a good (import / export window)
 	def getTotalNetNote( self, iYield ):
 		try:
@@ -9115,7 +9176,7 @@ class CvMainInterface:
 			iNet = 0
 			(loopCity, iter) = pPlayer.firstCity(False)
 			while loopCity:
-				iNet += loopCity.calculateNetYield(iYield)
+				iNet += self.getCityNetShare(loopCity, iYield)
 				(loopCity, iter) = pPlayer.nextCity(iter, False)
 			if iNet > 0:
 				szNet = u"<color=0,255,0,255>+%d</color>" % iNet
@@ -9123,7 +9184,9 @@ class CvMainInterface:
 				szNet = u"<color=255,0,0,255>%d</color>" % iNet
 			else:
 				szNet = u"0"
-			return localText.getText("TXT_KEY_WTP_TIP_TRADERS_NET_ALL", (szNet,)) + u" " + unichr(gc.getYieldInfo(iYield).getChar())
+			szLine = localText.getText("TXT_KEY_WTP_TIP_TRADERS_NET_ALL", (szNet,)) + u" " + unichr(gc.getYieldInfo(iYield).getChar())
+			self.dNetLines[self.normTipText(szLine)] = iYield
+			return szLine
 		except:
 			return u""
 
