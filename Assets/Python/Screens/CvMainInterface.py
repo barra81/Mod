@@ -9116,7 +9116,11 @@ class CvMainInterface:
 						self.hideCursorTooltip(screen)
 					return
 			if szText and len(szText) > 0 and int(eWidgetType) == int(WidgetTypes.WIDGET_HELP_YIELD):
-				szText = self.addRawNote(szText)
+				szNoted = self.addRawNote(szText)
+				if szNoted == szText:
+					# (not the picture of a good in the import / export window: the bar of the goods of a city: the net line under the name)
+					szNoted = self.addNetUnderName(szText)
+				szText = szNoted
 			if szText and len(szText) > 0:
 				self.iWidgetHelpTick = self.iTick
 				self.bHudHover = True
@@ -9647,6 +9651,30 @@ class CvMainInterface:
 						szText = szText + u"\n" + szTotal
 					self.iTradeTipYield = iYield
 					self.szTradeTipText = szText
+		except:
+			pass
+		return szText
+
+	# the tooltip of a good in the bar of the goods of a city: the line "all colonies, net per turn" directly under the name of the good (the
+	# good is found by the name in the first line of the text)
+	def addNetUnderName( self, szText ):
+		try:
+			aszParas = szText.split(u"\n")
+			if len(aszParas) < 1:
+				return szText
+			szFirst = self.normTipText(aszParas[0])
+			if len(szFirst) == 0:
+				return szText
+			for iYield in range(gc.getNumYieldInfos()):
+				if not gc.getYieldInfo(iYield).isCargo():
+					continue
+				if self.normTipText(gc.getYieldInfo(iYield).getDescription()) != szFirst:
+					continue
+				szNet = self.getTotalNetNote(iYield)
+				if len(szNet) == 0:
+					return szText
+				aszParas.insert(1, szNet)
+				return u"\n".join(aszParas)
 		except:
 			pass
 		return szText
