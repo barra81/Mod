@@ -5275,6 +5275,7 @@ int CvUnitAI::AI_getCostDifferenceFreeVsSlave() const
 /// <summary>Find the best port given the conditions</summary>
 bool CvUnitAI::AI_sailToPreferredPort(bool bMove)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_SAILPORT); // WTP: timing log
 	if (!hasAnyUnitInCargo())
 	{
 		const CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
@@ -5803,6 +5804,7 @@ void CvUnitAI::AI_logShipTarget()
 // there is gone, user 2026-10-24.)
 bool CvUnitAI::AI_sailForAfricaUnits()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_AFRICA); // WTP: timing log
 	// (a goods-only ship such as the smuggling ship cannot bring the waiting units)
 	if (hasAnyUnitInCargo() || getDomainType() != DOMAIN_SEA || !canCarryPeople())
 	{
@@ -8106,6 +8108,7 @@ CvPlot* CvUnitAI::AI_europeTreasureTarget(CvPlot*& pArrival, bool& bFar)
 // can carry treasures respond.
 bool CvUnitAI::AI_treasureTransportMove()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_TREASURE); // WTP: timing log
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 	const bool bEmpty = !getGroup()->hasCargo();
 	if (getUnitAICargo(UNITAI_TREASURE) > 0)
@@ -8762,6 +8765,7 @@ CvPlot* CvUnitAI::findNearbyOceanPlot(const CvPlot& kPlot) const
 
 bool CvUnitAI::AI_travelToPort(int iMinPercent, int iMaxPath)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_TRAVELPORT); // WTP: timing log
 	PROFILE_FUNC();
 	//Later on I'll make it so it can completely full yield units, for now though not.
 	FAssert(!isFull());
@@ -8852,6 +8856,7 @@ bool CvUnitAI::AI_travelToPort(int iMinPercent, int iMaxPath)
 
 bool CvUnitAI::AI_collectGoods()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_COLLECT); // WTP: timing log
 	bool bLoaded = false;
 	CvCity* const pCity = plot()->getPlotCity();
 
@@ -8981,6 +8986,7 @@ bool CvUnitAI::AI_collectGoodsForAfrica()
 // Returns true if a cargo unit has pushed a mission for us, false otherwise. If eUnitAI is valid, then only units with this UnitAI will be allowed to push a mission.
 bool CvUnitAI::AI_deliverUnits(UnitAITypes eUnitAI)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_DELIVER); // WTP: timing log
 
 	CvUnit* pColonistUnit = NULL;
 
@@ -11572,6 +11578,7 @@ void CvUnitAI::AI_wakeTransportForPickup(const CvPlot* pPickupPlot)
 //This is very fast when no units need picking up.
 bool CvUnitAI::AI_respondToPickup(int iMaxPath, UnitAITypes eUnitAI, bool bAlongTheWay)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_PICKUP); // WTP: timing log
 	PROFILE_FUNC();
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
@@ -13804,7 +13811,28 @@ bool CvUnitAI::AI_goody(bool bIgnoreCity)
 
 bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_GOODY); // WTP: timing log
 	PROFILE_FUNC();
+
+	// WTP: a search that found nothing is not repeated in the same turn for the same unit at the same place with the same parameters (the
+	// unit AI is asked again and again in one turn; the search costs about 12 ms per call on a big map, the result does not change
+	// without the unit moving)
+	static int iNoGoodyTurn = -1;
+	static std::map<int, __int64> aiNoGoodyKey;
+	const int iNoGoodyUnit = (int)getOwnerINLINE() * 1000000 + getID();
+	const __int64 iNoGoodyKey = (((__int64)getX_INLINE() * 1000 + getY_INLINE()) * 64 + iRange) * 2 + (bIgnoreCity ? 1 : 0) + (__int64)iMaxPathTurns * 100000000;
+	if (iNoGoodyTurn != GC.getGameINLINE().getGameTurn())
+	{
+		iNoGoodyTurn = GC.getGameINLINE().getGameTurn();
+		aiNoGoodyKey.clear();
+	}
+	{
+		const std::map<int, __int64>::const_iterator itNoGoody = aiNoGoodyKey.find(iNoGoodyUnit);
+		if (itNoGoody != aiNoGoodyKey.end() && itNoGoody->second == iNoGoodyKey)
+		{
+			return false;
+		}
+	}
 
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
@@ -13871,6 +13899,7 @@ bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 		return true;
 	}
 
+	aiNoGoodyKey[iNoGoodyUnit] = iNoGoodyKey; // WTP: nothing found: not asked again this turn from here
 	return false;
 
 }
@@ -14251,6 +14280,7 @@ bool CvUnitAI::AI_exploreFromShip(int iMaxPath)
 
 bool CvUnitAI::AI_exploreCoast(int iRange)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_EXPLORE); // WTP: timing log
 	PROFILE_FUNC();
 
 	CvPlot* pBestPlot = NULL;
@@ -14349,6 +14379,7 @@ bool CvUnitAI::AI_exploreCoast(int iRange)
 
 bool CvUnitAI::AI_exploreOcean(int iRange)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_EXPLORE); // WTP: timing log
 	PROFILE_FUNC();
 
 	CvPlot* pBestPlot = NULL;
@@ -14448,6 +14479,7 @@ bool CvUnitAI::AI_exploreOcean(int iRange)
 
 bool CvUnitAI::AI_exploreDeep()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_EXPLORE); // WTP: timing log
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
 	CvPlot* pBestExplorePlot = NULL;
@@ -18689,6 +18721,7 @@ bool CvUnitAI::AI_yieldNativeDestination(int iMaxPath)
 
 bool CvUnitAI::AI_tradeWithCity()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_TRADECITY); // WTP: timing log
 	bool bSaleMade = false;
 	CvPlayer& kOwner = GET_PLAYER(getOwnerINLINE());
 
@@ -22109,6 +22142,7 @@ bool CvUnitAI::AI_retreatToCity(bool bPrimary, int iMaxPath, bool bAvoidDanger)
 // TAC - AI Improved Naval AI - koma13 - START
 bool CvUnitAI::AI_retreatFromDanger()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_RETREAT); // WTP: timing log
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 
 	if (kOwner.isHuman())

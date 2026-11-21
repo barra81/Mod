@@ -350,6 +350,61 @@ for _c in "0123456789":
 SEARCH_KEY_NAMES["KB_SPACE"] = " "
 SEARCH_KEY_NAMES["KB_MINUS"] = "-"
 
+# WTP: the window on a small screen (below 800 pixels of height: 1280 x 720) is drawn smaller. The window itself is laid out as always, in a
+# virtual screen that is larger by the factor (the layout code knows nothing of it); this host passes the calls of the layout on to the screen and
+# scales the coordinates of the widgets by the factor. The texts get the font one step smaller, as their buttons are.
+class ScaledHost:
+	def __init__(self, pScreen, fScale):
+		self.pScreen = pScreen
+		self.fScale = fScale
+
+	def __getattr__(self, szName):
+		return getattr(self.pScreen, szName)
+
+	def sc(self, i):
+		return int(round(i * self.fScale))
+
+	def fnt(self, szText):
+		try:
+			return szText.replace(u"<font=3b>", u"<font=2b>").replace(u"<font=3>", u"<font=2>")
+		except:
+			return szText
+
+	def getXResolution(self):
+		return int(self.pScreen.getXResolution() / self.fScale)
+
+	def getYResolution(self):
+		return int(self.pScreen.getYResolution() / self.fScale)
+
+	def scaled(self, aArgs, aIdx, iText = -1):
+		a = list(aArgs)
+		for i in aIdx:
+			a[i] = self.sc(a[i])
+		if iText >= 0:
+			a[iText] = self.fnt(a[iText])
+		return a
+
+	def addPanel(self, *aArgs):
+		return self.pScreen.addPanel(*self.scaled(aArgs, (5, 6, 7, 8)))
+
+	def setLabelAt(self, *aArgs):
+		return self.pScreen.setLabelAt(*self.scaled(aArgs, (4, 5), 2))
+
+	def setTextAt(self, *aArgs):
+		return self.pScreen.setTextAt(*self.scaled(aArgs, (4, 5), 2))
+
+	def setText(self, *aArgs):
+		return self.pScreen.setText(*self.scaled(aArgs, (4, 5), 2))
+
+	def setImageButton(self, *aArgs):
+		return self.pScreen.setImageButton(*self.scaled(aArgs, (2, 3, 4, 5)))
+
+	def setButtonGFC(self, *aArgs):
+		return self.pScreen.setButtonGFC(*self.scaled(aArgs, (3, 4, 5, 6)))
+
+	def addDropDownBoxGFC(self, *aArgs):
+		return self.pScreen.addDropDownBoxGFC(*self.scaled(aArgs, (1, 2, 3)))
+
 class CvTradeRouteScreen:
 	"Import / export settings of a city"
 
@@ -374,6 +429,7 @@ class CvTradeRouteScreen:
 		self.bCondensed = False
 		self.bFinished = True
 		self.pHost = None
+		self.fScale = 1.0 # the window is drawn smaller on a small screen (ScaledHost); the layout and the cursor are in the units of the unscaled window
 		self.aYields = []
 		self.dData = {}
 		self.dBase = {} # good -> the settings as they were in the city when read / sent (what the window changed is dData against it)
@@ -1351,6 +1407,13 @@ class CvTradeRouteScreen:
 		self.aKeyShift = [self.getKeyId("KB_LSHIFT"), self.getKeyId("KB_RSHIFT")]
 		self.aKeyCtrl = [self.getKeyId("KB_LCONTROL"), self.getKeyId("KB_RCONTROL")]
 		self.pHost = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+		self.fScale = 1.0
+		try:
+			if self.pHost.getYResolution() < 800:
+				self.fScale = 0.85
+				self.pHost = ScaledHost(self.pHost, self.fScale)
+		except:
+			self.fScale = 1.0
 		self.iFirst = 0
 		self.iPendX = 0
 		self.iPendY = 0
@@ -1367,9 +1430,20 @@ class CvTradeRouteScreen:
 
 	# the mouse wheel belongs to the window while the cursor is in it (the map zooms otherwise); a tooltip that takes the wheel itself
 	# (Shift) has priority, see CvMainInterface.setWheelCapture
+	# the cursor in the units of the (unscaled) layout of the window
+	def getCursorX(self):
+		return int(CyGame().getCursorClientX() / self.fScale)
+
+	def getCursorY(self):
+		return int(CyGame().getCursorClientY() / self.fScale)
+
+	# the place of the window on the screen (x, y, width, height), for the other parts of the interface
+	def getScreenRect(self):
+		return (int(self.OX * self.fScale), int(self.OY * self.fScale), int(self.W * self.fScale), int(self.H * self.fScale))
+
 	def isCursorInside(self):
-		iX = CyGame().getCursorClientX()
-		iY = CyGame().getCursorClientY()
+		iX = self.getCursorX()
+		iY = self.getCursorY()
 		return iX >= self.OX and iX < self.OX + self.W and iY >= self.OY and iY < self.OY + self.H
 
 	def isTipWheel(self):
@@ -1541,8 +1615,8 @@ class CvTradeRouteScreen:
 	def updateHover(self):
 		if not USE_OVERLAY:
 			return
-		iX = CyGame().getCursorClientX()
-		iY = CyGame().getCursorClientY()
+		iX = self.getCursorX()
+		iY = self.getCursorY()
 		szNew = ""
 		for szName in self.dBtn.keys():
 			b = self.dBtn[szName]
@@ -1592,6 +1666,8 @@ class CvTradeRouteScreen:
 	# the good whose picture is at a place of the screen (the picture and its frames), -1 if none
 	def getIconYieldAt(self, iCX, iCY):
 		try:
+			iCX = int(iCX / self.fScale)
+			iCY = int(iCY / self.fScale)
 			if self.bFinished or self.pHost == None:
 				return -1
 			for iSlot in range(self.iVisible):
@@ -1640,6 +1716,10 @@ class CvTradeRouteScreen:
 			while pCity:
 				bImp = pCity.isImport(iYield)
 				bExp = pCity.isExport(iYield)
+				if pCity.getID() == self.iCity and self.dData.has_key(iYield):
+					# (the colony of the window: what the window shows, the city knows it a moment later)
+					bImp = self.dData[iYield]["imp"]
+					bExp = self.dData[iYield]["exp"]
 				if bImp or bExp:
 					aTraders.append((pCity.getName(), pCity.getID(), bImp, bExp))
 				(pCity, iIter) = pPlayer.nextCity(iIter, False)
@@ -1654,7 +1734,7 @@ class CvTradeRouteScreen:
 			if iYield in self.aYields:
 				iSlot = self.aYields.index(iYield) - self.iFirst
 				if iSlot >= 0 and iSlot < self.iVisible:
-					return (self.OX + 22 + ICON_SIZE / 2, self.OY + self.LIST_Y + iSlot * self.ROW_H + self.ROW_H / 2)
+					return (int((self.OX + 22 + ICON_SIZE / 2) * self.fScale), int((self.OY + self.LIST_Y + iSlot * self.ROW_H + self.ROW_H / 2) * self.fScale))
 		except:
 			pass
 		return None
@@ -1825,7 +1905,17 @@ class CvTradeRouteScreen:
 			szKey = "maintain"
 		d[szKey] = max(0, min(MAX_VALUE, d[szKey] + iDelta))
 		self.checkMarketChange(self.aYields[iIndex], dOld) # (before the redraw: a notice keeps the preset on until it is answered)
+		self.apply([self.aYields[iIndex]]) # (a change is sent at once: the city, the tooltips and the other windows know it, it stays when the window is left)
 		self.syncAndDraw()
+		self.refreshTips(self.aYields[iIndex])
+
+	# the frozen tooltips of the good are made again (the colonies that import / export it changed)
+	def refreshTips(self, iYield = -1):
+		try:
+			import CvScreensInterface
+			CvScreensInterface.mainInterface.refreshTradeTips(iYield)
+		except:
+			pass
 
 	def toggleField(self, iSlot, iField):
 		iIndex = self.iFirst + iSlot
@@ -1860,7 +1950,9 @@ class CvTradeRouteScreen:
 		elif iField == F_EXP_SEA:
 			d["expDom"] = (d["expDom"] ^ 2) & 2
 		self.checkMarketChange(self.aYields[iIndex], dOld) # (before the redraw: a notice keeps the preset on until it is answered)
+		self.apply([self.aYields[iIndex]]) # (a change is sent at once: the city, the tooltips and the other windows know it, it stays when the window is left)
 		self.syncAndDraw()
+		self.refreshTips(self.aYields[iIndex])
 
 	# are there changes in the window that are not applied to the city yet (what apply sends)?
 	def hasChanges(self):
@@ -1876,15 +1968,13 @@ class CvTradeRouteScreen:
 				return True
 		return False
 
-	# Esc and Cancel: with unsaved changes the notice asks first (OK applies them, Close discards them)
+	# Esc and Cancel: close the window (the changes were applied when they were made)
 	def requestClose(self):
 		if self.tWarn != None:
 			self.hideWarn() # (a notice is open: Esc closes it first - Esc again closes the window, or back to the window from the question)
 			return
-		if self.hasChanges():
-			self.showWarn(localText.getText("TXT_KEY_WTP_TRADEROUTE_WARN_UNSAVED_1", ()), localText.getText("TXT_KEY_WTP_TRADEROUTE_WARN_UNSAVED_2", ()), -1, [], False, "unsaved")
-			return
-		self.finish(False, -1)
+		# (the changes are sent when they are made, nothing is left to ask; what is not sent yet is sent now)
+		self.finish(True, -1)
 
 	def apply(self, aOnly = None):
 		pCity = self.getCity()
@@ -2121,8 +2211,8 @@ class CvTradeRouteScreen:
 			if not self.bMouseWasDown:
 				self.bMouseWasDown = True
 				self.bRepeatDone = False
-				iX = CyGame().getCursorClientX()
-				iY = CyGame().getCursorClientY()
+				iX = self.getCursorX()
+				iY = self.getCursorY()
 				for szName in self.dBtn.keys():
 					b = self.dBtn[szName]
 					if b[4] >= BTN_MOVE and b[4] < BTN_MOVE + 4 and iX >= b[0] and iX < b[0] + b[2] and iY >= b[1] and iY < b[1] + b[3]:
@@ -2395,6 +2485,8 @@ class CvTradeRouteScreen:
 				self.iReload -= 1
 				if self.iReload % 10 == 0:
 					self.reloadFromCity()
+					if self.iReload == 0:
+						self.refreshTips() # (after a preset: the frozen tooltips of the goods get the new state)
 			if self.isTipWheel():
 				return 0 # (a tooltip takes the wheel with Shift)
 			# (every frame: whatever else switched the capture off meanwhile is corrected)
@@ -2404,8 +2496,8 @@ class CvTradeRouteScreen:
 			iNotches = CyGame().takeWheelNotches()
 			if iNotches == 0:
 				return 0
-			iX = CyGame().getCursorClientX() - self.OX
-			iY = CyGame().getCursorClientY() - self.OY
+			iX = self.getCursorX() - self.OX
+			iY = self.getCursorY() - self.OY
 			iStep = STEP
 			if CyGame().isCtrlKeyPressed():
 				iStep = STEP_CTRL

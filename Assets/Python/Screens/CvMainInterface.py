@@ -442,6 +442,8 @@ class CvMainInterface:
 	aTradeReturn = [] # the views the jumps from the tooltips of the import / export window started from (the last one is the one to go back to)
 	dTraderLines = {} # the lines of the traders in the tooltips: text without colors -> id of the city
 	dTraderWin = {} # frozen windows with such lines: prefix -> the good
+	bForceTradeTip = False # the tooltip of a good is made although the cursor is not on its picture (refreshTradeTips)
+	dNetLines = {} # the line "all colonies, net per turn" in the tooltips: text without colors -> the good
 	iTradeTipYield = -1
 	szTradeTipText = u""
 	tPostJump = None # after a jump: the tooltip of the good is shown and frozen once the cursor is on its picture
@@ -765,16 +767,56 @@ class CvMainInterface:
 		return (szText[:iPos], szNumber, szText[iPos + len(szNumber):])
 
 	# width of a text of the HUD font in pixels (the game measures it; if it cannot, an estimate by the characters)
-	def getHudTextWidth( self, szText ):
+	def getHudTextWidth( self, szText, iFont = None ):
 		if len(szText) == 0:
 			return 0
 		try:
-			iWidth = CyInterface().determineWidth(self.setFontSize(szText, 0))
+			if iFont is None:
+				iFont = STANDARD_FONT_SIZE
+			iWidth = CyInterface().determineWidth(u"<font=%s>%s</font>" % (iFont, szText))
 			if iWidth > 0:
 				return iWidth
 		except:
 			pass
 		return int(len(szText) * 11)
+
+	# WTP: the geometry of the top left corner follows the round buttons of the top HUD: their middle is half the height of the top HUD (8 percent
+	# of the screen height), their size is twice SMALL_BUTTON_SIZE and the visible circle is about 0.61 of it
+	# On a screen of 1300 pixels of height and more (1440p) the corner keeps its old layout: gold at 17 / 17, the pile at 60 / 8, the two lines in
+	# the standard font at 42 and 62. Below that the corner follows the buttons.
+	def isHudLegacy( self ):
+		try:
+			return CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE).getYResolution() >= 1300
+		except:
+			return False
+
+	def getHudCenterY( self ):
+		return TOP_CENTER_HUD_HEIGHT / 2
+
+	def getHudLeft( self ):
+		if self.isHudLegacy():
+			return 17
+		return 8
+
+	def getGoldTextY( self ):
+		if self.isHudLegacy():
+			return 17
+		return self.getHudCenterY() - 14
+
+	def getGoldPileSize( self ):
+		if self.isHudLegacy() or SMALL_BUTTON_SIZE >= 36:
+			return 50
+		return 40
+
+	def getGoldPileX( self ):
+		if self.isHudLegacy():
+			return 60
+		return 51
+
+	def getGoldPileY( self ):
+		if self.isHudLegacy():
+			return 8
+		return self.getHudCenterY() - self.getGoldPileSize() / 2
 
 	def hideUpkeepLine( self, screen, szName ):
 		for szPart in ("Text", "Sign", "Amount", "Rest"):
@@ -783,6 +825,9 @@ class CvMainInterface:
 	# Wraps <Font> tags around text
 	def setFontSize( self, Text, relativeSize ):
 		size = STANDARD_FONT_SIZE + relativeSize
+		if relativeSize == -1:
+			# WTP: the texts of our own panels and tooltips (only they use -1)
+			size = self.getTipFontSize()
 		if size > 4:
 			size = 4
 		return "<font=" + str(size) + ">" + Text + "</font>"
@@ -792,6 +837,7 @@ class CvMainInterface:
 		if (CyGame().isPitbossHost()):
 			return
 
+		self.iTipFontSize = None
 		self.bTerritorialInfluenceMode = False
 		self.m_pCurrentTerritorialInfluencePlot = None
 		self.bTerritorialInfluenceLeftMouseDown = False
@@ -1154,7 +1200,7 @@ class CvMainInterface:
 			screen.hide( szButtonID )
 
 	# GOLD PILE
-		screen.addDDSGFC("GoldPile", ArtFileMgr.getInterfaceArtInfo("SCREEN_GOLD_PILE").getPath(), 60, 8, 50, 50, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.addDDSGFC("GoldPile", ArtFileMgr.getInterfaceArtInfo("SCREEN_GOLD_PILE").getPath(), self.getGoldPileX(), self.getGoldPileY(), self.getGoldPileSize(), self.getGoldPileSize(), WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.setImageShape("GoldPile", ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 		screen.setHitMargins("GoldPile", 30, 30)
 		self.appendtoHideState(screen, "GoldPile", HIDE_TYPE_MAP, HIDE_LEVEL_HIDE)
@@ -2932,27 +2978,46 @@ class CvMainInterface:
 
 			if (gc.getPlayer(ePlayer).isAlive()):
 				szText = CyGameTextMgr().getGoldStr(ePlayer)
-				screen.setLabel("GoldText", "Background", self.setFontSize(szText, 1), CvUtil.FONT_LEFT_JUSTIFY, 17, 17, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TIMETEXT_ID, -1 )
+				screen.setLabel("GoldText", "Background", self.setFontSize(szText, 1), CvUtil.FONT_LEFT_JUSTIFY, self.getHudLeft(), self.getGoldTextY(), -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TIMETEXT_ID, -1 )
 				# WTP: the gold pile icon follows the amount: up to 4 digits it keeps its place, from 5 digits every digit moves it 11 pixels to the right (5 = 75, 6 = 86), so the amount only just touches it
 				try:
 					iDigits = len([c for c in unicode(szText) if c.isdigit()])
-					iPileX = 60
+					iPileX = self.getGoldPileX()
 					if iDigits > 4:
-						iPileX = 20 + iDigits * 11
-					screen.moveItem("GoldPile", iPileX, 8, -0.3)
+						iPileX = self.getGoldPileX() - 40 + iDigits * 11
+					screen.moveItem("GoldPile", iPileX, self.getGoldPileY(), -0.3)
 				except:
 					pass
+				# WTP: the gold amount and the pile are centered on the round buttons of the top HUD (their middle is 42 pixels from the top)
 				# WTP: below the gold the military upkeep, below that the domestic market income of the last turn
 				pPlayer = gc.getPlayer(ePlayer)
 				iUpkeep = pPlayer.getMilitaryUpkeep()
 				# the two amounts end at the same place (right aligned): every line is split at its number into text, amount and rest
 				iIncome = pPlayer.getDomesticMarketIncome()
+				# on a screen below 1300 pixels of height the two lines use the font one step smaller, so they stay clear of the buttons of the top HUD
+				iHudFont = STANDARD_FONT_SIZE
+				if yResolution < 1300:
+					iHudFont = STANDARD_FONT_SIZE - 1
+				# in bold (the font tag 3b is the bold one of font 3)
+				iHudSize = iHudFont
+				iHudFont = u"%db" % iHudFont
+				if self.isHudLegacy():
+					iHudFont = u"%d" % iHudSize # (1440p: the standard font, not bold, as before)
+				# the first line starts right below the lower edge of the round buttons (the visible circle is 0.61 of the button), the second one a
+				# line further (the line distance follows the font: 20 pixels from font 3 on, 17 below)
+				iLineY1 = self.getHudCenterY() + int(0.31 * 2 * SMALL_BUTTON_SIZE) - 1
+				iLineY2 = iLineY1 + 20
+				if iHudSize < 3:
+					iLineY2 = iLineY1 + 17
+				if self.isHudLegacy():
+					iLineY1 = 42
+					iLineY2 = 62
 				aLines = []
 				if (iUpkeep > 0):
-					aLines.append(("MilitaryUpkeep", 42, self.splitAtNumber(localText.getText("TXT_KEY_MILITARY_UPKEEP_GOLD_STR", (iUpkeep,)), iUpkeep)))
+					aLines.append(("MilitaryUpkeep", iLineY1, self.splitAtNumber(localText.getText("TXT_KEY_MILITARY_UPKEEP_GOLD_STR", (iUpkeep,)), iUpkeep)))
 				else:
 					self.hideUpkeepLine(screen, "MilitaryUpkeep")
-				aLines.append(("DomesticIncome", 62, self.splitAtNumber(localText.getText("TXT_KEY_DOMESTIC_MARKET_INCOME_STR", (iIncome,)), iIncome)))
+				aLines.append(("DomesticIncome", iLineY2, self.splitAtNumber(localText.getText("TXT_KEY_DOMESTIC_MARKET_INCOME_STR", (iIncome,)), iIncome)))
 				# the sign (+ / -) of a line is its own label, the signs end at the same place, then a gap, then the amounts end at the same place
 				iPrefixW = 0
 				iSignW = 0
@@ -2966,16 +3031,16 @@ class CvMainInterface:
 						szSign = szPrefix[-1]
 						szPrefix = szPrefix[:-1].rstrip()
 					aSplit.append((szName, iY, szPrefix, szSign, aParts[1], aParts[2]))
-					iPrefixW = max(iPrefixW, self.getHudTextWidth(szPrefix))
-					iSignW = max(iSignW, self.getHudTextWidth(szSign))
-					iAmountW = max(iAmountW, self.getHudTextWidth(aParts[1]))
-				iSignX = 17 + iPrefixW + iGap + iSignW
+					iPrefixW = max(iPrefixW, self.getHudTextWidth(szPrefix, iHudFont))
+					iSignW = max(iSignW, self.getHudTextWidth(szSign, iHudFont))
+					iAmountW = max(iAmountW, self.getHudTextWidth(aParts[1], iHudFont))
+				iSignX = self.getHudLeft() + iPrefixW + iGap + iSignW
 				iRightX = iSignX + iGap + iAmountW
 				for (szName, iY, szPrefix, szSign, szAmount, szRest) in aSplit:
-					screen.setLabel(szName + "Text", "Background", self.setFontSize(szPrefix, 0), CvUtil.FONT_LEFT_JUSTIFY, 17, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-					screen.setLabel(szName + "Sign", "Background", self.setFontSize(szSign, 0), CvUtil.FONT_RIGHT_JUSTIFY, iSignX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-					screen.setLabel(szName + "Amount", "Background", self.setFontSize(szAmount, 0), CvUtil.FONT_RIGHT_JUSTIFY, iRightX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-					screen.setLabel(szName + "Rest", "Background", self.setFontSize(szRest, 0), CvUtil.FONT_LEFT_JUSTIFY, iRightX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel(szName + "Text", "Background", (u"<font=%s>%s</font>" % (iHudFont, szPrefix)), CvUtil.FONT_LEFT_JUSTIFY, self.getHudLeft(), iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel(szName + "Sign", "Background", (u"<font=%s>%s</font>" % (iHudFont, szSign)), CvUtil.FONT_RIGHT_JUSTIFY, iSignX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel(szName + "Amount", "Background", (u"<font=%s>%s</font>" % (iHudFont, szAmount)), CvUtil.FONT_RIGHT_JUSTIFY, iRightX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel(szName + "Rest", "Background", (u"<font=%s>%s</font>" % (iHudFont, szRest)), CvUtil.FONT_LEFT_JUSTIFY, iRightX, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 
 		return 0
 
@@ -3971,8 +4036,12 @@ class CvMainInterface:
 				if not pHeadSelectedCity:
 					# width of the longest entry plus room for the table border and the scroll bar (never wider than before)
 					iWidth = min(iWidth, iMaxTextWidth + 20)
-					self.tScoreRect = (xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - (iBtnHeight * 7), iWidth, (iBtnHeight * 7))
-					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - (iBtnHeight * 7), iWidth, (iBtnHeight * 7), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
+					# (on a small screen the wooden panel of the HUD at the bottom right is higher in relation to the screen: the table ends above it)
+					iScoreLift = 0
+					if yResolution < 800:
+						iScoreLift = 32
+					self.tScoreRect = (xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - iScoreLift - (iBtnHeight * 7), iWidth, (iBtnHeight * 7))
+					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - iScoreLift - (iBtnHeight * 7), iWidth, (iBtnHeight * 7), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
 					screen.enableSelect("ScoreBackground", False)
 					screen.setTableColumnHeader("ScoreBackground", 0, "", iWidth - 10)
 					for (szRowText, ePlayerRow) in aScoreRows:
@@ -3997,7 +4066,7 @@ class CvMainInterface:
 				self.szSuppressHelp = u""
 				self.hideCursorTooltip(screen)
 				return
-			if (CyInterface().isCityScreenUp() and not (bWidget and self.isTradeIconHover())) or len(szHelp) == 0:
+			if (CyInterface().isCityScreenUp() and not (bWidget and (self.isTradeIconHover() or self.bForceTradeTip))) or len(szHelp) == 0:
 				self.szSuppressHelp = u""
 				self.hideCursorTooltip(screen)
 				return
@@ -4026,13 +4095,13 @@ class CvMainInterface:
 			self.hideCursorTooltip(screen)
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
-			iLine = max(16, int(yRes * 0.0153)) # distance of the text lines (as in the message panel)
+			iLine = self.getTipLineDistance(yRes) # distance of the text lines (as in the message panel)
 			iPad = max(6, iLine / 2)
 			iChar = iLine * 0.32 # width of a character (measured in the message panel)
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			if bWidget:
 				# texts of HUD elements are long sentences: narrower window, more lines (as the tooltip of the game)
-				iMaxWidth = max(300, int(xRes * 0.14))
+				iMaxWidth = self.getTipMaxWidth(xRes, iChar, True)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = [] # the paragraph (text between two line breaks of the help) of every line: right click in the frozen window
@@ -5019,6 +5088,9 @@ class CvMainInterface:
 				iX = tRect[0] - 12 - iWidth
 				if iX < 4:
 					iX = tRect[0] + tRect[2] + 12
+					if iX + iWidth > xRes - 4:
+						# (no room on both sides: at the left edge of the screen, over the window)
+						iX = 4
 			elif iX + iWidth > xRes - 4:
 				iX = tRect[0] - 12 - iWidth
 		else:
@@ -5106,7 +5178,9 @@ class CvMainInterface:
 			if c == u"\t" or ord(c) < 32:
 				# (the [TAB] of the game text may arrive as another control character than a tab)
 				# a tab goes to the next tab stop (31 pixels for a line of 22 pixels: measured on the sell price lines of a cargo ship)
-				fSum = (int(fSum / 31.0) + 1) * 31.0
+				# (the tab stops of the game do not shrink with a smaller font: 31 pixels, in the units of the 22 pixel layout they are wider then)
+				fStop = 31.0 * 22.0 / max(1.0, float(iLine))
+				fSum = (int(fSum / fStop) + 1) * fStop
 			elif c == u"\u2022":
 				fSum += 8.0 # the bullet of a list
 			elif ord(c) >= 0x2000:
@@ -5136,6 +5210,10 @@ class CvMainInterface:
 			if aiIndent is not None and i < len(aiIndent):
 				fThis += aiIndent[i]
 			if self.hasControlChar(szLineTabs):
+				# the tab stops (and the columns of the lines with tabs, which are aligned with the widths of the 1440 font) do not shrink with a
+				# smaller font: the line is never estimated narrower than 96 percent of its width in the font of the 1440 layout
+				if iLine < 22.0:
+					fThis = max(fThis, 0.96 * (self.getTextPixels(re.sub(u"<[^>]*>", u"", szLineTabs), 22.0) + len(re.findall(u"<img=", aszLines[i].lower())) * 18.0))
 				fTabPixel = max(fTabPixel, fThis)
 			else:
 				fPixel = max(fPixel, fThis)
@@ -6292,7 +6370,7 @@ class CvMainInterface:
 			dDetails = self.dTipDetails
 		aStops = []
 		for k in range(len(aszParas)):
-			if dDetails.has_key(k) or self.dTraderLines.has_key(self.normTipText(aszParas[k])):
+			if dDetails.has_key(k) or self.dTraderLines.has_key(self.normTipText(aszParas[k])) or self.dNetLines.has_key(self.normTipText(aszParas[k])):
 				aStops.append(k)
 		return aStops
 
@@ -6312,6 +6390,8 @@ class CvMainInterface:
 				szTrader = self.getTraderChildText(iYield, iCity)
 				if len(szTrader) > 0:
 					return szTrader
+			if self.dNetLines.has_key(self.normTipText(aszParas[iPara])):
+				return self.getNetHelpText(iYield)
 		return szDetail
 
 	# the child tooltip of the line of a colony in the tooltip of a good (import / export window): the name of the colony, its export settings
@@ -7107,6 +7187,15 @@ class CvMainInterface:
 			self.tPreviewUnit = None
 			self.tPreviewDetails = None
 			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, dict(dPreviewDetails), None, iParent)
+			try:
+				# (the child window of the line "all colonies, net per turn" in the tooltip of a good: its lines of colonies can be clicked, the jump)
+				if iParent >= 0 and self.dTraderWin.has_key(self.aFrozen[iParent][0]):
+					for szPara in self.aszPreviewParas:
+						if self.dTraderLines.has_key(self.normTipText(szPara)):
+							self.dTraderWin[self.aFrozen[-1][0]] = self.dTraderWin[self.aFrozen[iParent][0]]
+							break
+			except:
+				pass
 			if self.tPreviewKind is not None:
 				self.dFrozenKind[self.aFrozen[-1][0]] = self.tPreviewKind
 			self.tPreviewKind = None
@@ -7249,7 +7338,7 @@ class CvMainInterface:
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
 			iChar = iLine * 0.32
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = []
@@ -7371,7 +7460,7 @@ class CvMainInterface:
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
 			iChar = iLine * 0.32
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszParas = self.carryColors(szText.split(u"\n"))
 			aszLines = []
@@ -7688,6 +7777,9 @@ class CvMainInterface:
 			szTraderChild = self.getTraderChildText(self.dTraderWin[self.aFrozen[iFz][0]], self.dTraderLines[self.normTipText(aszTopParas[iPara])])
 			if len(szTraderChild) > 0:
 				self.showSecondTip(screen, szTraderChild, iCY, tTop, iFz)
+		elif iPara >= 0 and iSel < 0 and self.dTraderWin.has_key(self.aFrozen[iFz][0]) and self.dNetLines.has_key(self.normTipText(aszTopParas[iPara])):
+			# the line "all colonies, net per turn" in the tooltip of a good: what the sum means (consumption already deducted)
+			self.showSecondTip(screen, self.getNetHelpText(self.dTraderWin[self.aFrozen[iFz][0]]), iCY, tTop, iFz)
 		elif tWp is not None and tWp["paras"].has_key(iPara):
 			# a line of waypoints: the list of the waypoints, or the choices of a waypoint (the one chosen with the wheel in yellow)
 			if bWpRow:
@@ -8861,7 +8953,7 @@ class CvMainInterface:
 		try:
 			t = getattr(CvScreensInterface, "tradeRouteScreen", None)
 			if t is not None and t.isOpen():
-				aRects.append((t.OX, t.OY, t.W, t.H))
+				aRects.append(t.getScreenRect())
 		except:
 			pass
 		try:
@@ -9044,8 +9136,8 @@ class CvMainInterface:
 			return None
 
 	# (the blanks to put behind a text of the width fW, the number of tab stops it has passed then)
-	def getTabGuard( self, fW ):
-		fSpace = 3.98
+	def getTabGuard( self, fW, fLine = 22.0 ):
+		fSpace = 3.98 * fLine / 22.0
 		iBlanks = 0
 		while iBlanks < 6:
 			fFrac = (fW + iBlanks * fSpace) % self.TAB_STOP
@@ -9057,6 +9149,7 @@ class CvMainInterface:
 	# lines in a row with a name, tabs and then text: the text of all of them starts at the same stop
 	def alignTabLines( self, aszParas ):
 		try:
+			fTabLine = float(self.getTipLineDistance(0))
 			aRuns = []
 			for szPara in aszParas:
 				mTab = re.match(u"(?is)^(.*?)((?:\\t| |<tab>)*(?:\\t|<tab>)(?:\\t| |<tab>)*)(\\S.*)$", szPara)
@@ -9077,8 +9170,8 @@ class CvMainInterface:
 					aEnds = []
 					aWidths = []
 					for k in range(i, j):
-						fW = self.getTextPixels(re.sub(u"<[^>]*>", u"", aRuns[k].group(1)), 22.0)
-						(iBlanks, iPassed) = self.getTabGuard(fW)
+						fW = self.getTextPixels(re.sub(u"<[^>]*>", u"", aRuns[k].group(1)), fTabLine)
+						(iBlanks, iPassed) = self.getTabGuard(fW, fTabLine)
 						aWidths.append((iBlanks, iPassed))
 						aEnds.append(iPassed + len(re.findall(u"(?i)\\t|<tab>", aRuns[k].group(2))))
 					if min(aEnds) != max(aEnds):
@@ -9109,12 +9202,13 @@ class CvMainInterface:
 			szExp = localText.getText("TXT_KEY_WTP_TIP_TRADERS_EXPORTS", ())
 			# the columns are tab stops (as the sell prices of the cargo lines): the names stand under each other exactly, the word "Exports" too
 			aShown = aTraders[:15]
-			(iGuardImp, iPassedImp) = self.getTabGuard(self.getTextPixels(szImp, 22.0))
+			fTabLine = float(self.getTipLineDistance(0))
+			(iGuardImp, iPassedImp) = self.getTabGuard(self.getTextPixels(szImp, fTabLine), fTabLine)
 			iNameStop = iPassedImp + 1
 			aGuardName = []
 			iEnd = 0
 			for t in aShown:
-				(iGuard, iPassed) = self.getTabGuard(iNameStop * self.TAB_STOP + self.getTextPixels(t[1], 22.0))
+				(iGuard, iPassed) = self.getTabGuard(iNameStop * self.TAB_STOP + self.getTextPixels(t[1], fTabLine), fTabLine)
 				aGuardName.append((iGuard, iPassed))
 				iEnd = max(iEnd, iPassed + 1)
 			aLines = []
@@ -9292,6 +9386,42 @@ class CvMainInterface:
 		except:
 			self.tPostJump = None
 
+	# a change in the import / export window: the frozen tooltips of the good (all goods: -1) are made again with the new state (colonies that
+	# import / export it, the sum) and stand where they stood; their child windows are closed
+	def refreshTradeTips( self, iYieldOnly = -1 ):
+		try:
+			if not self.isTradeWindowOpen():
+				return
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			aTargets = []
+			for tFz in self.aFrozen:
+				if self.dTraderWin.has_key(tFz[0]) and tFz[6] < 0 and (iYieldOnly < 0 or self.dTraderWin[tFz[0]] == iYieldOnly):
+					aTargets.append((self.dTraderWin[tFz[0]], tFz[1][0], tFz[1][1], tFz[5]))
+			tWin = CvScreensInterface.tradeRouteScreen
+			for (iYield, iOldX, iOldY, tAnchor) in aTargets:
+				for i in range(len(self.aFrozen)):
+					if self.dTraderWin.get(self.aFrozen[i][0], -1) == iYield and self.aFrozen[i][6] < 0:
+						self.closeFrozenChild(screen, i)
+						break
+				szHelp = gc.getGame().getWidgetHelpFor(int(WidgetTypes.WIDGET_HELP_YIELD), iYield, tWin.iCity, False)
+				if not szHelp or len(szHelp) == 0:
+					continue
+				szHelp = self.addRawNote(szHelp, iYield)
+				self.szSuppressHelp = u""
+				self.szCursorTipText = u""
+				self.bCursorTipShown = False
+				self.bForceTradeTip = True
+				try:
+					self.showCursorTooltip(screen, szHelp, True, True)
+				finally:
+					self.bForceTradeTip = False
+				if self.bCursorTipShown and self.freezeCursorTooltip() and len(self.aFrozen) > 0:
+					iNew = len(self.aFrozen) - 1
+					self.aFrozen[iNew][5] = tAnchor
+					self.moveFrozenWindow(screen, iNew, iOldX, iOldY)
+		except:
+			self.tipError("refreshTradeTips")
+
 	# the window of the starting colony is open again: the camera and the selected unit of the map, the frozen tooltip and the cursor as they were
 	def restoreMapView( self, tR ):
 		try:
@@ -9382,6 +9512,52 @@ class CvMainInterface:
 		except:
 			pass
 
+	# what a colony adds to the sum "all colonies, net per turn": its net surplus of the good
+	def getCityNetShare( self, pCity, iYield ):
+		iNet = pCity.calculateNetYield(iYield)
+		if iYield != YieldTypes.YIELD_FOOD:
+			# (the planned use of the colony counts fully, also the part that is not used up at the moment because another raw material is missing)
+			iNet -= max(0, pCity.getRawYieldConsumed(iYield) - pCity.calculateActualYieldConsumed(iYield))
+		return iNet
+
+	# the child tooltip of that line: the explanation and every colony with what it adds; the colonies that neither import nor export the good
+	# (they are not in the list of the traders above) are grey with a note
+	def getNetHelpText( self, iYield ):
+		szText = localText.getText("TXT_KEY_WTP_TIP_TRADERS_NET_ALL_HELP", ())
+		try:
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			aTrade = []
+			aOther = []
+			(loopCity, iter) = pPlayer.firstCity(False)
+			while loopCity:
+				iShare = self.getCityNetShare(loopCity, iYield)
+				if iShare > 0:
+					szShare = u"<color=0,255,0,255>+%d</color>" % iShare
+				elif iShare < 0:
+					szShare = u"<color=255,0,0,255>%d</color>" % iShare
+				else:
+					szShare = u"0"
+				bTrade = loopCity.isExport(iYield) or loopCity.isImport(iYield)
+				tWin = CvScreensInterface.tradeRouteScreen
+				if tWin.isOpen() and tWin.iCity == loopCity.getID() and tWin.dData.has_key(iYield):
+					bTrade = tWin.dData[iYield]["exp"] or tWin.dData[iYield]["imp"]
+				if bTrade:
+					szLine = loopCity.getName() + u": " + szShare
+					aTrade.append(szLine)
+					self.dTraderLines[self.normTipText(szLine)] = loopCity.getID()
+				elif iShare != 0:
+					szLine = u"<color=170,170,170,255>" + loopCity.getName() + u"</color>: " + szShare + u" <color=170,170,170,255>" + localText.getText("TXT_KEY_WTP_TIP_TRADERS_NET_NOTRADE", ()) + u"</color>"
+					aOther.append(szLine)
+					# (the lines of the colonies can be clicked as the lines of the traders: the jump to the colony, the window opens with the good)
+					self.dTraderLines[self.normTipText(szLine)] = loopCity.getID()
+				(loopCity, iter) = pPlayer.nextCity(iter, False)
+			aLines = aTrade + aOther
+			if len(aLines) > 0:
+				szText += u"\n" + u"\n".join(aLines[:20])
+		except:
+			pass
+		return szText
+
 	# the line "all colonies: +N per turn" of the tooltip of a good (import / export window)
 	def getTotalNetNote( self, iYield ):
 		try:
@@ -9389,7 +9565,7 @@ class CvMainInterface:
 			iNet = 0
 			(loopCity, iter) = pPlayer.firstCity(False)
 			while loopCity:
-				iNet += loopCity.calculateNetYield(iYield)
+				iNet += self.getCityNetShare(loopCity, iYield)
 				(loopCity, iter) = pPlayer.nextCity(iter, False)
 			if iNet > 0:
 				szNet = u"<color=0,255,0,255>+%d</color>" % iNet
@@ -9397,7 +9573,9 @@ class CvMainInterface:
 				szNet = u"<color=255,0,0,255>%d</color>" % iNet
 			else:
 				szNet = u"0"
-			return localText.getText("TXT_KEY_WTP_TIP_TRADERS_NET_ALL", (szNet,)) + u" " + unichr(gc.getYieldInfo(iYield).getChar())
+			szLine = localText.getText("TXT_KEY_WTP_TIP_TRADERS_NET_ALL", (szNet,)) + u" " + unichr(gc.getYieldInfo(iYield).getChar())
+			self.dNetLines[self.normTipText(szLine)] = iYield
+			return szLine
 		except:
 			return u""
 
@@ -9438,7 +9616,8 @@ class CvMainInterface:
 			t = CvScreensInterface.tradeRouteScreen
 			iX = gc.getGame().getCursorClientX()
 			iY = gc.getGame().getCursorClientY()
-			return t.isOpen() and iX >= t.OX and iX < t.OX + t.W and iY >= t.OY and iY < t.OY + t.H
+			tX, tY, tW, tH = t.getScreenRect()
+			return t.isOpen() and iX >= tX and iX < tX + tW and iY >= tY and iY < tY + tH
 		except:
 			return False
 
@@ -10323,6 +10502,54 @@ class CvMainInterface:
 			if (not CyInterface().isCityScreenUp()) or pUpgradeCity is None or pUpgradeCity.getID() != self.iUpgradeCity:
 				self.hideBuildingUpgradePanel()
 
+	# WTP: line distance of the panels and tooltips. The font of these texts (<font=STANDARD_FONT_SIZE-1>) depends on the resolution class and
+	# not on the screen height: the same font at 1080 and at 1440 (22 pixels line distance, measured), a smaller one in the lowest class.
+	# So the distance is 22 pixels scaled by the width the game itself measures for the font in use against the font of the 1440 layout.
+	dTipLineCache = {}
+	iTipFontSize = None
+
+	# WTP: the font of our own panels and tooltips: one step smaller than the standard font of the resolution class, and one more below
+	# 1300 pixels of screen height (1080p), where the standard font is large for a screen of that size
+	def getTipFontSize( self ):
+		if self.iTipFontSize is None:
+			iSize = STANDARD_FONT_SIZE - 1
+			try:
+				if CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE).getYResolution() < 1300 and iSize >= 3:
+					iSize -= 1
+			except:
+				return iSize
+			self.iTipFontSize = iSize
+		return self.iTipFontSize
+
+	def getTipLineDistance( self, yRes ):
+		kKey = (self.getTipFontSize(), yRes)
+		if self.dTipLineCache.has_key(kKey):
+			return self.dTipLineCache[kKey]
+		iLine = 22
+		if self.getTipFontSize() == 3:
+			self.dTipLineCache[kKey] = iLine
+			return iLine
+		try:
+			szRef = u"The quick brown fox jumps over the lazy dog, 0123456789 and so on"
+			iNow = CyInterface().determineWidth(self.setFontSize(szRef, -1))
+			iBase = CyInterface().determineWidth(u"<font=3>" + szRef + u"</font>")
+			if iNow > 0 and iBase > 0:
+				fScale = max(0.6, min(1.0, float(iNow) / iBase))
+				iLine = max(14, int(22 * fScale + 0.5))
+				self.dTipLineCache[kKey] = iLine
+			else:
+				iLine = 19
+		except:
+			iLine = 19
+		return iLine
+
+	# maximal width of a tooltip window: a share of the screen width, but at least as many characters as at 1440 (the font does not get smaller
+	# with the screen: at 1080 a window of 20 percent would hold far fewer characters per line), and never more than a larger share of the screen
+	def getTipMaxWidth( self, xRes, iChar, bWidget ):
+		if bWidget:
+			return max(300, int(xRes * 0.14), min(int(xRes * 0.2), int(50 * iChar)))
+		return max(300, int(xRes * 0.2), min(int(xRes * 0.28), int(72 * iChar)))
+
 	def getMessageWidth(self, szText):
 		# width in characters of an average letter: the symbols of the game font (icons) are wider than letters
 		iWidth = 0
@@ -10474,16 +10701,22 @@ class CvMainInterface:
 				if pCapital is None:
 					pCapital = pCity
 				aCities.append((pCity.getName(), pCity.getX(), pCity.getY()))
-			if pPlayer.isNative() and pCapital is not None:
-				try:
-					pBest = pPlayer.getCapitalCity()
-					if pBest is not None and not pBest.isNone() and pBest.isRevealed(iTeam, False):
-						pCapital = pBest
-				except:
-					pass
+			if pPlayer.isNative():
+				# (a tribe whose village is not known yet is in the list too: its messages (raids) still offer the talk, only the place is missing)
+				iCapX = -1
+				iCapY = -1
+				if pCapital is not None:
+					try:
+						pBest = pPlayer.getCapitalCity()
+						if pBest is not None and not pBest.isNone() and pBest.isRevealed(iTeam, False):
+							pCapital = pBest
+					except:
+						pass
+					iCapX = pCapital.getX()
+					iCapY = pCapital.getY()
 				for szName in (pPlayer.getName(), pPlayer.getCivilizationShortDescription(0), pPlayer.getCivilizationAdjective(0)):
 					if szName and len(szName) >= 3:
-						aNatives.append((szName, ePlayer, pCapital.getX(), pCapital.getY()))
+						aNatives.append((szName, ePlayer, iCapX, iCapY))
 		aCities.sort(key = lambda t: -len(t[0]))
 
 		for i in range(len(aszMessages)):
@@ -10715,11 +10948,14 @@ class CvMainInterface:
 			self.tMessagePanelKey = tKey
 
 			# geometry: centered below the top HUD, about as wide as the game's own message area
-			iLine = max(16, int(yRes * 0.0153)) # distance of the text lines (measured: 22 pixels at 1440)
+			iLine = self.getTipLineDistance(yRes) # distance of the text lines (measured: 22 pixels at 1440, the font follows the resolution class)
 			iPad = max(6, iLine / 2)
 			iWidth = max(380, int(xRes * 0.23))
+			# the font does not shrink with the screen: at least the number of characters per line of the 1440 layout (84), at most a third of the screen
+			iWidth = max(iWidth, min(int(xRes * 0.34), int(84 * iLine * 0.32)))
 			iX = (xRes - iWidth) / 2
-			iY = int(yRes * 0.058) # just below the round buttons of the top HUD
+			# just below the round buttons of the top HUD (their size depends on the resolution class, not on the screen height: 83 pixels with 36)
+			iY = max(int(yRes * 0.058), int(83 * SMALL_BUTTON_SIZE / 36.0))
 			# moved by the player (stays on the screen)
 			iBaseX = iX
 			iBaseY = iY
@@ -10729,7 +10965,7 @@ class CvMainInterface:
 			self.iMsgMoveY = iY - iBaseY
 			self.iMsgX = iX
 			self.iMsgY = iY
-			iHeaderHeight = int(max(14, int(yRes * 0.0135)) * 0.85)
+			iHeaderHeight = int(iLine * 0.73)
 			iGap = int(iLine * 0.8) # a blank line between the header and the messages
 			iIndent = int(iLine * 0.95) # the lines after the first one of a message
 			# characters per line (measured: about 6.6 pixels per character at 22 pixels line distance)
@@ -10769,6 +11005,8 @@ class CvMainInterface:
 			else:
 				iFooterLines = 0
 				iMaxLines = 7 # collapsed: three priority messages of two lines each (3 * 2.2 lines)
+				if yRes >= 1000:
+					iMaxLines = 9 # 1080p and 1440p: eight lines of text (the extra space after each message counts as well), was 7 = six lines
 			# the priority messages (the first iNumPriority ones) are always at the top of the newest page; on the other pages the others
 			iNumPriority = min(iNumPriority, iNum)
 			fMessageGap = 0.2 # extra space after every message (in lines), better to read
@@ -11148,10 +11386,10 @@ class CvMainInterface:
 		try:
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
-			iLine = max(16, int(yRes * 0.0153)) # as in the message panel
+			iLine = self.getTipLineDistance(yRes) # as in the message panel
 			iPad = max(6, iLine / 2)
 			iChar = iLine * 0.32
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			for szPart in szText.split(u"\n"):
@@ -11821,6 +12059,34 @@ class CvMainInterface:
 		except:
 			self.tReopenTrade = None
 
+	# the arrow buttons of the city screen (next / previous colony) while the import / export window is open: the window belongs to the old colony and
+	# the city screen is not redrawn while the window is on this screen. The window is closed as with OK (what was changed in it is applied to the old colony), the
+	# city screen is drawn for the new colony and the window is opened for it again with the same view, page and search text
+	def checkTradeCityChange( self ):
+		if self.tReopenTrade is not None:
+			return
+		try:
+			tWin = CvScreensInterface.tradeRouteScreen
+			if not tWin.isOpen() or not tWin.isHostMain() or tWin.isFromMap() or not CyInterface().isCityScreenUp():
+				return
+			pCity = CyInterface().getHeadSelectedCity()
+			if pCity is None or pCity.isNone() or pCity.getID() == tWin.iCity or pCity.getOwner() != gc.getGame().getActivePlayer():
+				return
+			tState = tWin.getState()
+			tState["city"] = pCity.getID()
+			tState["data"] = {}
+			tState["base"] = {}
+			tState["map"] = False
+			self.unfreezeAllTips()
+			tWin.finish(True, -1, True)
+			self.tReopenTrade = tState
+			self.iReopenTries = 0
+			self.iReopenWait = 4
+			CyInterface().setDirty(InterfaceDirtyBits.CityScreen_DIRTY_BIT, True)
+			CyInterface().setDirty(InterfaceDirtyBits.Domestic_Advisor_DIRTY_BIT, True)
+		except:
+			self.tReopenTrade = None
+
 	# Updates the Screen
 	def update( self, fDelta ):
 		# WTP: while a map mode takes the clicks, the DLL selects no unit by the automatic unit cycling, and a unit
@@ -11830,6 +12096,7 @@ class CvMainInterface:
 		if bMapClickMode and not CyInterface().isCityScreenUp() and CyInterface().getHeadSelectedUnit() is not None:
 			CyInterface().clearSelectionList()
 		self.checkReopenTradeWindow()
+		self.checkTradeCityChange()
 		self.iTick += 1
 		self.updateTerritorialInfluenceEditor()
 		self.updatePioneerPlanEditor()

@@ -20525,6 +20525,22 @@ void CvPlayerAI::AI_doWorkforcePlan()
 	{
 		aaiCityJobs[aJobs[j].iCity].push_back(j);
 	}
+	// WTP performance: the workers a scan of a colony has to look at: not learning, a trip of less than 1000 turns, and either at most
+	// 12 turns away or an expert (a regular colonist takes only jobs it reaches within 12 turns, see the scan; wfIsExpertFor is
+	// only true for an expert). The scan skipped all the others one by one for every job; in the order of the workers, so the
+	// chosen pairs stay the same. Whether a worker is free is still checked in the scan (that changes during the plan).
+	std::vector<std::vector<int> > aaiCityWorkers(iNumCities);
+	for (int c = 0; c < iNumCities; ++c)
+	{
+		for (int w = 0; w < iNumWorkers; ++w)
+		{
+			const int iEtaPlan = aiEta[w * iNumCities + c];
+			if (!aWorkers[w].bLearning && iEtaPlan < 1000 && (iEtaPlan <= 12 || aWorkers[w].bExpert))
+			{
+				aaiCityWorkers[c].push_back(w);
+			}
+		}
+	}
 	std::vector<bool> abWfDirty(iNumCities, true);
 	std::vector<WfCand> aCityBest(iNumCities, kWfNoCand);
 	// per colony: the two best food jobs and the two best lumber jobs (distinct workers), the three best jobs that need
@@ -20617,8 +20633,10 @@ void CvPlayerAI::AI_doWorkforcePlan()
 					}
 				}
 			}
-			for (int w = 0; w < iNumWorkers; ++w)
+			const std::vector<int>& aiScanWorkers = aaiCityWorkers[iScanCity];
+			for (size_t iScanWorker = 0; iScanWorker < aiScanWorkers.size(); ++iScanWorker)
 			{
+				const int w = aiScanWorkers[iScanWorker];
 				const WfWorker& kWorker = aWorkers[w];
 				if (kWorker.iJob >= 0 || kWorker.bLearning)
 				{
