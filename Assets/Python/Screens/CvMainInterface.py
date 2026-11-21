@@ -3781,6 +3781,17 @@ class CvMainInterface:
 						self.tTipWp = tRowWp
 				except:
 					self.tTipWp = None
+			# a plot that is saved as a waypoint says so in its last line (above the hint of the freezing)
+			try:
+				if not bWidget and not self.bHudHover and self.getTerrainLineIndex(aszParas) >= 0:
+					pPlotWp = CyInterface().getMouseOverPlot()
+					if pPlotWp is not None and not pPlotWp.isNone():
+						szWp = self.getWaypointPlotLine(pPlotWp.getX(), pPlotWp.getY())
+						if len(szWp) > 0:
+							aszParas = list(aszParas)
+							aszParas.append(szWp)
+			except:
+				pass
 			aszParas = self.alignTabLines(aszParas)
 			for iPara in range(len(aszParas)):
 				aszWrapped = self.wrapMessage(aszParas[iPara], iCharsPerLine, True)
@@ -5034,6 +5045,73 @@ class CvMainInterface:
 		for k in range(len(aRest)):
 			aView.append((aRest[k][0], aRest[k][1], aRest[k][2], aRest[k][3], u"%d. %s" % (k + 1, aRest[k][3])))
 		return aView
+
+	# the line for the tooltip of a plot that is saved as a waypoint (of the land units and / or of the ships): "Set as WP: name" in the colour of the
+	# line "Set waypoint..." (the name has no colour of its own); an empty text if the plot is none
+	def getWaypointPlotLine( self, iX, iY ):
+		aNames = []
+		try:
+			for bSea in (False, True):
+				for tEntry in self.getWaypointView(bSea):
+					if tEntry[1] == iX and tEntry[2] == iY:
+						szName = self.normTipText(tEntry[4])
+						if szName not in aNames:
+							aNames.append(szName)
+		except:
+			return u""
+		if len(aNames) == 0:
+			return u""
+		return localText.getText("TXT_KEY_WTP_TIP_WAYPOINT_IS_SET", (u", ".join(aNames),))
+
+	# True if the paragraph is the line "Set as WP: name" of the tooltip of a plot
+	def isWaypointPlotPara( self, szPara ):
+		try:
+			szPre = re.sub(u"<[^>]*>", u"", localText.getText("TXT_KEY_WTP_TIP_WAYPOINT_IS_SET", (u"QQQQ",)).split(u"QQQQ")[0]).strip()
+			return len(szPre) > 0 and re.sub(u"<[^>]*>", u"", szPara).strip().startswith(szPre)
+		except:
+			return False
+
+	# right click on the line "Set as WP: name" of a frozen window of a plot: Ctrl: delete the waypoint(s) of the plot, Shift: rename (the first one);
+	# True if the line was hit (a plain right click does nothing there)
+	def runWaypointPlotClick( self, iLevel, iPara, bSecond, bShift, iOption = -1 ):
+		try:
+			aszParas = self.aFrozen[iLevel][2]
+			if iPara < 0 or iPara >= len(aszParas) or not self.isWaypointPlotPara(aszParas[iPara]):
+				return False
+			tAnchor = self.aFrozen[iLevel][5]
+			if tAnchor is None or self.aFrozen[iLevel][6] >= 0:
+				return True
+			# (the choice of shift + mouse wheel: 0 delete, 1 rename; otherwise the modifier keys)
+			if iOption == 0:
+				bSecond = True
+				bShift = False
+			elif iOption == 1:
+				bShift = True
+			if not (bSecond or bShift):
+				return True
+			tHit = None
+			for bSea in (False, True):
+				(aWp, iNext) = self.getWaypoints(-1, bSea)
+				aKeep = []
+				for tWp in aWp:
+					if tWp[1] == tAnchor[0] and tWp[2] == tAnchor[1]:
+						if tHit is None:
+							tHit = (bSea, tWp[0])
+						if not bShift:
+							continue # (deleted)
+					aKeep.append(tWp)
+				if not bShift and len(aKeep) != len(aWp):
+					self.saveWaypoints(aKeep, iNext, -1, bSea)
+			if tHit is None:
+				return True
+			self.unfreezeAllTips()
+			if bShift:
+				CvEventInterface.beginEvent(CvUtil.EventRenameWaypoint, (tHit[1], self.getWaypointTextById(tHit[0], tHit[1])))
+			else:
+				self.refreshWaypointLists()
+			return True
+		except:
+			return False
 
 	# the line of a waypoint (by its number) as it is shown
 	def getWaypointTextById( self, bSea, iId, ePlayer = -1 ):
@@ -7236,9 +7314,17 @@ class CvMainInterface:
 		if iFz >= 0 and iPara >= 0 and not bWpRow and not bCmdRow and dDetails.has_key(iPara) and iPara == self.getCityLinePara(iFz):
 			bCityRow = True
 			iWpRowCount = len(dDetails[iPara].split(u"\n"))
+		# (the line "Set as WP: name" of a plot: the wheel chooses delete or rename)
+		bPlotWp = False
+		try:
+			if iFz >= 0 and iPara >= 0 and iPara < len(aszTopParas) and self.aFrozen[iFz][6] < 0 and not bWpRow and not bCmdRow and not bCityRow and self.isWaypointPlotPara(aszTopParas[iPara]):
+				bPlotWp = True
+				iWpRowCount = 2
+		except:
+			bPlotWp = False
 		bWpWindow = (iFz >= 0 and iPara >= 0 and self.dWpWin.has_key(self.aFrozen[iFz][0]) and self.dWpWin[self.aFrozen[iFz][0]]["paras"].has_key(iPara))
 		try:
-			if (bWpLine or bWpRow or bCmdRow or bCityRow) and bShift:
+			if (bWpLine or bWpRow or bCmdRow or bCityRow or bPlotWp) and bShift:
 				bWheel = True
 			elif iPara >= 0 and not bWpWindow and not bPromoLine and bShift and len(self.getPediaLineTargets(iFz, aszTopParas, iPara, True)) > 0 and self.getBlockUnit(iFz, aszTopParas, iPara) is None:
 				bWheel = True
@@ -7252,7 +7338,7 @@ class CvMainInterface:
 			if iNotches != 0:
 				if bWpLine:
 					aTargets = aWpStops
-				elif bWpRow or bCmdRow or bCityRow:
+				elif bWpRow or bCmdRow or bCityRow or bPlotWp:
 					aTargets = range(iWpRowCount)
 				else:
 					aTargets = self.getPediaLineTargets(iFz, aszTopParas, iPara, True)
@@ -7810,8 +7896,66 @@ class CvMainInterface:
 		return -1
 
 	# the child tooltip of a line: for the first line of a unit the draft of a ship and the ability to ignore borders, then the Colopedia
+	# the line of the terrain in the tooltip of a plot: the name of the terrain (with the hills / peak before it) and then its yields, "Grassland, 6 [icon] , 7 [icon]";
+	# -1 if there is none (the tooltip of a unit, a city ...)
+	setTerrainNames = {} # the names of the terrains, features, hills and peak (the first part of the terrain line of a plot tooltip)
+	def getTerrainLineIndex( self, aszParas ):
+		try:
+			if len(self.setTerrainNames) == 0:
+				for e in range(gc.getNumTerrainInfos()):
+					self.setTerrainNames[self.normTipText(gc.getTerrainInfo(e).getDescription())] = True
+				for e in range(gc.getNumFeatureInfos()):
+					self.setTerrainNames[self.normTipText(gc.getFeatureInfo(e).getDescription())] = True
+				self.setTerrainNames[self.normTipText(localText.getText("TXT_KEY_PLOT_PEAK", ()))] = True
+				self.setTerrainNames[self.normTipText(localText.getText("TXT_KEY_PLOT_HILLS", ())).replace(u"/", u"").strip()] = True
+				self.setTerrainNames[u"Hills"] = True
+			for i in range(len(aszParas)):
+				szPlain = re.sub(u"<[^>]*>", u"", aszParas[i]).strip()
+				if re.match(u"^[^,0-9]+, [0-9]+\\s*[\u2000-\uffff]", szPlain) is None:
+					continue
+				# (a unit header looks the same: only the names of terrains, features and the hills / peak count)
+				aNames = [self.normTipText(x).strip() for x in szPlain.split(u",")[0].split(u"/")]
+				bAll = True
+				for szName in aNames:
+					if not self.setTerrainNames.has_key(szName):
+						bAll = False
+				if bAll:
+					return i
+		except:
+			pass
+		return -1
+
 	def getTipSecondText( self, iPara, iSel = -1, aszParas = None, iLevel = -1 ):
 		szBase = self.getTipSecondTextBase(iPara, iSel, aszParas, iLevel)
+		try:
+			if iPara >= 0 and aszParas is not None and iPara < len(aszParas) and self.isWaypointPlotPara(aszParas[iPara]):
+				aOpt = localText.getText("TXT_KEY_WTP_TIP_WAYPOINT_PLOT_OPTIONS", ()).split(u"\n")
+				if iSel >= 0 and iSel < len(aOpt):
+					aOpt[iSel] = u"<color=255,255,0,255>" + aOpt[iSel] + u"</color>"
+				return u"\n".join(aOpt)
+		except:
+			pass
+		# the coordinates of the plot under the tooltip: in the child window of the line of the terrain ("Grassland, 6 [food] , 7 ...", also after
+		# the line "Defense bonus"), not in the tooltip of a unit
+		try:
+			if iPara >= 0 and iSel < 0 and aszParas is not None and iPara == self.getTerrainLineIndex(aszParas):
+				tXY = None
+				if iLevel >= 0 and iLevel < len(self.aFrozen):
+					tAnchor = self.aFrozen[iLevel][5]
+					if tAnchor is not None and self.aFrozen[iLevel][6] < 0:
+						tXY = (tAnchor[0], tAnchor[1])
+				elif iLevel < 0 and not self.bHudHover:
+					pPlotXY = CyInterface().getMouseOverPlot()
+					if pPlotXY is not None and not pPlotXY.isNone():
+						tXY = (pPlotXY.getX(), pPlotXY.getY())
+				if tXY is not None:
+					szXY = localText.getText("TXT_KEY_WTP_TIP_PLOT_COORDS", (tXY[0], tXY[1]))
+					if len(szBase) > 0:
+						szBase += u"\n" + szXY
+					else:
+						szBase = szXY
+		except:
+			pass
 		try:
 			if aszParas is not None and iSel < 0 and iPara >= 0 and iPara < len(aszParas) and self.isUnitHeader(aszParas[iPara]):
 				szInfo = self.getUnitMoveInfoText(aszParas[iPara])
@@ -8445,6 +8589,12 @@ class CvMainInterface:
 			aszParas = self.getLevelParas(iLevel)
 			# right click on the name line of the tooltip of an own city: the map looks at the city chosen in the list
 			if self.tryCityListJump(iLevel, iPara, False):
+				return
+			# the line "Set as WP: name" of a plot: delete / rename the waypoint
+			iPlotOption = -1
+			if iPara == self.iTipSelPara and iLevel == self.iTipSelLevel:
+				iPlotOption = self.iTipSelIdx
+			if self.runWaypointPlotClick(iLevel, iPara, bSecond, bShift, iPlotOption):
 				return
 			# right click on the list of the stored / producing goods of a city: the import / export window of the city with these goods
 			tKindHit = self.dFrozenKind.get(self.aFrozen[iLevel][0])

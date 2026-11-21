@@ -4133,4 +4133,22 @@
 		<German>Shift + Mausrad: unter den %d1 Treffern auswählen</German>
 		<Russian>Shift + колесо мыши: выбрать среди найденного (%d1)</Russian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PLOT_COORDS</Tag>
+		<English>Plot coordinates: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</English>
+		<German>Feldkoordinaten: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</German>
+		<Russian>Координаты клетки: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</Russian>
+	</TEXT>
+		<Tag>TXT_KEY_WTP_TIP_WAYPOINT_IS_SET</Tag>
+		<English>[COLOR_SELECTED_TEXT]Set as WP:[COLOR_REVERT] %s1</English>
+		<German>[COLOR_SELECTED_TEXT]Gesetzt als WP:[COLOR_REVERT] %s1</German>
+		<Russian>[COLOR_SELECTED_TEXT]Задана как путевая точка:[COLOR_REVERT] %s1</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_WAYPOINT_PLOT_OPTIONS</Tag>
+		<English>Ctrl + right click: delete waypoint[NEWLINE]Shift + right click: rename</English>
+		<German>Strg + Rechtsklick: Wegpunkt löschen[NEWLINE]Umschalt + Rechtsklick: umbenennen</German>
+		<Russian>Ctrl + щелчок правой кнопкой: удалить путевую точку[NEWLINE]Shift + щелчок правой кнопкой: переименовать</Russian>
+	</TEXT>
+	<TEXT>
 </Civ4GameText>
