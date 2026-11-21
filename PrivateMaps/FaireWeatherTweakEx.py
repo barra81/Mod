@@ -117,7 +117,7 @@ class MapConstants :
         #to randomize the high altitude areas somewhat and improve their appearance.
         #These variables control the frequency of hills and peaks at the highest altitude.
         self.HillChanceAtOne = .60
-        self.PeakChanceAtOne = .30
+        self.PeakChanceAtOne = .10
 
         #How many map squares will be below desert rainfall threshold. In this case,
         #rain levels close to zero are very likely to be desert, while rain levels close
@@ -133,7 +133,7 @@ class MapConstants :
         #to the plains threshold are likely to be grass, while those close to the plains
         #threshold are likely to be marsh. Any rain above grass threshold will be
         #temperature tested for marsh.
-        self.GrassPercent = 0.30
+        self.GrassPercent = 0.40
 
         #---The following variables are not based on percentages. Because temperature
         #---is so strongly tied to latitude, using percentages for things like ice and
@@ -174,15 +174,17 @@ class MapConstants :
         #Marsh appears where there is the most rainfall, which is also where there
         #are the most trees. Since marsh looks good without trees, it should
         #sometimes not have them.
-        self.chanceForTreelessMarsh = 0.4
+        self.chanceForTreelessMarsh = 0.15
 
         #Savannah appears in the same climates as Marsh, which is also where there
         #are the most trees. Since savannah also looks good without trees, it should
         #sometimes not have them. #agnat86
-        self.chanceForTreelessSavannah = 0.3
+        self.chanceForTreelessSavannah = 0.2
         
         #How many squares are added to a lake for each unit of drainage flowing
         #into it.
+        #Note: This value currently does nothing. Should be fixed by someone who knows
+        #what they're doing. ~Leyrann
         self.LakeSizePerDrainage = 4.0 #6.0
 
         #This value modifies LakeSizePerRiverLength when a lake begins in desert
@@ -197,7 +199,7 @@ class MapConstants :
         # Ramstormp longer rivers
         self.minLargeRiverLength = 7
                 
-	  #Degrees lattitude for the top and bottom of the map. This allows
+        #Degrees lattitude for the top and bottom of the map. This allows
         #for more specific climate zones
         self.topLattitude = 90
         self.bottomLattitude = -90
@@ -274,6 +276,9 @@ class MapConstants :
 
         #Chance for plates to grow. Higher chance tends to make more regular
         #shapes. Lower chance makes more irregular shapes and takes longer.
+        #This function currently does not do anything, as it is overwritten by
+        #map generation settings. Those settings should probably be rewritten so
+        #that this function can easily modify them. ~Leyrann
         self.plateGrowthChanceX = 0.2
         self.plateGrowthChanceY = 0.33
 
@@ -281,13 +286,13 @@ class MapConstants :
         self.plateStagger = 0.1
 
         #This sets the max amount a plate can be staggered up to on the heightmap
-        self.plateStaggerRange = 1.0
+        self.plateStaggerRange = 0.2
 
         #This is the frequency of the cosine ripple near plate boundaries.
         self.rippleFrequency = 1.5
 
         #This is the amplitude of the ripples near plate boundaries.
-        self.rippleAmplitude = 0.8
+        self.rippleAmplitude = 0.3
 
         #Filter size for temperature smoothing. Must be odd number
         self.filterSize = 15
@@ -454,7 +459,7 @@ class MapConstants :
             if selectionID == 1:
                 self.hmMaxGrain = 8
                 self.hmNumberOfPlates = int(float(self.hmWidth * self.hmHeight) * 0.0030)
-                self.minSeedRange = 10
+                self.minSeedRange = 12
                 self.landPercent = 0.28
                 self.plateMapScale = 0.5
                 self.hmNoiseLevel = 1.5
@@ -2153,7 +2158,7 @@ class SmallMaps :
                             #ray Savannah
                             # Chose Terrain
                             iRandTerrain = PRand.random()
-                            if iRandTerrain <= 0.7: 
+                            if iRandTerrain <= 0.5: 
                                 self.terrainMap[i] = mc.MARSH
                             else:
                                 self.terrainMap[i] = mc.SAVANNAH
@@ -3883,7 +3888,7 @@ class RiverMap :
             (height,x,y,idx)=k.getLowestBorder()
             ii = GetIndex(x,y)
             
-            if height <= k.waterH:
+            if height < k.waterH:
                 # drainage pathway found! Lake finished
                 print("Drainage found at %i %i: %i" % (x,y, ii))
                 self.lakeMap[ii] = self.lakeExit
@@ -5051,7 +5056,7 @@ def generateTaiga():
     terrainPlains = TerrainTypes.TERRAIN_PLAINS_FERTILE
     
     tundraToTaigaChance = 0.4 # Baseline chance to convert Tundra To Taiga
-    taigaNearTundraChance = 0.1 # Baseline chance for converting other terrain next to Tundar to Taiga
+    taigaNearTundraChance = 0.1 # Baseline chance for converting other terrain next to Tundra to Taiga
     
     # Convert some plot to Taiga
     for y in range(mc.height):
@@ -5072,7 +5077,7 @@ def generateTaiga():
                             plot.setTerrainType(terrainTaiga, True, True)
                             # Generate some Hills
                             iRandPlotType = PRand.random()
-                            if iRandPlotType <= 0.2: 
+                            if iRandPlotType <= mc.complementaryHillsCoeff: 
                                 plot.setPlotType(PlotTypes.PLOT_HILLS,True,True)
 
 def generateRockSteppes():
@@ -5094,26 +5099,12 @@ def generateRockSteppes():
                     if not isAnyAdjacentPlotType(x, y, PlotTypes.PLOT_OCEAN):
                         if plot.getTerrainType() == terrainPrairie or plot.getTerrainType() == terrainPlains:
                             if isAllAdjacentPlotTerrainType(x, y, terrainPrairie) or isAllAdjacentPlotTerrainType(x, y, terrainPlains):
-                                if PRand.random() <= rockSteppesChance * 0.2:
+                                if PRand.random() <= rockSteppesChance:
                                     plot.setTerrainType(terrainRockSteppes, True, True)
                                     # Generate some Hills
                                     iRandPlotType = PRand.random()
                                     if iRandPlotType <= mc.complementaryHillsCoeff:
                                         plot.setPlotType(PlotTypes.PLOT_HILLS,True,True)
-
-    
-    for y in range(mc.height):
-        for x in range(mc.width):
-            plot = mmap.plot(x,y)
-            if not plot.getPlotType() == PlotTypes.PLOT_PEAK:
-                if not plot.isRiver():
-                    if not isAnyAdjacentPlotType(x, y, PlotTypes.PLOT_OCEAN):
-                        if plot.getTerrainType() == terrainPrairie or plot.getTerrainType() == terrainPlains:
-                            if PRand.random() <= rockSteppesChance:
-                                plot.setTerrainType(terrainRockSteppes, True, True)
-                                iRandPlotType = PRand.random()
-                                if iRandPlotType <= mc.complementaryHillsCoeff:
-                                    plot.setPlotType(PlotTypes.PLOT_HILLS,True,True)
 
 def generateWetland():
 
@@ -5123,9 +5114,9 @@ def generateWetland():
     terrainDesert = TerrainTypes.TERRAIN_DESERT
     terrainTundra = TerrainTypes.TERRAIN_TUNDRA
     
-    wetlandChance = 0.1 # Baseline chance for converting terrain
-    wetlandAdjacentChance = 0.5 # Higher chance if there's already adjacent wetland
-    wetlandHillChance = 0.5
+    wetlandChance = 0.05 # Baseline chance for converting terrain
+    wetlandAdjacentChance = 0.2 # Higher chance if there's already adjacent wetland
+    wetlandHillChance = 0.1
 
     # Convert non-dry river plots
     for y in range(mc.height):
