@@ -3099,9 +3099,15 @@ for y in range(H):
 import re as _re
 _fx = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'Assets', 'XML', 'Terrain', 'CIV4FeatureInfos.xml'),
            encoding='utf8').read()
+class _NoMatch:
+    def group(self, n):
+        return '0'
+
+
+_NO_MATCH = _NoMatch()
 COAST_RULE, RIVER_RULE = {}, set()
 for _b in _re.findall(r'<FeatureInfo>(.*?)</FeatureInfo>', _fx, _re.S):
-    _g = lambda k: (_re.search('<' + k + r'>(\d)', _b) or [0, '0'])[1] == '1'
+    _g = lambda k: (_re.search('<' + k + r'>(\d)', _b) or _NO_MATCH).group(1) == '1'  # no match[1]: Python 2.4 (map script)
     _tb = _re.search(r'<TerrainBooleans>(.*?)</TerrainBooleans>', _b, _re.S)
     _ok = set(a[8:] for a, v in _re.findall(r'<TerrainType>(\w+)</TerrainType>\s*<bTerrain>(\d)', _tb.group(1)) if v == '1') if _tb else set()
     COAST_RULE[_re.search(r'<Type>FEATURE_(\w+)</Type>', _b).group(1)] = (_g('bNoCoast'), _g('bOnlyCoastalLand'), _ok)

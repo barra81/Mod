@@ -147,6 +147,10 @@ def check_py24(tree):
                     problems.append('%s: %s()' % (line, f.id))
                 if f.id in ('max', 'min', 'sorted') and any(k.arg == 'default' for k in n.keywords):
                     problems.append('%s: %s(default=)' % (line, f.id))
+        if isinstance(n, ast.Subscript) and any(isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
+                                                and c.func.attr in ('search', 'match', 'fullmatch')
+                                                for c in ast.walk(n.value)):
+            problems.append('%s: subscript of a re match (match[1] is Python 3.6+, use .group())' % line)
         if isinstance(n, ast.Constant) and isinstance(n.value, str) and any(ord(c) > 127 for c in n.value):
             problems.append('%s: non-ASCII string' % line)
         if isinstance(n, ast.Constant) and isinstance(n.value, bytes):
