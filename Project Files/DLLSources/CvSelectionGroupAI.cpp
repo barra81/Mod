@@ -996,6 +996,13 @@ static const int WTP_FILL_HOLD_MAX_DETOUR_TURNS = 2;
 // a quarter of a cargo slot (game speed dependent: the capacity of a slot is 100 on the normal speed, 200 on epic)
 static const int WTP_PICKUP_STOP_MIN_SLOT_DIVISOR = 4;
 
+// WTP timing: a path search of the trade routes of a transport, with its own timing slot (from the position of the transport / from colony to colony)
+static bool WTP_timedPath(const CvSelectionGroupAI* pGroup, WtpTiming::Slot eSlot, const CvPlot* pFromPlot, const CvPlot* pToPlot, int iFlags, bool bReuse, int* piTurns = NULL)
+{
+	WtpTiming::Scope wtpPathTimer(eSlot);
+	return pGroup->generatePath(pFromPlot, pToPlot, iFlags, bReuse, piTurns);
+}
+
 // WTP: the path of a transport of this unit type from a source city to a destination city, kept for the turn.
 // Every transport of every yield of every route asked for the same long coastal paths again and again.
 static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSourceCity, const CvCity* pDestinationCity, int iFlags, bool bIgnoreDanger, int* piTurns)
@@ -1016,7 +1023,7 @@ static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSo
 		*piTurns = itRoute->second.second;
 		return itRoute->second.first;
 	}
-	const bool bOk = pGroup->generatePath(pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, piTurns);
+	const bool bOk = WTP_timedPath(pGroup, WtpTiming::SLOT_TR_PATH_ROUTE, pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, piTurns);
 	aRoutePaths[kRouteKey] = std::make_pair(bOk, *piTurns);
 	return bOk;
 }
@@ -1260,7 +1267,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					{
 						// Due to the introduction of the large river feature, the area check may not be sufficient. This is the case
 						// if the source city is in a different area, connected by river fords \ ferry stations
-						const bool res = generatePath(plot(), pSourceCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true);
+						const bool res = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pSourceCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true);
 
 						if (res)
 						{
@@ -1348,7 +1355,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					}
 					else
 					{
-						const bool bToDestOk = generatePath(plot(), pDestinationCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &turnsToReach);
+						const bool bToDestOk = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pDestinationCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &turnsToReach);
 						aGroupToDestPaths[routes[i]->getDestinationCity()] = std::make_pair(bToDestOk, turnsToReach);
 					}
 					yieldsToUnload = std::min(yieldsToUnload, estimateYieldsToLoad(pDestinationCity, 9999, eYield, turnsToReach, 0));
@@ -1442,8 +1449,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				const int iFlags = (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY);
 				int iToSource = 0;
 				int iToDestination = 0;
-				if ((pSourceCity != pPlotCity && (!generatePath(plot(), pSourceCity->plot(), iFlags, true, &iToSource) || iToSource > LAND_TRANSPORT_MAX_TRIP_TURNS))
-					|| !generatePath(pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, &iToDestination) || iToDestination > LAND_TRANSPORT_MAX_TRIP_TURNS)
+				if ((pSourceCity != pPlotCity && (!WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pSourceCity->plot(), iFlags, true, &iToSource) || iToSource > LAND_TRANSPORT_MAX_TRIP_TURNS))
+					|| !WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_ROUTE, pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, &iToDestination) || iToDestination > LAND_TRANSPORT_MAX_TRIP_TURNS)
 				{
 					continue;
 				}
@@ -1466,7 +1473,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				}
 				else
 				{
-					bSourceOk = generatePath(pSourceCity->plot(), plot(), iFlags, true, &turnsToReachToSource);
+					bSourceOk = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_ROUTE, pSourceCity->plot(), plot(), iFlags, true, &turnsToReachToSource);
 					aSourcePaths[pSourceCity->getID()] = std::make_pair(bSourceOk, turnsToReachToSource);
 				}
 				const bool bDestOk = WTP_getRoutePathCached(this, pSourceCity, pDestinationCity, iFlags, bIgnoreDanger, &turnsToReachFromSourceToDest);
@@ -1596,7 +1603,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				++iDestinationPaths;
 				FAssert(!atPlot(pCity->plot()));
 				// TAC - Trade Routes Advisor - koma13 - START
-				//if (generatePath(plot(), pCity->plot(), MOVE_NO_ENEMY_TERRITORY, true))
+				//if (WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pCity->plot(), MOVE_NO_ENEMY_TERRITORY, true))
 
 				CvPlot* pDestinationCityPlot = pCity->plot();
 
@@ -1610,7 +1617,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				}
 				else
 				{
-					bDestinationReachable = generatePath(plot(), pDestinationCityPlot, (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iTurns);
+					bDestinationReachable = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pDestinationCityPlot, (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iTurns);
 					aGroupToDestPaths[it->first] = std::make_pair(bDestinationReachable, iTurns);
 				}
 				if (bDestinationReachable
@@ -1692,7 +1699,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			else
 			{
 				int iPriorityTurns = 0;
-				bPriorityOk = generatePath(plot(), pPriorityCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iPriorityTurns);
+				bPriorityOk = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pPriorityCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iPriorityTurns);
 				aGroupToDestPaths[m_kPriorityTarget] = std::make_pair(bPriorityOk, iPriorityTurns);
 			}
 			if (bPriorityOk)
@@ -1740,7 +1747,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 			else
 			{
-				bBestOk = generatePath(plot(), pBestCity->plot(), iFillFlags, true, &iToBest);
+				bBestOk = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pBestCity->plot(), iFillFlags, true, &iToBest);
 				aGroupToDestPaths[kBestDestination] = std::make_pair(bBestOk, iToBest);
 			}
 			if (!bBestOk)
@@ -1770,7 +1777,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				}
 				else
 				{
-					bFillOk = generatePath(plot(), pFillCity->plot(), iFillFlags, true, &iToFill);
+					bFillOk = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pFillCity->plot(), iFillFlags, true, &iToFill);
 					aGroupToDestPaths[kFillDestination] = std::make_pair(bFillOk, iToFill);
 				}
 				int iFillToBest = 0;
@@ -1912,7 +1919,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 		{
 			// check that the city is reachable
 			int iTurns = 0;
-			if (!generatePath(plot(), pCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iTurns))
+			if (!WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pCity->plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iTurns))
 			{
 				// no path. Bail out instead of trying to add a movement command
 				// if the command to move is given, then movement will fail and this function is called again
@@ -1943,7 +1950,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 			else
 			{
-				bTargetOk = generatePath(plot(), pTargetCity->plot(), iPickupFlags, true, &iToTarget);
+				bTargetOk = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pTargetCity->plot(), iPickupFlags, true, &iToTarget);
 				aGroupToDestPaths[kBestDestination] = std::make_pair(bTargetOk, iToTarget);
 			}
 			if (bTargetOk)
@@ -2025,7 +2032,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					}
 					else
 					{
-						bCandidateOk = generatePath(plot(), pCandidate->plot(), iPickupFlags, true, &iToCandidate);
+						bCandidateOk = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_POS, plot(), pCandidate->plot(), iPickupFlags, true, &iToCandidate);
 						aGroupToDestPaths[kCandidate] = std::make_pair(bCandidateOk, iToCandidate);
 					}
 					int iCandidateToTarget = 0;
