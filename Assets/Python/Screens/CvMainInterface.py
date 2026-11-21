@@ -10298,6 +10298,8 @@ class CvMainInterface:
 			else:
 				iFooterLines = 0
 				iMaxLines = 7 # collapsed: three priority messages of two lines each (3 * 2.2 lines)
+				if yRes >= 1000:
+					iMaxLines = 9 # 1080p and 1440p: eight lines of text (the extra space after each message counts as well), was 7 = six lines
 			# the priority messages (the first iNumPriority ones) are always at the top of the newest page; on the other pages the others
 			iNumPriority = min(iNumPriority, iNum)
 			fMessageGap = 0.2 # extra space after every message (in lines), better to read
