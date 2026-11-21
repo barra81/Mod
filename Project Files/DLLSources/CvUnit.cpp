@@ -5271,7 +5271,7 @@ int CvUnit::loadYieldAmount(YieldTypes eYield, int iAmount, bool bTrade)
 }
 
 // WTP: fills all free cargo slots with goods of the city, one slot after the other, always with the most valuable good (the sell price for 100 units in the
-// harbour where the whole load of a sea transport sells best, see below) that can still be loaded and would fill at least 15% of a slot (without livestock, building material, military goods, raw materials); the same good again as long as the city has more of it
+// harbour where the whole load of a sea transport sells best, see below) that can still be loaded and would fill at least 15% of a slot (without food, trade goods, livestock, building material, military goods, raw materials); the same good again as long as the city has more of it
 // WTP: can this ship sell in the harbour at all (ship type and the rights of the player), regardless of moves left or where it is now
 bool CvUnit::canReachHarbour(int iHarbour) const
 {
@@ -5311,8 +5311,9 @@ void CvUnit::loadAllYieldsByValue()
 	{
 		abExcluded[i] = false;
 	}
-	// not loaded: livestock, building material, military goods and all raw materials (goods that a profession turns into another good)
+	// not loaded: food, trade goods, livestock, building material, military goods and all raw materials (goods that a profession turns into another good)
 	static const char* const aszExcluded[] = {
+		"YIELD_FOOD", "YIELD_TRADE_GOODS", // food and the goods for trading with the natives
 		"YIELD_CLAY", "YIELD_STONE", "YIELD_TOOLS", "YIELD_HORSES", "YIELD_SAILCLOTH", "YIELD_HARDWOOD", "YIELD_ROPE", // building material
 		"YIELD_MUSKETS", "YIELD_BLADES", "YIELD_CANNONS", "YIELD_BLACK_POWDER", "YIELD_BAKERY_GOODS" // military goods
 	};

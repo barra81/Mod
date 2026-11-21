@@ -287,13 +287,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMMAND_LOAD_CARGO_HELP</Tag>
-		<English>This will load stored goods into a transport. Shift+click: fill all free slots, most valuable goods first, sea transports aim at the harbour where the whole load sells best (goods filling less than 15% of a slot are skipped, as are goods that cannot be sold in the target harbour; no raw materials, livestock, building material or military goods).</English>
+		<English>This will load stored goods into a transport. Shift+click: fill all free slots, most valuable goods first, sea transports aim at the harbour where the whole load sells best (goods filling less than 15% of a slot are skipped, as are goods that cannot be sold in the target harbour; no food, trade goods, raw materials, livestock, building material or military goods).</English>
 		<Portuguese>Isso carregará as mercadorias armazenadas em um transporte.</Portuguese>
 		<French>Ordonne de charger des marchandises sur une unité de transport.</French>
-		<German>Güter auf eine Transporteinheit verladen. Shift+Klick: alle freien Plätze füllen, wertvollste Waren zuerst, Seetransporter zielen auf den Hafen, in dem die ganze Ladung am besten verkauft wird (Waren unter 15% eines Platzes werden übersprungen, ebenso Waren, die im Zielhafen nicht verkauft werden können; keine Rohstoffe, Nutztiere, Baumaterial oder Militärgüter).</German>
+		<German>Güter auf eine Transporteinheit verladen. Shift+Klick: alle freien Plätze füllen, wertvollste Waren zuerst, Seetransporter zielen auf den Hafen, in dem die ganze Ladung am besten verkauft wird (Waren unter 15% eines Platzes werden übersprungen, ebenso Waren, die im Zielhafen nicht verkauft werden können; keine Nahrung, Handelsgüter, Rohstoffe, Nutztiere, Baumaterial oder Militärgüter).</German>
 		<Italian>Per caricare su un trasporto i beni immagazzinati.</Italian>
 		<Spanish>Esto cargará en el transporte las mercancías almacenadas.</Spanish>
-		<Russian>Позволяет загрузить товары из складов в транспорт. Shift+щелчок: заполнить все свободные места, начиная с самых ценных, морские транспорты ориентируются на порт, где весь груз продаётся лучше всего (товары, занимающие менее 15% места, пропускаются, как и товары, которые нельзя продать в порту назначения; без сырья, скота, строительных и военных товаров).</Russian>
+		<Russian>Позволяет загрузить товары из складов в транспорт. Shift+щелчок: заполнить все свободные места, начиная с самых ценных, морские транспорты ориентируются на порт, где весь груз продаётся лучше всего (товары, занимающие менее 15% места, пропускаются, как и товары, которые нельзя продать в порту назначения; без еды, мануфактуры, сырья, скота, строительных и военных товаров).</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMMAND_LOAD_UNIT</Tag>
