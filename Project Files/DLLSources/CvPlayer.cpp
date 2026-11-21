@@ -2460,13 +2460,9 @@ void CvPlayer::NBMOD_DecreaseMaxTaxRate()
         m_iMaxTaxRate = GC.getMIN_TAX_RATE();
     }
 
-//NEUER CODE von RAY
-	// ist die max_Steuerrate < aktueler_Steuerrate, wird die max_Steuerrate wieder auf aktueler_Steuerrate hochgesetzt
-	if (m_iMaxTaxRate < getTaxRate())
-	{
-		m_iMaxTaxRate = getTaxRate();
-	}
-//Ende NEUER CODE von RAY
+	// WTP: the maximum tax rate may fall below the tax rate that is paid now (it was set back up to the paid rate before, so paying the
+	// maximum made meeting the king's demand change nothing). The king raises no tax while the paid rate is at or above the maximum
+	// (getTaxRaiseChance, NBMOD_GetNewTaxRate); the paid rate falls only through an event that lowers it.
 
     return ;
 }
@@ -4296,7 +4292,7 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 				int currentmaxtax = kPlayer.NBMOD_GetMaxTaxRate();
 
 				int absolutMinTaxrate = GC.getMIN_TAX_RATE();
-				while ((currentmaxtax - maxtaxdecrease) < kPlayer.NBMOD_GetMaxTaxRate() && kPlayer.NBMOD_GetMaxTaxRate() > absolutMinTaxrate && kPlayer.getTaxRate() < kPlayer.NBMOD_GetMaxTaxRate() )
+				while ((currentmaxtax - maxtaxdecrease) < kPlayer.NBMOD_GetMaxTaxRate() && kPlayer.NBMOD_GetMaxTaxRate() > absolutMinTaxrate)
 				{
 					kPlayer.NBMOD_DecreaseMaxTaxRate();
 				}
