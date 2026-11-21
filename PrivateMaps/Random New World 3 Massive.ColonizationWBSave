@@ -3729,7 +3729,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=4,y=1
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -4197,6 +4196,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=4,y=81
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -4243,6 +4243,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=4,y=90
+	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -4565,6 +4566,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=5,y=1
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -4674,6 +4676,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=5,y=20
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -4684,7 +4687,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=5,y=22
-	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -4716,6 +4718,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=5,y=28
+	BonusType=BONUS_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -4726,7 +4729,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=5,y=30
-	BonusType=BONUS_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -4762,6 +4764,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=5,y=37
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5002,6 +5005,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=5,y=79
+	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5022,6 +5026,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=5,y=83
+	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5471,6 +5476,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=6,y=24
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5481,6 +5487,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=6,y=26
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5491,7 +5498,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=6,y=28
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5512,7 +5518,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=6,y=32
-	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5529,7 +5534,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=6,y=35
-	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5746,6 +5750,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=6,y=72
+	BonusType=BONUS_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -5771,6 +5776,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=6,y=77
+	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -6238,6 +6244,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=7,y=22
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -6524,7 +6531,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=7,y=73
-	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -6580,6 +6586,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=7,y=84
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -6671,6 +6678,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=7,y=102
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -6696,7 +6704,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=7,y=107
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -6988,6 +6995,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=8,y=19
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -7003,6 +7011,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=8,y=22
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -7024,7 +7033,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=8,y=26
-	BonusType=BONUS_PEARLS
+	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -7071,7 +7080,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=8,y=35
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -7093,6 +7101,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=8,y=39
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -7375,7 +7384,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=8,y=89
-	BonusType=BONUS_FISH
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -7431,7 +7440,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=8,y=100
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -7769,6 +7777,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=9,y=21
+	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -7784,6 +7793,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=9,y=24
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -7831,6 +7841,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=9,y=33
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -8088,7 +8099,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=9,y=79
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -8114,17 +8124,18 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=9,y=84
-	TerrainType=TERRAIN_COAST
-	PlotType=3
-EndPlot
-BeginPlot
-	x=9,y=85
 	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
+	x=9,y=85
+	TerrainType=TERRAIN_COAST
+	PlotType=3
+EndPlot
+BeginPlot
 	x=9,y=86
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -8151,12 +8162,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=9,y=91
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=9,y=92
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -8188,7 +8199,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=9,y=98
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -8514,6 +8524,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=10,y=18
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -8549,12 +8560,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=10,y=25
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=10,y=26
-	BonusType=BONUS_SILVER
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=1
@@ -8780,7 +8791,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=10,y=67
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -8977,7 +8987,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=10,y=101
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9033,12 +9042,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=10,y=112
-	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=10,y=113
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9237,7 +9246,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=11
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9258,6 +9266,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=15
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9289,6 +9298,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=21
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9309,7 +9319,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=25
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -9376,6 +9385,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=37
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9696,7 +9706,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=92
-	BonusType=BONUS_FISH
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -9712,7 +9722,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=95
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9723,7 +9732,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=97
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9745,6 +9753,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=101
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9755,7 +9764,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=103
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9822,7 +9830,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=11,y=116
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -9993,6 +10000,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=11
+	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10034,6 +10042,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=19
+	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10044,6 +10053,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=21
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10065,6 +10075,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=25
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -10149,6 +10160,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=40
+	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10299,6 +10311,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=67
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10314,12 +10327,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=70
+	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=12,y=71
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -10457,6 +10470,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=94
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10518,7 +10532,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=106
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10559,6 +10572,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=12,y=114
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10723,6 +10737,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=8
+	BonusType=BONUS_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10753,7 +10768,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=14
-	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10784,7 +10798,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=20
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10853,6 +10866,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=32
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -10863,6 +10877,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=34
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -10873,6 +10888,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=36
+	BonusType=BONUS_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -10918,7 +10934,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=45
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11049,7 +11064,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=68
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11060,7 +11074,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=70
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11120,6 +11133,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=80
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -11179,6 +11193,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=91
+	BonusType=BONUS_GEMS
 	FeatureType=FEATURE_FOREST_EVERGREEN, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=1
@@ -11190,7 +11205,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=93
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -11222,7 +11236,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=99
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -11249,7 +11262,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=104
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11281,7 +11293,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=110
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11312,6 +11323,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=116
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11348,7 +11360,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=123
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11389,6 +11400,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=13,y=131
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11484,6 +11496,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=11
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11544,7 +11557,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=23
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -11928,7 +11940,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=91
-	BonusType=BONUS_SILVER
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=1
@@ -11957,6 +11968,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=96
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11967,6 +11979,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=98
+	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -11999,6 +12012,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=104
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12019,6 +12033,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=108
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12074,7 +12089,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=119
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12140,7 +12154,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=14,y=132
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12195,7 +12208,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=4
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -12238,7 +12250,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=12
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12249,7 +12260,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=14
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12260,6 +12270,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=16
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12270,6 +12281,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=18
+	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12285,6 +12297,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=21
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12400,12 +12413,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=42
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=15,y=43
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -12416,6 +12429,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=45
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -12522,6 +12536,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=64
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12532,6 +12547,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=66
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12647,7 +12663,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=87
-	BonusType=BONUS_IGUANA
 	TerrainType=TERRAIN_DESERT
 	PlotType=2
 EndPlot
@@ -12715,7 +12730,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=100
-	BonusType=BONUS_SHRIMP
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -12738,7 +12753,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=104
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12769,7 +12783,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=110
-	BonusType=BONUS_SHRIMP
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -12780,12 +12794,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=112
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=15,y=113
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -12841,7 +12855,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=15,y=124
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -12977,11 +12990,13 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=11
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=16,y=12
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -13002,7 +13017,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=16
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -13124,7 +13138,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=36
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -13150,7 +13163,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=41
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -13180,7 +13192,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=46
-	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -13315,7 +13326,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=70
-	BonusType=BONUS_FISH
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -13359,7 +13370,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=77
-	BonusType=BONUS_SILVER
+	BonusType=BONUS_GOLD
 	TerrainType=TERRAIN_PLAINS
 	PlotType=1
 EndPlot
@@ -13403,12 +13414,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=84
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
 BeginPlot
 	x=16,y=85
+	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
@@ -13446,6 +13457,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=92
+	BonusType=BONUS_TURKEYS
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=2
@@ -13528,7 +13540,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=108
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -13567,6 +13578,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=115
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -13582,7 +13594,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=118
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -13623,6 +13634,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=126
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -13633,7 +13645,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=128
-	BonusType=BONUS_GULL
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -13649,7 +13661,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=131
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -13661,6 +13672,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=16,y=133
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -13794,7 +13806,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=20
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -13912,6 +13923,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=39
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -13952,6 +13964,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=46
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -14048,6 +14061,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=63
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -14063,6 +14077,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=66
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -14231,6 +14246,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=96
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -14256,7 +14272,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=101
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -14307,6 +14322,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=111
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -14349,6 +14365,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=119
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -14386,7 +14403,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=17,y=126
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -14482,7 +14498,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=5
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -14550,7 +14565,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=17
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -14683,7 +14697,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=39
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -14938,7 +14951,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=85
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -15007,7 +15019,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=97
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -15033,12 +15044,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=102
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=18,y=103
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -15059,7 +15070,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=107
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -15070,7 +15080,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=109
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -15081,7 +15090,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=111
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -15141,7 +15149,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=122
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -15152,7 +15159,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=124
-	BonusType=BONUS_BOOBY
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -15209,7 +15216,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=18,y=134
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -15456,6 +15462,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=19,y=39
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -15519,7 +15526,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=19,y=51
-	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -15822,6 +15828,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=19,y=105
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -15852,6 +15859,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=19,y=111
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -15890,12 +15898,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=19,y=118
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=19,y=119
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -15906,6 +15914,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=19,y=121
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -16036,6 +16045,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=8
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16046,7 +16056,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=10
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -16057,12 +16066,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=12
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=20,y=13
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -16098,6 +16107,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=20
+	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16361,6 +16371,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=65
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16386,7 +16397,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=70
-	BonusType=BONUS_FISH
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -16397,7 +16408,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=72
-	BonusType=BONUS_PEARLS
+	BonusType=BONUS_CANADA_GOOSE
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -16565,6 +16576,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=98
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16580,6 +16592,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=101
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16590,6 +16603,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=103
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16600,7 +16614,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=105
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16642,6 +16655,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=113
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -16690,7 +16704,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=122
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -16729,6 +16742,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=20,y=129
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -16793,7 +16807,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=3
-	BonusType=BONUS_PARROTS
+	BonusType=BONUS_TOUCAN
 	FeatureType=FEATURE_TROPICAL_GROVES, FeatureVariety=0
 	TerrainType=TERRAIN_MARSH
 	PlotType=2
@@ -16821,7 +16835,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=8
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16872,12 +16885,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=18
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=21,y=19
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -16888,12 +16901,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=21
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=21,y=22
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -17026,7 +17039,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=42
-	BonusType=BONUS_BOOBY
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -17058,7 +17071,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=48
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -17135,7 +17147,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=63
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -17338,7 +17349,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=97
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -17483,7 +17493,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=21,y=125
-	BonusType=BONUS_FISH
 	FeatureType=FEATURE_KELP, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -17552,7 +17561,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=0
-	BonusType=BONUS_DUCK
+	BonusType=BONUS_CANADA_GOOSE
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -17582,7 +17591,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=5
-	BonusType=BONUS_CRAB
 	FeatureType=FEATURE_KELP, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -17599,6 +17607,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=8
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -17649,7 +17658,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=18
-	BonusType=BONUS_CRAB
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -17682,7 +17690,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=24
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -17693,12 +17700,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=26
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=22,y=27
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -17792,6 +17799,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=42
+	BonusType=BONUS_GULL
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -17890,7 +17898,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=61
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -17950,7 +17957,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=72
-	BonusType=BONUS_CANADA_GOOSE
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -18107,6 +18113,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=100
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -18137,6 +18144,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=106
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -18159,6 +18167,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=110
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -18179,7 +18188,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=114
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -18229,6 +18237,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=123
+	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_SNOW
 	PlotType=1
 EndPlot
@@ -18254,7 +18263,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=22,y=128
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -18352,7 +18360,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=9
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -18388,7 +18395,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=16
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -18415,6 +18421,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=21
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -18426,6 +18433,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=23
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -18641,6 +18649,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=63
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -18651,7 +18660,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=65
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -18698,6 +18706,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=73
+	BonusType=BONUS_DUCK
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -18883,7 +18892,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=105
-	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -18983,12 +18991,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=23,y=124
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=23,y=125
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -19053,12 +19061,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=0
-	BonusType=BONUS_DUCK
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
 BeginPlot
 	x=24,y=1
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -19118,7 +19126,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=11
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -19190,7 +19197,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=24
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -19211,7 +19217,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=28
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -19305,7 +19310,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=44
-	BonusType=BONUS_BOOBY
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -19373,6 +19378,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=57
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -19383,7 +19389,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=59
-	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_REEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -19458,7 +19463,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=72
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -19469,7 +19473,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=74
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -19619,7 +19622,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=99
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -19656,17 +19658,18 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=106
-	TerrainType=TERRAIN_COAST
-	PlotType=3
-EndPlot
-BeginPlot
-	x=24,y=107
 	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
+	x=24,y=107
+	TerrainType=TERRAIN_COAST
+	PlotType=3
+EndPlot
+BeginPlot
 	x=24,y=108
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -19692,12 +19695,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=113
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=24,y=114
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -19713,7 +19716,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=24,y=117
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -19902,18 +19904,17 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=25,y=13
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=25,y=14
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=25,y=15
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -19987,6 +19988,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=25,y=28
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -20102,7 +20104,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=25,y=48
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -20148,7 +20149,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=25,y=57
-	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -20238,6 +20238,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=25,y=73
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -20429,13 +20430,13 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=25,y=108
-	BonusType=BONUS_TURKEYS
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=2
 EndPlot
 BeginPlot
 	x=25,y=109
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -20545,7 +20546,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=25,y=129
-	BonusType=BONUS_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -20761,7 +20761,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=26
-	BonusType=BONUS_BOOBY
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -20911,6 +20910,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=49
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -20951,6 +20951,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=57
+	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -21034,7 +21035,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=72
-	BonusType=BONUS_PEARLS
+	BonusType=BONUS_CANADA_GOOSE
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
@@ -21208,6 +21209,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=100
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -21270,6 +21272,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=112
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -21280,7 +21283,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=114
-	BonusType=BONUS_GULL
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -21291,7 +21294,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=116
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -21365,6 +21367,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=126
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -21376,6 +21379,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=26,y=128
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -21752,6 +21756,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=27,y=52
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -21762,6 +21767,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=27,y=54
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -21823,7 +21829,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=27,y=66
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -21860,7 +21865,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=27,y=72
-	BonusType=BONUS_CANADA_GOOSE
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -22180,7 +22184,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=27,y=127
-	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -22410,7 +22413,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=29
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -22520,7 +22522,7 @@ BeginPlot
 	isWOfRiver
 	RiverWEDirection=3
 	isNOfRiver
-	BonusType=BONUS_TOUCAN
+	BonusType=BONUS_PARROTS
 	FeatureType=FEATURE_JUNGLE, FeatureVariety=0
 	TerrainType=TERRAIN_MARSH
 	PlotType=2
@@ -22533,7 +22535,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=49
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -22614,7 +22615,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=64
-	BonusType=BONUS_SHRIMP
+	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -22727,6 +22728,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=84
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -22737,7 +22739,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=86
-	BonusType=BONUS_PEARLS_2
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -22822,6 +22824,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=101
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -22847,13 +22850,11 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=106
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=28,y=107
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -22864,7 +22865,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=109
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -22876,6 +22876,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=111
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -22975,7 +22976,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=128
-	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -23018,7 +23018,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=28,y=136
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -23198,6 +23197,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=29
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -23213,6 +23213,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=32
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -23274,7 +23275,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=42
-	BonusType=BONUS_PARROTS
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=2
 EndPlot
@@ -23315,6 +23315,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=49
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -23394,7 +23395,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=64
-	BonusType=BONUS_FISH
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -23595,6 +23595,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=97
+	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_GRASS
 	PlotType=0
 EndPlot
@@ -23652,6 +23653,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=108
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -23769,6 +23771,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=129
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -23790,6 +23793,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=29,y=133
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -24006,7 +24010,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=30,y=32
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -24197,7 +24200,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=30,y=65
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -24433,12 +24435,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=30,y=103
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=30,y=104
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -24472,6 +24474,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=30,y=110
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -24496,7 +24499,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=30,y=114
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -24697,7 +24699,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=31,y=11
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -24811,6 +24812,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=31,y=31
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -24956,7 +24958,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=31,y=56
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -25215,6 +25216,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=31,y=98
+	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_GRASS
 	PlotType=0
 EndPlot
@@ -25257,6 +25259,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=31,y=106
+	BonusType=BONUS_GOLD
 	FeatureType=FEATURE_FOREST_EVERGREEN, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=1
@@ -25395,7 +25398,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=31,y=129
-	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -25488,7 +25490,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=8
-	BonusType=BONUS_CRAB
+	BonusType=BONUS_DUCK
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -25499,6 +25501,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=10
+	BonusType=BONUS_DUCK
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -25526,6 +25529,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=15
+	BonusType=BONUS_GEMS
 	TerrainType=TERRAIN_ROCK_STEPPES
 	PlotType=0
 EndPlot
@@ -25634,7 +25638,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=34
-	BonusType=BONUS_FISH
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -25731,7 +25735,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=50
-	BonusType=BONUS_MUSHROOMS
 	FeatureType=FEATURE_JUNGLE, FeatureVariety=0
 	TerrainType=TERRAIN_MARSH
 	PlotType=2
@@ -25769,6 +25772,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=56
+	BonusType=BONUS_FISH
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -25795,7 +25799,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=61
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -25806,7 +25809,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=63
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -25817,6 +25819,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=65
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -26060,7 +26063,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=32,y=106
-	BonusType=BONUS_GOLD
 	FeatureType=FEATURE_ANCIENT_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_TAIGA
 	PlotType=1
@@ -26295,7 +26297,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=33,y=10
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -26531,6 +26532,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=33,y=50
+	BonusType=BONUS_MUSHROOMS
 	FeatureType=FEATURE_JUNGLE, FeatureVariety=0
 	TerrainType=TERRAIN_MARSH
 	PlotType=2
@@ -26571,7 +26573,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=33,y=57
-	BonusType=BONUS_FISH
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -26898,7 +26899,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=33,y=113
-	BonusType=BONUS_GULL
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -26976,6 +26977,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=33,y=126
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -27013,6 +27015,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=33,y=133
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -27098,6 +27101,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=34,y=10
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -27245,7 +27249,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=34,y=34
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -27413,6 +27416,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=34,y=62
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -27668,7 +27672,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=34,y=106
-	BonusType=BONUS_GEMS
 	FeatureType=FEATURE_FOREST_EVERGREEN, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=1
@@ -27804,12 +27807,14 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=34,y=129
+	BonusType=BONUS_SHRIMP
 	FeatureType=FEATURE_KELP, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=34,y=130
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -27831,12 +27836,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=34,y=134
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=34,y=135
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -27958,7 +27963,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=18
-	BonusType=BONUS_GEMS
 	TerrainType=TERRAIN_DESERT
 	PlotType=1
 EndPlot
@@ -28065,6 +28069,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=35
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -28098,6 +28103,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=41
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -28108,7 +28114,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=43
-	BonusType=BONUS_LOON
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -28119,7 +28125,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=45
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -28143,7 +28148,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=49
-	BonusType=BONUS_PARROTS
 	FeatureType=FEATURE_JUNGLE, FeatureVariety=0
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=2
@@ -28162,7 +28166,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=52
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -28429,6 +28432,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=97
+	BonusType=BONUS_TURKEYS
 	FeatureType=FEATURE_DENSE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_PLAINS_FERTILE
 	PlotType=2
@@ -28550,7 +28554,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=116
-	BonusType=BONUS_MUSHROOMS
 	TerrainType=TERRAIN_WETLAND
 	PlotType=2
 EndPlot
@@ -28628,13 +28631,14 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=129
+	BonusType=BONUS_SHRIMP
 	FeatureType=FEATURE_KELP, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=35,y=130
-	BonusType=BONUS_BOOBY
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -28646,6 +28650,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=35,y=132
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -28798,6 +28803,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=36,y=17
+	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_DESERT
 	PlotType=1
 EndPlot
@@ -28808,6 +28814,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=36,y=19
+	BonusType=BONUS_GEMS
 	TerrainType=TERRAIN_DESERT
 	PlotType=1
 EndPlot
@@ -28981,6 +28988,7 @@ BeginPlot
 	x=36,y=48
 	RiverNSDirection=2
 	isWOfRiver
+	BonusType=BONUS_PARROTS
 	FeatureType=FEATURE_TROPICAL_GROVES, FeatureVariety=0
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=2
@@ -29096,7 +29104,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=36,y=66
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -29220,7 +29227,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=36,y=87
-	BonusType=BONUS_PEARLS
+	BonusType=BONUS_LOON
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -29231,7 +29238,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=36,y=89
-	BonusType=BONUS_CRAB
+	BonusType=BONUS_LOON
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -29379,6 +29386,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=36,y=110
+	BonusType=BONUS_GEMS
 	TerrainType=TERRAIN_WETLAND
 	PlotType=1
 EndPlot
@@ -29510,29 +29518,34 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=36,y=132
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=36,y=133
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=36,y=134
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=36,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=36,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -29774,13 +29787,13 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=37,y=40
+	BonusType=BONUS_PARROTS
 	FeatureType=FEATURE_JUNGLE, FeatureVariety=0
 	TerrainType=TERRAIN_MARSH
 	PlotType=2
 EndPlot
 BeginPlot
 	x=37,y=41
-	BonusType=BONUS_PARROTS
 	TerrainType=TERRAIN_MARSH
 	PlotType=2
 EndPlot
@@ -29797,7 +29810,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=37,y=44
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -30233,7 +30245,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=37,y=115
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -30326,32 +30337,38 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=37,y=131
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=37,y=132
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=37,y=133
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=37,y=134
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=37,y=135
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=37,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -30476,7 +30493,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=38,y=18
-	BonusType=BONUS_GEMS
 	TerrainType=TERRAIN_DESERT
 	PlotType=1
 EndPlot
@@ -30498,7 +30514,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=38,y=22
-	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_SHRUBLAND
 	PlotType=1
 EndPlot
@@ -30574,7 +30589,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=38,y=34
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -30590,12 +30604,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=38,y=37
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=38,y=38
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -31120,6 +31134,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=38,y=124
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -31164,29 +31179,33 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=38,y=132
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=38,y=133
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=38,y=134
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=38,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=38,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -31318,6 +31337,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=39,y=21
+	BonusType=BONUS_IGUANA
 	FeatureType=FEATURE_BARREL_CACTUS, FeatureVariety=0
 	TerrainType=TERRAIN_DESERT
 	PlotType=2
@@ -31434,7 +31454,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=39,y=39
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -31645,7 +31664,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=39,y=74
-	BonusType=BONUS_CANADA_GOOSE
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -31956,7 +31974,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=39,y=124
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -31990,6 +32007,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=39,y=130
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -32000,28 +32018,33 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=39,y=132
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=39,y=133
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=39,y=134
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=39,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=39,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -32083,6 +32106,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=40,y=9
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -32126,7 +32150,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=40,y=17
-	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_DESERT
 	PlotType=1
 EndPlot
@@ -32466,6 +32489,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=40,y=73
+	BonusType=BONUS_DUCK
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -32552,6 +32576,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=40,y=89
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -32760,6 +32785,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=40,y=123
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -32810,28 +32836,33 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=40,y=132
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=40,y=133
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=40,y=134
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=40,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=40,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -32891,7 +32922,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=41,y=9
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -32925,6 +32955,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=41,y=15
+	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_ROCK_STEPPES
 	PlotType=0
 EndPlot
@@ -33061,6 +33092,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=41,y=38
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -33345,6 +33377,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=41,y=87
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -33355,7 +33388,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=41,y=89
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -33382,12 +33414,13 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=41,y=94
-	BonusType=BONUS_CRAB
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=41,y=95
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -33480,7 +33513,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=41,y=110
-	BonusType=BONUS_DUCK
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -33600,35 +33632,40 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=41,y=131
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=41,y=132
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=41,y=133
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=41,y=134
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=41,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=41,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -33675,6 +33712,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=7
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -33729,7 +33767,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=17
-	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_DESERT
 	PlotType=0
 EndPlot
@@ -33861,6 +33898,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=40
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -34072,7 +34110,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=75
-	BonusType=BONUS_BOOBY
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -34152,6 +34190,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=89
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -34163,6 +34202,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=91
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -34179,6 +34219,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=94
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -34255,7 +34296,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=107
-	BonusType=BONUS_LOON
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -34379,7 +34419,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=129
-	BonusType=BONUS_GULL
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -34390,33 +34430,37 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=42,y=131
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=42,y=132
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=42,y=133
-	BonusType=BONUS_HIGH_SEA_FISH4
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=42,y=134
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=42,y=135
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=42,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -34469,7 +34513,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=43,y=8
-	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -34551,6 +34594,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=43,y=23
+	BonusType=BONUS_IGUANA
 	TerrainType=TERRAIN_DESERT
 	PlotType=2
 EndPlot
@@ -34821,7 +34865,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=43,y=67
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -34965,7 +35008,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=43,y=91
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -34996,17 +35038,18 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=43,y=97
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=43,y=98
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=43,y=99
+	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -35214,12 +35257,14 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=43,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=43,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -35324,7 +35369,6 @@ BeginPlot
 	x=44,y=16
 	RiverNSDirection=2
 	isWOfRiver
-	BonusType=BONUS_GEMS
 	FeatureType=FEATURE_MEADOW, FeatureVariety=0
 	TerrainType=TERRAIN_PLAINS
 	PlotType=1
@@ -35338,7 +35382,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=44,y=18
-	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_DESERT
 	PlotType=0
 EndPlot
@@ -35392,6 +35435,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=44,y=28
+	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_DESERT
 	PlotType=1
 EndPlot
@@ -35658,6 +35702,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=44,y=67
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -35751,7 +35796,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=44,y=84
-	BonusType=BONUS_PEARLS
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -35780,7 +35825,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=44,y=89
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36000,7 +36044,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=44,y=128
-	BonusType=BONUS_BOOBY
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36027,7 +36071,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=44,y=133
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36038,12 +36081,14 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=44,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=44,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -36055,6 +36100,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=1
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -36090,6 +36136,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=8
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36510,6 +36557,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=72
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36525,7 +36573,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=75
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36536,6 +36583,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=77
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36551,7 +36599,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=80
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36583,17 +36630,18 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=86
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=45,y=87
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=45,y=88
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36645,7 +36693,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=97
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -36666,7 +36713,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=101
-	BonusType=BONUS_FISH
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36850,7 +36897,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=133
-	BonusType=BONUS_CRAB
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36862,12 +36909,14 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=45,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=45,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -36894,7 +36943,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=4
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -36905,6 +36953,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=6
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -36920,7 +36969,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=9
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -36972,7 +37020,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=18
-	BonusType=BONUS_VULTURE
 	TerrainType=TERRAIN_DESERT
 	PlotType=2
 EndPlot
@@ -37088,7 +37135,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=39
-	BonusType=BONUS_SILVER
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=1
@@ -37159,6 +37205,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=50
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -37275,7 +37322,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=70
-	BonusType=BONUS_SHRIMP
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -37317,7 +37364,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=78
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -37407,7 +37453,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=94
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -37453,12 +37498,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=103
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=46,y=104
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -37555,7 +37600,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=121
-	BonusType=BONUS_FISH
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -37587,7 +37632,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=127
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -37620,7 +37664,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=133
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -37632,11 +37675,13 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=46,y=135
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=46,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -37711,6 +37756,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=13
+	BonusType=BONUS_GEMS
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_PLAINS
 	PlotType=1
@@ -37748,6 +37794,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=19
+	BonusType=BONUS_GEMS
 	TerrainType=TERRAIN_DESERT
 	PlotType=1
 EndPlot
@@ -37970,6 +38017,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=58
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -38011,12 +38059,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=66
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=47,y=67
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -38090,7 +38138,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=81
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -38190,7 +38237,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=99
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -38273,7 +38319,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=114
-	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -38289,7 +38334,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=117
-	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -38381,12 +38425,14 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=47,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=47,y=136
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -38412,7 +38458,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=48,y=4
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -38886,6 +38931,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=48,y=88
+	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -39069,6 +39115,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=48,y=124
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -39119,17 +39166,20 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=48,y=134
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=48,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=48,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -39166,7 +39216,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=6
-	BonusType=BONUS_PEARLS
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -39368,7 +39418,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=41
-	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_GRASS
 	PlotType=0
 EndPlot
@@ -39438,6 +39487,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=53
+	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -39454,12 +39504,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=56
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=49,y=57
-	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_REEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -39634,7 +39684,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=88
-	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -39651,6 +39700,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=91
+	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -39672,12 +39722,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=95
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=49,y=96
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -39808,6 +39858,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=121
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -39853,39 +39904,46 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=49,y=130
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=49,y=131
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=49,y=132
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=49,y=133
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=49,y=134
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=49,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=49,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -39907,7 +39965,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=3
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -40074,6 +40131,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=32
+	BonusType=BONUS_GOLD
 	TerrainType=TERRAIN_SHRUBLAND
 	PlotType=0
 EndPlot
@@ -40135,12 +40193,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=43
-	BonusType=BONUS_GOLD
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=0
 EndPlot
 BeginPlot
 	x=50,y=44
+	BonusType=BONUS_SILVER
 	FeatureType=FEATURE_JUNGLE, FeatureVariety=0
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=1
@@ -40199,7 +40257,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=55
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -40237,6 +40294,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=62
+	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -40283,7 +40341,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=71
-	BonusType=BONUS_FISH
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -40301,6 +40359,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=74
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -40489,12 +40548,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=109
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=50,y=110
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -40505,6 +40564,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=112
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -40520,6 +40580,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=115
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -40585,7 +40646,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=128
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -40596,38 +40656,45 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=50,y=130
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=50,y=131
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=50,y=132
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=50,y=133
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=50,y=134
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=50,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=50,y=136
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -40652,6 +40719,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=3
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -40667,6 +40735,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=6
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -40682,6 +40751,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=9
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -40709,7 +40779,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=14
-	BonusType=BONUS_LOON
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -40721,7 +40791,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=16
-	BonusType=BONUS_CANADA_GOOSE
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -40913,7 +40982,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=45
-	BonusType=BONUS_GOLD
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=1
@@ -41063,31 +41131,37 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=73
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=74
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=75
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=76
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=77
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=78
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -41098,7 +41172,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=80
-	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -41134,41 +41207,49 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=88
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=89
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=90
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=91
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=94
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -41180,7 +41261,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=96
-	BonusType=BONUS_GULL
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -41212,12 +41293,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=102
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=103
+	BonusType=BONUS_BOOBY
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -41278,7 +41359,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=114
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -41360,40 +41440,45 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=51,y=130
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=131
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=132
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=133
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=134
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=51,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -41475,6 +41560,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=52,y=14
+	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -41786,85 +41872,100 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=52,y=63
-	BonusType=BONUS_HIGH_SEA_FISH4
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=68
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=69
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=70
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=71
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=72
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=73
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=74
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=75
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=76
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=77
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=78
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -41915,43 +42016,50 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=52,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=88
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=89
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=90
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=91
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=94
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -41994,6 +42102,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=52,y=102
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -42112,69 +42221,82 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=52,y=124
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=125
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=126
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=127
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=128
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=129
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=130
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=131
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=132
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=133
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=134
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=135
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=52,y=136
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ICE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -42200,7 +42322,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=3
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -42218,17 +42339,18 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=6
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=7
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=8
+	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -42240,12 +42362,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=10
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=11
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -42264,7 +42386,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=14
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -42470,7 +42591,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=47
-	BonusType=BONUS_SHRIMP
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
@@ -42538,7 +42658,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=59
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -42549,94 +42668,112 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=67
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=68
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=69
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=70
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=71
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=72
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=73
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=74
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=75
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=76
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=77
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=78
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -42685,42 +42822,50 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=88
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=89
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=90
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=91
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=94
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -42737,7 +42882,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=97
-	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -42780,13 +42924,11 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=105
-	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=106
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -42822,6 +42964,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=113
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -42878,21 +43021,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=53,y=124
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=125
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=126
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=53,y=127
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -43266,12 +43413,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=52
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=53
+	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -43282,7 +43429,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=55
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -43305,103 +43451,123 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=67
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=68
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=69
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=70
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=71
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=72
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=73
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=74
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=75
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=76
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=77
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=78
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_STORM, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -43418,12 +43584,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=81
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=82
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -43450,46 +43616,55 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=88
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=89
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=90
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=91
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=94
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=95
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -43537,26 +43712,31 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=104
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=105
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=106
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=107
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=108
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -43586,21 +43766,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=113
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=114
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=115
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=116
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -43633,7 +43817,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=122
-	BonusType=BONUS_GULL
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -43644,21 +43828,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=54,y=124
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=125
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=126
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=54,y=127
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -44010,13 +44198,13 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=55,y=46
+	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=47
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -44067,6 +44255,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=55,y=56
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -44078,118 +44267,139 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=55,y=58
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=65
-	BonusType=BONUS_WHALE
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=69
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=70
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=71
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=72
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=73
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=74
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=75
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=76
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=77
-	BonusType=BONUS_HIGH_SEA_FISH
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=78
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=79
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=80
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -44210,6 +44420,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=55,y=84
+	BonusType=BONUS_SHRIMP
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -44225,46 +44436,55 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=55,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=88
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=89
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=90
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=91
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=94
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=95
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -44304,37 +44524,43 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=55,y=102
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=103
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=104
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=105
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=106
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=107
-	BonusType=BONUS_HIGH_SEA_FISH4
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=108
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -44364,27 +44590,31 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=55,y=113
-	BonusType=BONUS_HIGH_SEA_FISH2
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=114
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=115
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=116
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=117
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -44421,21 +44651,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=55,y=124
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=125
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=126
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=55,y=127
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -44843,23 +45077,26 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=56,y=58
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=59
-	FeatureType=FEATURE_REEF, FeatureVariety=0
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=61
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -44944,179 +45181,212 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=56,y=75
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=76
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=77
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=78
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=79
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=80
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=81
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=82
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=83
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=84
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=85
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=86
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=88
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=89
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=90
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=91
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=94
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=95
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=96
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=97
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=98
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=99
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=100
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=101
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=102
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=103
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=104
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=105
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=106
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=107
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=108
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -45146,77 +45416,91 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=56,y=113
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=114
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=115
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=116
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=117
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=118
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=119
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=120
-	BonusType=BONUS_HIGH_SEA_FISH3
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=121
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=122
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=123
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=124
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=125
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=126
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=56,y=127
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -45506,7 +45790,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=57,y=37
-	BonusType=BONUS_PEARLS
+	BonusType=BONUS_CANADA_GOOSE
 	TerrainType=TERRAIN_LAKE
 	PlotType=3
 EndPlot
@@ -45626,23 +45910,26 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=57,y=58
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=59
-	FeatureType=FEATURE_REEF, FeatureVariety=0
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -45727,173 +46014,203 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=57,y=75
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=76
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=77
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=78
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=79
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=80
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=81
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=82
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=83
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=84
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=85
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=86
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=88
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=89
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=90
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=91
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=94
-	BonusType=BONUS_HIGH_SEA_FISH4
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=95
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=96
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=97
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=98
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=99
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=100
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=101
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=102
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=103
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=104
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=105
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=106
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=107
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -45929,77 +46246,91 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=57,y=113
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=114
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=115
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=116
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=117
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=118
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=119
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=120
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=121
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=122
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=123
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=124
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=125
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=126
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=57,y=127
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -46112,6 +46443,7 @@ BeginPlot
 	x=58,y=8
 	RiverWEDirection=3
 	isNOfRiver
+	BonusType=BONUS_TURKEYS
 	FeatureType=FEATURE_DENSE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_GRASS
 	PlotType=2
@@ -46398,22 +46730,26 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=58,y=58
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -46498,84 +46834,99 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=58,y=75
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=76
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_STORM, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=77
-	BonusType=BONUS_WHALE
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=78
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=79
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=80
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=81
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=82
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=83
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=84
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=85
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_STORM, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=86
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=88
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=89
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=90
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -46587,84 +46938,100 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=58,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=94
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=95
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=96
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=97
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=98
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NE, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=99
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=100
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=101
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=102
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=103
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=104
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=105
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=106
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=107
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -46701,80 +47068,92 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=58,y=113
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=114
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=115
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=116
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=117
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=118
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=119
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=120
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=121
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=122
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=123
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=124
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=125
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=126
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=58,y=127
-	BonusType=BONUS_HIGH_SEA_FISH3
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -47023,6 +47402,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=59,y=30
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -47132,6 +47512,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=59,y=49
+	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -47147,12 +47528,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=59,y=52
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=53
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -47164,7 +47545,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=59,y=55
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -47181,48 +47561,56 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=59,y=58
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=59
-	FeatureType=FEATURE_REEF, FeatureVariety=0
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -47289,71 +47677,85 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=59,y=77
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=78
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=79
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=80
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=81
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=82
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=83
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=84
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=85
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=86
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=87
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=88
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=89
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=90
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -47365,73 +47767,86 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=59,y=92
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=93
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=94
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=95
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=96
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=97
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=98
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=99
-	BonusType=BONUS_HIGH_SEA_FISH3
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=100
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=101
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=102
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=103
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=104
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=105
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -47485,72 +47900,85 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=59,y=114
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=115
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=116
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=117
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=118
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=119
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=120
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=121
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=122
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=123
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=124
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=125
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=126
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=59,y=127
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -47861,6 +48289,7 @@ BeginPlot
 	x=60,y=40
 	RiverNSDirection=0
 	isWOfRiver
+	BonusType=BONUS_GOLD
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=0
 EndPlot
@@ -47929,7 +48358,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=60,y=51
-	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -47953,75 +48381,89 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=60,y=55
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=56
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=58
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=63
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=60,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -48446,7 +48888,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=61,y=1
-	BonusType=BONUS_TURKEYS
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_PLAINS_FERTILE
 	PlotType=2
@@ -48554,7 +48995,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=61,y=18
-	BonusType=BONUS_GOLD
+	BonusType=BONUS_SILVER
 	TerrainType=TERRAIN_DESERT
 	PlotType=1
 EndPlot
@@ -48671,6 +49112,7 @@ BeginPlot
 	x=61,y=36
 	RiverWEDirection=3
 	isNOfRiver
+	BonusType=BONUS_PARROTS
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=2
 EndPlot
@@ -48718,7 +49160,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=61,y=43
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -48756,6 +49197,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=61,y=50
+	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_REEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -48767,6 +49209,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=61,y=52
+	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
@@ -48788,68 +49231,81 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=61,y=56
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=58
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=61,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -49362,7 +49818,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=62,y=15
-	BonusType=BONUS_IGUANA
+	BonusType=BONUS_VULTURE
 	FeatureType=FEATURE_CACTUS_TREES, FeatureVariety=0
 	TerrainType=TERRAIN_DESERT
 	PlotType=2
@@ -49549,12 +50005,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=62,y=46
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=47
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -49582,7 +50038,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=62,y=52
-	BonusType=BONUS_PEARLS_2
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -49593,7 +50048,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=62,y=54
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -49615,58 +50069,68 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=62,y=58
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=61
-	BonusType=BONUS_HIGH_SEA_FISH
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=62,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -50140,7 +50604,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=63,y=7
-	BonusType=BONUS_TURKEYS
 	FeatureType=FEATURE_FOREST, FeatureVariety=0
 	TerrainType=TERRAIN_PLAINS_FERTILE
 	PlotType=2
@@ -50203,7 +50666,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=63,y=17
-	BonusType=BONUS_GEMS
+	BonusType=BONUS_SILVER
 	FeatureType=FEATURE_MEADOW, FeatureVariety=0
 	TerrainType=TERRAIN_PLAINS
 	PlotType=1
@@ -50287,7 +50750,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=63,y=31
-	BonusType=BONUS_DUCK
+	BonusType=BONUS_LOON
 	TerrainType=TERRAIN_LARGE_RIVERS
 	PlotType=3
 EndPlot
@@ -50346,7 +50809,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=63,y=41
-	BonusType=BONUS_GEMS
 	FeatureType=FEATURE_JUNGLE, FeatureVariety=0
 	TerrainType=TERRAIN_SAVANNAH
 	PlotType=1
@@ -50465,32 +50927,37 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=63,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=63,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=63,y=65
-	BonusType=BONUS_HIGH_SEA_FISH4
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=63,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=63,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=63,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -51166,6 +51633,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=64,y=42
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -51200,12 +51668,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=64,y=48
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=64,y=49
-	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -51294,21 +51762,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=64,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=64,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=64,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=64,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -51853,7 +52325,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=65,y=21
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -51905,7 +52376,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=65,y=30
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -52101,21 +52571,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=65,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=65,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=65,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=65,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -52547,6 +53021,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=66,y=2
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -52587,7 +53062,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=66,y=9
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_SHALLOW_COAST
 	PlotType=3
 EndPlot
@@ -52719,6 +53193,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=66,y=33
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -52729,6 +53204,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=66,y=35
+	BonusType=BONUS_GULL
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -52761,6 +53237,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=66,y=41
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -52871,6 +53348,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=66,y=62
+	BonusType=BONUS_MUSHROOMS
 	FeatureType=FEATURE_JUNGLE, FeatureVariety=0
 	TerrainType=TERRAIN_MARSH
 	PlotType=2
@@ -52887,21 +53365,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=66,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=66,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=66,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=66,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -53447,7 +53929,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=67,y=21
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -53458,6 +53939,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=67,y=23
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -53581,7 +54063,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=67,y=47
-	BonusType=BONUS_PEARLS
 	FeatureType=FEATURE_REEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -53594,6 +54075,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=67,y=49
+	BonusType=BONUS_FISH
 	FeatureType=FEATURE_REEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -53611,32 +54093,38 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=67,y=52
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=53
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=54
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=55
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=56
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -53648,12 +54136,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=67,y=59
-	BonusType=BONUS_GULL
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=60
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -53669,7 +54157,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=67,y=63
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -53680,21 +54167,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=67,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=67,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -54126,17 +54617,18 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=2
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=3
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=4
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -54163,7 +54655,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=9
-	BonusType=BONUS_PEARLS
+	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -54174,12 +54666,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=11
-	BonusType=BONUS_CRAB
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=12
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -54190,6 +54682,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=14
+	BonusType=BONUS_PEARLS_2
 	FeatureType=FEATURE_SEAGRASS, FeatureVariety=0
 	TerrainType=TERRAIN_COAST
 	PlotType=3
@@ -54201,6 +54694,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=16
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -54211,12 +54705,12 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=18
+	BonusType=BONUS_PEARLS
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=19
-	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -54227,7 +54721,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=21
-	BonusType=BONUS_CRAB
+	BonusType=BONUS_FISH
 	TerrainType=TERRAIN_COAST
 	PlotType=3
 EndPlot
@@ -54336,6 +54830,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=40
+	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -54378,57 +54873,65 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=48
-	FeatureType=FEATURE_REEF, FeatureVariety=0
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=49
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=50
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=51
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=52
-	FeatureType=FEATURE_REEF, FeatureVariety=0
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=53
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=54
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=55
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=56
-	FeatureType=FEATURE_REEF, FeatureVariety=0
+	EuropeType=EUROPE_EAST
+	FeatureType=FEATURE_ARROW_NW, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -54471,21 +54974,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=68,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=68,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -54976,7 +55483,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=69,y=14
-	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -55166,60 +55672,71 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=69,y=48
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=49
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=50
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=51
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=52
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_N, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=53
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_N, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=54
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=55
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=56
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=58
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -55256,21 +55773,25 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=69,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=69,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -55726,7 +56247,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=70,y=7
-	BonusType=BONUS_HIGH_SEA_FISH3
+	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -55840,13 +56361,11 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=70,y=27
-	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=28
-	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -55877,7 +56396,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=70,y=34
-	BonusType=BONUS_HIGH_SEA_FISH
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -55936,7 +56454,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=70,y=45
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -55947,70 +56464,81 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=70,y=47
-	FeatureType=FEATURE_REEF, FeatureVariety=0
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=48
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=49
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=50
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=51
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=52
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=53
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=54
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=55
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=56
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=58
-	BonusType=BONUS_SHRIMP
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=59
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -56036,26 +56564,31 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=70,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=70,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -56652,6 +57185,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=71,y=32
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -56728,116 +57262,137 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=71,y=47
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=48
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=49
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=50
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=51
-	FeatureType=FEATURE_REEF, FeatureVariety=0
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=52
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=53
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=54
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=55
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=56
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=58
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=64
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_STORM, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=71,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -57289,6 +57844,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=72,y=6
+	BonusType=BONUS_HIGH_SEA_FISH2
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -57376,7 +57932,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=72,y=22
-	BonusType=BONUS_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -57387,6 +57942,7 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=72,y=24
+	BonusType=BONUS_HIGH_SEA_FISH3
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -57412,7 +57968,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=72,y=29
-	BonusType=BONUS_HUMPBACK_WHALE
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -57565,78 +58120,93 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=72,y=54
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=55
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=56
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=58
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=72,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -58182,7 +58752,6 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=73,y=25
-	BonusType=BONUS_HIGH_SEA_FISH4
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -58363,75 +58932,87 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=73,y=55
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=56
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=58
-	BonusType=BONUS_HIGH_SEA_FISH2
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=60
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=63
-	BonusType=BONUS_HUMPBACK_WHALE
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=65
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=67
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=73,y=68
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
@@ -59183,69 +59764,82 @@ BeginPlot
 EndPlot
 BeginPlot
 	x=74,y=55
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=56
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=57
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_ARROW_W, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=58
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=59
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=60
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_DEF, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=61
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=62
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=63
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=64
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=65
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=66
+	EuropeType=EUROPE_EAST
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
 EndPlot
 BeginPlot
 	x=74,y=67
+	EuropeType=EUROPE_EAST
 	FeatureType=FEATURE_VENT_FAV, FeatureVariety=0
 	TerrainType=TERRAIN_OCEAN
 	PlotType=3
@@ -68025,323 +68619,323 @@ BeginSign
 	plotX=59
 	plotY=47
 	playerType=-1
-	caption=Saint Brendan Island
+	caption=San Cristobal Island
 EndSign
 BeginSign
 	plotX=53
 	plotY=42
 	playerType=-1
-	caption=Halloway Crater
+	caption=Sturgeon Bowl
 EndSign
 BeginSign
 	plotX=37
 	plotY=81
 	playerType=-1
-	caption=Red Rock Canyon
+	caption=Painted Canyon
 EndSign
 BeginSign
 	plotX=29
 	plotY=84
 	playerType=-1
-	caption=Paradise Valley
+	caption=Eden Valley
 EndSign
 BeginSign
 	plotX=42
 	plotY=112
 	playerType=-1
-	caption=Crawford Gorge
+	caption=Osgood Gorge
 EndSign
 BeginSign
 	plotX=58
 	plotY=27
 	playerType=-1
-	caption=Beaver Island
+	caption=Tamarack Island
 EndSign
 BeginSign
 	plotX=42
 	plotY=86
 	playerType=-1
-	caption=Chester Bay
+	caption=Winnipesaukee Bay
 EndSign
 BeginSign
 	plotX=53
 	plotY=99
 	playerType=-1
-	caption=Hatton Banks
+	caption=Harcourt Banks
 EndSign
 BeginSign
 	plotX=16
 	plotY=84
 	playerType=-1
-	caption=Great Salt Basin
+	caption=Hawley Salt Basin
 EndSign
 BeginSign
 	plotX=48
 	plotY=26
 	playerType=-1
-	caption=Altiplano de Sorata
+	caption=Altiplano de Lipez
 EndSign
 BeginSign
 	plotX=22
 	plotY=79
 	playerType=-1
-	caption=Painted Mesas
+	caption=Enchanted Mesas
 EndSign
 BeginSign
 	plotX=41
 	plotY=19
 	playerType=-1
-	caption=Sweetwater Springs
+	caption=Eastwick Springs
 EndSign
 BeginSign
 	plotX=56
 	plotY=19
 	playerType=-1
-	caption=Agua Caliente
+	caption=Ojo de San Lorenzo
 EndSign
 BeginSign
 	plotX=33
 	plotY=21
 	playerType=-1
-	caption=Bitter Springs
+	caption=Agua Clara
 EndSign
 BeginSign
 	plotX=18
 	plotY=125
 	playerType=-1
-	caption=Frobisher Strait
+	caption=William Strait
 EndSign
 BeginSign
 	plotX=39
 	plotY=127
 	playerType=-1
-	caption=Prince Rupert Island
+	caption=Royce Island
 EndSign
 BeginSign
 	plotX=31
 	plotY=135
 	playerType=-1
-	caption=Bylot Island
+	caption=Prince Louis Island
 EndSign
 BeginSign
 	plotX=57
 	plotY=53
 	playerType=-1
-	caption=Windward Isles
+	caption=Islas de San Juan
 EndSign
 BeginSign
 	plotX=11
 	plotY=80
 	playerType=-1
-	caption=Mercy Bay
+	caption=Constance Bay
 EndSign
 BeginSign
 	plotX=40
 	plotY=60
 	playerType=-1
-	caption=Hope Sound
+	caption=Port Liberty
 EndSign
 BeginSign
 	plotX=34
 	plotY=28
 	playerType=-1
-	caption=Port Desire
+	caption=Port Deliverance
 EndSign
 BeginSign
 	plotX=24
 	plotY=118
 	playerType=-1
-	caption=Markland Coast
+	caption=Helluland Fjords
 EndSign
 BeginSign
 	plotX=18
 	plotY=94
 	playerType=-1
-	caption=Volcan San Lorenzo
+	caption=Volcan Hermoso
 EndSign
 BeginSign
 	plotX=39
 	plotY=99
 	playerType=-1
-	caption=Volcan Santa Rosa
+	caption=Volcan San Sebastian
 EndSign
 BeginSign
 	plotX=39
 	plotY=53
 	playerType=-1
-	caption=Ciudad Perdida
+	caption=Ciudad de los Dioses
 EndSign
 BeginSign
 	plotX=45
 	plotY=28
 	playerType=-1
-	caption=Ruinas de Huaynacocha
+	caption=Ruinas de Pacalmun
 EndSign
 BeginSign
 	plotX=34
 	plotY=104
 	playerType=-1
-	caption=Mount Whitcomb
+	caption=Merriweather Peak
 EndSign
 BeginSign
 	plotX=29
 	plotY=97
 	playerType=-1
-	caption=Mount Harcourt
+	caption=Falcon Dome
 EndSign
 BeginSign
 	plotX=17
 	plotY=89
 	playerType=-1
-	caption=Granite Range
+	caption=Merrimack Mountains
 EndSign
 BeginSign
 	plotX=48
 	plotY=41
 	playerType=-1
-	caption=Cerro Alto
+	caption=Pico do Mar
 EndSign
 BeginSign
 	plotX=50
 	plotY=31
 	playerType=-1
-	caption=Sierra Grande
+	caption=Serra da Lua
 EndSign
 BeginSign
 	plotX=44
 	plotY=107
 	playerType=-1
-	caption=Mount Ellery
+	caption=Old Crane Knob
 EndSign
 BeginSign
 	plotX=63
 	plotY=37
 	playerType=-1
-	caption=Cerro Blanco
+	caption=Cerro Santa Barbara
 EndSign
 BeginSign
 	plotX=63
 	plotY=25
 	playerType=-1
-	caption=Serra Verde
+	caption=Sierra Parda
 EndSign
 BeginSign
 	plotX=15
 	plotY=26
 	playerType=-1
-	caption=Nevado del Sol
+	caption=Pico Encantado
 EndSign
 BeginSign
 	plotX=9
 	plotY=28
 	playerType=-1
-	caption=Cordillera Azul
+	caption=Cordillera de Santa Clara
 EndSign
 BeginSign
 	plotX=65
 	plotY=0
 	playerType=-1
-	caption=Pico Bandeira
+	caption=Nevado San Isidro
 EndSign
 BeginSign
 	plotX=65
 	plotY=6
 	playerType=-1
-	caption=Sierra de Plata
+	caption=Serra Dourada
 EndSign
 BeginSign
 	plotX=35
 	plotY=94
 	playerType=-1
-	caption=Laurel Ridge
+	caption=Aldridge Range
 EndSign
 BeginSign
 	plotX=39
 	plotY=25
 	playerType=-1
-	caption=Serra do Mar
+	caption=Sierra de Sal
 EndSign
 BeginSign
 	plotX=34
 	plotY=99
 	playerType=-1
-	caption=Mount Ashcombe
+	caption=Mount Ives
 EndSign
 BeginSign
 	plotX=56
 	plotY=37
 	playerType=-1
-	caption=Cerros Redondos
+	caption=Crater Hills
 EndSign
 BeginSign
 	plotX=27
 	plotY=44
 	playerType=-1
-	caption=Rio Dorado
+	caption=Rio Escondido
 EndSign
 BeginSign
 	plotX=59
 	plotY=32
 	playerType=-1
-	caption=Rio Verde
+	caption=Rio de Piedra
 EndSign
 BeginSign
 	plotX=29
 	plotY=13
 	playerType=-1
-	caption=Rio Pardo
+	caption=Rio Azul
 EndSign
 BeginSign
 	plotX=24
 	plotY=73
 	playerType=-1
-	caption=Lake Winthrop
+	caption=Pawnee Lake
 EndSign
 BeginSign
 	plotX=35
 	plotY=43
 	playerType=-1
-	caption=Laguna Seca
+	caption=Laguna Bella
 EndSign
 BeginSign
 	plotX=52
 	plotY=14
 	playerType=-1
-	caption=Lago Azul
+	caption=Lagoa Grande
 EndSign
 BeginSign
 	plotX=32
 	plotY=8
 	playerType=-1
-	caption=Laguna Grande
+	caption=Laguna Encantada
 EndSign
 BeginSign
 	plotX=41
 	plotY=118
 	playerType=-1
-	caption=Lake Pembroke
+	caption=Lake Kennebec
 EndSign
 BeginSign
 	plotX=57
 	plotY=7
 	playerType=-1
-	caption=Terra de Santa Cruz
+	caption=Nueva Castilla
 EndSign
 BeginSign
 	plotX=33
 	plotY=122
 	playerType=-1
-	caption=New Caledonia
+	caption=Labrador
 EndSign
 BeginSign
 	plotX=14
 	plotY=0
 	playerType=-1
-	caption=Nueva Andalucia
+	caption=Nueva Cordoba
 EndSign
 BeginSign
 	plotX=21
 	plotY=30
 	playerType=-1
-	caption=Tierra Firme
+	caption=Provincia Aurea
 EndSign
