@@ -12,7 +12,6 @@
 
 from CvPythonExtensions import *
 import CvUtil
-import zlib
 import base64
 import math
 
@@ -36,7 +35,6 @@ _XML_BONUSES = """
 
 ## helpers begin (also run by make_mapscript.py under Python 3 for its self test: keep it valid in both)
 import math
-import zlib
 import base64
 try:
 	import __builtin__ as _bi
@@ -45,7 +43,7 @@ except ImportError:
 
 
 def _unpack(text):
-	data = zlib.decompress(base64.b64decode(text.replace('\n', '').strip()))
+	data = base64.b64decode(text.replace('\n', '').strip())  # not compressed: the game's Python 2.4 has no zlib module
 	if not isinstance(data, str):
 		data = data.decode('utf-8')                      # Python 3 (self test); in the game it stays a plain str
 	return data

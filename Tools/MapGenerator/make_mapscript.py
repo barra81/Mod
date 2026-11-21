@@ -19,7 +19,6 @@ import ast
 import base64
 import os
 import sys
-import zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MOD = os.path.normpath(os.path.join(HERE, '..', '..'))
@@ -176,7 +175,8 @@ def convert():
 
 
 def pack(text):
-    data = base64.b64encode(zlib.compress(text.encode('utf-8'), 9)).decode('ascii')
+    # not compressed: the game's Python 2.4 has no zlib module
+    data = base64.b64encode(text.encode('utf-8')).decode('ascii')
     return '\n'.join(data[i:i + 100] for i in range(0, len(data), 100))
 
 
