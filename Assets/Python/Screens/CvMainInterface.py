@@ -3869,9 +3869,38 @@ class CvMainInterface:
 		except:
 			self.tReopenTrade = None
 
+	# the arrow buttons of the city screen (next / previous colony) while the import / export window is open: the window belongs to the old colony and
+	# the city screen is not redrawn while the window is on this screen. The window is closed as with OK (what was changed in it is applied to the old colony), the
+	# city screen is drawn for the new colony and the window is opened for it again with the same view, page and search text
+	def checkTradeCityChange( self ):
+		if self.tReopenTrade is not None:
+			return
+		try:
+			tWin = CvScreensInterface.tradeRouteScreen
+			if not tWin.isOpen() or not tWin.isHostMain() or tWin.isFromMap() or not CyInterface().isCityScreenUp():
+				return
+			pCity = CyInterface().getHeadSelectedCity()
+			if pCity is None or pCity.isNone() or pCity.getID() == tWin.iCity or pCity.getOwner() != gc.getGame().getActivePlayer():
+				return
+			tState = tWin.getState()
+			tState["city"] = pCity.getID()
+			tState["data"] = {}
+			tState["base"] = {}
+			tState["map"] = False
+			self.unfreezeAllTips()
+			tWin.finish(True, -1, True)
+			self.tReopenTrade = tState
+			self.iReopenTries = 0
+			self.iReopenWait = 4
+			CyInterface().setDirty(InterfaceDirtyBits.CityScreen_DIRTY_BIT, True)
+			CyInterface().setDirty(InterfaceDirtyBits.Domestic_Advisor_DIRTY_BIT, True)
+		except:
+			self.tReopenTrade = None
+
 	# Updates the Screen
 	def update( self, fDelta ):
 		self.checkReopenTradeWindow()
+		self.checkTradeCityChange()
 		self.updateTerritorialInfluenceEditor()
 		return
 
