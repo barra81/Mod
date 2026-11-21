@@ -23392,7 +23392,7 @@ bool CvPlayerAI::AI_isFirstColonySiteAllowed(const CvPlot& kPlot) const
 		return false;
 	}
 
-	// WTP: the first colonies of the Europeans are at least 16 plots apart (12 after 15 turns of searching)
+	// WTP: the first colonies of the Europeans are at least 16 plots apart (one plot less per turn from the 12th turn of searching)
 	const int iMinDistance = AI_firstColonyMinDistance();
 	for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
 	{
@@ -23413,11 +23413,15 @@ bool CvPlayerAI::AI_isFirstColonySiteAllowed(const CvPlot& kPlot) const
 	return true;
 }
 
-// WTP: minimum distance between the first colonies of the Europeans: 16 plots, 12 after 15 turns of searching (user 2026-10-27:
-// 12/8 was still too close)
+// WTP: minimum distance between the first colonies of the Europeans: 16 plots (user 2026-10-27: 12/8 was still too close).
+// From the 12th turn of searching on it shrinks by one plot per turn down to 0 (user 2026-11-21: on small maps an AI
+// sometimes found no site at all), so the distance to other colonies never keeps the first colony from being founded
 int CvPlayerAI::AI_firstColonyMinDistance()
 {
-	return (GC.getGameINLINE().getGameTurn() - GC.getGameINLINE().getStartTurn() >= 15) ? 12 : 16;
+	const int iFullDistance = 16;
+	const int iShrinkFromTurn = 12;
+	const int iSearchTurns = GC.getGameINLINE().getGameTurn() - GC.getGameINLINE().getStartTurn();
+	return std::max(0, iFullDistance - std::max(0, iSearchTurns - iShrinkFromTurn + 1));
 }
 
 int CvPlayerAI::AI_firstCityFoundValue(const CvPlot& kPlot)

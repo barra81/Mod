@@ -16800,7 +16800,7 @@ bool CvUnitAI::AI_found(int iMinValue, bool bFirstCity)
 	const bool bOverdue = m_iSettlerAboardTurn >= 0 && GC.getGameINLINE().getGameTurn() - m_iSettlerAboardTurn >= 10;
 	const int iLandFlags = bOverdue ? MOVE_IGNORE_DANGER : 0;
 
-	// WTP: first colonies: sites other Europeans are already heading for (closer than 16 plots, 12 after 15 turns) are taken;
+	// WTP: first colonies: sites other Europeans are already heading for (closer than AI_firstColonyMinDistance: 16 plots, shrinking from the 12th turn) are taken;
 	// otherwise all AIs race for the same best site and the losers have to start over
 	std::vector<const CvPlot*> aForeignFoundTargets;
 	if (bFirstCity)
