@@ -1716,6 +1716,10 @@ class CvTradeRouteScreen:
 			while pCity:
 				bImp = pCity.isImport(iYield)
 				bExp = pCity.isExport(iYield)
+				if pCity.getID() == self.iCity and self.dData.has_key(iYield):
+					# (the colony of the window: what the window shows, the city knows it a moment later)
+					bImp = self.dData[iYield]["imp"]
+					bExp = self.dData[iYield]["exp"]
 				if bImp or bExp:
 					aTraders.append((pCity.getName(), pCity.getID(), bImp, bExp))
 				(pCity, iIter) = pPlayer.nextCity(iIter, False)
@@ -1901,7 +1905,17 @@ class CvTradeRouteScreen:
 			szKey = "maintain"
 		d[szKey] = max(0, min(MAX_VALUE, d[szKey] + iDelta))
 		self.checkMarketChange(self.aYields[iIndex], dOld) # (before the redraw: a notice keeps the preset on until it is answered)
+		self.apply([self.aYields[iIndex]]) # (a change is sent at once: the city, the tooltips and the other windows know it, it stays when the window is left)
 		self.syncAndDraw()
+		self.refreshTips(self.aYields[iIndex])
+
+	# the frozen tooltips of the good are made again (the colonies that import / export it changed)
+	def refreshTips(self, iYield = -1):
+		try:
+			import CvScreensInterface
+			CvScreensInterface.mainInterface.refreshTradeTips(iYield)
+		except:
+			pass
 
 	def toggleField(self, iSlot, iField):
 		iIndex = self.iFirst + iSlot
@@ -1936,7 +1950,9 @@ class CvTradeRouteScreen:
 		elif iField == F_EXP_SEA:
 			d["expDom"] = (d["expDom"] ^ 2) & 2
 		self.checkMarketChange(self.aYields[iIndex], dOld) # (before the redraw: a notice keeps the preset on until it is answered)
+		self.apply([self.aYields[iIndex]]) # (a change is sent at once: the city, the tooltips and the other windows know it, it stays when the window is left)
 		self.syncAndDraw()
+		self.refreshTips(self.aYields[iIndex])
 
 	# are there changes in the window that are not applied to the city yet (what apply sends)?
 	def hasChanges(self):
@@ -1952,15 +1968,13 @@ class CvTradeRouteScreen:
 				return True
 		return False
 
-	# Esc and Cancel: with unsaved changes the notice asks first (OK applies them, Close discards them)
+	# Esc and Cancel: close the window (the changes were applied when they were made)
 	def requestClose(self):
 		if self.tWarn != None:
 			self.hideWarn() # (a notice is open: Esc closes it first - Esc again closes the window, or back to the window from the question)
 			return
-		if self.hasChanges():
-			self.showWarn(localText.getText("TXT_KEY_WTP_TRADEROUTE_WARN_UNSAVED_1", ()), localText.getText("TXT_KEY_WTP_TRADEROUTE_WARN_UNSAVED_2", ()), -1, [], False, "unsaved")
-			return
-		self.finish(False, -1)
+		# (the changes are sent when they are made, nothing is left to ask; what is not sent yet is sent now)
+		self.finish(True, -1)
 
 	def apply(self, aOnly = None):
 		pCity = self.getCity()
@@ -2471,6 +2485,8 @@ class CvTradeRouteScreen:
 				self.iReload -= 1
 				if self.iReload % 10 == 0:
 					self.reloadFromCity()
+					if self.iReload == 0:
+						self.refreshTips() # (after a preset: the frozen tooltips of the goods get the new state)
 			if self.isTipWheel():
 				return 0 # (a tooltip takes the wheel with Shift)
 			# (every frame: whatever else switched the capture off meanwhile is corrected)
