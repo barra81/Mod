@@ -1052,8 +1052,8 @@ def _dispatchPickNative(player, city):
 	return iBest
 
 def _dispatchBoycottYield(player):
-	# goods in ascending order of the king's buy price (food excluded); the cheapest is taken, but a dearer good replaces
-	# the current choice as soon as its stock in the capital is larger than the stock of the current choice
+	# goods in ascending order of the king's buy price (food excluded): start with the cheapest and climb to the next dearer
+	# good as long as that one has a larger stock in the capital; stop at the first dearer good with the same or a smaller stock
 	capital = player.getCapitalCity()
 	if capital is None or capital.isNone():
 		return -1
@@ -1067,17 +1067,22 @@ def _dispatchBoycottYield(player):
 			continue
 		if not player.isYieldEuropeTradable(iYield):
 			continue
-		if capital.getYieldStored(iYield) <= 0:
-			continue
 		lCandidates.append((king.getYieldBuyPrice(iYield), iYield))
 	lCandidates.sort()
-	iBest = -1
-	iBestStock = 0
-	for (iPrice, iYield) in lCandidates:
+	if len(lCandidates) == 0:
+		return -1
+	iBest = lCandidates[0][1]
+	iBestStock = capital.getYieldStored(iBest)
+	for iIndex in range(1, len(lCandidates)):
+		iYield = lCandidates[iIndex][1]
 		iStock = capital.getYieldStored(iYield)
-		if iBest == -1 or iStock > iBestStock:
+		if iStock > iBestStock:
 			iBest = iYield
 			iBestStock = iStock
+		else:
+			break
+	if iBestStock <= 0:
+		return -1
 	return iBest
 
 def _dispatchCity(kTriggeredData):
