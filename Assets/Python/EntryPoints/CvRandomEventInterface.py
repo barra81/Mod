@@ -7053,7 +7053,8 @@ def applyKingPleased(argsList):
 	king = gc.getPlayer(eking)
 	player.AI_changeAttitudeExtra(eking, event.getGenericParameter(3))
 	king.AI_changeAttitudeExtra(kTriggeredData.ePlayer, event.getGenericParameter(3))
-	if event.getGenericParameter(4) == 1 :
+	# WTP: parameter 4 is the number of steps the maximum tax rate falls (the events with 2, 3 or 4 did nothing, only 1 was handled)
+	for iStep in range(event.getGenericParameter(4)):
 		player.NBMOD_DecreaseMaxTaxRate()
 
 def getHelpKingPleased(argsList):
@@ -7068,7 +7069,9 @@ def getHelpKingPleased(argsList):
 	if event.getGenericParameter(3) < 0 :
 		szHelp = localText.getText("TXT_KEY_EVENT_KING_ANGRY_HELP", ())
 	if event.getGenericParameter(4) > 0 :
-		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (-GlobalDefines.DECREASE_MAX_TAX_RATE, player.NBMOD_GetMaxTaxRate()-GlobalDefines.DECREASE_MAX_TAX_RATE))
+		# the steps of the decrease (parameter 4), not below the minimum
+		iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - event.getGenericParameter(4) * GlobalDefines.DECREASE_MAX_TAX_RATE)
+		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
 	if event.getGenericParameter(4) < 0 :
 		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_MAXTAXINCREASE", (-GlobalDefines.INCREASE_MAX_TAX_RATE, player.NBMOD_GetMaxTaxRate()-GlobalDefines.INCREASE_MAX_TAX_RATE))
 	if event.getGenericParameter(3) > 0 :
