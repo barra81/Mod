@@ -902,7 +902,7 @@ class CvPortRoyalScreen:
 	
 		if eWidgetType == WidgetTypes.WIDGET_GENERAL:
 			if iData1 == self.SAIL_TO_NEW_WORLD:
-				return localText.getText("TXT_KEY_SAIL", ())
+				return localText.getText("TXT_KEY_SAIL", ()) + u"\n" + localText.getText("TXT_KEY_WTP_SAIL_ALL_SHIFT_HELP", ())
 			elif iData1 == self.SELL_ALL:
 				return localText.getText("TXT_KEY_SELL_ALL", ()) + u"\n" + localText.getText("TXT_KEY_WTP_SELL_ALL_SHIFT_HELP", ())
 			elif iData1 == self.LOAD_ALL:

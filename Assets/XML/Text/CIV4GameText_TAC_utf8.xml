@@ -3556,6 +3556,12 @@
 		<Russian>[COLOR_HIGHLIGHT_TEXT]Переместить окно[COLOR_REVERT][NEWLINE]Перемещает окно; удерживайте кнопку для непрерывного перемещения. Стрелки на клавиатуре делают то же самое. Shift: двойные шаги, Ctrl: половинные шаги, оба: треть шага.[NEWLINE]Ctrl+Shift+Q: вернуть на место по умолчанию.[NEWLINE]Положение: %d1, %d2</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_SAIL_ALL_SHIFT_HELP</Tag>
+		<English>Shift + click: after choosing the destination all ships in the port that can reach it sail at once.</English>
+		<German>Umschalt + Klick: nach der Wahl des Ziels segeln alle Schiffe im Hafen, die es erreichen können, gleichzeitig los.</German>
+		<Russian>Shift + щелчок: после выбора порта назначения одновременно отплывают все корабли в порту, которые могут до него дойти.</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_SELL_ALL_SHIFT_HELP</Tag>
 		<English>Shift + click: sells the goods of all ships in the port.</English>
 		<German>Umschalt + Klick: verkauft die Waren aller Schiffe im Hafen.</German>
