@@ -736,6 +736,9 @@ class CvMainInterface:
 	# Wraps <Font> tags around text
 	def setFontSize( self, Text, relativeSize ):
 		size = STANDARD_FONT_SIZE + relativeSize
+		if relativeSize == -1:
+			# WTP: the texts of our own panels and tooltips (only they use -1)
+			size = self.getTipFontSize()
 		if size > 4:
 			size = 4
 		return "<font=" + str(size) + ">" + Text + "</font>"
@@ -745,6 +748,7 @@ class CvMainInterface:
 		if (CyGame().isPitbossHost()):
 			return
 
+		self.iTipFontSize = None
 		self.bTerritorialInfluenceMode = False
 		self.m_pCurrentTerritorialInfluencePlot = None
 		self.bTerritorialInfluenceLeftMouseDown = False
@@ -3678,8 +3682,12 @@ class CvMainInterface:
 				if not pHeadSelectedCity:
 					# width of the longest entry plus room for the table border and the scroll bar (never wider than before)
 					iWidth = min(iWidth, iMaxTextWidth + 20)
-					self.tScoreRect = (xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - (iBtnHeight * 7), iWidth, (iBtnHeight * 7))
-					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - (iBtnHeight * 7), iWidth, (iBtnHeight * 7), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
+					# (on a small screen the wooden panel of the HUD at the bottom right is higher in relation to the screen: the table ends above it)
+					iScoreLift = 0
+					if yResolution < 800:
+						iScoreLift = 32
+					self.tScoreRect = (xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - iScoreLift - (iBtnHeight * 7), iWidth, (iBtnHeight * 7))
+					screen.addTableControlGFC("ScoreBackground", 1, xResolution - self.SCORE_BACKGROUND_SIDE_MARGIN/2 - iWidth, iTableY + int(yResolution * 0.066) - iScoreLift - (iBtnHeight * 7), iWidth, (iBtnHeight * 7), False, False, 0, 0, TableStyles.TABLE_STYLE_STANDARD)
 					screen.enableSelect("ScoreBackground", False)
 					screen.setTableColumnHeader("ScoreBackground", 0, "", iWidth - 10)
 					for (szRowText, ePlayerRow) in aScoreRows:
@@ -3733,13 +3741,13 @@ class CvMainInterface:
 			self.hideCursorTooltip(screen)
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
-			iLine = max(16, int(yRes * 0.0153)) # distance of the text lines (as in the message panel)
+			iLine = self.getTipLineDistance(yRes) # distance of the text lines (as in the message panel)
 			iPad = max(6, iLine / 2)
 			iChar = iLine * 0.32 # width of a character (measured in the message panel)
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			if bWidget:
 				# texts of HUD elements are long sentences: narrower window, more lines (as the tooltip of the game)
-				iMaxWidth = max(300, int(xRes * 0.14))
+				iMaxWidth = self.getTipMaxWidth(xRes, iChar, True)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = [] # the paragraph (text between two line breaks of the help) of every line: right click in the frozen window
@@ -4726,6 +4734,9 @@ class CvMainInterface:
 				iX = tRect[0] - 12 - iWidth
 				if iX < 4:
 					iX = tRect[0] + tRect[2] + 12
+					if iX + iWidth > xRes - 4:
+						# (no room on both sides: at the left edge of the screen, over the window)
+						iX = 4
 			elif iX + iWidth > xRes - 4:
 				iX = tRect[0] - 12 - iWidth
 		else:
@@ -4813,7 +4824,9 @@ class CvMainInterface:
 			if c == u"\t" or ord(c) < 32:
 				# (the [TAB] of the game text may arrive as another control character than a tab)
 				# a tab goes to the next tab stop (31 pixels for a line of 22 pixels: measured on the sell price lines of a cargo ship)
-				fSum = (int(fSum / 31.0) + 1) * 31.0
+				# (the tab stops of the game do not shrink with a smaller font: 31 pixels, in the units of the 22 pixel layout they are wider then)
+				fStop = 31.0 * 22.0 / max(1.0, float(iLine))
+				fSum = (int(fSum / fStop) + 1) * fStop
 			elif c == u"\u2022":
 				fSum += 8.0 # the bullet of a list
 			elif ord(c) >= 0x2000:
@@ -4843,6 +4856,10 @@ class CvMainInterface:
 			if aiIndent is not None and i < len(aiIndent):
 				fThis += aiIndent[i]
 			if self.hasControlChar(szLineTabs):
+				# the tab stops (and the columns of the lines with tabs, which are aligned with the widths of the 1440 font) do not shrink with a
+				# smaller font: the line is never estimated narrower than 96 percent of its width in the font of the 1440 layout
+				if iLine < 22.0:
+					fThis = max(fThis, 0.96 * (self.getTextPixels(re.sub(u"<[^>]*>", u"", szLineTabs), 22.0) + len(re.findall(u"<img=", aszLines[i].lower())) * 18.0))
 				fTabPixel = max(fTabPixel, fThis)
 			else:
 				fPixel = max(fPixel, fThis)
@@ -6956,7 +6973,7 @@ class CvMainInterface:
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
 			iChar = iLine * 0.32
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = []
@@ -7078,7 +7095,7 @@ class CvMainInterface:
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
 			iChar = iLine * 0.32
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszParas = self.carryColors(szText.split(u"\n"))
 			aszLines = []
@@ -8568,7 +8585,7 @@ class CvMainInterface:
 		try:
 			t = getattr(CvScreensInterface, "tradeRouteScreen", None)
 			if t is not None and t.isOpen():
-				aRects.append((t.OX, t.OY, t.W, t.H))
+				aRects.append(t.getScreenRect())
 		except:
 			pass
 		try:
@@ -8751,8 +8768,8 @@ class CvMainInterface:
 			return None
 
 	# (the blanks to put behind a text of the width fW, the number of tab stops it has passed then)
-	def getTabGuard( self, fW ):
-		fSpace = 3.98
+	def getTabGuard( self, fW, fLine = 22.0 ):
+		fSpace = 3.98 * fLine / 22.0
 		iBlanks = 0
 		while iBlanks < 6:
 			fFrac = (fW + iBlanks * fSpace) % self.TAB_STOP
@@ -8764,6 +8781,7 @@ class CvMainInterface:
 	# lines in a row with a name, tabs and then text: the text of all of them starts at the same stop
 	def alignTabLines( self, aszParas ):
 		try:
+			fTabLine = float(self.getTipLineDistance(0))
 			aRuns = []
 			for szPara in aszParas:
 				mTab = re.match(u"(?is)^(.*?)((?:\\t| |<tab>)*(?:\\t|<tab>)(?:\\t| |<tab>)*)(\\S.*)$", szPara)
@@ -8784,8 +8802,8 @@ class CvMainInterface:
 					aEnds = []
 					aWidths = []
 					for k in range(i, j):
-						fW = self.getTextPixels(re.sub(u"<[^>]*>", u"", aRuns[k].group(1)), 22.0)
-						(iBlanks, iPassed) = self.getTabGuard(fW)
+						fW = self.getTextPixels(re.sub(u"<[^>]*>", u"", aRuns[k].group(1)), fTabLine)
+						(iBlanks, iPassed) = self.getTabGuard(fW, fTabLine)
 						aWidths.append((iBlanks, iPassed))
 						aEnds.append(iPassed + len(re.findall(u"(?i)\\t|<tab>", aRuns[k].group(2))))
 					if min(aEnds) != max(aEnds):
@@ -8816,12 +8834,13 @@ class CvMainInterface:
 			szExp = localText.getText("TXT_KEY_WTP_TIP_TRADERS_EXPORTS", ())
 			# the columns are tab stops (as the sell prices of the cargo lines): the names stand under each other exactly, the word "Exports" too
 			aShown = aTraders[:15]
-			(iGuardImp, iPassedImp) = self.getTabGuard(self.getTextPixels(szImp, 22.0))
+			fTabLine = float(self.getTipLineDistance(0))
+			(iGuardImp, iPassedImp) = self.getTabGuard(self.getTextPixels(szImp, fTabLine), fTabLine)
 			iNameStop = iPassedImp + 1
 			aGuardName = []
 			iEnd = 0
 			for t in aShown:
-				(iGuard, iPassed) = self.getTabGuard(iNameStop * self.TAB_STOP + self.getTextPixels(t[1], 22.0))
+				(iGuard, iPassed) = self.getTabGuard(iNameStop * self.TAB_STOP + self.getTextPixels(t[1], fTabLine), fTabLine)
 				aGuardName.append((iGuard, iPassed))
 				iEnd = max(iEnd, iPassed + 1)
 			aLines = []
@@ -9145,7 +9164,8 @@ class CvMainInterface:
 			t = CvScreensInterface.tradeRouteScreen
 			iX = gc.getGame().getCursorClientX()
 			iY = gc.getGame().getCursorClientY()
-			return t.isOpen() and iX >= t.OX and iX < t.OX + t.W and iY >= t.OY and iY < t.OY + t.H
+			tX, tY, tW, tH = t.getScreenRect()
+			return t.isOpen() and iX >= tX and iX < tX + tW and iY >= tY and iY < tY + tH
 		except:
 			return False
 
@@ -9718,6 +9738,54 @@ class CvMainInterface:
 	for szWidthChar, iWidthChar in ((u"M", 833), (u"W", 944), (u"I", 278), (u"J", 500), (u" ", 278), (u".", 278), (u",", 278), (u":", 278), (u";", 278), (u"!", 278), (u"'", 191), (u"-", 333), (u"(", 333), (u")", 333)):
 		dMessageCharWidths[szWidthChar] = iWidthChar
 
+	# WTP: line distance of the panels and tooltips. The font of these texts (<font=STANDARD_FONT_SIZE-1>) depends on the resolution class and
+	# not on the screen height: the same font at 1080 and at 1440 (22 pixels line distance, measured), a smaller one in the lowest class.
+	# So the distance is 22 pixels scaled by the width the game itself measures for the font in use against the font of the 1440 layout.
+	dTipLineCache = {}
+	iTipFontSize = None
+
+	# WTP: the font of our own panels and tooltips: one step smaller than the standard font of the resolution class, and one more below
+	# 1300 pixels of screen height (1080p), where the standard font is large for a screen of that size
+	def getTipFontSize( self ):
+		if self.iTipFontSize is None:
+			iSize = STANDARD_FONT_SIZE - 1
+			try:
+				if CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE).getYResolution() < 1300 and iSize >= 3:
+					iSize -= 1
+			except:
+				return iSize
+			self.iTipFontSize = iSize
+		return self.iTipFontSize
+
+	def getTipLineDistance( self, yRes ):
+		kKey = (self.getTipFontSize(), yRes)
+		if self.dTipLineCache.has_key(kKey):
+			return self.dTipLineCache[kKey]
+		iLine = 22
+		if self.getTipFontSize() == 3:
+			self.dTipLineCache[kKey] = iLine
+			return iLine
+		try:
+			szRef = u"The quick brown fox jumps over the lazy dog, 0123456789 and so on"
+			iNow = CyInterface().determineWidth(self.setFontSize(szRef, -1))
+			iBase = CyInterface().determineWidth(u"<font=3>" + szRef + u"</font>")
+			if iNow > 0 and iBase > 0:
+				fScale = max(0.6, min(1.0, float(iNow) / iBase))
+				iLine = max(14, int(22 * fScale + 0.5))
+				self.dTipLineCache[kKey] = iLine
+			else:
+				iLine = 19
+		except:
+			iLine = 19
+		return iLine
+
+	# maximal width of a tooltip window: a share of the screen width, but at least as many characters as at 1440 (the font does not get smaller
+	# with the screen: at 1080 a window of 20 percent would hold far fewer characters per line), and never more than a larger share of the screen
+	def getTipMaxWidth( self, xRes, iChar, bWidget ):
+		if bWidget:
+			return max(300, int(xRes * 0.14), min(int(xRes * 0.2), int(50 * iChar)))
+		return max(300, int(xRes * 0.2), min(int(xRes * 0.28), int(72 * iChar)))
+
 	def getMessageWidth(self, szText):
 		# width in characters of an average letter: the symbols of the game font (icons) are wider than letters
 		iWidth = 0
@@ -10110,11 +10178,14 @@ class CvMainInterface:
 			self.tMessagePanelKey = tKey
 
 			# geometry: centered below the top HUD, about as wide as the game's own message area
-			iLine = max(16, int(yRes * 0.0153)) # distance of the text lines (measured: 22 pixels at 1440)
+			iLine = self.getTipLineDistance(yRes) # distance of the text lines (measured: 22 pixels at 1440, the font follows the resolution class)
 			iPad = max(6, iLine / 2)
 			iWidth = max(380, int(xRes * 0.23))
+			# the font does not shrink with the screen: at least the number of characters per line of the 1440 layout (84), at most a third of the screen
+			iWidth = max(iWidth, min(int(xRes * 0.34), int(84 * iLine * 0.32)))
 			iX = (xRes - iWidth) / 2
-			iY = int(yRes * 0.058) # just below the round buttons of the top HUD
+			# just below the round buttons of the top HUD (their size depends on the resolution class, not on the screen height: 83 pixels with 36)
+			iY = max(int(yRes * 0.058), int(83 * SMALL_BUTTON_SIZE / 36.0))
 			# moved by the player (stays on the screen)
 			iBaseX = iX
 			iBaseY = iY
@@ -10124,7 +10195,7 @@ class CvMainInterface:
 			self.iMsgMoveY = iY - iBaseY
 			self.iMsgX = iX
 			self.iMsgY = iY
-			iHeaderHeight = int(max(14, int(yRes * 0.0135)) * 0.85)
+			iHeaderHeight = int(iLine * 0.73)
 			iGap = int(iLine * 0.8) # a blank line between the header and the messages
 			iIndent = int(iLine * 0.95) # the lines after the first one of a message
 			# characters per line (measured: about 6.6 pixels per character at 22 pixels line distance)
@@ -10543,10 +10614,10 @@ class CvMainInterface:
 		try:
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
-			iLine = max(16, int(yRes * 0.0153)) # as in the message panel
+			iLine = self.getTipLineDistance(yRes) # as in the message panel
 			iPad = max(6, iLine / 2)
 			iChar = iLine * 0.32
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			for szPart in szText.split(u"\n"):
