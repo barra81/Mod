@@ -1396,6 +1396,7 @@
 				<Event>EVENT_FESTIVITY_2</Event>
 				<Event>EVENT_FESTIVITY_3</Event>
 				<Event>EVENT_FESTIVITY_4</Event>
+				<Event>EVENT_FESTIVITY_5</Event>
 			</Events>
 			<PrereqEvents/>
 			<bPrereqEventPlot>0</bPrereqEventPlot>

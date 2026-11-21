@@ -788,6 +788,89 @@ def getHelpFestivity4(argsList):
 		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_RELATION_KING_DECREASE", (event.getGenericParameter(3), king.getCivilizationAdjectiveKey()))
 	return szHelp
 
+# WTP: option 5 of the festival: the best is not enough - cigars, rum and gold for the King; the maximum tax rate and the tax rate fall
+FESTIVITY5_GOLD_PERCENT = 20
+FESTIVITY5_GOLD_MIN = 6000
+FESTIVITY5_TAX_DECREASE = 3
+
+def getFestivity5Gold(player):
+	return max(FESTIVITY5_GOLD_MIN, player.getGold() * FESTIVITY5_GOLD_PERCENT / 100)
+
+def CanDoFestivity5(argsList):
+	eEvent = argsList[1]
+	event = gc.getEventInfo(eEvent)
+	kTriggeredData = argsList[0]
+	iYield1 = gc.getInfoTypeForString("YIELD_CIGARS")
+	iYield2 = gc.getInfoTypeForString("YIELD_RUM")
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	city = player.getCity(kTriggeredData.iCityId)
+	if city.isNone():
+		return False
+	quantity = event.getGenericParameter(1)
+	Speed = gc.getGameSpeedInfo(CyGame().getGameSpeedType())
+	quantity = quantity * Speed.getStoragePercent()/100
+	if (city.getYieldStored(iYield1) < -quantity) or (city.getYieldStored(iYield2) < -quantity) :
+		return False
+	if player.getGold() < getFestivity5Gold(player):
+		return False
+	return True
+
+def applyFestivity5(argsList):
+	eEvent = argsList[1]
+	event = gc.getEventInfo(eEvent)
+	kTriggeredData = argsList[0]
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	eking = player.getParent()
+	king = gc.getPlayer(eking)
+	city = player.getCity(kTriggeredData.iCityId)
+	player.AI_changeAttitudeExtra(eking, event.getGenericParameter(3))
+	king.AI_changeAttitudeExtra(kTriggeredData.ePlayer, event.getGenericParameter(3))
+	iGold = getFestivity5Gold(player)
+	player.changeGold(-iGold)
+	iYield = gc.getInfoTypeForString("YIELD_CIGARS")
+	iPrice = king.getYieldBuyPrice(iYield)
+	quantity = event.getGenericParameter(1)
+	Speed = gc.getGameSpeedInfo(CyGame().getGameSpeedType())
+	quantity = quantity * Speed.getStoragePercent()/100
+	king.setYieldBuyPrice(iYield, iPrice+event.getGenericParameter(2), 1)
+	city.changeYieldStored(iYield, quantity)
+	iYield = gc.getInfoTypeForString("YIELD_RUM")
+	iPrice = king.getYieldBuyPrice(iYield)
+	king.setYieldBuyPrice(iYield, iPrice+event.getGenericParameter(2), 1)
+	city.changeYieldStored(iYield, quantity)
+	for iStep in range(event.getGenericParameter(4)):
+		player.NBMOD_DecreaseMaxTaxRate()
+	iTaxDecrease = min(FESTIVITY5_TAX_DECREASE, player.getTaxRate())
+	if iTaxDecrease > 0:
+		player.changeTaxRate(-iTaxDecrease)
+
+def getHelpFestivity5(argsList):
+	eEvent = argsList[1]
+	event = gc.getEventInfo(eEvent)
+	kTriggeredData = argsList[0]
+	player = gc.getPlayer(kTriggeredData.ePlayer)
+	eking = player.getParent()
+	king = gc.getPlayer(eking)
+	city = player.getCity(kTriggeredData.iCityId)
+	iYield1 = gc.getInfoTypeForString("YIELD_CIGARS")
+	iYield2 = gc.getInfoTypeForString("YIELD_RUM")
+	quantity = event.getGenericParameter(1)
+	Speed = gc.getGameSpeedInfo(CyGame().getGameSpeedType())
+	quantity = quantity * Speed.getStoragePercent()/100
+	szHelp = localText.getText("TXT_KEY_EVENT_FESTIVITY_5_HELP", ())
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_YIELD_LOOSE", (quantity,  gc.getYieldInfo(iYield1).getChar(), city.getNameKey()))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_YIELD_LOOSE", (quantity,  gc.getYieldInfo(iYield2).getChar(), city.getNameKey()))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_GOLD_LOOSE", (-getFestivity5Gold(player),))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_PRICE_INCREASE", (event.getGenericParameter(2), gc.getYieldInfo(iYield1).getChar(), king.getCivilizationShortDescriptionKey()))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_PRICE_INCREASE", (event.getGenericParameter(2), gc.getYieldInfo(iYield2).getChar(), king.getCivilizationShortDescriptionKey()))
+	iNewMax = max(GlobalDefines.MIN_TAX_RATE, player.NBMOD_GetMaxTaxRate() - event.getGenericParameter(4) * GlobalDefines.DECREASE_MAX_TAX_RATE)
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_MAXTAXDECREASE", (iNewMax - player.NBMOD_GetMaxTaxRate(), iNewMax))
+	iTaxDecrease = min(FESTIVITY5_TAX_DECREASE, player.getTaxRate())
+	if iTaxDecrease > 0:
+		szHelp += "\n" + localText.getText("TXT_KEY_EVENT_TAX_DECREASE", (iTaxDecrease, player.getTaxRate() - iTaxDecrease))
+	szHelp += "\n" + localText.getText("TXT_KEY_EVENT_RELATION_KING_INCREASE", (event.getGenericParameter(3), king.getCivilizationAdjectiveKey()))
+	return szHelp
+
 def getHelpCounterblaste1(argsList):
 	eEvent = argsList[1]
 	event = gc.getEventInfo(eEvent)

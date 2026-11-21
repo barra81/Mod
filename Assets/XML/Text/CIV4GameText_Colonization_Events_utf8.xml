@@ -574,6 +574,30 @@
 		<Hungarian>[COLOR_FONT_GOLD]Nemesek és polgárok követik Őfelsége példáját. A gyarmati termékeink iránti kereslet növekszik.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_EVENT_FESTIVITY_5</Tag>
+		<English>The best is not enough for our King! Give him everything, and send him my best wishes together with a gift of gold (20% of our treasury, at least 6000)!</English>
+		<German>Das Beste ist nicht genug für unseren König! Gebt ihm alles und schickt ihm meine besten Wünsche, zusammen mit einem Geschenk in Gold (20% unserer Kasse, mindestens 6000)!</German>
+		<Russian>Лучшего недостаточно для нашего Короля! Отдайте ему всё и передайте ему мои наилучшие пожелания вместе с даром в золоте (20% нашей казны, но не менее 6000)!</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_FESTIVITY_5_HELP</Tag>
+		<English>[COLOR_FONT_GOLD]His Majesty is overwhelmed by our generosity. The whole court talks of nothing else, and the King promises to ease the burden of our taxes.[COLOR_REVERT]</English>
+		<German>[COLOR_FONT_GOLD]Seine Majestät ist überwältigt von unserer Großzügigkeit. Am ganzen Hof spricht man von nichts anderem, und der König verspricht, die Steuerlast unserer Kolonien zu lindern.[COLOR_REVERT]</German>
+		<Russian>[COLOR_FONT_GOLD]Его Величество потрясён нашей щедростью. При дворе только об этом и говорят, и Король обещает облегчить налоговое бремя наших колоний.[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_GOLD_LOOSE</Tag>
+		<English>[ICON_BULLET][COLOR_NEGATIVE_TEXT]%D1[COLOR_REVERT][ICON_GOLD] gift to the King</English>
+		<German>[ICON_BULLET][COLOR_NEGATIVE_TEXT]%D1[COLOR_REVERT][ICON_GOLD] Geschenk an den König</German>
+		<Russian>[ICON_BULLET][COLOR_NEGATIVE_TEXT]%D1[COLOR_REVERT][ICON_GOLD] подарок Королю</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_TAX_DECREASE</Tag>
+		<English>[ICON_BULLET]Tax rate decreases by [COLOR_POSITIVE_TEXT]%D1%%[COLOR_REVERT] to %D2%% total</English>
+		<German>[ICON_BULLET]Steuersatz sinkt um [COLOR_POSITIVE_TEXT]%D1%%[COLOR_REVERT] auf %D2%%</German>
+		<Russian>[ICON_BULLET]Налоговая ставка снижена на [COLOR_POSITIVE_TEXT]%D1%%[COLOR_REVERT] до %D2%%</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_EVENTTRIGGER_WINTER</Tag>
 		<English>Cold winter in Europe</English>
 		<Portuguese>Inverno frio na Europa.</Portuguese>
