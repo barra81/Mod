@@ -578,6 +578,9 @@ class CvMainInterface:
 	# Wraps <Font> tags around text
 	def setFontSize( self, Text, relativeSize ):
 		size = STANDARD_FONT_SIZE + relativeSize
+		if relativeSize == -1:
+			# WTP: the texts of our own panels and tooltips (only they use -1)
+			size = self.getTipFontSize()
 		if size > 4:
 			size = 4
 		return "<font=" + str(size) + ">" + Text + "</font>"
@@ -587,6 +590,7 @@ class CvMainInterface:
 		if (CyGame().isPitbossHost()):
 			return
 
+		self.iTipFontSize = None
 		self.bTerritorialInfluenceMode = False
 		self.m_pCurrentTerritorialInfluencePlot = None
 		self.bTerritorialInfluenceLeftMouseDown = False
@@ -3831,6 +3835,54 @@ class CvMainInterface:
 	for szWidthChar, iWidthChar in ((u"M", 833), (u"W", 944), (u"I", 278), (u"J", 500), (u" ", 278), (u".", 278), (u",", 278), (u":", 278), (u";", 278), (u"!", 278), (u"'", 191), (u"-", 333), (u"(", 333), (u")", 333)):
 		dMessageCharWidths[szWidthChar] = iWidthChar
 
+	# WTP: line distance of the panels and tooltips. The font of these texts (<font=STANDARD_FONT_SIZE-1>) depends on the resolution class and
+	# not on the screen height: the same font at 1080 and at 1440 (22 pixels line distance, measured), a smaller one in the lowest class.
+	# So the distance is 22 pixels scaled by the width the game itself measures for the font in use against the font of the 1440 layout.
+	dTipLineCache = {}
+	iTipFontSize = None
+
+	# WTP: the font of our own panels and tooltips: one step smaller than the standard font of the resolution class, and one more below
+	# 1300 pixels of screen height (1080p), where the standard font is large for a screen of that size
+	def getTipFontSize( self ):
+		if self.iTipFontSize is None:
+			iSize = STANDARD_FONT_SIZE - 1
+			try:
+				if CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE).getYResolution() < 1300 and iSize >= 3:
+					iSize -= 1
+			except:
+				return iSize
+			self.iTipFontSize = iSize
+		return self.iTipFontSize
+
+	def getTipLineDistance( self, yRes ):
+		kKey = (self.getTipFontSize(), yRes)
+		if self.dTipLineCache.has_key(kKey):
+			return self.dTipLineCache[kKey]
+		iLine = 22
+		if self.getTipFontSize() == 3:
+			self.dTipLineCache[kKey] = iLine
+			return iLine
+		try:
+			szRef = u"The quick brown fox jumps over the lazy dog, 0123456789 and so on"
+			iNow = CyInterface().determineWidth(self.setFontSize(szRef, -1))
+			iBase = CyInterface().determineWidth(u"<font=3>" + szRef + u"</font>")
+			if iNow > 0 and iBase > 0:
+				fScale = max(0.6, min(1.0, float(iNow) / iBase))
+				iLine = max(14, int(22 * fScale + 0.5))
+				self.dTipLineCache[kKey] = iLine
+			else:
+				iLine = 19
+		except:
+			iLine = 19
+		return iLine
+
+	# maximal width of a tooltip window: a share of the screen width, but at least as many characters as at 1440 (the font does not get smaller
+	# with the screen: at 1080 a window of 20 percent would hold far fewer characters per line), and never more than a larger share of the screen
+	def getTipMaxWidth( self, xRes, iChar, bWidget ):
+		if bWidget:
+			return max(300, int(xRes * 0.14), min(int(xRes * 0.2), int(50 * iChar)))
+		return max(300, int(xRes * 0.2), min(int(xRes * 0.28), int(72 * iChar)))
+
 	def getMessageWidth(self, szText):
 		# width in characters of an average letter: the symbols of the game font (icons) are wider than letters
 		iWidth = 0
@@ -4145,11 +4197,14 @@ class CvMainInterface:
 			self.tMessagePanelKey = tKey
 
 			# geometry: centered below the top HUD, about as wide as the game's own message area
-			iLine = max(16, int(yRes * 0.0153)) # distance of the text lines (measured: 22 pixels at 1440)
+			iLine = self.getTipLineDistance(yRes) # distance of the text lines (measured: 22 pixels at 1440, the font follows the resolution class)
 			iPad = max(6, iLine / 2)
 			iWidth = max(380, int(xRes * 0.23))
+			# the font does not shrink with the screen: at least the number of characters per line of the 1440 layout (84), at most a third of the screen
+			iWidth = max(iWidth, min(int(xRes * 0.34), int(84 * iLine * 0.32)))
 			iX = (xRes - iWidth) / 2
-			iY = int(yRes * 0.058) # just below the round buttons of the top HUD
+			# just below the round buttons of the top HUD (their size depends on the resolution class, not on the screen height: 83 pixels with 36)
+			iY = max(int(yRes * 0.058), int(83 * SMALL_BUTTON_SIZE / 36.0))
 			# moved by the player (stays on the screen)
 			iBaseX = iX
 			iBaseY = iY
@@ -4159,7 +4214,7 @@ class CvMainInterface:
 			self.iMsgMoveY = iY - iBaseY
 			self.iMsgX = iX
 			self.iMsgY = iY
-			iHeaderHeight = int(max(14, int(yRes * 0.0135)) * 0.85)
+			iHeaderHeight = int(iLine * 0.73)
 			iGap = int(iLine * 0.8) # a blank line between the header and the messages
 			iIndent = int(iLine * 0.95) # the lines after the first one of a message
 			# characters per line (measured: about 6.6 pixels per character at 22 pixels line distance)
@@ -4578,10 +4633,10 @@ class CvMainInterface:
 		try:
 			xRes = screen.getXResolution()
 			yRes = screen.getYResolution()
-			iLine = max(16, int(yRes * 0.0153)) # as in the message panel
+			iLine = self.getTipLineDistance(yRes) # as in the message panel
 			iPad = max(6, iLine / 2)
 			iChar = iLine * 0.32
-			iMaxWidth = max(300, int(xRes * 0.2))
+			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			for szPart in szText.split(u"\n"):
