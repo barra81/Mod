@@ -15,6 +15,7 @@ from collections import deque, Counter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from noise import Noise, poly_dist, poly_len, smoothstep, interp
 from png import write_png
+from place_names import PlaceNames
 
 W, H = 85, 137
 SEED = int(sys.argv[1]) if len(sys.argv) > 1 else 1
@@ -2713,25 +2714,34 @@ for i in list(nofr):
 # Europe: all open sea at least EUROPE_DIST tiles from the nearest land that is connected to the map edge through such
 # sea; it is flooded from the east edge (Atlantic, EUROPE_EAST) and the west edge (Pacific, EUROPE_WEST) at once, each
 # plot goes to the nearer edge. So the access follows the coast, and an island only pushes Europe back around itself.
+# On the Atlantic side small islands (fewer than ISLE_MAX_TILES land tiles) in front of the coast keep Europe only
+# ISLE_EUROPE_DIST tiles away, so they do not push the Atlantic far away from the mainland coast behind them.
 EUROPE_DIST = 7
+ISLE_EUROPE_DIST = 3
+ISLE_MAX_TILES = 60
 
 
 def europe_plots():
-    dl = bfs_dist([i for i in range(W * H) if not ocean[i]], lambda j: True)
-    open_sea = [ocean[i] and dl[i] >= EUROPE_DIST and terrain[i] in ('OCEAN', 'COAST') for i in range(W * H)]
+    not_sea = [not ocean[i] for i in range(W * H)]
+    dl = bfs_dist([i for i in range(W * H) if not_sea[i]], lambda j: True)
+    mainland = [I(x, y) for comp in components(not_sea) if len(comp) >= ISLE_MAX_TILES for x, y in comp]
+    dl_main = bfs_dist(mainland, lambda j: True)
+    sea_ok = [ocean[i] and terrain[i] in ('OCEAN', 'COAST') for i in range(W * H)]
+    open_sea = {1: [sea_ok[i] and dl_main[i] >= EUROPE_DIST and dl[i] >= ISLE_EUROPE_DIST for i in range(W * H)],
+                -1: [sea_ok[i] and dl[i] >= EUROPE_DIST for i in range(W * H)]}
     side = [0] * (W * H)                         # 1 east, -1 west
     dq = deque()
     for y in range(H):
         for x, s in ((W - 1, 1), (0, -1)):
             i = I(x, y)
-            if open_sea[i] and not side[i]:
+            if open_sea[s][i] and not side[i]:
                 side[i] = s
                 dq.append(i)
     while dq:
         i = dq.popleft()
         for qx, qy in nbrs(i % W, i // W, N4):
             j = I(qx, qy)
-            if open_sea[j] and not side[j]:
+            if open_sea[side[i]][j] and not side[j]:
                 side[j] = side[i]
                 dq.append(j)
     east = [s == 1 for s in side]
@@ -2913,8 +2923,10 @@ print('caribbean revision: west isle', len(west_isle), 'strip', [(i % W, i // W)
 
 # ---------------------------------------------------------------- landmark names
 # map signs (landmarks visible to every player) give the invented landscape its names;
-# captions are plain ASCII, without commas or '='
+# captions are plain ASCII, without commas or '='; the names are drawn from patterns and word lists (place_names.py) with
+# their own random stream, so every seed has its own names and the land stays the same
 SIGNS = []
+NAMES = PlaceNames(SEED)
 
 
 def add_sign(cells, caption, gap=5):
@@ -2947,65 +2959,63 @@ def name_range(R, peak_name, range_name=None):
 
 # set pieces first, they own their spot
 if volcano_island:
-    add_sign([volcano_island], 'Saint Brendan Island')
+    add_sign([volcano_island], NAMES.name('volcano_isle'))
 if crater:
-    add_sign([crater], 'Halloway Crater')
+    add_sign([crater], NAMES.name('crater'))
 if canyon:
-    add_sign(canyon[len(canyon) // 2:] + canyon, 'Red Rock Canyon')
+    add_sign(canyon[len(canyon) // 2:] + canyon, NAMES.name('canyon'))
 if hidden_valley:
-    add_sign(by_dist(list(HIDDEN), *hidden_valley), 'Paradise Valley')
+    add_sign(by_dist(list(HIDDEN), *hidden_valley), NAMES.name('valley'))
 if gorge:
     gp = river_paths[gorge[0]]
-    add_sign([gp[gorge[1]]] + gp, 'Crawford Gorge')
+    add_sign([gp[gorge[1]]] + gp, NAMES.name('gorge'))
 if ISLAND:
-    add_sign(by_dist(list(ISLAND), sum(i % W for i in ISLAND) / len(ISLAND), sum(i // W for i in ISLAND) / len(ISLAND)), 'Beaver Island')
+    add_sign(by_dist(list(ISLAND), sum(i % W for i in ISLAND) / len(ISLAND), sum(i // W for i in ISLAND) / len(ISLAND)), NAMES.name('river_isle'))
 if ESTUARY:
-    add_sign(by_dist(list(ESTUARY), *max(((i % W, i // W) for i in ESTUARY), key=lambda p: -p[1])), 'Chester Bay')
+    add_sign(by_dist(list(ESTUARY), *max(((i % W, i // W) for i in ESTUARY), key=lambda p: -p[1])), NAMES.name('estuary'))
 if LAGOON:
     ban = sorted(BARRIER, key=lambda i: i // W)
-    add_sign(ban[len(ban) // 2:] + ban, 'Hatton Banks')
+    add_sign(ban[len(ban) // 2:] + ban, NAMES.name('banks'))
 if FINGER:
-    add_sign(by_dist(list(FINGER), sum(i % W for i in FINGER) / len(FINGER), sum(i // W for i in FINGER) / len(FINGER)), 'Mohegan Lakes')
+    add_sign(by_dist(list(FINGER), sum(i % W for i in FINGER) / len(FINGER), sum(i // W for i in FINGER) / len(FINGER)), NAMES.name('finger_lakes'))
 if SALT_BASIN:
-    add_sign(by_dist([i for i in range(W * H) if lake[i]], *SALT_BASIN), 'Great Salt Basin')
+    add_sign(by_dist([i for i in range(W * H) if lake[i]], *SALT_BASIN), NAMES.name('salt_basin'))
 if ALTIPLANO:
-    add_sign(by_dist([i for i in range(W * H) if lake[i]], *ALTIPLANO), 'Altiplano de Sorata')
+    add_sign(by_dist([i for i in range(W * H) if lake[i]], *ALTIPLANO), NAMES.name('altiplano'))
 if mesa_centres:
-    add_sign([I(x, y) for x, y in mesa_centres], 'Painted Mesas')
-for (ox, oy), name in zip(oases, ('Sweetwater Springs', 'Willow Springs', 'Agua Caliente', 'Bitter Springs', 'Ojo del Toro')):
+    add_sign([I(x, y) for x, y in mesa_centres], NAMES.name('mesas'))
+for (ox, oy), name in zip(oases, NAMES.names('oasis', 5)):
     add_sign([(ox, oy)], name)
 if PASSAGE:
     pas = sorted(PASSAGE, key=lambda i: i % W)
-    add_sign([i for i in pas if W - 20 <= i % W <= W - 10] + pas, 'Frobisher Strait')
+    add_sign([i for i in pas if W - 20 <= i % W <= W - 10] + pas, NAMES.name('strait'))
 arctic = sorted([c for c in components(land) if all(y > strait_y(x) for x, y in c)], key=len, reverse=True)
-for comp, name in zip(arctic, ('Prince Rupert Island', 'Bylot Island')):
+for comp, name in zip(arctic, NAMES.names('arctic_isle', 2)):
     if len(comp) >= 8:
         cx = sum(x for x, _ in comp) / float(len(comp))
         cy = sum(y for _, y in comp) / float(len(comp))
         add_sign(by_dist([I(x, y) for x, y in comp if plot_type[I(x, y)] != 0] or [I(x, y) for x, y in comp], cx, cy), name)
 if archipelago:
     allc = [I(x, y) for isle in archipelago for x, y in isle]
-    add_sign(by_dist(allc, *ISLE_SEA), 'Windward Isles')
-for (hx, hy, nx_, ny_), name in zip(harbours, ('Mercy Bay', 'Hope Sound', 'Port Desire')):
+    add_sign(by_dist(allc, *ISLE_SEA), NAMES.name('isles'))
+for (hx, hy, nx_, ny_), name in zip(harbours, NAMES.names('harbour', 3)):
     add_sign([(hx + 3 * nx_, hy + 3 * ny_), (hx + nx_, hy + ny_)], name)
 if fjords:
-    add_sign([(fx + 2, fy) for fx, fy in fjords[1:]] + fjords, 'Markland Coast')
-for (vx, vy), name in zip([v for v in volcanoes if v != volcano_island], ('Volcan San Lorenzo', 'Volcan Santa Rosa', 'Cerro Humeante')):
+    add_sign([(fx + 2, fy) for fx, fy in fjords[1:]] + fjords, NAMES.name('fjords'))
+for (vx, vy), name in zip([v for v in volcanoes if v != volcano_island], NAMES.names('volcano', 3)):
     add_sign([(vx, vy)], name)
 
 if JUNGLE_RUINS:
     cx = sum(i % W for i in JUNGLE_RUINS) / float(len(JUNGLE_RUINS))
     cy = sum(i // W for i in JUNGLE_RUINS) / float(len(JUNGLE_RUINS))
-    add_sign(sorted(JUNGLE_RUINS, key=lambda i: math.hypot(i % W - cx, i // W - cy)), 'Ciudad Perdida')
-for i, name in zip(RUINS[len(JUNGLE_RUINS):], ('Ruinas de Huaynacocha', 'Ruinas de Xunantal')):
+    add_sign(sorted(JUNGLE_RUINS, key=lambda i: math.hypot(i % W - cx, i // W - cy)), NAMES.name('lost_city'))
+for i, name in zip(RUINS[len(JUNGLE_RUINS):], NAMES.names('ruins', 2)):
     add_sign([i], name, 3)
 
 # mountain ranges: the highest summit of each chain and the chain itself
 # (largest first; in the warm south Spanish and Portuguese names)
-names = {False: (['Mount Whitcomb', 'Mount Harcourt', 'Mount Ellery', 'Bald Knob', 'Mount Ashcombe', 'Mount Tolland'],
-                 ['Montgomery Range', 'Granite Range', 'Copper Ridge', 'Laurel Ridge', 'Pine Ridge', 'Blackstone Mountains', 'Thunder Range']),
-         True: (['Cerro Alto', 'Cerro Blanco', 'Nevado del Sol', 'Pico Bandeira'],
-                ['Sierra Grande', 'Serra Verde', 'Cordillera Azul', 'Sierra de Plata', 'Serra do Mar'])}
+names = {False: (NAMES.names('peak_n', 6), NAMES.names('range_n', 7)),
+         True: (NAMES.names('peak_s', 4), NAMES.names('range_s', 5))}
 for R in sorted([R for R in RANGES if R.get('kind') in ('fold', 'cordillera', 'arc', 'old')], key=lambda R: -poly_len(R['pts']) * R['h']):
     peaks_, chains_ = names[lat(R['pts'][len(R['pts']) // 2][1]) < 12]
     pk_ = peaks_.pop(0) if peaks_ and R['h'] >= 0.9 else None
@@ -3014,11 +3024,11 @@ for R in sorted([R for R in RANGES if R.get('kind') in ('fold', 'cordillera', 'a
         name_range(R, pk_, ch_)
 for R in RANGES:
     if R.get('kind') == 'caldera':
-        name_range(R, None, 'Cerros Redondos')
+        name_range(R, None, NAMES.name('caldera'))
 
 # large rivers: the name sits a little upstream of the mouth
-north_rivers = ['Raven River', 'Elk River', 'Saint Croix River', 'Black River', 'Kettle River']
-south_rivers = ['Rio Dorado', 'Rio Verde', 'Rio Pardo', 'Rio Negro']
+north_rivers = NAMES.names('river_n', 5)
+south_rivers = NAMES.names('river_s', 4)
 for pn, path in enumerate(river_paths):
     if (canyon and canyon[0] in path) or (gorge and gorge[0] == pn):
         continue                                     # the canyon or gorge sign names this river already
@@ -3028,9 +3038,8 @@ for pn, path in enumerate(river_paths):
         add_sign(path[k:] + path[:k], pool.pop(0))
 
 # remaining lakes from five tiles upwards
-lake_names = ['Lake Winthrop', 'Lake Pembroke', 'Clear Lake', 'Lake Hartley', 'Loon Lake', 'Lake Whitmore', 'Long Lake',
-              'Lake Ashby', 'Lake Mercer']
-south_lakes = ['Laguna Seca', 'Lago Azul', 'Laguna Grande']
+lake_names = NAMES.names('lake_n', 9)
+south_lakes = NAMES.names('lake_s', 3)
 for comp in sorted(components(lake), key=len, reverse=True):
     if len(comp) < 5 or not lake_names or any(I(x, y) in FINGER for x, y in comp):
         continue
@@ -3044,9 +3053,7 @@ for comp in sorted(components(lake), key=len, reverse=True):
 
 # large stretches of flat woodland get a regional name, unless a bay, river or other sign already names the area
 WOODS = {'FOREST', 'FOREST_EVERGREEN', 'DENSE_FOREST', 'ANCIENT_FOREST', 'FOREST_TUNDRA', 'JUNGLE', 'TROPICAL_GROVES', 'LIGHT_FOREST'}
-region_names = {'boreal': ['New Caledonia', 'Keewatin'], 'temperate': ['New Albion', 'Acadia', 'New Hanover', 'Carolana'],
-                'subtropical': ['Nueva Galicia', 'Vera Paz'],
-                'south': ['Terra de Santa Cruz', 'Nueva Andalucia', 'Tierra Firme']}
+region_names = {'boreal': 2, 'temperate': 4, 'subtropical': 2, 'south': 3}     # at most this many regional names per zone
 cands = []
 for x, y in ALL:
     i = I(x, y)
@@ -3066,7 +3073,8 @@ for _, i in cands:
     if any(math.hypot(x - sx, y - sy) < 7 for sx, sy, _ in SIGNS):
         continue
     zone = 'south' if lat(y) < 5 else ('boreal' if T[i] < 0.4 else ('subtropical' if T[i] >= 0.66 else 'temperate'))
-    if region_names[zone] and add_sign([i], region_names[zone].pop(0)):
+    if region_names[zone] > 0 and add_sign([i], NAMES.region(zone)):
+        region_names[zone] -= 1
         regions += 1
 
 # Europe: Atlantic (east) and Pacific (west), EUROPE_DIST tiles from land (europe_plots)
