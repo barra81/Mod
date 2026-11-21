@@ -350,6 +350,35 @@ void CvPlayerAI::AI_logStatusSummary()
 	}
 	logWTP(WTP_LOG_STATUS, getID(), "WTP status:   unitAIs (type:count)%s", szUnitAIs.c_str());
 
+	// every attacking stack with its wagon train, and every black powder wagon train (not those that only trade)
+	int iStackLoop;
+	for (CvUnit* pStack = firstUnit(&iStackLoop); pStack != NULL; pStack = nextUnit(&iStackLoop))
+	{
+		if (!pStack->isOnMap() || pStack->isCargo() || !pStack->isGroupHead())
+		{
+			continue;
+		}
+		if (pStack->AI_getUnitAIType() == UNITAI_OFFENSIVE)
+		{
+			int iWagon = -1;
+			int iWagonLoop;
+			for (CvUnit* pWagon = firstUnit(&iWagonLoop); pWagon != NULL && iWagon < 0; pWagon = nextUnit(&iWagonLoop))
+			{
+				if (pWagon->AI_getUnitAIType() == UNITAI_WAGON && pWagon->getGroup()->AI_getMissionAIType() == MISSIONAI_SHADOW && pWagon->getGroup()->AI_getMissionAIUnit() == pStack)
+				{
+					iWagon = pWagon->getID();
+				}
+			}
+			logWTP(WTP_LOG_MILITARY, getID(), "WTP stack status: #%d at %d,%d: %d units, %d artillery, missionAI %d, wagon train %d", pStack->getID(), pStack->getX_INLINE(), pStack->getY_INLINE(),
+				pStack->getGroup()->getNumUnits(), static_cast<CvUnitAI*>(pStack)->AI_siegeArtilleryCount(), (int)pStack->getGroup()->AI_getMissionAIType(), iWagon);
+		}
+		else if (pStack->AI_getUnitAIType() == UNITAI_WAGON && pStack->getGroup()->AI_getMissionAIType() == MISSIONAI_SHADOW)
+		{
+			logWTP(WTP_LOG_MILITARY, getID(), "WTP wagon status: #%d at %d,%d: missionAI %d, %d cargo", pStack->getID(), pStack->getX_INLINE(), pStack->getY_INLINE(),
+				(int)pStack->getGroup()->AI_getMissionAIType(), pStack->getCargo());
+		}
+	}
+
 	int iLoop;
 	for (CvArea* pArea = GC.getMap().firstArea(&iLoop); pArea != NULL; pArea = GC.getMap().nextArea(&iLoop))
 	{
@@ -686,6 +715,8 @@ void CvPlayerAI::AI_doTurnUnitsPre()
 	{
 		AI_doMilitaryStrategy();
 		AI_doSuppressRevolution();
+		AI_doSieges(); // WTP: siege
+		AI_doWarDefense(); // WTP: siege
 	}
 
 	if (isHuman())
@@ -694,6 +725,625 @@ void CvPlayerAI::AI_doTurnUnitsPre()
 	}
 }
 // WTP, Schmiddie, AI Fleet Modernization END
+
+// WTP: siege: the AI puts every city under siege it can, before and after its units move, unless strong enemies are near the
+// stack; it gives up a siege when they come. It also counts its artillery and the attacking stacks without a wagon train
+void CvPlayerAI::AI_doSieges()
+{
+	m_iSiegeArtilleryCount = 0;
+	m_iSiegeWagonShortfall = 0;
+	if (isHuman())
+	{
+		return;
+	}
+	int iStacks = 0;
+	int iWagons = 0;
+	const CvUnit* pWagonStack = NULL;
+	int iWagonStackSize = 0;
+	int iLoop;
+	for (CvUnit* pLoopUnit = firstUnit(&iLoop); pLoopUnit != NULL; pLoopUnit = nextUnit(&iLoop))
+	{
+		if (pLoopUnit->isPowderArtillery())
+		{
+			++m_iSiegeArtilleryCount;
+		}
+		// WTP: a wagon train busy with goods is not free for the powder: all of them used to count, so no one was ever built
+		if (pLoopUnit->AI_getUnitAIType() == UNITAI_WAGON && (pLoopUnit->getGroup()->AI_getMissionAIType() == MISSIONAI_SHADOW || pLoopUnit->getCargo() == 0))
+		{
+			++iWagons;
+		}
+		if (pLoopUnit->isGroupHead() && pLoopUnit->isOnMap() && !pLoopUnit->isCargo() && pLoopUnit->AI_getUnitAIType() == UNITAI_OFFENSIVE
+			&& pLoopUnit->getGroup()->getNumUnits() >= GLOBAL_DEFINE_SIEGE_MIN_STACK_SIZE && static_cast<CvUnitAI*>(pLoopUnit)->AI_siegeArtilleryCount() > 0)
+		{
+			++iStacks;
+			if (pLoopUnit->getGroup()->getNumUnits() > iWagonStackSize)
+			{
+				iWagonStackSize = pLoopUnit->getGroup()->getNumUnits();
+				pWagonStack = pLoopUnit;
+			}
+		}
+		CvCity* pCity = pLoopUnit->getSiegeTargetCity();
+		if (pCity != NULL && !AI_isSiegeThreatened(*pLoopUnit->plot(), *pCity))
+		{
+			pCity->startSiege(getID());
+		}
+	}
+	if (!isNative() && !isEurope() && GET_TEAM(getTeam()).getAnyWarPlanCount() > 0)
+	{
+		m_iSiegeWagonShortfall = std::max(0, std::min<int>(iStacks, SIEGE_MAX_WAGONS) - iWagons);
+		// the colony nearest to the stack starts a wagon train at once, it does not wait until it would choose a new production
+		if (pWagonStack != NULL && m_iSiegeWagonShortfall > AI_getNumTrainAIUnits(UNITAI_WAGON) && !AI_isEarlyPhaseActive())
+		{
+			CvCity* pBestCity = NULL;
+			int iBestDistance = MAX_INT;
+			int iCityLoop;
+			for (CvCity* pLoopCity = firstCity(&iCityLoop); pLoopCity != NULL; pLoopCity = nextCity(&iCityLoop))
+			{
+				const int iDistance = plotDistance(pLoopCity->getX_INLINE(), pLoopCity->getY_INLINE(), pWagonStack->getX_INLINE(), pWagonStack->getY_INLINE());
+				if (pLoopCity->area() == pWagonStack->area() && iDistance < iBestDistance && pLoopCity->AI().AI_bestUnitAI(UNITAI_WAGON) != NO_UNIT)
+				{
+					iBestDistance = iDistance;
+					pBestCity = pLoopCity;
+				}
+			}
+			if (pBestCity != NULL)
+			{
+				pBestCity->pushOrder(ORDER_TRAIN, pBestCity->AI().AI_bestUnitAI(UNITAI_WAGON), UNITAI_WAGON, false, false, false);
+				if (gPlayerLogLevel >= 1) logWTP(WTP_LOG_MILITARY, getID(), "WTP wagon: %S starts a wagon train for stack #%d", pBestCity->getName().GetCString(), pWagonStack->getID());
+			}
+		}
+	}
+
+	// strong enemies near the largest own stack beside a city it besieges: the siege is given up
+	for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
+	{
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+		if (!kPlayer.isAlive() || !GET_TEAM(getTeam()).isAtWar(kPlayer.getTeam()))
+		{
+			continue;
+		}
+		int iCityLoop;
+		for (CvCity* pCity = kPlayer.firstCity(&iCityLoop); pCity != NULL; pCity = kPlayer.nextCity(&iCityLoop))
+		{
+			if (pCity->getBesieger() != getID())
+			{
+				continue;
+			}
+			const CvPlot* pStackPlot = NULL;
+			int iBestStack = 0;
+			for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+			{
+				const CvPlot* pLoopPlot = plotDirection(pCity->getX_INLINE(), pCity->getY_INLINE(), (DirectionTypes)iI);
+				const int iStack = (pLoopPlot != NULL) ? CvCity::getSiegeStackSize(*pLoopPlot, getTeam(), pCity->getTeam()) : 0;
+				if (iStack > iBestStack)
+				{
+					iBestStack = iStack;
+					pStackPlot = pLoopPlot;
+				}
+			}
+			if (pStackPlot != NULL && AI_isSiegeThreatened(*pStackPlot, *pCity))
+			{
+				if (gPlayerLogLevel >= 1) logWTP(WTP_LOG_MILITARY, getID(), "WTP siege: Player %d (%S) turn %d gives up the siege of %S: strong enemies near",
+					getID(), getCivilizationDescription(0), GC.getGameINLINE().getGameTurn(), pCity->getName().GetCString());
+				pCity->endSiege();
+			}
+		}
+	}
+}
+
+// WTP: siege: an enemy siege stack near an own colony (AI_doWarDefense)
+struct SiegeThreat
+{
+	CvCity* pCity;
+	const CvPlot* pPlot;
+	int iStrength;
+	int iDistance;
+};
+
+// WTP: siege: war defense of the colonial AI against colonial powers or the king, every turn:
+// (1) colonies more than SIEGE_AI_FAR_DISTANCE plots from an enemy colony give one needed defender each to the colonies within
+//     SIEGE_AI_NEAR_DISTANCE plots of one (the nearest first; the king attacks the coastal colonies);
+// (2) visible enemy soldiers within SIEGE_AI_THREAT_RANGE plots of a colony, on land or aboard ships, add one needed defender per
+//     two;
+// (3) against a visible enemy siege stack (at least SIEGE_MIN_STACK_SIZE units that can attack with artillery, also aboard
+//     ships) within SIEGE_AI_COUNTER_RANGE plots of a colony, units of the own offensive stacks within SIEGE_AI_COUNTER_GATHER_RANGE
+//     plots become counter units (soldiers before artillery, nearest first) until the counter units near the colony have
+//     SIEGE_AI_COUNTER_PERCENT of the stack's strength; the rest goes on attacking. They go back to the offensive when no such
+//     stack threatens any more. The counter units gather against the stack threatening the most valuable colony (population,
+//     the capital +3; the nearest stack) beside it (AI_setSiegeMuster, CvUnitAI::AI_siegeMuster).
+void CvPlayerAI::AI_doWarDefense()
+{
+	const int iOldMusterCityID = m_iSiegeMusterCityID;
+	const int iOldMusterPlot = m_iSiegeMusterPlot;
+	m_iSiegeMusterCityID = -1;
+	m_iSiegeMusterPlot = -1;
+	m_iSiegeMusterThreatPlot = -1;
+	if (isHuman() || isNative() || isEurope() || getNumCities() == 0)
+	{
+		return;
+	}
+	int iLoop;
+	std::vector<CvCity*> apCities;
+	for (CvCity* pCity = firstCity(&iLoop); pCity != NULL; pCity = nextCity(&iLoop))
+	{
+		static_cast<CvCityAI*>(pCity)->AI_setWarDefenseShift(0);
+		apCities.push_back(pCity);
+	}
+	const int iNumCities = (int)apCities.size();
+
+	std::vector<PlayerTypes> aeEnemies;
+	bool bKing = false;
+	for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
+	{
+		const CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+		if (kPlayer.isAlive() && !kPlayer.isNative() && GET_TEAM(getTeam()).isAtWar(kPlayer.getTeam()))
+		{
+			aeEnemies.push_back((PlayerTypes)iPlayer);
+			bKing = bKing || kPlayer.isEurope();
+		}
+	}
+
+	// (3) first: the enemy siege stacks
+	std::vector<SiegeThreat> aThreats;
+	{
+		std::set<const CvPlot*> setSeen;
+		for (uint e = 0; e < aeEnemies.size(); ++e)
+		{
+			CvPlayer& kEnemy = GET_PLAYER(aeEnemies[e]);
+			int iUnitLoop;
+			for (CvUnit* pLoopUnit = kEnemy.firstUnit(&iUnitLoop); pLoopUnit != NULL; pLoopUnit = kEnemy.nextUnit(&iUnitLoop))
+			{
+				const CvPlot* const pPlot = pLoopUnit->plot();
+				if (pPlot == NULL || !pLoopUnit->isOnMap() || pLoopUnit->getDomainType() != DOMAIN_LAND || setSeen.count(pPlot) > 0)
+				{
+					continue;
+				}
+				setSeen.insert(pPlot);
+				if (!pPlot->isVisible(getTeam(), false))
+				{
+					continue;
+				}
+				int iUnits = 0;
+				int iArtillery = 0;
+				int iStrength = 0;
+				CLLNode<IDInfo>* pUnitNode = pPlot->headUnitNode();
+				while (pUnitNode != NULL)
+				{
+					const CvUnit* const pPlotUnit = pPlot->getUnitNodeLoop(pUnitNode);
+					if (pPlotUnit != NULL && pPlotUnit->getOwnerINLINE() == aeEnemies[e] && pPlotUnit->getDomainType() == DOMAIN_LAND && pPlotUnit->canAttack())
+					{
+						++iUnits;
+						iStrength += pPlotUnit->currEffectiveStr(NULL, NULL);
+						if (pPlotUnit->isPowderArtillery())
+						{
+							++iArtillery;
+						}
+					}
+				}
+				if (iUnits < GLOBAL_DEFINE_SIEGE_MIN_STACK_SIZE || iArtillery == 0)
+				{
+					continue;
+				}
+				CvCity* pNearest = NULL;
+				int iNearest = GLOBAL_DEFINE_SIEGE_AI_COUNTER_RANGE + 1;
+				for (int c = 0; c < iNumCities; ++c)
+				{
+					const int iDistance = plotDistance(pPlot->getX_INLINE(), pPlot->getY_INLINE(), apCities[c]->getX_INLINE(), apCities[c]->getY_INLINE());
+					if (iDistance < iNearest)
+					{
+						iNearest = iDistance;
+						pNearest = apCities[c];
+					}
+				}
+				if (pNearest != NULL)
+				{
+					SiegeThreat kThreat;
+					kThreat.pCity = pNearest;
+					kThreat.pPlot = pPlot;
+					kThreat.iStrength = iStrength;
+					kThreat.iDistance = iNearest;
+					aThreats.push_back(kThreat);
+				}
+			}
+		}
+	}
+
+	if (aThreats.empty())
+	{
+		// no siege stack threatens: the counter units go back to the offensive
+		for (std::set<int>::const_iterator it = m_setSiegeCounterIDs.begin(); it != m_setSiegeCounterIDs.end(); ++it)
+		{
+			CvUnit* const pUnit = getUnit(*it);
+			if (pUnit != NULL && pUnit->AI_getUnitAIType() == UNITAI_COUNTER)
+			{
+				pUnit->joinGroup(NULL); // out of the counter group of the gathering plot (units that can not move alike)
+				pUnit->AI_setUnitAIType(UNITAI_OFFENSIVE);
+			}
+		}
+		m_setSiegeCounterIDs.clear();
+	}
+	else
+	{
+		for (uint t = 0; t < aThreats.size(); ++t)
+		{
+			const SiegeThreat& kThreat = aThreats[t];
+			// the defense of the stack on its plot (terrain, fortification) like the attack decision of the counter units
+			// (CvUnitAI::AI_siegeMuster), at least its plain strength; their attack strength against that plot (aboard ships: plain)
+			const CvPlot* const pAttackPlot = kThreat.pPlot->isWater() ? NULL : kThreat.pPlot;
+			const int iEnemy = std::max(kThreat.iStrength, (pAttackPlot != NULL) ? AI_localDefenceStrength(pAttackPlot, NO_TEAM, DOMAIN_LAND, 0) : 0);
+			const int iNeeded = iEnemy * GLOBAL_DEFINE_SIEGE_AI_COUNTER_PERCENT / 100;
+			int iHave = 0;
+			std::vector<std::pair<int, CvUnit*> > aCandidates;
+			for (CvUnit* pLoopUnit = firstUnit(&iLoop); pLoopUnit != NULL; pLoopUnit = nextUnit(&iLoop))
+			{
+				if (!pLoopUnit->isOnMap() || pLoopUnit->getDomainType() != DOMAIN_LAND || !pLoopUnit->canAttack() || pLoopUnit->area() != kThreat.pCity->area())
+				{
+					continue;
+				}
+				const int iDistance = plotDistance(pLoopUnit->getX_INLINE(), pLoopUnit->getY_INLINE(), kThreat.pCity->getX_INLINE(), kThreat.pCity->getY_INLINE());
+				if (pLoopUnit->AI_getUnitAIType() == UNITAI_COUNTER && iDistance <= GLOBAL_DEFINE_SIEGE_AI_COUNTER_RANGE + 2)
+				{
+					iHave += pLoopUnit->currEffectiveStr(pAttackPlot, (pAttackPlot != NULL) ? pLoopUnit : NULL);
+				}
+				else if (pLoopUnit->AI_getUnitAIType() == UNITAI_OFFENSIVE && !pLoopUnit->isCargo() && iDistance <= GLOBAL_DEFINE_SIEGE_AI_COUNTER_GATHER_RANGE)
+				{
+					aCandidates.push_back(std::make_pair((pLoopUnit->isPowderArtillery() ? 1000 : 0) + iDistance, pLoopUnit));
+				}
+			}
+			std::sort(aCandidates.begin(), aCandidates.end());
+			int iMade = 0;
+			for (uint i = 0; i < aCandidates.size() && iHave < iNeeded; ++i)
+			{
+				CvUnit* const pUnit = aCandidates[i].second;
+				pUnit->joinGroup(NULL);
+				pUnit->AI_setUnitAIType(UNITAI_COUNTER);
+				m_setSiegeCounterIDs.insert(pUnit->getID());
+				iHave += pUnit->currEffectiveStr(pAttackPlot, (pAttackPlot != NULL) ? pUnit : NULL);
+				++iMade;
+			}
+			if (iMade > 0 && gPlayerLogLevel >= 1)
+			{
+				logWTP(WTP_LOG_MILITARY, getID(), "WTP siege: Player %d (%S) turn %d: siege stack (strength %d, defense %d) %d plots from %S, %d offensive units become counter units (counter strength %d, wanted %d)",
+					getID(), getCivilizationDescription(0), GC.getGameINLINE().getGameTurn(), kThreat.iStrength, iEnemy, kThreat.iDistance, kThreat.pCity->getName().GetCString(), iMade, iHave, iNeeded);
+			}
+		}
+		AI_setSiegeMuster(aThreats, iOldMusterCityID, iOldMusterPlot);
+	}
+
+	if (aeEnemies.empty())
+	{
+		return;
+	}
+
+	// (1) the needed defenders move from the colonies far from the enemy to those near it
+	std::vector<int> aiDistance(iNumCities, MAX_INT);
+	std::vector<int> aiShift(iNumCities, 0);
+	for (int c = 0; c < iNumCities; ++c)
+	{
+		const CvCity* const pCity = apCities[c];
+		for (uint e = 0; e < aeEnemies.size(); ++e)
+		{
+			CvPlayer& kEnemy = GET_PLAYER(aeEnemies[e]);
+			int iCityLoop;
+			for (CvCity* pEnemyCity = kEnemy.firstCity(&iCityLoop); pEnemyCity != NULL; pEnemyCity = kEnemy.nextCity(&iCityLoop))
+			{
+				aiDistance[c] = std::min(aiDistance[c], plotDistance(pCity->getX_INLINE(), pCity->getY_INLINE(), pEnemyCity->getX_INLINE(), pEnemyCity->getY_INLINE()));
+			}
+		}
+		if (bKing && pCity->isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()))
+		{
+			aiDistance[c] = std::min(aiDistance[c], GLOBAL_DEFINE_SIEGE_AI_NEAR_DISTANCE);
+		}
+	}
+	int iPool = 0;
+	std::vector<std::pair<int, int> > aNear;
+	for (int c = 0; c < iNumCities; ++c)
+	{
+		if (aiDistance[c] > GLOBAL_DEFINE_SIEGE_AI_FAR_DISTANCE)
+		{
+			if (apCities[c]->AI_neededDefenders() > 1)
+			{
+				aiShift[c] = -1;
+				++iPool;
+			}
+		}
+		else if (aiDistance[c] <= GLOBAL_DEFINE_SIEGE_AI_NEAR_DISTANCE)
+		{
+			aNear.push_back(std::make_pair(aiDistance[c], c));
+		}
+	}
+	if (aNear.empty())
+	{
+		// nobody near: the given defenders stay where they are
+		for (int c = 0; c < iNumCities; ++c)
+		{
+			aiShift[c] = 0;
+		}
+	}
+	else
+	{
+		std::sort(aNear.begin(), aNear.end());
+		for (int i = 0; iPool > 0; i = (i + 1) % (int)aNear.size(), --iPool)
+		{
+			++aiShift[aNear[i].second];
+		}
+	}
+
+	// (2) enemy soldiers close by, on land or aboard ships
+	const int iRange = GLOBAL_DEFINE_SIEGE_AI_THREAT_RANGE;
+	for (int c = 0; c < iNumCities; ++c)
+	{
+		const CvCity* const pCity = apCities[c];
+		int iEnemies = 0;
+		for (int iDX = -iRange; iDX <= iRange; ++iDX)
+		{
+			for (int iDY = -iRange; iDY <= iRange; ++iDY)
+			{
+				const CvPlot* const pLoopPlot = plotXY(pCity->getX_INLINE(), pCity->getY_INLINE(), iDX, iDY);
+				if (pLoopPlot == NULL || !pLoopPlot->isVisible(getTeam(), false))
+				{
+					continue;
+				}
+				CLLNode<IDInfo>* pUnitNode = pLoopPlot->headUnitNode();
+				while (pUnitNode != NULL)
+				{
+					const CvUnit* const pLoopUnit = pLoopPlot->getUnitNodeLoop(pUnitNode);
+					if (pLoopUnit != NULL && pLoopUnit->getDomainType() == DOMAIN_LAND && pLoopUnit->canAttack() && atWar(pLoopUnit->getTeam(), getTeam())
+						&& !GET_PLAYER(pLoopUnit->getOwnerINLINE()).isNative())
+					{
+						++iEnemies;
+					}
+				}
+			}
+		}
+		aiShift[c] += (iEnemies + 1) / 2;
+		static_cast<CvCityAI*>(apCities[c])->AI_setWarDefenseShift(aiShift[c]);
+	}
+}
+
+// WTP: siege: the counter units gather against the siege stack threatening the most valuable colony (population, the capital
+// +3; for the same colony the nearest stack). The gathering plot stays while the stack is not beside it or the counter units on
+// it are at least as strong as the stack; else (and at first) AI_findSiegeMusterPlot picks one
+void CvPlayerAI::AI_setSiegeMuster(const std::vector<SiegeThreat>& aThreats, int iOldCityID, int iOldPlot)
+{
+	const SiegeThreat* pBest = NULL;
+	int iBestValue = -1;
+	for (uint t = 0; t < aThreats.size(); ++t)
+	{
+		const SiegeThreat& kThreat = aThreats[t];
+		const int iValue = 1000 * (kThreat.pCity->getPopulation() + (kThreat.pCity->isCapital() ? 3 : 0)) - kThreat.iDistance;
+		if (iValue > iBestValue)
+		{
+			iBestValue = iValue;
+			pBest = &kThreat;
+		}
+	}
+	if (pBest == NULL)
+	{
+		return;
+	}
+	const CvCity& kCity = *pBest->pCity;
+	const CvPlot& kThreatPlot = *pBest->pPlot;
+	const CvMap& kMap = GC.getMap();
+
+	CvPlot* pMusterPlot = NULL;
+	bool bMoved = false;
+	if (iOldCityID == kCity.getID() && iOldPlot >= 0)
+	{
+		CvPlot* const pOldPlot = kMap.plotByIndexINLINE(iOldPlot);
+		if (pOldPlot->isCity() ? !kCity.isBesieged() : AI_isSiegeMusterPlotValid(*pOldPlot, kCity))
+		{
+			if (plotDistance(pOldPlot->getX_INLINE(), pOldPlot->getY_INLINE(), kThreatPlot.getX_INLINE(), kThreatPlot.getY_INLINE()) >= 2
+				|| AI_siegeMusterStrengthPercent(*pOldPlot, kThreatPlot) >= 100)
+			{
+				pMusterPlot = pOldPlot;
+			}
+			else
+			{
+				bMoved = true; // the stack came near and the units gathered there are weaker
+			}
+		}
+	}
+	if (pMusterPlot == NULL)
+	{
+		pMusterPlot = AI_findSiegeMusterPlot(kCity, kThreatPlot);
+	}
+	if (pMusterPlot == NULL)
+	{
+		return;
+	}
+	m_iSiegeMusterCityID = kCity.getID();
+	m_iSiegeMusterPlot = kMap.plotNumINLINE(pMusterPlot->getX_INLINE(), pMusterPlot->getY_INLINE());
+	m_iSiegeMusterThreatPlot = kMap.plotNumINLINE(kThreatPlot.getX_INLINE(), kThreatPlot.getY_INLINE());
+	if (gPlayerLogLevel >= 1 && m_iSiegeMusterPlot != iOldPlot)
+	{
+		logWTP(WTP_LOG_MILITARY, getID(), "WTP siege: Player %d (%S) turn %d: counter units gather at %d,%d near %S against the siege stack at %d,%d (strength %d)%s",
+			getID(), getCivilizationDescription(0), GC.getGameINLINE().getGameTurn(), pMusterPlot->getX_INLINE(), pMusterPlot->getY_INLINE(),
+			kCity.getName().GetCString(), kThreatPlot.getX_INLINE(), kThreatPlot.getY_INLINE(), pBest->iStrength, bMoved ? ", moved away from the stack" : "");
+	}
+}
+
+// WTP: siege: a gathering plot: land of the colony's area, passable, no city or fort, no visible enemy
+bool CvPlayerAI::AI_isSiegeMusterPlotValid(const CvPlot& kPlot, const CvCity& kCity) const
+{
+	if (kPlot.isWater() || kPlot.isImpassable() || kPlot.isCity(true) || kPlot.area() != kCity.area() || kPlot.isVisibleEnemyUnit(getID()))
+	{
+		return false;
+	}
+	// the counter units must be able to get there: no peak without a route (only some professions enter them), no terrain or
+	// feature a colonist can not enter (e.g. large rivers)
+	if (kPlot.isPeak() && kPlot.getRouteType() == NO_ROUTE)
+	{
+		return false;
+	}
+	const UnitTypes eColonist = getUnitType(GLOBAL_DEFINE_DEFAULT_POPULATION_UNIT);
+	if (eColonist != NO_UNIT)
+	{
+		const CvUnitInfo& kColonist = GC.getUnitInfo(eColonist);
+		if (kColonist.getTerrainImpassable(kPlot.getTerrainType())
+			|| (kPlot.getFeatureType() != NO_FEATURE && kColonist.getFeatureImpassable(kPlot.getFeatureType())))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+// WTP: siege: the gathering plot beside the colony with the best defense that is not beside the siege stack (the farther the
+// better among equal ones); none beside the colony: the same within 2 plots of it; none such: the plot beside the colony
+// farthest from the stack; none at all: the colony unless it is besieged (a besieged colony can not be entered or left)
+CvPlot* CvPlayerAI::AI_findSiegeMusterPlot(const CvCity& kCity, const CvPlot& kThreatPlot) const
+{
+	CvPlot* pBestSafe = NULL;
+	int iBestSafeValue = -1;
+	CvPlot* pBestNear = NULL;
+	int iBestNearDistance = -1;
+	for (int iRing = 1; iRing <= 2 && pBestSafe == NULL; ++iRing)
+	{
+		for (int iDX = -iRing; iDX <= iRing; ++iDX)
+		{
+			for (int iDY = -iRing; iDY <= iRing; ++iDY)
+			{
+				if (std::max(std::abs(iDX), std::abs(iDY)) != iRing)
+				{
+					continue;
+				}
+				CvPlot* const pLoopPlot = plotXY(kCity.getX_INLINE(), kCity.getY_INLINE(), iDX, iDY);
+				if (pLoopPlot == NULL || !AI_isSiegeMusterPlotValid(*pLoopPlot, kCity))
+				{
+					continue;
+				}
+				const int iDistance = plotDistance(pLoopPlot->getX_INLINE(), pLoopPlot->getY_INLINE(), kThreatPlot.getX_INLINE(), kThreatPlot.getY_INLINE());
+				if (iDistance >= 2)
+				{
+					const int iValue = 100 * std::max(0, pLoopPlot->defenseModifier(getTeam(), false)) + iDistance;
+					if (iValue > iBestSafeValue)
+					{
+						iBestSafeValue = iValue;
+						pBestSafe = pLoopPlot;
+					}
+				}
+				else if (iRing == 1 && iDistance > iBestNearDistance)
+				{
+					iBestNearDistance = iDistance;
+					pBestNear = pLoopPlot;
+				}
+			}
+		}
+	}
+	if (pBestSafe != NULL)
+	{
+		return pBestSafe;
+	}
+	if (pBestNear != NULL)
+	{
+		return pBestNear;
+	}
+	return kCity.isBesieged() ? NULL : kCity.plot();
+}
+
+// WTP: siege: the attack strength of our counter units on the gathering plot against the siege stack, in percent of its defense
+int CvPlayerAI::AI_siegeMusterStrengthPercent(const CvPlot& kMusterPlot, const CvPlot& kThreatPlot) const
+{
+	int iOurs = 0;
+	CLLNode<IDInfo>* pUnitNode = kMusterPlot.headUnitNode();
+	while (pUnitNode != NULL)
+	{
+		const CvUnit* const pLoopUnit = kMusterPlot.getUnitNodeLoop(pUnitNode);
+		if (pLoopUnit != NULL && pLoopUnit->getOwnerINLINE() == getID() && pLoopUnit->AI_getUnitAIType() == UNITAI_COUNTER && pLoopUnit->canAttack())
+		{
+			iOurs += pLoopUnit->currEffectiveStr(&kThreatPlot, pLoopUnit);
+		}
+	}
+	const int iTheirs = AI_localDefenceStrength(&kThreatPlot, NO_TEAM, DOMAIN_LAND, 0);
+	return 100 * iOurs / std::max(1, iTheirs);
+}
+
+CvCity* CvPlayerAI::AI_getSiegeMusterCity() const
+{
+	return (m_iSiegeMusterCityID >= 0) ? getCity(m_iSiegeMusterCityID) : NULL;
+}
+
+CvPlot* CvPlayerAI::AI_getSiegeMusterPlot() const
+{
+	return (m_iSiegeMusterPlot >= 0) ? GC.getMap().plotByIndexINLINE(m_iSiegeMusterPlot) : NULL;
+}
+
+CvPlot* CvPlayerAI::AI_getSiegeMusterThreatPlot() const
+{
+	return (m_iSiegeMusterThreatPlot >= 0) ? GC.getMap().plotByIndexINLINE(m_iSiegeMusterThreatPlot) : NULL;
+}
+
+// WTP: siege: the artillery units a stack attacking a city takes along: one per SIEGE_AI_UNITS_PER_ARTILLERY units, from
+// SIEGE_AI_MIN_ARTILLERY to SIEGE_AI_MAX_ARTILLERY
+int CvPlayerAI::AI_siegeArtilleryNeeded(int iGroupSize) const
+{
+	return range(iGroupSize / std::max(1, GLOBAL_DEFINE_SIEGE_AI_UNITS_PER_ARTILLERY), GLOBAL_DEFINE_SIEGE_AI_MIN_ARTILLERY, GLOBAL_DEFINE_SIEGE_AI_MAX_ARTILLERY);
+}
+
+// WTP: siege: strong enemies near a stack beside kCity: the enemy units within 2 plots of the stack, those in the city
+// included, have at least SIEGE_AI_ABORT_ENEMY_PERCENT of the strength of the own units on the stack's plot
+bool CvPlayerAI::AI_isSiegeThreatened(const CvPlot& kStackPlot, const CvCity& /*kCity*/) const
+{
+	CvPlayerAI& kThis = const_cast<CvPlayerAI&>(*this);
+	CvPlot* const pStackPlot = const_cast<CvPlot*>(&kStackPlot);
+	const int iOurs = GET_TEAM(getTeam()).AI_getOurPlotStrength(pStackPlot, 0, false, false);
+	if (iOurs <= 0)
+	{
+		return true;
+	}
+	const int iEnemy = kThis.AI_getEnemyPlotStrength(pStackPlot, 2, false, false);
+	return 100 * iEnemy >= GLOBAL_DEFINE_SIEGE_AI_ABORT_ENEMY_PERCENT * iOurs;
+}
+
+// WTP: siege: black powder for the wagon train of a stack can be bought into a coastal colony at the Europe price (keeping
+// 300 gold), unless enemy warships blockade its port
+bool CvPlayerAI::AI_isSiegePowderPort(const CvCity& kCity) const
+{
+	return getParent() != NO_PLAYER && canTradeWithEurope() && isYieldEuropeTradable(YIELD_BLACK_POWDER)
+		&& kCity.isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()) && !kCity.isNavalBlockade();
+}
+
+bool CvPlayerAI::AI_canBuySiegePowder(const CvCity& kCity, int iAmount) const
+{
+	if (iAmount <= 0 || !AI_isSiegePowderPort(kCity))
+	{
+		return false;
+	}
+	return getGold() >= GET_PLAYER(getParent()).getYieldSellPrice(YIELD_BLACK_POWDER) * iAmount + 300;
+}
+
+void CvPlayerAI::AI_setSiegePowderGold(int iGold)
+{
+	m_iSiegePowderGold = iGold;
+	m_iSiegePowderTurn = GC.getGameINLINE().getGameTurn();
+}
+
+// WTP: siege: the gold needed to buy iAmount black powder, the reserve included
+int CvPlayerAI::AI_siegePowderGold(int iAmount) const
+{
+	return (getParent() != NO_PLAYER) ? GET_PLAYER(getParent()).getYieldSellPrice(YIELD_BLACK_POWDER) * iAmount + 300 : MAX_INT;
+}
+
+// WTP: siege: as much as the gold pays for, if that makes the wagon train ready to go
+void CvPlayerAI::AI_buySiegePowder(CvCity& kCity, int iAmount)
+{
+	if (iAmount <= 0 || !AI_isSiegePowderPort(kCity))
+	{
+		return;
+	}
+	iAmount = std::min(iAmount, (getGold() - 300) / std::max(1, GET_PLAYER(getParent()).getYieldSellPrice(YIELD_BLACK_POWDER)));
+	if (iAmount <= 0 || iAmount + kCity.getYieldStored(YIELD_BLACK_POWDER) < GLOBAL_DEFINE_SIEGE_AI_WAGON_MIN_POWDER)
+	{
+		return;
+	}
+	const int iPrice = GET_PLAYER(getParent()).getYieldSellPrice(YIELD_BLACK_POWDER) * iAmount;
+	changeGold(-iPrice);
+	kCity.changeYieldStored(YIELD_BLACK_POWDER, iAmount);
+	m_iWarMilitarySpent += iPrice;
+	if (gPlayerLogLevel >= 1) logWTP(WTP_LOG_BUY, getID(), "WTP decision: Player %d (%S) war: buys %d black powder for a wagon train in %S for %d gold",
+		getID(), getCivilizationDescription(0), iAmount, kCity.getName().GetCString(), iPrice);
+}
 
 void CvPlayerAI::AI_doTurnUnitsPost()
 {
@@ -756,6 +1406,14 @@ void CvPlayerAI::AI_doTurnUnitsPost()
 		{
 			apBack[i]->getGroup()->setAutomateType(AUTOMATE_NATIVE_TRADE);
 		}
+		for (uint i = 0; i < apTreasureShips.size(); ++i)
+		{
+			apTreasureShips[i]->AI_treasureShipEurope();
+		}
+		for (uint i = 0; i < apTreasureShipsBack.size(); ++i)
+		{
+			apTreasureShipsBack[i]->getGroup()->setAutomateType(AUTOMATE_TREASURE_SHIP);
+		}
 		// WTP: units on their way to a port for a transport (transport to a city or plot, job automation): their ship is
 		// chosen again now that the ships have their moves back, one unit after the other (each counts the tours before)
 		std::vector<CvUnitAI*> apTravellers;
@@ -771,14 +1429,6 @@ void CvPlayerAI::AI_doTurnUnitsPost()
 		for (uint i = 0; i < apTravellers.size(); ++i)
 		{
 			apTravellers[i]->AI_travelChooseShip();
-		}
-		for (uint i = 0; i < apTreasureShips.size(); ++i)
-		{
-			apTreasureShips[i]->AI_treasureShipEurope();
-		}
-		for (uint i = 0; i < apTreasureShipsBack.size(); ++i)
-		{
-			apTreasureShipsBack[i]->getGroup()->setAutomateType(AUTOMATE_TREASURE_SHIP);
 		}
 		return;
 	}
@@ -1213,6 +1863,18 @@ int CvPlayerAI::AI_movementPriority(CvSelectionGroup* pGroup)
 			return 4;
 		}
 
+		// WTP: siege: the counter units gathering against a siege stack move before the other fighters, so that the city
+		// defenders (AI_leaveAttack) see the stack after their attack
+		if (pHeadUnit->AI_getUnitAIType() == UNITAI_COUNTER && pHeadUnit->getDomainType() == DOMAIN_LAND)
+		{
+			const CvCity* const pMusterCity = AI_getSiegeMusterCity();
+			if (pMusterCity != NULL && plotDistance(pHeadUnit->getX_INLINE(), pHeadUnit->getY_INLINE(), pMusterCity->getX_INLINE(), pMusterCity->getY_INLINE())
+				<= GLOBAL_DEFINE_SIEGE_AI_COUNTER_GATHER_RANGE + 2)
+			{
+				return 4;
+			}
+		}
+
 		if (pHeadUnit->bombardRate() > 0)
 		{
 			return 5;
@@ -1297,6 +1959,8 @@ void CvPlayerAI::AI_unitUpdate()
 		//units are moved else it's unfair on the AI.
 		if (!isHuman())
 		{
+			AI_doSieges(); // WTP: siege: before the units attack
+			AI_doWarDefense(); // WTP: siege
 			int iLoop;
 			CvCity* pLoopCity;
 			for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
@@ -4511,6 +5175,25 @@ int CvPlayerAI::AI_militaryHelp(PlayerTypes ePlayer, int& iNumUnits, UnitTypes& 
 	return kPlayer.getEuropeUnitBuyPrice(eUnit) * GC.getDefineINT("KING_BUY_UNIT_PRICE_MODIFIER") / 100;
 }
 
+// WTP: new price after one successful bargain when selling to natives. iBase is the first offer of the natives,
+// iIncrease the rise in per mille (random, trader bonus included). Below BARGAIN_SELL_SOFT_CAP_PERCENT of iBase the
+// price rises by iIncrease, above it each bargain only closes iIncrease / 2 per mille of the gap to
+// BARGAIN_SELL_MAX_PERCENT of iBase, so even endless bargaining never goes beyond that.
+static int bargainSellPrice(int iBase, int iPrice, int iIncrease)
+{
+	const int iSoftCap = iBase * GLOBAL_DEFINE_BARGAIN_SELL_SOFT_CAP_PERCENT / 100;
+	const int iMax = iBase * GLOBAL_DEFINE_BARGAIN_SELL_MAX_PERCENT / 100;
+	if (iPrice >= iMax)
+	{
+		return iPrice;
+	}
+	if (iPrice < iSoftCap)
+	{
+		return std::min(iSoftCap, iPrice * (1000 + iIncrease) / 1000);
+	}
+	return iPrice + std::max(1, (iMax - iPrice) * iIncrease / 2000);
+}
+
 bool CvPlayerAI::AI_counterPropose(PlayerTypes ePlayer, const CLinkList<TradeData>* pTheirList, const CLinkList<TradeData>* pOurList, CLinkList<TradeData>* pTheirInventory, CLinkList<TradeData>* pOurInventory, CLinkList<TradeData>* pTheirCounter, CLinkList<TradeData>* pOurCounter, const IDInfo& kTransport)
 {
 	FAssert(CxDesyncMonitor::isNeverSync());
@@ -4553,8 +5236,6 @@ bool CvPlayerAI::AI_counterPropose(PlayerTypes ePlayer, const CLinkList<TradeDat
 				{
 					randomPriceChange = priceIncreaseMax / 3;
 				}
-				int newPrice = oldPrice * (1000 + randomPriceChange) / 1000;
-
 				// R&R, ray, change for Trait Trader - START
 				// WTP, ray, also consider European Trait
 				int iTotalNativeTradeModifier = GET_PLAYER(getID()).getNativeTradeModifier() + kTradingPartner.getNativeTradeModifier();
@@ -4563,9 +5244,17 @@ bool CvPlayerAI::AI_counterPropose(PlayerTypes ePlayer, const CLinkList<TradeDat
 				{
 					iTotalNativeTradeModifier = GLOBAL_DEFINE_MAX_NATIVE_BARGAIN_MODIFIER;
 				}
-				// here we calculate the price
-				newPrice = newPrice * (100 + iTotalNativeTradeModifier) / 100;
+				// WTP: the trader bonus speeds up each bargain, the limits stay those of the first offer
+				randomPriceChange = randomPriceChange * (100 + iTotalNativeTradeModifier) / 100;
 				// R&R, ray, change for Trait Trader - END
+
+				// WTP: the first offer is what the natives would pay without bargaining
+				int iFirstOffer = AI_dealVal(ePlayer, pTheirList);
+				if (iFirstOffer <= 0)
+				{
+					iFirstOffer = oldPrice;
+				}
+				int newPrice = bargainSellPrice(iFirstOffer, oldPrice, randomPriceChange);
 
 				// R&R, ray, small correction to stop at max gold of player
 				int iGoldAvailable = this->AI_maxGoldTrade(ePlayer);
@@ -5628,7 +6317,8 @@ bool CvPlayerAI::AI_nativeSellProfit(YieldTypes eYield, int iAmount, const CvCit
 
 // WTP: the AI bargains once for a better price when it sells to natives (the bargaining of the diplomacy screen is
 // Python driven, the AI has no access to it). Same rules: the natives may refuse (they do not trade with us for some
-// turns and like us less), otherwise the price rises by 7 to 21% plus the trader bonus, never above what the tribe may pay.
+// turns and like us less), otherwise the price rises by 10 to 30% plus the trader bonus (bargainSellPrice), never above
+// what the tribe may pay.
 // Returns true if the price was raised. iPrice is the price in gold the natives pay for the whole deal.
 bool CvPlayerAI::AI_bargainWithNatives(PlayerTypes eNative, int& iPrice)
 {
@@ -5649,10 +6339,10 @@ bool CvPlayerAI::AI_bargainWithNatives(PlayerTypes eNative, int& iPrice)
 	}
 
 	const int iMaxIncrease = GLOBAL_DEFINE_PRICE_INCREASE_BARGAIN_SELL;
-	const int iIncrease = std::max(iMaxIncrease / 3, GC.getGameINLINE().getSorenRandNum(std::max(1, iMaxIncrease), "AI bargain sell price"));
 	const int iModifier = std::min(getNativeTradeModifier() + kNative.getNativeTradeModifier(), GLOBAL_DEFINE_MAX_NATIVE_BARGAIN_MODIFIER);
-	int iNewPrice = iPrice * (1000 + iIncrease) / 1000;
-	iNewPrice = iNewPrice * (100 + iModifier) / 100;
+	const int iIncrease = std::max(iMaxIncrease / 3, GC.getGameINLINE().getSorenRandNum(std::max(1, iMaxIncrease), "AI bargain sell price")) * (100 + iModifier) / 100;
+	// the AI bargains once, so iPrice is the first offer
+	int iNewPrice = bargainSellPrice(iPrice, iPrice, iIncrease);
 	iNewPrice = std::min(iNewPrice, kNative.AI_maxGoldTrade(getID()));
 	if (iNewPrice <= iPrice)
 	{
@@ -15116,6 +15806,120 @@ int CvPlayerAI::AI_getEnemyPlotStrength(CvPlot* pPlot, int iRange, bool bDefensi
 
 }
 
+// K-Mod: total defensive strength of the units that can move iRange steps to reach pDefencePlot (eDefenceTeam NO_TEAM: our
+// potential enemies). For our potential enemies on land without bCheckMoves it also refreshes the strength memory of the team.
+// WTP: no first strikes, collateral damage or fort aid; units aboard ships do not defend
+int CvPlayerAI::AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eDefenceTeam, DomainTypes eDomainType, int iRange, bool bAtTarget, bool bCheckMoves, bool bNoCache) const
+{
+	PROFILE_FUNC();
+
+	FAssert(bAtTarget || !bCheckMoves); // it doesn't make much sense to check moves if the defenders are meant to stay put.
+
+	int iTotal = 0;
+	for (int iDX = -iRange; iDX <= iRange; iDX++)
+	{
+		for (int iDY = -iRange; iDY <= iRange; iDY++)
+		{
+			const CvPlot* const pLoopPlot = plotXY(pDefencePlot->getX_INLINE(), pDefencePlot->getY_INLINE(), iDX, iDY);
+			if (pLoopPlot == NULL || !pLoopPlot->isVisible(getTeam(), false))
+			{
+				continue;
+			}
+			int iPlotTotal = 0;
+			CLLNode<IDInfo>* pUnitNode = pLoopPlot->headUnitNode();
+			while (pUnitNode != NULL)
+			{
+				const CvUnit* const pLoopUnit = pLoopPlot->getUnitNodeLoop(pUnitNode);
+				if (pLoopUnit == NULL || pLoopUnit->isCargo() || !pLoopUnit->canDefend() || pLoopUnit->isInvisible(getTeam(), false))
+				{
+					continue;
+				}
+				if (eDefenceTeam != NO_TEAM ? pLoopUnit->getTeam() != eDefenceTeam : !pLoopUnit->isPotentialEnemy(getTeam(), pLoopPlot))
+				{
+					continue;
+				}
+				if (eDomainType != NO_DOMAIN && pLoopUnit->getDomainType() != eDomainType)
+				{
+					continue;
+				}
+				if (bCheckMoves)
+				{
+					// unfortunately, we can't use the global pathfinder here
+					// - because the calling function might be waiting to use some pathfinding results
+					// So this check will have to be really rough. :(
+					const int iMoves = pLoopUnit->baseMoves() + (pLoopPlot->isValidRoute(pLoopUnit) ? 1 : 0);
+					if (std::max(std::abs(iDX), std::abs(iDY)) > iMoves)
+					{
+						continue; // can't make it. (maybe?)
+					}
+				}
+				iPlotTotal += pLoopUnit->currEffectiveStr(bAtTarget ? pDefencePlot : pLoopPlot, NULL);
+			}
+			if (!bNoCache && !isHuman() && eDefenceTeam == NO_TEAM && eDomainType == DOMAIN_LAND && !bCheckMoves && (!bAtTarget || pLoopPlot == pDefencePlot))
+			{
+				// while since we're here, we might as well update our memory.
+				// (human players don't track strength memory)
+				GET_TEAM(getTeam()).AI_setStrengthMemory(pLoopPlot, iPlotTotal);
+			}
+			iTotal += iPlotTotal;
+		}
+	}
+	return iTotal;
+}
+
+// K-Mod: total attack strength of the units at war with us (or of eAttackTeam) that can move iRange steps to reach pTargetPlot;
+// bCheckCanAttack: only units that can still attack this turn. WTP: no first strikes, collateral damage or fort aid; units aboard
+// ships count (landing)
+int CvPlayerAI::AI_localAttackStrength(const CvPlot* pTargetPlot, TeamTypes eAttackTeam, DomainTypes eDomainType, int iRange, bool bUseTarget, bool bCheckMoves, bool bCheckCanAttack) const
+{
+	PROFILE_FUNC();
+
+	int iTotal = 0;
+	for (int iDX = -iRange; iDX <= iRange; iDX++)
+	{
+		for (int iDY = -iRange; iDY <= iRange; iDY++)
+		{
+			const CvPlot* const pLoopPlot = plotXY(pTargetPlot->getX_INLINE(), pTargetPlot->getY_INLINE(), iDX, iDY);
+			if (pLoopPlot == NULL || !pLoopPlot->isVisible(getTeam(), false))
+			{
+				continue;
+			}
+			CLLNode<IDInfo>* pUnitNode = pLoopPlot->headUnitNode();
+			while (pUnitNode != NULL)
+			{
+				const CvUnit* const pLoopUnit = pLoopPlot->getUnitNodeLoop(pUnitNode);
+				if (pLoopUnit == NULL || !pLoopUnit->canAttack() || pLoopUnit->isInvisible(getTeam(), false))
+				{
+					continue;
+				}
+				if (eAttackTeam != NO_TEAM ? pLoopUnit->getTeam() != eAttackTeam : !pLoopUnit->isEnemy(getTeam(), pLoopPlot))
+				{
+					continue;
+				}
+				if (eDomainType != NO_DOMAIN && pLoopUnit->getDomainType() != eDomainType)
+				{
+					continue;
+				}
+				if (bCheckMoves)
+				{
+					const int iMoves = pLoopUnit->baseMoves() + (pLoopPlot->isValidRoute(pLoopUnit) ? 1 : 0);
+					if (std::max(std::abs(iDX), std::abs(iDY)) > iMoves)
+					{
+						continue; // can't make it. (maybe?)
+					}
+				}
+				if (bCheckCanAttack && (!pLoopUnit->canMove() || (pLoopUnit->isMadeAttack() && !pLoopUnit->isBlitz())))
+				{
+					continue; // can't attack
+				}
+				iTotal += pLoopUnit->currEffectiveStr(bUseTarget ? pTargetPlot : NULL, bUseTarget ? pLoopUnit : NULL);
+			}
+		}
+	}
+	return iTotal;
+}
+// K-Mod end
+
 int CvPlayerAI::AI_goldToUpgradeAllUnits(int iExpThreshold)
 {
 	if (m_iUpgradeUnitsCacheTurn == GC.getGameINLINE().getGameTurn() && m_iUpgradeUnitsCachedExpThreshold == iExpThreshold)
@@ -18955,6 +19759,10 @@ void CvPlayerAI::AI_doWorkforcePlan()
 		std::vector<CvUnit*> apToClear;
 		for (CvCity* pCity = firstCity(&iLoop); pCity != NULL; pCity = nextCity(&iLoop))
 		{
+			if (pCity->isBesieged())
+			{
+				continue; // WTP: siege: the plan ignores a besieged colony
+			}
 			for (int i = 0; i < pCity->getPopulation(); ++i)
 			{
 				CvUnitAI* const pCitizen = static_cast<CvUnitAI*>(pCity->getPopulationUnitByIndex(i));
@@ -18976,10 +19784,14 @@ void CvPlayerAI::AI_doWorkforcePlan()
 		}
 	}
 
-	// colonies
+	// colonies (a besieged colony is ignored: its citizens stay as they are, nobody is sent there)
 	std::vector<WfCity> aCities;
 	for (CvCity* pCity = firstCity(&iLoop); pCity != NULL; pCity = nextCity(&iLoop))
 	{
+		if (pCity->isBesieged())
+		{
+			continue;
+		}
 		WfCity kCity;
 		kCity.pCity = pCity;
 		kCity.aiRaw.assign(NUM_YIELD_TYPES, 0);
@@ -19222,6 +20034,10 @@ void CvPlayerAI::AI_doWorkforcePlan()
 		std::vector<CvUnit*> apUnits;
 		for (CvCity* pCity = firstCity(&iLoop); pCity != NULL; pCity = nextCity(&iLoop))
 		{
+			if (pCity->isBesieged())
+			{
+				continue; // WTP: siege: the citizens of a besieged colony stay where they are
+			}
 			for (int i = 0; i < pCity->getPopulation(); ++i)
 			{
 				CvUnit* const pCitizen = pCity->getPopulationUnitByIndex(i);
@@ -19253,6 +20069,11 @@ void CvPlayerAI::AI_doWorkforcePlan()
 					}
 					static_cast<CvUnitAI*>(pLoopUnit)->AI_clearWfTask();
 				}
+				continue;
+			}
+			// WTP: siege: colonists in a besieged colony can not leave it
+			if (!pLoopUnit->isCargo() && pLoopUnit->plot() != NULL && pLoopUnit->plot()->isCity() && pLoopUnit->plot()->getPlotCity()->isBesieged())
+			{
 				continue;
 			}
 			apUnits.push_back(pLoopUnit);
@@ -21821,7 +22642,7 @@ bool CvPlayerAI::AI_doNativeTraderPurchase()
 // area with one of our colonies or on the coast: our transports bring the trader there)
 bool CvPlayerAI::AI_hasTradePostTarget() const
 {
-	if (getNativeTradePostSuccessPercent() < 40)
+	if (getNativeTradePostSuccessPercent() - getTradePostCountPenalty() < 40)
 	{
 		return false;
 	}
@@ -21851,7 +22672,8 @@ bool CvPlayerAI::AI_hasTradePostTarget() const
 			const CvPlot* const pPlot = pVillage->plot();
 			if (pVillage->getTradePostCivilization() != getCivilizationType() && pPlot->isRevealed(getTeam(), false)
 				&& (pPlot->area()->getCitiesPerPlayer(getID()) > 0 || pPlot->isCoastalLand(GC.getMIN_WATER_SIZE_FOR_OCEAN()))
-				&& pPlot->calculateCulturePercent(pPlot->getOwnerINLINE()) == 100)
+				&& pPlot->calculateCulturePercent(pPlot->getOwnerINLINE()) == 100
+				&& pVillage->getTradeBlockingFortOwner(getID()) == NO_PLAYER)
 			{
 				return true;
 			}
@@ -21888,6 +22710,167 @@ bool CvPlayerAI::AI_isTraderTargetTaken(int iPlotIndex, int iUnitID) const
 		}
 	}
 	return false;
+}
+
+// WTP: pioneer plan (user 2026-10-25): the plot a pioneer with the automation AUTOMATE_PIONEER_PLAN works on (-1: none).
+// Marks whose improvement exists already are removed. Free pioneers get their plots together, the nearest pair of pioneer
+// and plot first (a priority 2 plot counts 6 plots further away): a priority 1 plot gets a hardy pioneer or two pioneers
+// (a hardy pioneer counts twice), a priority 2 plot one; twice as many where the build clears a forest. Only plots on the
+// pioneer's land area.
+namespace
+{
+	// the strength a pioneer brings to a priority 1 plot (2 are needed): a hardy pioneer (expert pioneer) 2, others 1
+	int pioneerPlanStrength(const CvUnit& kUnit)
+	{
+		const ProfessionTypes ePioneer = (ProfessionTypes)GC.getInfoTypeForString("PROFESSION_PIONEER");
+		return (ePioneer != NO_PROFESSION && GC.getProfessionInfo(ePioneer).LbD_getExpert() == kUnit.getUnitClassType()) ? 2 : 1;
+	}
+
+	// the strength a marked plot wants: priority 1 two, priority 2 one; WTP (user 2026-10-27): twice that if the build clears the
+	// plot's feature (a farm in a forest)
+	int pioneerPlanWanted(const CvPlayer& kPlayer, int iPlotIndex)
+	{
+		int iWanted = (kPlayer.getPioneerPlanPriority(iPlotIndex) == 1) ? 2 : 1;
+		const CvPlot* const pPlot = GC.getMap().plotByIndexINLINE(iPlotIndex);
+		const BuildTypes eBuild = kPlayer.getPioneerPlanBuild(iPlotIndex);
+		if (pPlot != NULL && eBuild != NO_BUILD && pPlot->getFeatureType() != NO_FEATURE && GC.getBuildInfo(eBuild).isFeatureRemove(pPlot->getFeatureType()))
+		{
+			iWanted *= 2;
+		}
+		return iWanted;
+	}
+}
+
+// WTP: the pioneer found no way to the plot: it does not get that plot again for PIONEER_PLAN_NO_WAY_TURNS turns (it got the
+// same plot every turn and stood still)
+static const int PIONEER_PLAN_NO_WAY_TURNS = 5;
+void CvPlayerAI::AI_setPioneerPlanNoWay(int iUnitID, int iPlotIndex)
+{
+	m_mapPioneerPlanTargets.erase(iUnitID);
+	m_mapPioneerPlanNoWay[std::make_pair(iUnitID, iPlotIndex)] = GC.getGameINLINE().getGameTurn();
+}
+
+int CvPlayerAI::AI_pioneerPlanTarget(const CvUnit& kPioneer)
+{
+	const CvMap& kMap = GC.getMap();
+	// marks already done
+	std::vector<int> aiDone;
+	for (std::map<int, int>::const_iterator it = getPioneerPlans().begin(); it != getPioneerPlans().end(); ++it)
+	{
+		const CvPlot* const pPlot = kMap.plotByIndexINLINE(it->first);
+		const BuildTypes eBuild = (BuildTypes)(it->second / 10);
+		const ImprovementTypes eImprovement = (eBuild >= 0 && eBuild < GC.getNumBuildInfos()) ? (ImprovementTypes)GC.getBuildInfo(eBuild).getImprovement() : NO_IMPROVEMENT;
+		if (pPlot == NULL || eImprovement == NO_IMPROVEMENT || pPlot->getImprovementType() == eImprovement)
+		{
+			aiDone.push_back(it->first);
+		}
+	}
+	for (uint i = 0; i < aiDone.size(); ++i)
+	{
+		setPioneerPlan(aiDone[i], NO_BUILD, 0);
+	}
+	// targets of pioneers that are gone, no longer automated or whose mark is gone; the strength on each plot
+	std::map<int, int> mapStrength;
+	for (std::map<int, int>::iterator it = m_mapPioneerPlanTargets.begin(); it != m_mapPioneerPlanTargets.end(); )
+	{
+		const CvUnit* const pUnit = getUnit(it->first);
+		if (pUnit == NULL || pUnit->getGroup() == NULL || pUnit->getGroup()->getAutomateType() != AUTOMATE_PIONEER_PLAN
+			|| getPioneerPlanBuild(it->second) == NO_BUILD)
+		{
+			m_mapPioneerPlanTargets.erase(it++);
+		}
+		else
+		{
+			mapStrength[it->second] += pioneerPlanStrength(*pUnit);
+			++it;
+		}
+	}
+	std::map<int, int>::const_iterator itOwn = m_mapPioneerPlanTargets.find(kPioneer.getID());
+	if (itOwn != m_mapPioneerPlanTargets.end())
+	{
+		return itOwn->second;
+	}
+	// the free pioneers
+	std::vector<const CvUnit*> apFree;
+	int iLoop;
+	for (const CvUnit* pLoopUnit = firstUnit(&iLoop); pLoopUnit != NULL; pLoopUnit = nextUnit(&iLoop))
+	{
+		if (pLoopUnit->getGroup() != NULL && pLoopUnit->getGroup()->getAutomateType() == AUTOMATE_PIONEER_PLAN && pLoopUnit->isOnMap()
+			&& !pLoopUnit->isCargo() && m_mapPioneerPlanTargets.find(pLoopUnit->getID()) == m_mapPioneerPlanTargets.end())
+		{
+			apFree.push_back(pLoopUnit);
+		}
+	}
+	// WTP (user 2026-10-25): priority 1 and 2 plots together; a priority 2 plot counts PIONEER_PLAN_PRIORITY_DISTANCE plots
+	// further away (a pioneer takes it if the nearest priority 1 plot is that much further); a priority 1 plot wants strength 2
+	// (a hardy pioneer or two pioneers), a priority 2 plot one pioneer
+	static const int PIONEER_PLAN_PRIORITY_DISTANCE = 6;
+	std::vector<int> aiPlots;
+	for (std::map<int, int>::const_iterator it = getPioneerPlans().begin(); it != getPioneerPlans().end(); ++it)
+	{
+		const int iWanted = pioneerPlanWanted(*this, it->first);
+		const std::map<int, int>::const_iterator itStrength = mapStrength.find(it->first);
+		if (itStrength == mapStrength.end() || itStrength->second < iWanted)
+		{
+			aiPlots.push_back(it->first);
+		}
+	}
+	while (!aiPlots.empty() && !apFree.empty())
+	{
+		int iBestDistance = MAX_INT;
+		int iBestUnit = -1;
+		int iBestPlot = -1;
+		for (uint u = 0; u < apFree.size(); ++u)
+		{
+			for (uint p = 0; p < aiPlots.size(); ++p)
+			{
+				const CvPlot* const pPlot = kMap.plotByIndexINLINE(aiPlots[p]);
+				if (pPlot->area() != apFree[u]->area() || !apFree[u]->canBuild(pPlot, getPioneerPlanBuild(aiPlots[p])))
+				{
+					continue;
+				}
+				const std::map<std::pair<int, int>, int>::const_iterator itNoWay = m_mapPioneerPlanNoWay.find(std::make_pair(apFree[u]->getID(), aiPlots[p]));
+				if (itNoWay != m_mapPioneerPlanNoWay.end() && GC.getGameINLINE().getGameTurn() - itNoWay->second < PIONEER_PLAN_NO_WAY_TURNS)
+				{
+					continue;
+				}
+				const int iDistance = plotDistance(apFree[u]->getX_INLINE(), apFree[u]->getY_INLINE(), pPlot->getX_INLINE(), pPlot->getY_INLINE())
+					+ ((getPioneerPlanPriority(aiPlots[p]) == 2) ? PIONEER_PLAN_PRIORITY_DISTANCE : 0);
+				if (iDistance < iBestDistance)
+				{
+					iBestDistance = iDistance;
+					iBestUnit = u;
+					iBestPlot = p;
+				}
+			}
+		}
+		if (iBestUnit < 0)
+		{
+			break;
+		}
+		const int iPlot = aiPlots[iBestPlot];
+		m_mapPioneerPlanTargets[apFree[iBestUnit]->getID()] = iPlot;
+		mapStrength[iPlot] += pioneerPlanStrength(*apFree[iBestUnit]);
+		if (mapStrength[iPlot] >= pioneerPlanWanted(*this, iPlot))
+		{
+			aiPlots.erase(aiPlots.begin() + iBestPlot);
+		}
+		apFree.erase(apFree.begin() + iBestUnit);
+	}
+	itOwn = m_mapPioneerPlanTargets.find(kPioneer.getID());
+	return (itOwn != m_mapPioneerPlanTargets.end()) ? itOwn->second : -1;
+}
+
+// WTP: pioneer plan (user 2026-10-27): true the first time in a turn that a pioneer finds no marked improvement left
+// (the player is told once per turn, not by every waiting pioneer)
+bool CvPlayerAI::AI_pioneerPlanDoneNotice()
+{
+	if (!getPioneerPlans().empty() || m_iPioneerPlanDoneTurn == GC.getGameINLINE().getGameTurn())
+	{
+		return false;
+	}
+	m_iPioneerPlanDoneTurn = GC.getGameINLINE().getGameTurn();
+	return true;
 }
 
 // WTP: an immigrant on the docks the workforce plan wants as an expert: it has a job task the unit is an expert for
@@ -21984,6 +22967,32 @@ void CvPlayerAI::AI_setSavingGold()
 // WTP: keeps the gold for the cheapest urgent building (see CvCityAI::AI_isUrgentHurryBuilding); the colony hurries it in its turn
 bool CvPlayerAI::AI_doUrgentHurrySaving()
 {
+	// the powder of a waiting wagon train comes first
+	if (m_iSiegePowderTurn >= GC.getGameINLINE().getGameTurn() - 1 && getGold() < m_iSiegePowderGold)
+	{
+		AI_setSavingGold();
+		if (gPlayerLogLevel >= 1) logWTP(WTP_LOG_BUY, getID(), "WTP decision: Player %d (%S) saves for the powder of a wagon train (%d gold, have %d)", getID(), getCivilizationDescription(0), m_iSiegePowderGold, getGold());
+		return true;
+	}
+
+	int iWagonLoop;
+	for (CvCity* pLoopCity = firstCity(&iWagonLoop); pLoopCity != NULL; pLoopCity = nextCity(&iWagonLoop))
+	{
+		const int iWagonCost = pLoopCity->AI().AI_siegeWagonHurryCost();
+		// with twice the cost the colony hurries it next turn anyway and the purchases go on
+		if (iWagonCost >= 0 && getGold() >= 2 * iWagonCost)
+		{
+			return false;
+		}
+		if (iWagonCost >= 0)
+		{
+			AI_setSavingGold();
+			if (gPlayerLogLevel >= 1) logWTP(WTP_LOG_BUY, getID(), "WTP decision: Player %d (%S) saves for the wagon train of a stack in %S (%d gold, have %d)", getID(), getCivilizationDescription(0),
+				pLoopCity->getName().GetCString(), iWagonCost, getGold());
+			return true;
+		}
+	}
+
 	CvCity* pBestCity = NULL;
 	BuildingTypes eBestBuilding = NO_BUILDING;
 	int iBestCost = MAX_INT;
@@ -22898,11 +23907,46 @@ bool CvPlayerAI::AI_doWarMilitaryPurchase()
 		}
 	}
 
+	// WTP: siege: the attacking stacks need artillery (AI_siegeArtilleryNeeded): while the offensive units have less than one
+	// artillery unit per SIEGE_AI_UNITS_PER_ARTILLERY (at least SIEGE_AI_MIN_ARTILLERY), artillery is bought first, for attacking
+	int iOffensive = 0;
+	int iOffensiveArtillery = 0;
+	for (CvUnit* pLoopUnit = firstUnit(&iLoop); pLoopUnit != NULL; pLoopUnit = nextUnit(&iLoop))
+	{
+		if (pLoopUnit->getDomainType() == DOMAIN_LAND && pLoopUnit->AI_getUnitAIType() == UNITAI_OFFENSIVE)
+		{
+			++iOffensive;
+			if (pLoopUnit->isPowderArtillery())
+			{
+				++iOffensiveArtillery;
+			}
+		}
+	}
+	// WTP: all artillery counts, whatever its task: only the offensive one used to count, so the AI kept buying more. Spare
+	// artillery in the colonies goes to the stacks first, and no more than this is bought at all
+	const int iArtilleryWanted = std::max(GLOBAL_DEFINE_SIEGE_AI_MIN_ARTILLERY, iOffensive / std::max(1, GLOBAL_DEFINE_SIEGE_AI_UNITS_PER_ARTILLERY));
+	const int iArtilleryTotal = aiCount[0] + aiCount[4];
+	for (CvUnit* pLoopUnit = firstUnit(&iLoop); pLoopUnit != NULL && iOffensiveArtillery < iArtilleryWanted; pLoopUnit = nextUnit(&iLoop))
+	{
+		const CvCity* const pCity = pLoopUnit->plot()->getPlotCity();
+		if (pLoopUnit->isOnMap() && !pLoopUnit->isCargo() && pLoopUnit->isPowderArtillery() && pLoopUnit->AI_getUnitAIType() == UNITAI_DEFENSIVE
+			&& pCity != NULL && pCity->getOwnerINLINE() == getID() && pCity->AI().AI_numDefenders(false, true) > pCity->AI().AI_neededDefenders())
+		{
+			pLoopUnit->joinGroup(NULL);
+			pLoopUnit->AI_setUnitAIType(UNITAI_OFFENSIVE);
+			++iOffensiveArtillery;
+			if (gPlayerLogLevel >= 1) logWTP(WTP_LOG_MILITARY, getID(), "WTP stack: artillery #%d in %S joins the attacking units", pLoopUnit->getID(), pCity->getName().GetCString());
+		}
+	}
+	const bool bSiegeArtillery = iOffensive >= GLOBAL_DEFINE_SIEGE_MIN_STACK_SIZE && iArtilleryTotal < iArtilleryWanted;
+
 	int iBest = -1;
 	int iBestPrice = 0;
 	for (int i = 0; i < NUM_WAR_TYPES; ++i)
 	{
 		if (aeUnit[i] == NO_UNIT || aeProfession[i] == NO_PROFESSION || !isProfessionValid(aeProfession[i], aeUnit[i]))
+			continue;
+		if ((i == 0 || i == 4) && iArtilleryTotal >= iArtilleryWanted)
 			continue;
 		int iPrice = getEuropeUnitBuyPrice(aeUnit[i]);
 		if (iPrice <= 0)
@@ -22919,6 +23963,23 @@ bool CvPlayerAI::AI_doWarMilitaryPurchase()
 		{
 			iBest = i;
 			iBestPrice = iPrice;
+		}
+	}
+	if (bSiegeArtillery)
+	{
+		// heavy artillery if it can be paid, else light artillery
+		for (int k = 0; k < 2; ++k)
+		{
+			const int i = (k == 0) ? 4 : 0;
+			if (aeUnit[i] == NO_UNIT || aeProfession[i] == NO_PROFESSION || !isProfessionValid(aeProfession[i], aeUnit[i]))
+				continue;
+			const int iPrice = getEuropeUnitBuyPrice(aeUnit[i]);
+			if (iPrice <= 0)
+				continue;
+			iBest = i;
+			iBestPrice = iPrice;
+			if (getGold() >= iPrice)
+				break;
 		}
 	}
 	if (iBest < 0)
@@ -22943,8 +24004,8 @@ bool CvPlayerAI::AI_doWarMilitaryPurchase()
 	{
 		changeProfessionEurope(pUnit->getID(), aeProfession[iBest]);
 	}
-	// artillery and militia defend, line infantry and dragoons attack
-	pUnit->AI_setUnitAIType((iBest == 0 || iBest == 1 || iBest == 5) ? UNITAI_DEFENSIVE : UNITAI_OFFENSIVE);
+	// artillery and militia defend, line infantry and dragoons attack; artillery for the attacking stacks attacks
+	pUnit->AI_setUnitAIType((bSiegeArtillery && (iBest == 0 || iBest == 4)) ? UNITAI_OFFENSIVE : (iBest == 0 || iBest == 1 || iBest == 5) ? UNITAI_DEFENSIVE : UNITAI_OFFENSIVE);
 	m_iWarMilitarySpent += std::max(0, iGoldBefore - getGold());
 	if (gPlayerLogLevel >= 1) logWTP(WTP_LOG_BUY, getID(), "WTP decision: Player %d (%S) war: buys %S for %d gold, mix before (light art./vet. militia/line inf./dragoon/heavy art./colonist militia/colonist line inf.) %d/%d/%d/%d/%d/%d/%d, war spending military %d, civilian %d",
 		getID(), getCivilizationDescription(0), pUnit->getNameAndProfession().GetCString(), iGoldBefore - getGold(),
@@ -23817,7 +24878,18 @@ int CvPlayerAI::AI_firstCityFoundValue(const CvPlot& kPlot)
 	return static_cast<int>(val);
 }
 
-// WTP: a transport a colonist may board on its way: the AI's transports; of a human player only the automated ones
+// WTP: automatic job assignment for a human player's colonist (AUTOMATE_ASSIGN_JOB). The travel times of the workforce plan are
+// made once per turn for the human player (the AI makes them at the start of its plan)
+void CvPlayerAI::AI_wfEnsureTravel(const CvUnit& kColonist)
+{
+	if (m_iWfTravelTurn != GC.getGameINLINE().getGameTurn())
+	{
+		AI_wfUpdateTravel(kColonist);
+		m_iWfTravelTurn = GC.getGameINLINE().getGameTurn();
+	}
+}
+
+// a transport a colonist may board on its way: the AI's transports; of a human player only the automated ones
 bool CvPlayerAI::AI_isWfShip(const CvUnit& kShip)
 {
 	if (kShip.AI_getUnitAIType() != UNITAI_TRANSPORT_SEA && kShip.AI_getUnitAIType() != UNITAI_TRANSPORT_COAST)
@@ -23838,17 +24910,6 @@ bool CvPlayerAI::AI_hasWfShip() const
 		}
 	}
 	return false;
-}
-
-// WTP: automatic job assignment for a human player's colonist (AUTOMATE_ASSIGN_JOB). The travel times of the workforce plan are
-// made once per turn for the human player (the AI makes them at the start of its plan)
-void CvPlayerAI::AI_wfEnsureTravel(const CvUnit& kColonist)
-{
-	if (m_iWfTravelTurn != GC.getGameINLINE().getGameTurn())
-	{
-		AI_wfUpdateTravel(kColonist);
-		m_iWfTravelTurn = GC.getGameINLINE().getGameTurn();
-	}
 }
 
 namespace

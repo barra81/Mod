@@ -1,6 +1,7 @@
 // player.cpp
 
 #include "CvGameCoreDLL.h"
+#include "CvHumanLog.h"
 #include "CvGlobals.h"
 #include "CvArea.h"
 #include "CvGameAI.h"
@@ -251,6 +252,11 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_bDisableHuman = false;
 	// Dale - AoD: AI Autoplay END
 
+	for (int iLocation = 0; iLocation < (int)NUM_TRADELOCATION_TYPES; ++iLocation)
+	{
+		m_aiTradesSincePriceCheck[iLocation] = 0;
+	}
+
 	m_uiStartTime = 0;
 	m_em_iDiploYieldAmount.reset();
 
@@ -312,6 +318,12 @@ void CvPlayer::initFreeState()
 	// Gives an appropriate sum of money to trade with Natives, which depends on cargo size.
 	iStartingGold *= GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getStoragePercent();
 	iStartingGold /= 100;
+
+	// WTP, natives start poorer
+	if (isNative())
+	{
+		iStartingGold = iStartingGold * GLOBAL_DEFINE_NATIVE_STARTING_GOLD_PERCENT / 100;
+	}
 
 	changeGold(iStartingGold);
     // Barthoze : Time is the issue - END
@@ -2181,6 +2193,8 @@ void CvPlayer::doTurn()
 
 	EXTRA_POWER_CHECK
 
+	HumanLog::turnStart(*this);
+
 	CvCity* pLoopCity;
 	int iLoop;
 
@@ -2323,7 +2337,7 @@ void CvPlayer::doTurn()
 	if (isHuman() && (m_iTurnCrimeGold > 0 || m_iTurnCultureGold > 0))
 	{
 		const CvWString szBuffer = gDLL->getText("TXT_KEY_TURN_GOLD_CRIME_CULTURE", m_iTurnCrimeGold, m_iTurnCultureGold);
-		gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, Coordinates::invalidCoord(), (m_iTurnCrimeGold > 0) ? "AS2D_CITYCRIME" : NULL,
+		gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, Coordinates::invalidCoord(), NULL,
 			MESSAGE_TYPE_INFO, NULL, (m_iTurnCrimeGold > 0) ? COLOR_RED : COLOR_WHITE);
 	}
 
@@ -12939,7 +12953,8 @@ void CvPlayer::doAdvancedStartAction(AdvancedStartActionTypes eAction, Coordinat
 	switch (eAction)
 	{
 	case ADVANCEDSTARTACTION_EXIT:
-		changeGold(getAdvancedStartPoints());
+		// WTP, natives keep only part of their unspent start points as gold
+		changeGold(isNative() ? getAdvancedStartPoints() * GLOBAL_DEFINE_NATIVE_STARTING_GOLD_PERCENT / 100 : getAdvancedStartPoints());
 		setAdvancedStartPoints(-1);
 		if (GC.getGameINLINE().getActivePlayer() == getID())
 		{
@@ -17199,7 +17214,7 @@ int CvPlayer::getYieldBuyPrice(YieldTypes eYield) const
 	return m_em_iYieldBuyPrice.get(eYield);
 }
 
-void CvPlayer::setYieldBuyPrice(YieldTypes eYield, int iPrice, bool bMessage)
+void CvPlayer::setYieldBuyPrice(YieldTypes eYield, int iPrice, bool bMessage, bool bAllowAboveMax)
 {
 	FAssert(eYield >= 0);
 	FAssert(eYield < NUM_YIELD_TYPES);
@@ -17555,7 +17570,13 @@ void CvPlayer::setYieldBuyPrice(YieldTypes eYield, int iPrice, bool bMessage)
 	//Never let price end up outside of range set in xml
 	const CvYieldInfo& kYield = GC.getYieldInfo(eYield);
 	iPrice = std::max(iPrice, kYield.price(TRADE_LOCATION_EUROPE).buyLow);
-	iPrice = std::min(iPrice, kYield.price(TRADE_LOCATION_EUROPE).buyHigh);
+	// WTP, market boom: events may lift a price above the xml maximum; from there it only drifts back down
+	int iMaxPrice = std::max(kYield.price(TRADE_LOCATION_EUROPE).buyHigh, getYieldBuyPrice(eYield));
+	if (bAllowAboveMax)
+	{
+		iMaxPrice = std::max(iMaxPrice, iPrice);
+	}
+	iPrice = std::min(iPrice, iMaxPrice);
 
 	// TAC - Price Limits - Ray - END
 
@@ -17611,6 +17632,7 @@ void CvPlayer::setYieldBuyPrice(YieldTypes eYield, int iPrice, bool bMessage)
 
 void CvPlayer::sellYieldUnitToEurope(CvUnit* pUnit, int iAmount, int iCommission)
 {
+	const YieldTypes eTradedYield = (pUnit != NULL) ? pUnit->getYield() : NO_YIELD; // WTP, for the price check below
 	FAssert(pUnit != NULL);
 	if (pUnit != NULL)
 	{
@@ -17748,7 +17770,8 @@ void CvPlayer::sellYieldUnitToEurope(CvUnit* pUnit, int iAmount, int iCommission
 	}
 
 	// PatchMod: Check Europe prices after each trade START
-	GET_PLAYER(getParent()).doPrices();
+	// WTP: only the traded yield, every 3rd trade
+	doTradePriceCheck(TRADE_LOCATION_EUROPE, eTradedYield);
 	// PatchMod: Check Europe prices after each trade END
 }
 
@@ -17906,17 +17929,8 @@ CvUnit* CvPlayer::buyYieldUnit(YieldTypes eYield, int iAmount, CvUnit* pTranspor
 	}
 
 	// PatchMod: Check prices after each trade based on location
-	switch (eLocation) {
-	case TRADE_LOCATION_EUROPE:
-		GET_PLAYER(getParent()).doPrices();
-		break;
-	case TRADE_LOCATION_AFRICA:
-		GET_PLAYER(getParent()).doAfricaPrices();
-		break;
-	case TRADE_LOCATION_PORT_ROYAL:
-		GET_PLAYER(getParent()).doPortRoyalPrices();
-		break;
-	}
+	// WTP: only the traded yield, every 3rd trade
+	doTradePriceCheck(eLocation, eYield);
 
 	return pUnit;
 }
@@ -18434,6 +18448,7 @@ CvUnit* CvPlayer::buyYieldUnitFromAfrica(YieldTypes eYield, int iAmount, CvUnit*
 
 void CvPlayer::sellYieldUnitToAfrica(CvUnit* pUnit, int iAmount, int iCommission)
 {
+	const YieldTypes eTradedYield = (pUnit != NULL) ? pUnit->getYield() : NO_YIELD; // WTP, for the price check below
 	FAssert(pUnit != NULL);
 	if (pUnit != NULL)
 	{
@@ -18564,7 +18579,8 @@ void CvPlayer::sellYieldUnitToAfrica(CvUnit* pUnit, int iAmount, int iCommission
 	}
 
 	// PatchMod: Check Africa prices after each trade START
-	GET_PLAYER(getParent()).doAfricaPrices();
+	// WTP: only the traded yield, every 3rd trade
+	doTradePriceCheck(TRADE_LOCATION_AFRICA, eTradedYield);
 	// PatchMod: Check Africa prices after each trade END
 }
 // R&R, ray, Africa - END
@@ -19013,6 +19029,7 @@ CvUnit* CvPlayer::buyYieldUnitFromPortRoyal(YieldTypes eYield, int iAmount, CvUn
 
 void CvPlayer::sellYieldUnitToPortRoyal(CvUnit* pUnit, int iAmount, int iCommission)
 {
+	const YieldTypes eTradedYield = (pUnit != NULL) ? pUnit->getYield() : NO_YIELD; // WTP, for the price check below
 	FAssert(pUnit != NULL);
 	if (pUnit != NULL)
 	{
@@ -19093,7 +19110,8 @@ void CvPlayer::sellYieldUnitToPortRoyal(CvUnit* pUnit, int iAmount, int iCommiss
 	}
 
 	// PatchMod: Check Port Royal prices after each trade START
-	GET_PLAYER(getParent()).doPortRoyalPrices();
+	// WTP: only the traded yield, every 3rd trade
+	doTradePriceCheck(TRADE_LOCATION_PORT_ROYAL, eTradedYield);
 	// PatchMod: Check Port Royal prices after each trade END
 }
 // R&R, ray, Port Royal - END
@@ -20668,6 +20686,131 @@ int CvPlayer::getNativeTradePostSuccessPercent() const
 	return m_iNativeTradePostSuccessPercent;
 }
 
+// WTP: pioneer plan (user 2026-10-25): the player marks plots for an improvement with priority 1 or 2; pioneers with the
+// automation AUTOMATE_PIONEER_PLAN build them (NO_BUILD or priority 0: the mark is removed)
+void CvPlayer::setPioneerPlan(int iPlotIndex, BuildTypes eBuild, int iPriority)
+{
+	// (a mark only where the improvement can be built: a windmill only on hills, ...)
+	const CvPlot* const pPlanPlot = GC.getMap().plotByIndexINLINE(iPlotIndex);
+	if (eBuild == NO_BUILD || iPriority <= 0 || pPlanPlot == NULL || !pPlanPlot->canBuild(eBuild, getID()))
+	{
+		m_mapPioneerPlans.erase(iPlotIndex);
+	}
+	else
+	{
+		m_mapPioneerPlans[iPlotIndex] = (int)eBuild * 10 + std::min(iPriority, 2);
+	}
+}
+
+BuildTypes CvPlayer::getPioneerPlanBuild(int iPlotIndex) const
+{
+	const std::map<int, int>::const_iterator it = m_mapPioneerPlans.find(iPlotIndex);
+	return (it != m_mapPioneerPlans.end()) ? (BuildTypes)(it->second / 10) : NO_BUILD;
+}
+
+int CvPlayer::getPioneerPlanPriority(int iPlotIndex) const
+{
+	const std::map<int, int>::const_iterator it = m_mapPioneerPlans.find(iPlotIndex);
+	return (it != m_mapPioneerPlans.end()) ? it->second % 10 : 0;
+}
+
+// WTP: private pioneer (user 2026-10-25): for PRIVATE_BUILD_COST gold a hardy pioneer (a unit of the player the player cannot
+// command) appears on a plot of the player and builds the improvement there, as fast as a hardy pioneer; it leaves when done.
+// Only on own land outside colonies, within PRIVATE_BUILD_RANGE plots of a colony with a town market or better (the second
+// market level), where the improvement can be built and no other private pioneer works.
+bool CvPlayer::startPrivateBuild(int iX, int iY, BuildTypes eBuild)
+{
+	static const int PRIVATE_BUILD_COST = 500;
+	static const int PRIVATE_BUILD_RANGE = 3;
+	CvPlot* const pPlot = GC.getMap().plot(iX, iY);
+	const ProfessionTypes ePioneer = (ProfessionTypes)GC.getInfoTypeForString("PROFESSION_PIONEER");
+	const UnitClassTypes eHardyClass = (ePioneer != NO_PROFESSION) ? (UnitClassTypes)GC.getProfessionInfo(ePioneer).LbD_getExpert() : NO_UNITCLASS;
+	const UnitTypes eHardy = (eHardyClass != NO_UNITCLASS) ? GC.getCivilizationInfo(getCivilizationType()).getCivilizationUnits(eHardyClass) : NO_UNIT;
+	bool bValid = pPlot != NULL && eBuild != NO_BUILD && eHardy != NO_UNIT && getGold() >= PRIVATE_BUILD_COST && !pPlot->isWater() && !pPlot->isCity()
+		&& pPlot->getOwnerINLINE() == getID() && GC.getBuildInfo(eBuild).getImprovement() != NO_IMPROVEMENT
+		&& pPlot->getImprovementType() != (ImprovementTypes)GC.getBuildInfo(eBuild).getImprovement() && pPlot->canBuild(eBuild, getID());
+	// (a colony with the second market level or better nearby)
+	if (bValid)
+	{
+		const CvCivilizationInfo& kCiv = GC.getCivilizationInfo(getCivilizationType());
+		const BuildingTypes eTownMarket = kCiv.getCivilizationBuildings((BuildingClassTypes)GC.getInfoTypeForString("BUILDINGCLASS_TOWN_MARKET"));
+		const BuildingTypes eCentralMarket = kCiv.getCivilizationBuildings((BuildingClassTypes)GC.getInfoTypeForString("BUILDINGCLASS_CENTRAL_CITY_MARKET"));
+		bool bMarket = false;
+		int iCityLoop;
+		for (const CvCity* pLoopCity = firstCity(&iCityLoop); pLoopCity != NULL && !bMarket; pLoopCity = nextCity(&iCityLoop))
+		{
+			bMarket = plotDistance(iX, iY, pLoopCity->getX_INLINE(), pLoopCity->getY_INLINE()) <= PRIVATE_BUILD_RANGE
+				&& ((eTownMarket != NO_BUILDING && pLoopCity->isHasBuilding(eTownMarket)) || (eCentralMarket != NO_BUILDING && pLoopCity->isHasBuilding(eCentralMarket)));
+		}
+		bValid = bMarket;
+	}
+	if (bValid)
+	{
+		CLLNode<IDInfo>* pUnitNode = pPlot->headUnitNode();
+		while (pUnitNode != NULL && bValid)
+		{
+			const CvUnit* const pLoopUnit = pPlot->getUnitNodeLoop(pUnitNode);
+			bValid = pLoopUnit == NULL || static_cast<const CvUnitAI*>(pLoopUnit)->AI_getPrivateBuild() == NO_BUILD;
+		}
+	}
+	if (!bValid)
+	{
+		if (isHuman())
+		{
+			const CvWString szBuffer = gDLL->getText("TXT_KEY_PRIVATE_BUILD_FAILED", PRIVATE_BUILD_COST, PRIVATE_BUILD_RANGE);
+			gDLL->UI().addPlayerMessage(getID(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, Coordinates::invalidCoord(), NULL, MESSAGE_TYPE_INFO, NULL, COLOR_WARNING_TEXT);
+		}
+		return false;
+	}
+	CvUnit* const pUnit = initUnit(eHardy, ePioneer, iX, iY, UNITAI_WORKER);
+	if (pUnit == NULL)
+	{
+		return false;
+	}
+	// (the pioneer profession without its tools: the player paid for the work)
+	if (pUnit->getProfession() != ePioneer)
+	{
+		pUnit->setProfession(ePioneer, true, false);
+	}
+	changeGold(-PRIVATE_BUILD_COST);
+	static_cast<CvUnitAI*>(pUnit)->AI_setPrivateBuild(eBuild);
+	pUnit->setName(gDLL->getText("TXT_KEY_PRIVATE_PIONEER_NAME"));
+	pUnit->getGroup()->setAutomateType(AUTOMATE_PRIVATE_BUILD);
+	pUnit->getGroup()->pushMission(MISSION_BUILD, eBuild, -1, 0, false, false, MISSIONAI_BUILD, pPlot);
+	const int iWorkRate = std::max(1, pUnit->workRate(true));
+	const int iTurns = std::max(1, (pPlot->getBuildTime(eBuild) - pPlot->getBuildProgress(eBuild) + iWorkRate - 1) / iWorkRate);
+	if (isHuman())
+	{
+		const CvWString szBuffer = gDLL->getText("TXT_KEY_PRIVATE_BUILD_STARTED", GC.getBuildInfo(eBuild).getTextKeyWide(), PRIVATE_BUILD_COST, iTurns);
+		gDLL->UI().addPlayerMessage(getID(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, pPlot, "AS2D_POSITIVE_DINK", MESSAGE_TYPE_INFO, GC.getBuildInfo(eBuild).getButton(), COLOR_WHITE);
+	}
+	return true;
+}
+
+// WTP (user 2026-10-24): the chance of a new trade post falls with the player's trade posts: 1% for each of the first 7,
+// 2% for each from the 8th on
+int CvPlayer::getTradePostCountPenalty() const
+{
+	int iPosts = 0;
+	for (PlayerTypes eNative = FIRST_PLAYER; eNative < NUM_PLAYER_TYPES; ++eNative)
+	{
+		const CvPlayer& kNative = GET_PLAYER(eNative);
+		if (!kNative.isAlive() || !kNative.isNative())
+		{
+			continue;
+		}
+		int iLoop;
+		for (const CvCity* pCity = kNative.firstCity(&iLoop); pCity != NULL; pCity = kNative.nextCity(&iLoop))
+		{
+			if (pCity->getTradePostPlayer() == getID())
+			{
+				++iPosts;
+			}
+		}
+	}
+	return std::min(iPosts, 7) + 2 * std::max(0, iPosts - 7);
+}
+
 void CvPlayer::setNativeTradePostSuccessPercent(int iValue)
 {
 	m_iNativeTradePostSuccessPercent = iValue;
@@ -20854,6 +20997,17 @@ bool CvPlayer::isProfessionValid(ProfessionTypes eProfession, UnitTypes eUnit) c
 		{
 			return false;
 		}
+
+		// WTP: natives employ no entertainers before turn 40
+		if (isNative() && GC.getGameINLINE().getGameTurn() < 40)
+		{
+			static const ProfessionTypes eEntertainer = (ProfessionTypes)GC.getInfoTypeForString("PROFESSION_ENTERTAINER");
+			if (eProfession == eEntertainer)
+			{
+				return false;
+			}
+		}
+
 		//TAC Whaling, ray
 		if (eUnit != NO_UNIT)
 		{
@@ -20899,6 +21053,67 @@ bool CvPlayer::isProfessionValid(ProfessionTypes eProfession, UnitTypes eUnit) c
 }
 
 
+
+// WTP: after a trade only the traded yield gets an extra price update, and only on every 3rd trade; the full
+// update of all yields (random target, price correction and market memory decay) stays at the end of the turn
+void CvPlayer::doTradePriceCheck(TradeLocationTypes eLocation, YieldTypes eYield)
+{
+	if (getParent() == NO_PLAYER || eYield == NO_YIELD || (int)eLocation < 0 || (int)eLocation >= (int)NUM_TRADELOCATION_TYPES)
+	{
+		return;
+	}
+	if (++m_aiTradesSincePriceCheck[(int)eLocation] < 3)
+	{
+		return;
+	}
+	m_aiTradesSincePriceCheck[(int)eLocation] = 0;
+	GET_PLAYER(getParent()).doYieldPriceUpdate(eLocation, eYield);
+}
+
+// WTP: the price update of doPrices / doAfricaPrices / doPortRoyalPrices for a single yield, without the
+// per-turn decay of the market memory
+void CvPlayer::doYieldPriceUpdate(TradeLocationTypes eLocation, YieldTypes eYield)
+{
+	FAssertMsg(isEurope(), "Only the European Homeland player - i.e the King - should calculate price changes");
+	const CvYieldInfo& kYield = GC.getYieldInfo(eYield);
+	const int iSpeedModifier = GC.getHandicapInfo(getHandicapType()).getEuropePriceThresholdMultiplier() * GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getGrowthPercent();
+	const int iBaseThreshold = kYield.getPriceChangeThreshold() * iSpeedModifier / 10000;
+
+	int iNewPrice = kYield.price(eLocation).buyLow + GC.getGameINLINE().getSorenRandNum(kYield.price(eLocation).buyHigh - kYield.price(eLocation).buyLow + 1, "Price selection");
+	iNewPrice += getYieldBoughtTotal(eLocation, eYield) / std::max(1, iBaseThreshold);
+
+	int iCurrentPrice;
+	switch (eLocation)
+	{
+	case TRADE_LOCATION_AFRICA:
+		iCurrentPrice = getYieldAfricaBuyPriceNoModifier(eYield);
+		break;
+	case TRADE_LOCATION_PORT_ROYAL:
+		iCurrentPrice = getYieldPortRoyalBuyPriceNoModifier(eYield);
+		break;
+	default:
+		iCurrentPrice = getYieldBuyPrice(eYield);
+		break;
+	}
+
+	if (GC.getGameINLINE().getSorenRandNum(100, "Price correction") < kYield.getPriceCorrectionPercent() * std::abs(iNewPrice - iCurrentPrice))
+	{
+		iNewPrice = std::min(iNewPrice, iCurrentPrice + 1);
+		iNewPrice = std::max(iNewPrice, iCurrentPrice - 1);
+		switch (eLocation)
+		{
+		case TRADE_LOCATION_AFRICA:
+			setYieldAfricaBuyPrice(eYield, iNewPrice, true);
+			break;
+		case TRADE_LOCATION_PORT_ROYAL:
+			setYieldPortRoyalBuyPrice(eYield, iNewPrice, true);
+			break;
+		default:
+			setYieldBuyPrice(eYield, iNewPrice, true);
+			break;
+		}
+	}
+}
 
 void CvPlayer::doPrices()
 {
@@ -21511,20 +21726,25 @@ void CvPlayer::doImmigrant(int iIndex, bool shortmessage)
 	}
 }
 
-void CvPlayer::buyLand(CvPlot* pPlot, bool bFree)
+bool CvPlayer::buyLand(CvPlot* pPlot, bool bFree)
 {
 	int iCulture = pPlot->getBuyCultureAmount(getID());
 	int iGoldCost = bFree ? 0 : pPlot->getBuyPrice(getID());
 
 	if (getGold() < iGoldCost)
 	{
-		return;
+		return false;
 	}
 
 	PlayerTypes eOldOwner = pPlot->getOwnerINLINE();
 	if (eOldOwner != NO_PLAYER)
 	{
 		pPlot->setCulture(eOldOwner, 0, false);
+		// WTP: bought land stays ours, native culture can't flip it back
+		if (GET_PLAYER(eOldOwner).isNative() && !isNative())
+		{
+			pPlot->setBoughtFromNatives(true);
+		}
 		if (!GET_TEAM(pPlot->getTeam()).isAtWar(getTeam()))
 		{
 			OOS_LOG("buy land war", pPlot->getTeam());
@@ -21536,6 +21756,7 @@ void CvPlayer::buyLand(CvPlot* pPlot, bool bFree)
 	OOS_LOG("buy land", iGoldCost);
 	pPlot->changeCulture(getID(), iCulture, true);
 	changeGold(-iGoldCost);
+	return true;
 }
 
 int CvPlayer::getNumTradeMessages() const

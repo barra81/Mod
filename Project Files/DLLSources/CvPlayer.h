@@ -58,6 +58,7 @@ public:
 	bool getDisableHuman( );
 protected:
 	bool m_bDisableHuman;
+	int m_aiTradesSincePriceCheck[NUM_TRADELOCATION_TYPES]; // WTP, not saved
 	CvIdVector<CvTradeRouteGroup> m_aTradeGroups; //R&R mod, vetiarvind, trade groups
 public:
 	// Dale - AoD: AI Autoplay END
@@ -779,7 +780,7 @@ public:
 	int getSellToEuropeProfit(YieldTypes eYield, int iAmount) const;
 	int getYieldSellPrice(YieldTypes eYield) const;
 	int getYieldBuyPrice(YieldTypes eYield) const;
-	void setYieldBuyPrice(YieldTypes eYield, int iPrice, bool bMessage);
+	void setYieldBuyPrice(YieldTypes eYield, int iPrice, bool bMessage, bool bAllowAboveMax = false);
 	/*** TRIANGLETRADE 10/24/08 by DPII ***/
 	void sellYieldUnitToAfrica(CvUnit* pUnit, int iAmount, int iCommission);
 	int getAfricaUnitBuyPrice(UnitTypes eUnit) const;
@@ -888,6 +889,7 @@ public:
 	bool canHaveTradePost(PlayerTypes ePlayer) const;
 	void validateTradePosts();
 	int getNativeTradePostSuccessPercent() const;
+	int getTradePostCountPenalty() const;
 	void setNativeTradePostSuccessPercent(int iValue);
 	// WTP, ray, Native Trade Posts - END
 
@@ -921,7 +923,7 @@ public:
 	// TAC - short messages for immigration after fist - RAY
 	void doImmigrant(int iIndex, bool shortmessage);
 
-	void buyLand(CvPlot* pPlot, bool bFree);
+	bool buyLand(CvPlot* pPlot, bool bFree); // WTP: false: not enough gold
 
 	int getNumTradeMessages() const;
 	const wchar* getTradeMessage(int i) const;
@@ -1096,6 +1098,7 @@ protected:
 	int m_iDomesticMarketIncome; // WTP: gold the domestic markets of the colonies brought in the player's last turn (saved)
 	int m_iTurnCrimeGold; // WTP: gold stolen in this turn because of low law (one message per turn, not saved)
 	int m_iTurnCultureGold; // WTP: gold earned in this turn through culture (entertainment buildings; not saved)
+	std::map<int, int> m_mapPioneerPlans; // WTP: pioneer plan: plot index -> build * 10 + priority (saved)
 	// WTP, Slave Emancipation - END
 	int m_iFatherPointMultiplier;
 	int m_iMissionaryRateModifier;
@@ -1274,6 +1277,13 @@ public:
 	void changeDomesticMarketIncome(int iChange) { m_iDomesticMarketIncome += iChange; }
 	void changeTurnCrimeGold(int iChange) { m_iTurnCrimeGold += iChange; }
 	void changeTurnCultureGold(int iChange) { m_iTurnCultureGold += iChange; }
+	// WTP: pioneer plan: plots the player marked for an improvement (build) with priority 1 or 2 (AUTOMATE_PIONEER_PLAN works them)
+	void setPioneerPlan(int iPlotIndex, BuildTypes eBuild, int iPriority);
+	BuildTypes getPioneerPlanBuild(int iPlotIndex) const;
+	int getPioneerPlanPriority(int iPlotIndex) const;
+	const std::map<int, int>& getPioneerPlans() const { return m_mapPioneerPlans; }
+	// WTP: private pioneer: for PRIVATE_BUILD_COST gold a hardy pioneer builds an improvement on a plot of the player
+	bool startPrivateBuild(int iX, int iY, BuildTypes eBuild);
 	static int getMilitaryProfessionUpkeep(ProfessionTypes eProfession, int& iFreePool);
 	bool isMilitaryEquipBlocked() const;
 protected:
@@ -1285,6 +1295,9 @@ protected:
 	void doTaxRaises(); //WTP, jburet, Tax Reform
 	void doAfricaPrices(); // R&R, ray, Africa
 	void doPortRoyalPrices(); // R&R, ray, Port Royal
+	// WTP: price check after a trade: only the traded yield, only every 3rd trade
+	void doTradePriceCheck(TradeLocationTypes eLocation, YieldTypes eYield);
+	void doYieldPriceUpdate(TradeLocationTypes eLocation, YieldTypes eYield);
 	void wipeRoyalYieldScore(); //WTP, jburet, Tax Reform
 
 	const int getFullYieldScore(bool fullCalculation);//WTP, jburet, Tax Reform

@@ -105,6 +105,27 @@
 		<Hungarian>Észak-Amerika keleti partvidéke (Hatalmas, 72x96): Új-Fundlandtól délre Floridáig, a Nagy-tavaktól keletre az Atlanti-óceánig. Kis térképként definiálva, ezért csak négy észak-amerikai Indián törzsnek vannak települései.</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WORLDBUILDER_FANTASY_NEW_WORLD_DESC</Tag>
+		<English>Fantasy New World (Huge, 80x110): two invented continents joined by an isthmus, from the arctic north to the temperate south. Climate zones, rain shadows, mountain ranges with passes, large rivers and lakes follow geographic rules. Random Natives, resources and goodies.</English>
+		<German>Fantasie-Neue-Welt (Riesig, 80x110): zwei erfundene Kontinente, verbunden durch eine Landenge, vom arktischen Norden bis in den gemäßigten Süden. Klimazonen, Regenschatten, Gebirgsketten mit Pässen, große Flüsse und Seen folgen geografischen Regeln. Zufällige Ureinwohner, Ressourcen und Schatzfelder.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WORLDBUILDER_EPORUE_DESC</Tag>
+		<English>Eporue (Massive, 107x125): Europe turned upside down - the Atlantic and the Europe side in the east, Scandinavia in the south, the Mediterranean and North Africa in the north, Russia and Asia in the west. Real coastlines, mountain ranges with passes, large rivers and lakes. 31 native tribes in homelands that fit their way of life, 8 colonial powers starting off their own coasts. Resources in rich and poor regions with the real deposits of Europe. Random goodies.</English>
+		<Portuguese>Eporue (Massivo, 107x125): a Europa de cabeça para baixo - o Atlântico e o lado da Europa a leste, a Escandinávia a sul, o Mediterrâneo e o Norte de África a norte, a Rússia e a Ásia a oeste. Costas reais, cadeias montanhosas com passagens, grandes rios e lagos. 31 tribos nativas em terras natais adequadas ao seu modo de vida, 8 potências coloniais que partem das suas próprias costas. Recursos em regiões ricas e pobres com as jazidas reais da Europa. Tesouros aleatórios.</Portuguese>
+		<French>Eporue (Massive, 107x125) : l'Europe sens dessus dessous - l'Atlantique et le côté de l'Europe à l'est, la Scandinavie au sud, la Méditerranée et l'Afrique du Nord au nord, la Russie et l'Asie à l'ouest. Côtes réelles, chaînes de montagnes avec cols, grands fleuves et lacs. 31 tribus indigènes dans des terres adaptées à leur mode de vie, 8 puissances coloniales partant de leurs propres côtes. Ressources dans des régions riches et pauvres avec les gisements réels de l'Europe. Trésors aléatoires.</French>
+		<German>Eporue (Massiv, 107x125): Europa auf den Kopf gestellt - der Atlantik und die Europaseite im Osten, Skandinavien im Süden, das Mittelmeer und Nordafrika im Norden, Russland und Asien im Westen. Echte Küstenlinien, Gebirgsketten mit Pässen, große Flüsse und Seen. 31 Ureinwohnerstämme in Heimatgebieten, die zu ihrer Lebensweise passen, 8 Kolonialmächte starten vor ihren eigenen Küsten. Ressourcen in reichen und armen Gegenden mit den echten Lagerstätten Europas. Zufällige Schatzfelder.</German>
+		<Italian>Eporue (Massiccia, 107x125): l'Europa capovolta - l'Atlantico e il lato dell'Europa a est, la Scandinavia a sud, il Mediterraneo e il Nordafrica a nord, la Russia e l'Asia a ovest. Coste reali, catene montuose con passi, grandi fiumi e laghi. 31 tribù native in terre adatte al loro modo di vivere, 8 potenze coloniali che partono dalle proprie coste. Risorse in regioni ricche e povere con i veri giacimenti d'Europa. Tesori casuali.</Italian>
+		<Spanish>Eporue (Masivo, 107x125): Europa boca abajo - el Atlántico y el lado de Europa al este, Escandinavia al sur, el Mediterráneo y el norte de África al norte, Rusia y Asia al oeste. Costas reales, cordilleras con pasos, grandes ríos y lagos. 31 tribus nativas en tierras acordes con su modo de vida, 8 potencias coloniales que parten de sus propias costas. Recursos en regiones ricas y pobres con los yacimientos reales de Europa. Tesoros aleatorios.</Spanish>
+		<Russian>Eporue (массивная, 107x125): перевернутая Европа - Атлантика и европейская сторона на востоке, Скандинавия на юге, Средиземное море и Северная Африка на севере, Россия и Азия на западе. Реальные береговые линии, горные цепи с перевалами, большие реки и озера. 31 туземное племя на родных землях, подходящих их образу жизни, 8 колониальных держав начинают у своих берегов. Ресурсы в богатых и бедных областях с настоящими месторождениями Европы. Случайные сокровища.</Russian>
+		<Hungarian>Eporue (Óriási, 107x125): a fejtetőre állított Európa - az Atlanti-óceán és az európai oldal keleten, Skandinávia délen, a Földközi-tenger és Észak-Afrika északon, Oroszország és Ázsia nyugaton. Valódi partvonalak, hegységek hágókkal, nagy folyók és tavak. 31 bennszülött törzs az életmódjukhoz illő szülőföldön, 8 gyarmati hatalom a saját partjai előtt indul. Erőforrások gazdag és szegény vidékeken, Európa valódi lelőhelyeivel. Véletlenszerű kincsek.</Hungarian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WORLDBUILDER_RANDOM_NEW_WORLD_DESC</Tag>
+		<English>Random New World (Massive, 85x137): new, generated continents from the arctic north to the temperate south. Plate tectonics shape the land: fold mountains, cordilleras with volcanoes, island arcs and rift lakes; climate zones and rain shadows follow height and prevailing winds. Large rivers, lakes and named landmarks. Resources in rich and poor regions, ores along the mountains. Random Natives and goodies.</English>
+		<German>Zufällige Neue Welt (Massiv, 85x137): neue, erzeugte Kontinente vom arktischen Norden bis in den gemäßigten Süden. Plattentektonik formt das Land: Faltengebirge, Kordilleren mit Vulkanen, Inselbögen und Grabenseen; Klimazonen und Regenschatten folgen Höhe und vorherrschenden Winden. Große Flüsse, Seen und benannte Landmarken. Ressourcen in reichen und armen Gegenden, Erze entlang der Gebirge. Zufällige Ureinwohner und Schatzfelder.</German>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WORLDBUILDER_NEW_ENGLAND_DESC</Tag>
 		<English>New England (Standard, 30x70): Map of New England</English>
 		<Portuguese>Nova Inglaterra (Padrão, 30x70): Mapa da Nova Inglaterra</Portuguese>
@@ -1039,5 +1060,147 @@
 		<German>Sie müssen das Spiel neu starten, damit die Änderungen wirksam werden.</German>
 		<Italian>Devi riavviare il gioco affinché le modifiche abbiano effetto.</Italian>
 		<Spanish>Debes reiniciar el juego para que los cambios surtan efecto.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_TITLE</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]News from the Old World[COLOR_REVERT]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_PRICE</Tag>
+		<English>[ICON_BULLET]%s1 %F2_yield: now [COLOR_POSITIVE_TEXT]%d3[COLOR_REVERT] in Europe, [COLOR_POSITIVE_TEXT]%d4[COLOR_REVERT] in Port Royal</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_FOOTER</Tag>
+		<English>Such crazes do not last forever: as more goods arrive and the novelty wears off, prices will slowly return to normal.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_MESSAGE</Tag>
+		<English>Market boom in the Old World: %s1, %s2 and %s3 fetch higher prices in Europe and Port Royal.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_SUGAR</Tag>
+		<English>The first sugar from the new islands has reached Europe, and the courts have developed a sweet tooth. Sugar, once a costly remedy sold by the apothecaries, now adorns every banquet as candied fruit and marzipan, and the confectioners want all they can get.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_COFFEE_BERRIES</Tag>
+		<English>Venetian merchants bring word of a black drink brewed from roasted beans that the Sufis of Yemen take to stay awake at prayer. Now that the Ottomans have closed the road to Mocha, the curious merchants of Europe will pay well for any beans that can be grown across the ocean.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_COCOA_FRUITS</Tag>
+		<English>Sailors from the New World tell of a bitter drink made from cocoa beans, so precious that the natives use the beans as money. The first sacks to arrive have been presented at court, and the nobles want to taste this rare delicacy.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_KAUTSCHUK</Tag>
+		<English>Explorers have brought back balls of a strange gum that bounce higher than a man can reach, used by the natives in their sacred games. Scholars and craftsmen across Europe want to know what can be made of this elastic marvel.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_LOGWOOD</Tag>
+		<English>A red dyewood from the coasts of the new lands has astonished the dyers of Flanders and Florence. It gives deep reds, purples and blacks more cheaply than any dye they know, and the guilds want it by the shipload.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_RICE</Tag>
+		<English>A failed harvest in Lombardy and Valencia has emptied the rice markets of southern Europe. Merchants are buying up whatever rice can be shipped from overseas.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_COCA_LEAVES</Tag>
+		<English>Travellers report that the natives chew the leaves of a mountain shrub to endure hunger, cold and the thin mountain air. The physicians and apothecaries of Europe are eager to study this remarkable leaf and pay generously for every bale.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_YERBA_LEAVES</Tag>
+		<English>Explorers of the southern rivers have tasted a bitter, invigorating tea that the natives brew from the leaves of a forest tree. The first bundles have caused a stir in Seville and Lisbon, and the merchants want more.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_FRUITS</Tag>
+		<English>The explorers have returned with strange fruits from the new lands: sweet pineapples, guavas and papayas that no European had ever tasted. The few that survive the voyage are the talk of every court, and the distillers are eager to try what brandy can be made from them.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_WILD_FEATHERS</Tag>
+		<English>The explorers presented the court with cloaks and headdresses of brilliant feathers, made by the natives of the new lands. Plumed hats have become the rage among the nobility, and hatters and upholsterers want every feather they can get.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_PEAT</Tag>
+		<English>Europe is shivering through the harshest winters in living memory: rivers and harbours freeze over, and the cold lingers deep into spring. Firewood has become scarce, and townsfolk and craftsmen alike will pay almost anything for peat to heat their homes and fire their kilns.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_TOBACCO</Tag>
+		<English>The explorers have brought back a sample of the dried leaves that the natives roll up, light and drink the smoke of. What first seemed a heathen oddity has enchanted the court, and now everyone wants to try the new herb.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_COTTON</Tag>
+		<English>The explorers found the natives dressed in fine cotton cloth and brought bales of it home. The weavers of Europe, who until now depended on cotton from the Levant, are eager for a new source.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_INDIGO</Tag>
+		<English>Indigo has so far reached Europe only in small amounts through the Levant, at outrageous prices. The dyers have heard that the plant grows in the new lands too and will pay well for every chest of its deep blue.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_PEANUTS</Tag>
+		<English>Among the curious foods brought back by the explorers is a nut that grows beneath the ground. Roasted, it has become a popular novelty in the market squares of Spain and Portugal, and the ship's masters prize it as a provision that keeps.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_BARLEY</Tag>
+		<English>A wet summer has ruined the barley harvest across northern Europe. The brewers fear for their beer and pay handsomely for grain from overseas.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_GRAPES</Tag>
+		<English>A late frost has destroyed the vineyards of Burgundy and the Rhine. The wine merchants are looking everywhere for grapes and wine to fill their empty cellars.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_OLIVES</Tag>
+		<English>A bitter winter has killed countless olive trees in Provence and Andalusia. Olive oil has become scarce, and the merchants pay well for every barrel.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_RED_PEPPER</Tag>
+		<English>The Ottomans and the Venetians control the spice routes, and true pepper is worth its weight in silver. The cooks of Europe have discovered the fiery red peppers brought back by the explorers as a welcome substitute.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_RAW_SALT</Tag>
+		<English>War has closed the great salt pans of the Atlantic coast. Without salt the fishermen cannot preserve their catch, nor the farmers their meat, and the price of salt has soared.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_COCHINEAL</Tag>
+		<English>Explorers have brought back a red dye of unheard-of brilliance, made from tiny insects that the natives gather from cactus plants. The dyers say no kermes or madder can match it, and every court wants to wear the new red.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_CASSAVA</Tag>
+		<English>Ship's masters have learned from the natives to bake a bread from cassava roots that keeps for months at sea. The victuallers of the ports want it for the growing number of ships that cross the ocean.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_VANILLA_PODS</Tag>
+		<English>The first vanilla pods have reached Europe, a fragrant spice the natives use to flavour their chocolate. The few pods that arrive fetch fabulous prices at the courts.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_FUR</Tag>
+		<English>Fur-lined cloaks have become the fashion of the day, and the furriers need more pelts than the forests of Muscovy can supply. They hope that the endless forests of the new lands will fill the gap.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_PREMIUM_FUR</Tag>
+		<English>The queen appeared at a feast in a cloak of the finest marten and silver fox. Every lady of rank must now have such furs, whatever the price.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_MAPLE_SIRUP</Tag>
+		<English>Fishermen returning from the northern coasts tell of a sweet sap that the natives tap from trees and boil into syrup. The confectioners of Europe are curious about this novelty and pay well for it.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_RAPE</Tag>
+		<English>The towns of Europe burn more and more oil in their lamps, and the oil mills cannot press enough rapeseed. Lamp makers and soap boilers are crying out for rapeseed and its oil.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_VALUABLE_WOOD</Tag>
+		<English>The explorers have brought back a red wood from the new lands, so prized by the dyers and cabinetmakers that whole coasts are being named after it. Princes want chests and cabinets of these exotic woods.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MARKET_BOOM_HARDWOOD</Tag>
+		<English>Generations of shipbuilding have stripped Europe's forests of their great oaks. Now that ships are needed to cross the ocean, the shipwrights must look overseas for sound hardwood and pay dearly for it.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CITY_TRADE_BLOCKED_BY_FORT</Tag>
+		<English>[COLOR_WARNING_TEXT]No trade: the village is under the influence of a fort or fortified colony of %s1[COLOR_REVERT]</English>
+		<German>[COLOR_WARNING_TEXT]Kein Handel: Das Dorf steht unter dem Einfluss eines Forts oder einer befestigten Kolonie von %s1[COLOR_REVERT]</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_TRADE_BLOCKED_BY_FORT</Tag>
+		<English>Trade with %s1 is controlled by the nearby fort or colony of %s2 and is therefore not possible.</English>
+		<German>Der Handel mit %s1 wird über das nahe Fort bzw. die nahe Kolonie von %s2 kontrolliert und ist deshalb nicht möglich.</German>
 	</TEXT>
 </Civ4GameText>

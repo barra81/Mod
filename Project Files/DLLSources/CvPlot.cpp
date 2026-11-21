@@ -39,6 +39,33 @@
 // In general the game will use a low realistic number while it can increase if a rare promotion combo comes up.
 
 // WTP, Schmiddie, Naval Control Movement - START
+// WTP: an occupied fort makes the plots around it harder to cross for its enemies (land units): one move more
+int CvPlot::fortZoneMovementCost(const CvUnit* pMovingUnit) const
+{
+	if (pMovingUnit->getDomainType() != DOMAIN_LAND)
+	{
+		return 0;
+	}
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		const CvPlot* const pAdjacent = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		if (pAdjacent == NULL || !pAdjacent->isFort())
+		{
+			continue;
+		}
+		for (int i = 0; i < pAdjacent->getNumUnits(); ++i)
+		{
+			const CvUnit* const pFortUnit = pAdjacent->getUnitByIndex(i);
+			if (pFortUnit != NULL && !pFortUnit->isCargo() && pFortUnit->canDefend()
+				&& pMovingUnit->isEnemy(pFortUnit->getCombatTeam(pMovingUnit->getTeam(), pAdjacent), pAdjacent))
+			{
+				return GLOBAL_DEFINE_MOVE_DENOMINATOR;
+			}
+		}
+	}
+	return 0;
+}
+
 int CvPlot::navalControlMovementCost(const CvUnit* pMovingUnit) const
 {
 	if (pMovingUnit == NULL)
@@ -273,6 +300,7 @@ void CvPlot::reset(int iX, int iY, bool bConstructorCall)
 	m_bFlagDirty = false;
 	m_bPlotLayoutDirty = false;
 	m_bLayoutStateWorked = false;
+	m_eSiegeArt = NO_IMPROVEMENT;
 	m_bImpassable = false;
 
 	updateImpassable();
@@ -1198,23 +1226,12 @@ bool CvPlot::isAdjacentWaterPassable(CvPlot* pPlot) const
 		return true;
 	}
 
-	CvPlot* pDirectionPlot = plotDirection(pPlot->getX_INLINE(), pPlot->getY_INLINE(), (DirectionTypes)((eDirection + 1) % NUM_DIRECTION_TYPES));
-	if (pDirectionPlot != NULL)
-	{
-		if (pDirectionPlot->isWater())
-		{
-			return true;
-		}
-	}
-	pDirectionPlot = plotDirection(pPlot->getX_INLINE(), pPlot->getY_INLINE(), (DirectionTypes)((eDirection - 1) % NUM_DIRECTION_TYPES));
-	if (pDirectionPlot != NULL)
-	{
-		if (pDirectionPlot->isWater())
-		{
-			return true;
-		}
-	}
-	return false;
+	// WTP: the two corner plots of the diagonal step, as ships move (pathValid in CvGameCoreUtils): this used to look at the
+	// plots beside the target, so a lake linked only diagonally to a large river counted as reachable from Europe (and a
+	// Swedish Opportunistic Resources settler was sent to a lake shore no ship could reach)
+	const CvPlot* const pCorner1 = GC.getMap().plotINLINE(getX_INLINE(), pPlot->getY_INLINE());
+	const CvPlot* const pCorner2 = GC.getMap().plotINLINE(pPlot->getX_INLINE(), getY_INLINE());
+	return (pCorner1 != NULL && pCorner1->isWater()) || (pCorner2 != NULL && pCorner2->isWater());
 }
 
 bool CvPlot::isVisibleWorked() const
@@ -2374,6 +2391,25 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 	return true;
 }
 
+// WTP, forts on native land: forts may be built in native territory, but not directly next to a village
+bool CvPlot::canBuildFortOnNativeLand(ImprovementTypes eImprovement) const
+{
+	if (!GC.getImprovementInfo(eImprovement).isFort() || getOwnerINLINE() == NO_PLAYER || !GET_PLAYER(getOwnerINLINE()).isNative())
+	{
+		return false;
+	}
+
+	for (int i = 0; i < NUM_DIRECTION_TYPES; ++i)
+	{
+		const CvPlot* const pLoopPlot = ::plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes) i);
+		if (pLoopPlot != NULL && pLoopPlot->isCity())
+		{
+			return false;
+		}
+	}
+	return !isCity();
+}
+
 bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible) const
 {
 	ImprovementTypes eImprovement;
@@ -2490,7 +2526,7 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 					//WTP, ray, Large Rivers
 					if (getTerrainType() != TERRAIN_LARGE_RIVERS)
 					{
-						if (getTeam() != NO_TEAM)
+						if (getTeam() != NO_TEAM && !canBuildFortOnNativeLand(eImprovement))
 						{
 							return false;
 						}
@@ -2668,7 +2704,9 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 	{
 		if (GC.getBuildInfo(eBuild).isFeatureRemove(getFeatureType()))
 		{
-			if (isOwned() && (GET_PLAYER(ePlayer).getTeam() != getTeam()) && !atWar(GET_PLAYER(ePlayer).getTeam(), getTeam()))
+			// WTP: Europeans may also clear features on native land (e.g. to build a fort there), not on other colonies' land
+			if (isOwned() && (GET_PLAYER(ePlayer).getTeam() != getTeam()) && !atWar(GET_PLAYER(ePlayer).getTeam(), getTeam())
+				&& !(GET_PLAYER(getOwnerINLINE()).isNative() && !GET_PLAYER(ePlayer).isNative()))
 			{
 				return false;
 			}
@@ -2830,6 +2868,12 @@ int CvPlot::getFeatureYield(BuildTypes eBuild, YieldTypes eYield, TeamTypes eTea
 	if (*ppCity == NULL)
 	{
 		*ppCity = getWorkingCity();
+
+		// WTP: the yield of a cleared feature goes to the builder's own colonies, not to a foreign (e.g. native) city working the plot
+		if (*ppCity != NULL && (*ppCity)->getTeam() != eTeam)
+		{
+			*ppCity = NULL;
+		}
 
 		if (*ppCity == NULL)
 		{
@@ -3839,6 +3883,13 @@ int CvPlot::movementCost(const CvUnit* pUnit, const CvPlot* pFromPlot,
 		}
 	}
 
+	// WTP: a road in enemy territory (not usable by the unit) still makes the move cost at most one movement point (e.g. 1
+	// instead of 2 in a forest), but gives no further road bonus
+	if (pFromPlot->isRoute() && isRoute() && !(pFromPlot->isValidRoute(pUnit) && isValidRoute(pUnit)))
+	{
+		iRegularCost = std::min(iRegularCost, (int)GLOBAL_DEFINE_MOVE_DENOMINATOR);
+	}
+
 	if (pFromPlot->isValidRoute(pUnit) && isValidRoute(pUnit))
 	{
 		iRouteCost = std::max((GC.getRouteInfo(pFromPlot->getRouteType()).getMovementCost()),
@@ -3859,8 +3910,103 @@ int CvPlot::movementCost(const CvUnit* pUnit, const CvPlot* pFromPlot,
 	{
 		iMovementCost += navalControlMovementCost(pUnit);
 	}
+	iMovementCost += fortZoneMovementCost(pUnit);
+
+	// WTP: siege: for the besieged team entering a plot beside its besieged city costs only SIEGE_MOVE_COST_PERCENT of the
+	// movement, so a relief force can still attack after it
+	if (isBesiegedCityRing(pUnit->getTeam()))
+	{
+		iMovementCost = std::max(1, iMovementCost * GLOBAL_DEFINE_SIEGE_MOVE_COST_PERCENT / 100);
+	}
 
 	return iMovementCost;
+}
+
+// WTP: siege: a plot beside a city of team eTeam under siege (the siege as started; a broken one counts until the owner's turn
+// ends)
+bool CvPlot::isBesiegedCityRing(TeamTypes eTeam) const
+{
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		const CvPlot* pLoopPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		const CvCity* pCity = (pLoopPlot != NULL) ? pLoopPlot->getPlotCity() : NULL;
+		if (pCity != NULL && pCity->getTeam() == eTeam && pCity->getBesieger() != NO_PLAYER)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+// WTP: siege: the art the engine shows on this plot instead of its improvement (art only improvements, NO_IMPROVEMENT: none):
+// on the 4 land plots straight beside a besieged city a battery on the city side of the plot (trench, rampart, palisade,
+// cannons), with the camp of the besiegers where at least SIEGE_MIN_STACK_SIZE of their soldiers stand; on the diagonal plots
+// only that camp (works there looked odd on hills); one improvement for each direction of the plot seen from the city; nothing
+// on peaks; only if the active team sees the plot
+ImprovementTypes CvPlot::getSiegeArt() const
+{
+	if (isWater() || isPeak() || isCity() || !isActiveVisible(false))
+	{
+		return NO_IMPROVEMENT;
+	}
+	static const char* const aszWorks[NUM_DIRECTION_TYPES] = {"IMPROVEMENT_SIEGE_WORKS_N", NULL, "IMPROVEMENT_SIEGE_WORKS_E", NULL,
+		"IMPROVEMENT_SIEGE_WORKS_S", NULL, "IMPROVEMENT_SIEGE_WORKS_W", NULL};
+	static const char* const aszCamps[NUM_DIRECTION_TYPES] = {"IMPROVEMENT_SIEGE_CAMP_N", "IMPROVEMENT_SIEGE_CAMP",
+		"IMPROVEMENT_SIEGE_CAMP_E", "IMPROVEMENT_SIEGE_CAMP", "IMPROVEMENT_SIEGE_CAMP_S", "IMPROVEMENT_SIEGE_CAMP",
+		"IMPROVEMENT_SIEGE_CAMP_W", "IMPROVEMENT_SIEGE_CAMP"};
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		const CvPlot* pLoopPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		const CvCity* pCity = (pLoopPlot != NULL) ? pLoopPlot->getPlotCity() : NULL;
+		if (pCity == NULL || pCity->getBesieger() == NO_PLAYER || !pCity->isBesieged())
+		{
+			continue;
+		}
+		const DirectionTypes eFromCity = directionXY(pLoopPlot, this);
+		const bool bCamp = CvCity::getSiegeStackSize(*this, GET_PLAYER(pCity->getBesieger()).getTeam(), pCity->getTeam()) >= GLOBAL_DEFINE_SIEGE_MIN_STACK_SIZE;
+		const char* szArt = bCamp ? aszCamps[eFromCity] : aszWorks[eFromCity];
+		if (szArt != NULL)
+		{
+			return (ImprovementTypes)GC.getInfoTypeForString(szArt, true);
+		}
+	}
+	return NO_IMPROVEMENT;
+}
+
+// WTP: siege: rebuilds the plot art when the siege art appears, changes or disappears
+void CvPlot::updateSiegeCamp()
+{
+	if (!GC.IsGraphicsInitialized())
+	{
+		return;
+	}
+	const ImprovementTypes eArt = getSiegeArt();
+	if (eArt != (ImprovementTypes)m_eSiegeArt)
+	{
+		m_eSiegeArt = (short)eArt;
+		setLayoutDirty(true);
+	}
+}
+
+// WTP: siege: the siege art around the cities on or beside this plot (units coming or going change the siege and the stacks)
+void CvPlot::updateSiegeCampsNearby()
+{
+	if (!GC.IsGraphicsInitialized())
+	{
+		return;
+	}
+	if (getPlotCity() != NULL)
+	{
+		getPlotCity()->updateSiegeCamps();
+	}
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		CvPlot* pLoopPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		if (pLoopPlot != NULL && pLoopPlot->getPlotCity() != NULL)
+		{
+			pLoopPlot->getPlotCity()->updateSiegeCamps();
+		}
+	}
 }
 // WTP, Schmiddie, Naval Control Movement - END
 bool CvPlot::isAdjacentOwned() const
@@ -3994,6 +4140,12 @@ PlayerTypes CvPlot::calculateCulturalOwner() const
 	{
 		if (GET_PLAYER((PlayerTypes)iI).isAlive())
 		{
+			// WTP: natives can't win back land that was bought from them
+			if (isBoughtFromNatives() && GET_PLAYER((PlayerTypes)iI).isNative())
+			{
+				continue;
+			}
+
 			PlayerTypes ePlayer = (PlayerTypes)iI;
 			int iCulture = getCulture(ePlayer);
 			int iFortStrength = getFortCultureStrength(ePlayer);
@@ -4771,7 +4923,8 @@ bool CvPlot::isValidDomainForAction(UnitTypes eUnit) const
 
 		// WTP, ray, Canal - START
 		// in Canals, which are actually on land plots, we do not want to have any Ships bigger than Coastal Ships or Fishing Boats
-		if (!isWater() && !kUnitInfo.getTerrainImpassable(TERRAIN_OCEAN) && !(kUnitInfo.isGatherBoat() && kUnitInfo.getHarbourSpaceNeeded() == 1) && getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(getImprovementType()).isCanal())
+		// WTP: ships that cannot sail to Europe count as coastal ships (see CvUnit::canMoveInto)
+		if (!isWater() && kUnitInfo.canSailToEurope() && !(kUnitInfo.isGatherBoat() && kUnitInfo.getHarbourSpaceNeeded() == 1) && getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(getImprovementType()).isCanal())
 		{
 			return false;
 		}
@@ -5341,6 +5494,16 @@ void CvPlot::changeForceUnownedTimer(int iChange)
 	setForceUnownedTimer(getForceUnownedTimer() + iChange);
 }
 
+bool CvPlot::isBoughtFromNatives() const
+{
+	return m_bBoughtFromNatives;
+}
+
+void CvPlot::setBoughtFromNatives(bool bNewValue)
+{
+	m_bBoughtFromNatives = bNewValue;
+}
+
 
 int CvPlot::getCityRadiusCount() const
 {
@@ -5753,6 +5916,12 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits)
 		GC.getGameINLINE().addReplayMessage(REPLAY_MESSAGE_PLOT_OWNER_CHANGE, eNewValue, (char*)NULL, getX_INLINE(), getY_INLINE());
 
 		setOwnershipDuration(0);
+
+		// WTP: once the buyer loses the land, natives may claim it again
+		if (eNewValue == NO_PLAYER || GET_PLAYER(eNewValue).isNative())
+		{
+			setBoughtFromNatives(false);
+		}
 
 		if (isOwned())
 		{
@@ -7838,6 +8007,12 @@ void CvPlot::setCulture(PlayerTypes eIndex, int iNewValue, bool bUpdate)
 
 void CvPlot::changeCulture(PlayerTypes eIndex, int iChange, bool bUpdate)
 {
+	// WTP: no native culture grows on land bought from natives
+	if (iChange > 0 && isBoughtFromNatives() && GET_PLAYER(eIndex).isNative())
+	{
+		return;
+	}
+
 	if (0 != iChange)
 	{
 		setCulture(eIndex, (getCulture(eIndex) + iChange), bUpdate);
@@ -7869,6 +8044,13 @@ int CvPlot::getBuyPrice(PlayerTypes ePlayer) const
 		if (iBuyCultureAmount > iFullCulturePriceThreshold)
 		{
 			iBuyCultureAmount = iFullCulturePriceThreshold + (iBuyCultureAmount - iFullCulturePriceThreshold) / 5;
+		}
+
+		// WTP: the cost from the natives' culture (above the minimum price) is halved
+		const int iMinCulture = GC.getDefineINT("BUY_PLOT_MIN_CULTURE") * GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getGrowthPercent() / 100;
+		if (iBuyCultureAmount > iMinCulture)
+		{
+			iBuyCultureAmount = iMinCulture + (iBuyCultureAmount - iMinCulture) / 2;
 		}
 	}
 	// WTP, Schmiddie, Native Land Price Scaling - END
@@ -7904,6 +8086,13 @@ int CvPlot::getBuyPrice(PlayerTypes ePlayer) const
 
 	iBuyPrice *= std::max(0, iModifier);
 	iBuyPrice /= 100;
+
+	// WTP: the natives' land of a colony (3x3 plots) never costs more than 4000 gold
+	static const int NATIVE_LAND_MAX_COLONY_PRICE = 4000;
+	if (getOwnerINLINE() != NO_PLAYER && GET_PLAYER(getOwnerINLINE()).isNative())
+	{
+		iBuyPrice = std::min(iBuyPrice, NATIVE_LAND_MAX_COLONY_PRICE / NUM_CITY_PLOTS_1_PLOT);
+	}
 
 	return iBuyPrice;
 }
@@ -8077,6 +8266,7 @@ void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange, InvisibleTypes 
 				updateFog();
 				updateMinimapColor();
 				updateCenterUnit();
+				updateSiegeCamp(); // WTP: siege
 			}
 		}
 	}
@@ -9165,6 +9355,8 @@ void CvPlot::addUnit(CvUnit* pUnit, bool bUpdate)
 
 		setFlagDirty(true);
 	}
+
+	updateSiegeCampsNearby(); // WTP: siege
 }
 
 
@@ -9194,6 +9386,8 @@ void CvPlot::removeUnit(CvUnit* pUnit, bool bUpdate)
 
 		setFlagDirty(true);
 	}
+
+	updateSiegeCampsNearby(); // WTP: siege
 }
 
 
@@ -9612,6 +9806,13 @@ void CvPlot::getVisibleImprovementState(ImprovementTypes& eType, bool& bWorked)
 	}
 
 	if (getPlotCity() != NULL)
+	{
+		return;
+	}
+
+	// WTP: siege: the siege works and the camp of the besiegers are shown instead of the improvement
+	eType = getSiegeArt();
+	if (eType != NO_IMPROVEMENT)
 	{
 		return;
 	}

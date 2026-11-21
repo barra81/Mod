@@ -1,6 +1,7 @@
 // unit.cpp
 
 #include "CvGameCoreDLL.h"
+#include "CvHumanLog.h"
 #include "CombatOdds.h"
 #include "CvUnit.h"
 #include "CvArea.h"
@@ -417,6 +418,7 @@ void CvUnit::convert(CvUnit* pUnit, bool bKill)
 	}
 	// WTP, Attached Land Leader - END
 
+	const int iPowderUsed = pUnit->m_iPowderUsed; // WTP: the converted artillery keeps its black powder
 	if (bKill)
 	{
 		ProfessionTypes eProfession = pUnit->getProfession();
@@ -443,6 +445,8 @@ void CvUnit::convert(CvUnit* pUnit, bool bKill)
 			setHasRealPromotion(ePromotion, true);
 		}
 	}
+	m_iPowderUsed = isPowderArtillery() ? iPowderUsed : 0; // WTP
+	updatePowderPromotions();
 
 	pTransportUnit = pUnit->getTransportUnit();
 
@@ -1008,6 +1012,13 @@ void CvUnit::doTurn()
 	FAssert(getGroup() != NULL || GET_PLAYER(getOwnerINLINE()).getPopulationUnitCity(getID()) != NULL);
 
 	testPromotionReady();
+
+	// WTP: the AI reloads the black powder of its artillery by itself (the human player with the button)
+	if (m_iPowderUsed > 0 && !isHuman() && canReloadPowder())
+	{
+		reloadPowder();
+	}
+	updatePowderPromotions();
 
 	// R&R, Robert Surcouf, Damage on Storm plots, Start
 	// R&R, bugfix: we only damage ships on Sea and not the transported units, ray, START
@@ -1682,6 +1693,29 @@ void CvUnit::updateCombat(bool bQuick)
 		pDefender->setCombatUnit(NULL);
 		NotifyEntity(MISSION_DAMAGE);
 		pDefender->NotifyEntity(MISSION_DAMAGE);
+
+		HumanLog::combat(*this, *pDefender, *pPlot, isDead() ? "lost" : (pDefender->isDead() ? "won" : "withdrew"));
+
+		// WTP: war AI log: the outcome of a land combat for the AI colonial nations (attacker and defender side)
+		if (gUnitLogLevel >= 1 && getDomainType() == DOMAIN_LAND)
+		{
+			const char* const szOutcome = isDead() ? "lost" : (pDefender->isDead() ? "won" : "withdrew");
+			const PlayerTypes aeSides[2] = { getOwnerINLINE(), pDefender->getOwnerINLINE() };
+			for (int iSide = 0; iSide < 2; ++iSide)
+			{
+				const CvPlayer& kSide = GET_PLAYER(aeSides[iSide]);
+				if (!kSide.isHuman() && kSide.isColonialNation())
+				{
+					logWTP(WTP_LOG_MILITARY, aeSides[iSide], "WTP combat: turn %d: %S %S (unitAI %s, group of %d) of player %d at %d,%d attacked %S %S (unitAI %s) of player %d at %d,%d: attacker %s",
+						GC.getGameINLINE().getGameTurn(), getName().GetCString(), (getProfession() != NO_PROFESSION) ? GC.getProfessionInfo(getProfession()).getDescription() : L"",
+						(AI_getUnitAIType() != NO_UNITAI) ? GC.getUnitAIInfo(AI_getUnitAIType()).getType() : "none", (getGroup() != NULL) ? getGroup()->getNumUnits() : 1,
+						getOwnerINLINE(), getX_INLINE(), getY_INLINE(),
+						pDefender->getName().GetCString(), (pDefender->getProfession() != NO_PROFESSION) ? GC.getProfessionInfo(pDefender->getProfession()).getDescription() : L"",
+						(pDefender->AI_getUnitAIType() != NO_UNITAI) ? GC.getUnitAIInfo(pDefender->AI_getUnitAIType()).getType() : "none",
+						pDefender->getOwnerINLINE(), pPlot->getX_INLINE(), pPlot->getY_INLINE(), szOutcome);
+				}
+			}
+		}
 
 		// case: Attacker died, defender won
 		if (isDead())
@@ -2722,6 +2756,12 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2, bool bT
 {
 	CvUnit* pUnit;
 
+	// WTP: the private pioneer takes no commands but delete
+	if (static_cast<const CvUnitAI*>(this)->AI_getPrivateBuild() != NO_BUILD && eCommand != COMMAND_DELETE)
+	{
+		return false;
+	}
+
 	if (bTestBusy && getGroup()->isBusy())
 	{
 		return false;
@@ -3074,6 +3114,29 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2, bool bT
 	// WTP: the job the player picked for the job automation (colony iData1, profession iData2)
 	case COMMAND_ASSIGN_JOB:
 		if (canAutomate(AUTOMATE_ASSIGN_JOB))
+		{
+			return true;
+		}
+		break;
+
+	// WTP: reload the black powder of land artillery
+	case COMMAND_RELOAD_POWDER:
+		if (canReloadPowder())
+		{
+			return true;
+		}
+		break;
+
+	// WTP: siege
+	case COMMAND_SIEGE:
+		if (getSiegeTargetCity() != NULL)
+		{
+			return true;
+		}
+		break;
+
+	case COMMAND_LIFT_SIEGE:
+		if (getLiftSiegeCity() != NULL)
 		{
 			return true;
 		}
@@ -3558,6 +3621,20 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			}
 			break;
 
+		// WTP: reload the black powder of land artillery
+		case COMMAND_RELOAD_POWDER:
+			reloadPowderGroup();
+			break;
+
+		// WTP: siege
+		case COMMAND_SIEGE:
+			getSiegeTargetCity()->startSiege(getOwnerINLINE());
+			break;
+
+		case COMMAND_LIFT_SIEGE:
+			getLiftSiegeCity()->endSiege();
+			break;
+
 		// WTP: transport to a city: the player picks the colony
 		case COMMAND_TRANSPORT_TO_CITY:
 			if (getOwnerINLINE() == GC.getGameINLINE().getActivePlayer() && gDLL->getInterfaceIFace()->getHeadSelectedUnit() == this)
@@ -3838,6 +3915,56 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 		return false;
 	}
 
+	// WTP: siege: a military unit of the besieged team that has moved this turn (cheaply, on the plots beside its besieged
+	// city) can not leave those plots again in the same turn; it may still attack and enter the city
+	if (getMoves() > 0 && canAttack() && plot() != NULL && plot()->isBesiegedCityRing(getTeam()) && !kPlot.isBesiegedCityRing(getTeam())
+		&& !(kPlot.isCity() && kPlot.getTeam() == getTeam()) && !(bAttack && kPlot.isVisibleEnemyDefender(this)))
+	{
+		return false;
+	}
+
+	// WTP: siege: land units can not leave a besieged city (they may only attack the enemies beside it) and no other land
+	// units can enter it; ships and their cargo can come and go while the city is only half besieged
+	{
+		const CvCity* const pFromCity = (plot() != NULL) ? plot()->getPlotCity() : NULL;
+		const CvCity* const pToCity = kPlot.getPlotCity();
+		if (getDomainType() == DOMAIN_LAND)
+		{
+			if (pFromCity != NULL && !GET_TEAM(getTeam()).isAtWar(pFromCity->getTeam()) && pFromCity->isBesieged())
+			{
+				if (!bAttack || !kPlot.isVisibleEnemyDefender(this))
+				{
+					return false;
+				}
+			}
+			if (pToCity != NULL && !GET_TEAM(getTeam()).isAtWar(pToCity->getTeam()) && pToCity->isBesieged() && !(isCargo() && !pToCity->isFullSiege()))
+			{
+				return false;
+			}
+		}
+		else if (getDomainType() == DOMAIN_SEA)
+		{
+			if (pToCity != NULL && !GET_TEAM(getTeam()).isAtWar(pToCity->getTeam()) && pToCity->isFullSiege())
+			{
+				return false;
+			}
+			if (pFromCity != NULL && !GET_TEAM(getTeam()).isAtWar(pFromCity->getTeam()) && hasCargo() && pFromCity->isFullSiege())
+			{
+				bool bLandCargo = false;
+				CLLNode<IDInfo>* pUnitNode = plot()->headUnitNode();
+				while (pUnitNode != NULL && !bLandCargo)
+				{
+					const CvUnit* pLoopUnit = plot()->getUnitNodeLoop(pUnitNode);
+					bLandCargo = (pLoopUnit != NULL && pLoopUnit->getTransportUnit() == this && !pLoopUnit->isGoods());
+				}
+				if (bLandCargo)
+				{
+					return false;
+				}
+			}
+		}
+	}
+
 	// R&R, ray, changes to Wild Animals - START
 	// we now just check that the Animals can not enter City Radius of "Non-Natives" anymore
 	if (getUnitInfo().isAnimal())
@@ -3869,7 +3996,9 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 
 	// WTP, ray, Canal - START
 	// in Canals, which are actually on land plots, we do not want to have any Ships bigger than Coastal Ships or GatherBoats
-	if (getUnitInfo().getDomainType() == DOMAIN_SEA && !kPlot.isWater() && !getUnitInfo().getTerrainImpassable(TERRAIN_OCEAN) && !(getUnitInfo().isGatherBoat() && getUnitInfo().getHarbourSpaceNeeded() == 1) && kPlot.getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(kPlot.getImprovementType()).isCanal())
+	// WTP: ships that cannot sail to Europe count as coastal ships (since coastal ships may enter the ocean, Unit Travel
+	// Restrictions, the ocean terrain no longer told them apart and no ship but the fishing boat could enter a canal)
+	if (getUnitInfo().getDomainType() == DOMAIN_SEA && !kPlot.isWater() && getUnitInfo().canSailToEurope() && !(getUnitInfo().isGatherBoat() && getUnitInfo().getHarbourSpaceNeeded() == 1) && kPlot.getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(kPlot.getImprovementType()).isCanal())
 	{
 		return false;
 	}
@@ -4033,35 +4162,9 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 		// here we also check just for can Attack - we check City owner further down
 		if (DOMAIN_LAND == getDomainType() && kPlot.isCity(true, getTeam()) && canAttack())
 		{
-			// Case real City
+			// Case real City: WTP: no limit for the units in a colony; units over its barracks space lower its defense bonus instead (CvCity::getBarracksDefensePercent)
 			if (kPlot.getImprovementType() == NO_IMPROVEMENT)
 			{
-				// this is only checked for Colonial Cities, Native Villages can always be entered
-				CvCity* pCity = kPlot.getPlotCity();
-				if (pCity != NULL)
-				{
-					// here we ensure we check this only for the Owner of the Unit being Owner of the City
-					if(!pCity->isNative() && pCity->getOwnerINLINE() == getOwnerINLINE())
-					{
-						int iBarracksSpaceNeededByUnit = getUnitInfo().getBarracksSpaceNeeded();
-
-						// we also need to check the PRofession
-						if (getProfession() != NO_PROFESSION)
-						{
-							iBarracksSpaceNeededByUnit += GC.getProfessionInfo(getProfession()).getBarracksSpaceNeededChange();
-						}
-
-						// Caclulating free Harbour Space in City
-						int iBarracksSpaceMaxInCity = kPlot.getPlotCity()->getCityBarracksSpace();
-						int iBarracksSpaceUsedInCity = kPlot.getPlotCity()->getCityBarracksSpaceUsed();
-						int iBarracksSpaceAvailableInCity = iBarracksSpaceMaxInCity - iBarracksSpaceUsedInCity;
-
-						if (iBarracksSpaceNeededByUnit > iBarracksSpaceAvailableInCity)
-						{
-							return false;
-						}
-					}
-				}
 			}
 
 			// Case "actAsCity" Improvement - also considered as City
@@ -4085,6 +4188,11 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 					if (GC.getImprovementInfo(kPlot.getImprovementType()).getImprovementUpgrade() == NO_IMPROVEMENT)
 					{
 						iImprovementBarracksSpace = iImprovementBarracksSpace * 2;
+					}
+					// WTP: forts have 50% more room
+					if (kPlot.isFort())
+					{
+						iImprovementBarracksSpace = iImprovementBarracksSpace * 3 / 2;
 					}
 
 					// now we calculate how much is already used
@@ -4747,10 +4855,6 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 		}
 		break;
 
-	// WTP: native supply automation: a human player's coastal ship (cargo, no fishing or whaling boat) on the map
-	case AUTOMATE_NATIVE_SUPPLY:
-		if (!isHuman() || isNative() || getDomainType() != DOMAIN_SEA || !isOnMap_() || cargoSpace() == 0 || getUnitInfo().isGatherBoat()
-			|| getUnitInfo().getDefaultUnitAIType() != UNITAI_TRANSPORT_COAST || GET_PLAYER(getOwnerINLINE()).getNumCities() == 0)
 	// WTP: automatic job assignment: a single colonist on the map (not aboard a ship) of a player with a colony
 	case AUTOMATE_ASSIGN_JOB:
 		if (getDomainType() != DOMAIN_LAND || !isOnMap_() || isCargo() || isNative() || !getUnitInfo().isFound()
@@ -4763,6 +4867,27 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 	// WTP: transport to a city or plot: set by its own buttons (COMMAND_TRANSPORT_TO_CITY, INTERFACEMODE_TRANSPORT_TO)
 	case AUTOMATE_TRAVEL:
 		return false;
+
+	// WTP: private pioneer: set when the player pays for it (CvPlayer::startPrivateBuild), never by the player
+	case AUTOMATE_PRIVATE_BUILD:
+		return false;
+
+	// WTP: pioneer plan: a human player's pioneer (a unit that can build improvements) alone on the map
+	case AUTOMATE_PIONEER_PLAN:
+		if (!isHuman() || getDomainType() != DOMAIN_LAND || !isOnMap_() || isCargo() || workRate(true) <= 0
+			|| getGroup() == NULL || getGroup()->getNumUnits() != 1)
+		{
+			return false;
+		}
+		break;
+
+	// WTP: patrol: a human player's military unit or warship on the map (not aboard a ship)
+	case AUTOMATE_PATROL:
+		if (!isHuman() || isNative() || !isOnMap_() || isCargo() || !canAttack() || (getDomainType() != DOMAIN_LAND && getDomainType() != DOMAIN_SEA))
+		{
+			return false;
+		}
+		break;
 
 	// WTP: treasure automation: a human player's treasure on the map (not aboard a ship)
 	case AUTOMATE_TREASURE:
@@ -4782,6 +4907,15 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 			{
 				return false;
 			}
+		}
+		break;
+
+	// WTP: native supply automation: a human player's coastal ship (cargo, no fishing or whaling boat) on the map
+	case AUTOMATE_NATIVE_SUPPLY:
+		if (!isHuman() || isNative() || getDomainType() != DOMAIN_SEA || !isOnMap_() || cargoSpace() == 0 || getUnitInfo().isGatherBoat()
+			|| getUnitInfo().getDefaultUnitAIType() != UNITAI_TRANSPORT_COAST || GET_PLAYER(getOwnerINLINE()).getNumCities() == 0)
+		{
+			return false;
 		}
 		break;
 
@@ -5628,6 +5762,12 @@ bool CvUnit::canTradeYield(const CvPlot* pPlot) const
 		return false;
 	}
 
+	// WTP, forts block foreign trade
+	if (pCity->getTradeBlockingFortOwner(getOwnerINLINE()) != NO_PLAYER)
+	{
+		return false;
+	}
+
 	if (cargoSpace() == 0)
 	{
 		return false;
@@ -6253,37 +6393,9 @@ bool CvUnit::canUnload() const
 	// Comment: I am afraid to damage AI logc thus I will only check this for Human
 	if (GLOBAL_DEFINE_ENABLE_NEW_BARRACKS_SYSTEM && isHuman())
 	{
-		// Case real City
+		// Case real City: WTP: no limit for the units in a colony; units over its barracks space lower its defense bonus instead (CvCity::getBarracksDefensePercent)
 		if (plot()->getImprovementType() == NO_IMPROVEMENT)
 		{
-			// this is only checked for Colonial Cities, Native Villages can always be entered
-			CvCity* pCity = plot()->getPlotCity();
-			if (pCity != NULL)
-			{
-				// here we ensure we check this only for the Owner of the Unit being Owner of the City
-				if(!pCity->isNative() && pCity->getOwnerINLINE() == getOwnerINLINE())
-				{
-					int iBarracksSpaceNeededByUnit = getUnitInfo().getBarracksSpaceNeeded();
-					if (getProfession() != NO_PROFESSION)
-					{
-						iBarracksSpaceNeededByUnit += GC.getProfessionInfo(getProfession()).getBarracksSpaceNeededChange();
-					}
-
-					// WTP, ray, fix issue of unloading Non-Military Units not allowed
-					if (iBarracksSpaceNeededByUnit > 0)
-					{
-						// Caclulating free Barracks Space in City
-						int iBarracksSpaceMaxInCity = plot()->getPlotCity()->getCityBarracksSpace();
-						int iBarracksSpaceUsedInCity = plot()->getPlotCity()->getCityBarracksSpaceUsed();
-						int iBarracksSpaceAvailableInCity = iBarracksSpaceMaxInCity - iBarracksSpaceUsedInCity;
-
-						if (iBarracksSpaceNeededByUnit > iBarracksSpaceAvailableInCity)
-						{
-							return false;
-						}
-					}
-				}
-			}
 		}
 
 		// Case "actAsCity" Improvement - also considered as City
@@ -6305,6 +6417,11 @@ bool CvUnit::canUnload() const
 				if (GC.getImprovementInfo(plot()->getImprovementType()).getImprovementUpgrade() == NO_IMPROVEMENT)
 				{
 					iImprovementBarracksSpace = iImprovementBarracksSpace * 2;
+				}
+				// WTP: forts have 50% more room
+				if (plot()->isFort())
+				{
+					iImprovementBarracksSpace = iImprovementBarracksSpace * 3 / 2;
 				}
 
 				// now we calculate how much is already used
@@ -6546,7 +6663,7 @@ void CvUnit::unloadAllTransportsOnPlot()
 	}
 }
 
-bool CvUnit::canLearn() const
+bool CvUnit::canLearn(bool bIgnoreTradeBan) const
 {
 	UnitTypes eUnitType = getLearnUnitType(plot());
 	if(eUnitType == NO_UNIT)
@@ -6575,7 +6692,7 @@ bool CvUnit::canLearn() const
 		if (!nativePlayer.isHuman())
 		{
 			int currentPlayerAttitude = nativePlayer.AI_getAttitude(getOwnerINLINE(), false);
-			if (currentPlayerAttitude == ATTITUDE_FURIOUS || nativePlayer.getTimeNoTrade(getOwnerINLINE()) > 0)
+			if (currentPlayerAttitude == ATTITUDE_FURIOUS || (!bIgnoreTradeBan && nativePlayer.getTimeNoTrade(getOwnerINLINE()) > 0))
 			{
 				return false;
 			}
@@ -6672,7 +6789,8 @@ void CvUnit::doLiveAmongNatives()
 
 void CvUnit::doLearn()
 {
-	if(!canLearn())
+	// a colonist already living among the natives finishes learning even if a trade ban started meanwhile
+	if(!canLearn(true))
 	{
 		return;
 	}
@@ -6968,6 +7086,12 @@ bool CvUnit::canEstablishTradePost() const
 
 	CvPlayer& kCityOwner = GET_PLAYER(pCity->getOwnerINLINE());
 	if (!kCityOwner.canHaveTradePost(getOwnerINLINE()))
+	{
+		return false;
+	}
+
+	// WTP, forts block foreign trade
+	if (pCity->getTradeBlockingFortOwner(getOwnerINLINE()) != NO_PLAYER)
 	{
 		return false;
 	}
@@ -7332,7 +7456,9 @@ int CvUnit::getNativeTradePostSuccessPercent() const
 	if (pCity == NULL || !pCity->isNative())
 	{
 		//Old Code
-		return GET_PLAYER(getOwnerINLINE()).getNativeTradePostSuccessPercent() * (100 + (getUnitInfo().getNativeTradeRateModifier() * GLOBAL_DEFINE_TRADER_RATE_EFFECT_ON_SUCCESS / 100)) / 100;
+		// WTP: less with every trade post of the player (CvPlayer::getTradePostCountPenalty)
+		return std::max(0, GET_PLAYER(getOwnerINLINE()).getNativeTradePostSuccessPercent() * (100 + (getUnitInfo().getNativeTradeRateModifier() * GLOBAL_DEFINE_TRADER_RATE_EFFECT_ON_SUCCESS / 100)) / 100
+			- GET_PLAYER(getOwnerINLINE()).getTradePostCountPenalty());
 	}
 
 	// 1. Find out how many missions already exist at this Native-Nation -> Missioning Rate
@@ -7384,6 +7510,8 @@ int CvUnit::getNativeTradePostSuccessPercent() const
 	totalChance = totalChance + attitudeChanceImprovement * (attitudeNativeToTradePostPlayer - attitudeNativeToOldTradePostPlayer);
 	//now substract the penalty for exising trade post
 	totalChance = totalChance - penaltyExisingTradePost;
+	// WTP (user 2026-10-24): less with every trade post the player has already (1% each, 2% each from the 8th on)
+	totalChance = totalChance - GET_PLAYER(getOwnerINLINE()).getTradePostCountPenalty();
 
 	if (totalChance > maxChance)
 	{
@@ -8024,6 +8152,12 @@ bool CvUnit::canBombard(const CvPlot* pPlot) const
 		return false;
 	}
 
+	// WTP: land artillery needs black powder for a bombardment
+	if (isPowderArtillery() && !hasPowderForShot())
+	{
+		return false;
+	}
+
 	if (isMadeAttack())
 	{
 		return false;
@@ -8086,11 +8220,65 @@ bool CvUnit::bombard()
 	setMoves(maxMoves());
 	// WTP, ray, issue #892 - bombard should set movement points to 0 - END
 
+	// WTP: artillery duel: land artillery uses black powder, and the enemy artillery in the target lowers the effect of
+	// the bombardment (all artillery with black powder on both plots counts). The attacker uses one shot, the defenders
+	// one shot together, or only the attacker's share of it if they are stronger.
+	int iDamagePercent = 100;
+	if (isPowderArtillery())
+	{
+		int iAttackStrength = 0;
+		CLLNode<IDInfo>* pUnitNode = pPlot->headUnitNode();
+		while (pUnitNode != NULL)
+		{
+			CvUnit* pLoopUnit = pPlot->getUnitNodeLoop(pUnitNode);
+			if (pLoopUnit != NULL && pLoopUnit->getOwnerINLINE() == getOwnerINLINE() && !pLoopUnit->isCargo() && pLoopUnit->isPowderArtillery() && pLoopUnit->hasPowderForShot())
+			{
+				iAttackStrength += pLoopUnit->getArtilleryDuelStrength();
+			}
+		}
+
+		std::vector<CvUnit*> apDefenders;
+		std::vector<int> aiDefenderStrength;
+		int iDefenseStrength = 0;
+		pUnitNode = pTargetPlot->headUnitNode();
+		while (pUnitNode != NULL)
+		{
+			CvUnit* pLoopUnit = pTargetPlot->getUnitNodeLoop(pUnitNode);
+			if (pLoopUnit != NULL && isEnemy(pLoopUnit->getTeam()) && !pLoopUnit->isCargo() && pLoopUnit->isPowderArtillery() && pLoopUnit->hasPowderForShot())
+			{
+				apDefenders.push_back(pLoopUnit);
+				aiDefenderStrength.push_back(pLoopUnit->getArtilleryDuelStrength());
+				iDefenseStrength += aiDefenderStrength.back();
+			}
+		}
+
+		iDamagePercent = getBombardDamagePercent(iAttackStrength, iDefenseStrength, true);
+
+		const int iShot = GC.getDefineINT("ARTILLERY_POWDER_PER_SHOT") * 100;
+		changePowderUsed(iShot);
+		if (iDefenseStrength > 0)
+		{
+			const int iDefenseUse = (iShot * std::min(iAttackStrength, iDefenseStrength)) / iDefenseStrength;
+			for (uint i = 0; i < apDefenders.size(); ++i)
+			{
+				apDefenders[i]->changePowderUsed((iDefenseUse * aiDefenderStrength[i]) / iDefenseStrength);
+			}
+
+			const wchar* szTarget = (pBombardCity != NULL) ? pBombardCity->getNameKey() : GC.getImprovementInfo(pTargetPlot->getImprovementType()).getTextKeyWide();
+			const CvWString szBuffer = gDLL->getText("TXT_KEY_BOMBARD_ARTILLERY_DUEL", szTarget, iAttackStrength / 100, iDefenseStrength / 100, iDamagePercent);
+			gDLL->UI().addPlayerMessage(getOwnerINLINE(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), (iDamagePercent > 0) ? COLOR_GREEN : COLOR_RED, pTargetPlot->getX_INLINE(), pTargetPlot->getY_INLINE());
+			if (pTargetPlot->getOwnerINLINE() != NO_PLAYER)
+			{
+				gDLL->UI().addPlayerMessage(pTargetPlot->getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), (iDamagePercent > 0) ? COLOR_RED : COLOR_GREEN, pTargetPlot->getX_INLINE(), pTargetPlot->getY_INLINE());
+			}
+		}
+	}
+
 	// Super Forts begin *bombard* *text*
 	//R&R mod, vetiarvind, super forts merge ..invert if clause and let R&R code be the case when pBombardCity != null
 	if(pBombardCity == NULL)
 	{
-		pTargetPlot->changeDefenseDamage(bombardRate());
+		pTargetPlot->changeDefenseDamage((bombardRate() * iDamagePercent) / 100);
 
 		CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO", GC.getImprovementInfo(pTargetPlot->getImprovementType()).getText(),
 			(GC.getImprovementInfo(pTargetPlot->getImprovementType()).getDefenseModifier()-pTargetPlot->getDefenseDamage()), GET_PLAYER(getOwnerINLINE()).getNameKey());
@@ -8102,7 +8290,7 @@ bool CvUnit::bombard()
 	}
 	else
 	{
-		pBombardCity->changeDefenseModifier(-(bombardRate() * std::max(0, 100 - pBombardCity->getBuildingBombardDefense())) / 100);
+		pBombardCity->changeDefenseModifier(-(((bombardRate() * std::max(0, 100 - pBombardCity->getBuildingBombardDefense())) / 100) * iDamagePercent) / 100);
 
 		CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO", pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(), GET_PLAYER(getOwnerINLINE()).getNameKey());
 		gDLL->UI().addPlayerMessage(pBombardCity->getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), COLOR_RED, pBombardCity->getX_INLINE(), pBombardCity->getY_INLINE(), true, true);
@@ -8135,6 +8323,281 @@ bool CvUnit::bombard()
 	return true;
 }
 
+
+// WTP: black powder of land artillery
+bool CvUnit::isPowderArtillery() const
+{
+	return getDomainType() == DOMAIN_LAND && bombardRate() > 0;
+}
+
+// the king's artillery needs no black powder
+bool CvUnit::isPowderExempt() const
+{
+	return getOwnerINLINE() == NO_PLAYER || GET_PLAYER(getOwnerINLINE()).isEurope();
+}
+
+int CvUnit::getPowderCapacity() const
+{
+	return GC.getDefineINT("ARTILLERY_POWDER_CAPACITY") * 100;
+}
+
+int CvUnit::getPowderStored() const
+{
+	return std::max(0, getPowderCapacity() - m_iPowderUsed);
+}
+
+int CvUnit::getPowderShortfall() const
+{
+	if (m_iPowderUsed <= 0)
+	{
+		return 0;
+	}
+	return (std::min(m_iPowderUsed, getPowderCapacity()) + 99) / 100;
+}
+
+bool CvUnit::hasPowderForShot() const
+{
+	return isPowderExempt() || getPowderStored() >= GC.getDefineINT("ARTILLERY_POWDER_PER_SHOT") * 100;
+}
+
+// not enough black powder for a bombardment: the artillery fights with a tenth of its strength
+bool CvUnit::isOutOfPowder() const
+{
+	return m_iPowderUsed > 0 && isPowderArtillery() && !hasPowderForShot();
+}
+
+void CvUnit::changePowderUsed(int iChange)
+{
+	if (iChange != 0 && !isPowderExempt())
+	{
+		m_iPowderUsed = range(m_iPowderUsed + iChange, 0, getPowderCapacity());
+		updatePowderPromotions();
+	}
+}
+
+void CvUnit::resetPowder()
+{
+	m_iPowderUsed = 0;
+	updatePowderPromotions();
+}
+
+// the promotions only show the black powder: 'Powder Supply' or 'Out of Powder' (its strength malus is in maxCombatStr)
+void CvUnit::updatePowderPromotions()
+{
+	static const PromotionTypes ePowderSupply = (PromotionTypes)GC.getInfoTypeForString("PROMOTION_POWDER_SUPPLY");
+	static const PromotionTypes ePowderEmpty = (PromotionTypes)GC.getInfoTypeForString("PROMOTION_POWDER_EMPTY");
+	if (ePowderSupply == NO_PROMOTION || ePowderEmpty == NO_PROMOTION || getOwnerINLINE() == NO_PLAYER)
+	{
+		return;
+	}
+	const bool bArtillery = isPowderArtillery() && !isPowderExempt();
+	const bool bEmpty = bArtillery && !hasPowderForShot();
+	setHasRealPromotion(ePowderSupply, bArtillery && !bEmpty);
+	setHasRealPromotion(ePowderEmpty, bEmpty);
+}
+
+// strength in the artillery duel (in hundredths): bombard rate times base strength, with the strength modifiers, the modifier
+// against artillery and a bonus on hills; no terrain, city or fortification bonuses
+int CvUnit::getArtilleryDuelStrength() const
+{
+	int iModifier = getExtraCombatPercent();
+	if (getUnitCombatType() != NO_UNITCOMBAT)
+	{
+		iModifier += unitCombatModifier(getUnitCombatType());
+	}
+	if (plot() != NULL && plot()->isHills())
+	{
+		iModifier += GC.getDefineINT("BOMBARD_ARTILLERY_HILLS_BONUS");
+	}
+	return std::max(1, bombardRate() * baseCombatStr() * std::max(10, 100 + iModifier));
+}
+
+// percent of the normal bombardment effect: no enemy artillery 100%; enemy artillery as strong or stronger: a small
+// chance of the full effect; else linear between 1x, 2x, 4x and 8x superiority (more than 8x like 8x)
+int CvUnit::getBombardDamagePercent(int iAttackStrength, int iDefenseStrength, bool bRandom)
+{
+	if (iDefenseStrength <= 0)
+	{
+		return 100;
+	}
+	const int iEqualChance = GC.getDefineINT("BOMBARD_ARTILLERY_EQUAL_CHANCE");
+	if (iAttackStrength <= iDefenseStrength)
+	{
+		if (!bRandom)
+		{
+			return iEqualChance;
+		}
+		return (GC.getGameINLINE().getSorenRandNum(100, "Bombard artillery duel") < iEqualChance) ? 100 : 0;
+	}
+	const int aiRatio[4] = { 100, 200, 400, 800 };
+	const int aiPercent[4] = { iEqualChance, GC.getDefineINT("BOMBARD_ARTILLERY_PERCENT_2X"), GC.getDefineINT("BOMBARD_ARTILLERY_PERCENT_4X"), GC.getDefineINT("BOMBARD_ARTILLERY_PERCENT_8X") };
+	const int iRatio = (iAttackStrength * 100) / iDefenseStrength;
+	for (int i = 1; i < 4; ++i)
+	{
+		if (iRatio <= aiRatio[i])
+		{
+			return aiPercent[i - 1] + ((aiPercent[i] - aiPercent[i - 1]) * (iRatio - aiRatio[i - 1])) / (aiRatio[i] - aiRatio[i - 1]);
+		}
+	}
+	return aiPercent[3];
+}
+
+bool CvUnit::canReloadPowder() const
+{
+	return isPowderArtillery() && !isPowderExempt() && isOnMap_() && !isCargo() && getPowderShortfall() > 0 && getPowderSupply() > 0;
+}
+
+// black powder this artillery can reload here
+int CvUnit::getPowderSupply() const
+{
+	return const_cast<CvUnit*>(this)->takePowder(MAX_INT, false);
+}
+
+// takes (or with bTake false only counts) up to iWanted black powder: from the own colony on this plot, then from a
+// ship on this or an adjacent plot, then from a land transport (wagon train) on this plot
+int CvUnit::takePowder(int iWanted, bool bTake)
+{
+	int iLoaded = 0;
+	CvCity* pCity = plot()->getPlotCity();
+	if (pCity != NULL && pCity->getOwnerINLINE() == getOwnerINLINE())
+	{
+		const int iTake = std::min(iWanted, pCity->getYieldStored(YIELD_BLACK_POWDER));
+		if (iTake > 0)
+		{
+			if (bTake)
+			{
+				pCity->changeYieldStored(YIELD_BLACK_POWDER, -iTake);
+			}
+			iLoaded += iTake;
+		}
+	}
+
+	for (int iPass = 0; iPass < 2 && iLoaded < iWanted; ++iPass)
+	{
+		const DomainTypes eTransportDomain = (iPass == 0) ? DOMAIN_SEA : DOMAIN_LAND;
+		const int iLastDirection = (iPass == 0) ? NUM_DIRECTION_TYPES : 0; // land transports only on this plot
+		for (int iI = -1; iI < iLastDirection && iLoaded < iWanted; ++iI)
+		{
+			CvPlot* pLoopPlot = (iI < 0) ? plot() : plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+			if (pLoopPlot == NULL)
+			{
+				continue;
+			}
+			std::vector<CvUnit*> apPowder;
+			CLLNode<IDInfo>* pUnitNode = pLoopPlot->headUnitNode();
+			while (pUnitNode != NULL)
+			{
+				CvUnit* pLoopUnit = pLoopPlot->getUnitNodeLoop(pUnitNode);
+				const CvUnit* pTransport = (pLoopUnit != NULL) ? pLoopUnit->getTransportUnit() : NULL;
+				if (pTransport != NULL && pLoopUnit->getOwnerINLINE() == getOwnerINLINE() && pLoopUnit->getYield() == YIELD_BLACK_POWDER && pTransport->getDomainType() == eTransportDomain)
+				{
+					apPowder.push_back(pLoopUnit);
+				}
+			}
+			for (uint i = 0; i < apPowder.size() && iLoaded < iWanted; ++i)
+			{
+				const int iTake = std::min(iWanted - iLoaded, apPowder[i]->getYieldStored());
+				if (iTake > 0)
+				{
+					if (bTake)
+					{
+						apPowder[i]->setYieldStored(apPowder[i]->getYieldStored() - iTake);
+					}
+					iLoaded += iTake;
+				}
+			}
+		}
+	}
+	return iLoaded;
+}
+
+// reloads up to iMaxAmount black powder (-1: all that is missing); returns the black powder loaded
+int CvUnit::reloadPowder(int iMaxAmount)
+{
+	if (!isPowderArtillery() || isPowderExempt() || !isOnMap_() || isCargo())
+	{
+		return 0;
+	}
+	const int iWanted = (iMaxAmount < 0) ? getPowderShortfall() : std::min(getPowderShortfall(), iMaxAmount);
+	if (iWanted <= 0)
+	{
+		return 0;
+	}
+	const int iLoaded = takePowder(iWanted, true);
+	if (iLoaded > 0)
+	{
+		changePowderUsed(-iLoaded * 100);
+	}
+	return iLoaded;
+}
+
+// the reload button: all artillery of the group (the selected units) reloads the same amount, as much as the black
+// powder here allows (an artillery that misses less takes only what it misses)
+void CvUnit::reloadPowderGroup()
+{
+	std::vector<CvUnit*> apUnits;
+	CvSelectionGroup* pGroup = getGroup();
+	if (pGroup != NULL)
+	{
+		CLLNode<IDInfo>* pUnitNode = pGroup->headUnitNode();
+		while (pUnitNode != NULL)
+		{
+			CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
+			pUnitNode = pGroup->nextUnitNode(pUnitNode);
+			if (pLoopUnit != NULL && pLoopUnit->canReloadPowder())
+			{
+				apUnits.push_back(pLoopUnit);
+			}
+		}
+	}
+	if (apUnits.empty() && canReloadPowder())
+	{
+		apUnits.push_back(this);
+	}
+	if (apUnits.empty())
+	{
+		return;
+	}
+
+	// the largest equal share the black powder here is enough for (all units of a group are on the same plot)
+	const int iSupply = apUnits[0]->getPowderSupply();
+	int iMaxShortfall = 0;
+	for (uint i = 0; i < apUnits.size(); ++i)
+	{
+		iMaxShortfall = std::max(iMaxShortfall, apUnits[i]->getPowderShortfall());
+	}
+	int iShare = 0;
+	for (int iTry = 1; iTry <= iMaxShortfall; ++iTry)
+	{
+		int iTotal = 0;
+		for (uint i = 0; i < apUnits.size(); ++i)
+		{
+			iTotal += std::min(iTry, apUnits[i]->getPowderShortfall());
+		}
+		if (iTotal > iSupply)
+		{
+			break;
+		}
+		iShare = iTry;
+	}
+
+	if (iShare <= 0)
+	{
+		const CvWString szBuffer = gDLL->getText("TXT_KEY_POWDER_NOT_ENOUGH_TO_SHARE", iSupply, (int)apUnits.size());
+		gDLL->UI().addPlayerMessage(getOwnerINLINE(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_ERROR", MESSAGE_TYPE_INFO, GC.getYieldInfo(YIELD_BLACK_POWDER).getButton(), COLOR_RED, getX_INLINE(), getY_INLINE());
+		return;
+	}
+
+	for (uint i = 0; i < apUnits.size(); ++i)
+	{
+		const int iLoaded = apUnits[i]->reloadPowder(iShare);
+		if (iLoaded > 0)
+		{
+			const CvWString szBuffer = gDLL->getText("TXT_KEY_POWDER_RELOADED", apUnits[i]->getNameOrProfessionKey(), iLoaded, apUnits[i]->getPowderStored() / 100, apUnits[i]->getPowderCapacity() / 100);
+			gDLL->UI().addPlayerMessage(getOwnerINLINE(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_POSITIVE_DINK", MESSAGE_TYPE_INFO, GC.getYieldInfo(YIELD_BLACK_POWDER).getButton(), COLOR_GREEN, apUnits[i]->getX_INLINE(), apUnits[i]->getY_INLINE());
+		}
+	}
+}
 
 bool CvUnit::canPillage(const CvPlot* pPlot) const
 {
@@ -8521,6 +8984,29 @@ void CvUnit::buyLandAfterAcquire()
 		GET_PLAYER(m_ePlayerToBuyLand).changeGold((m_iMoneyToBuyLand * GLOBAL_DEFINE_BUY_PLOT_SELLER_INCOME_PERCENT) / 100);
 		GET_PLAYER(getOwnerINLINE()).AI_changeGoldTradedTo(m_ePlayerToBuyLand, m_iMoneyToBuyLand);
 		GET_PLAYER(getOwnerINLINE()).changeGold(m_iMoneyToBuyLand * -1);
+
+		// WTP: paid land is treated like land bought when founding: the culture of the natives is gone and can't come back.
+		// The same plots as the price in doAcquireCheckNatives, the unit still stands in the conquered city
+		const CvCity* pCity = plot()->getPlotCity();
+		if (pCity != NULL)
+		{
+			const PlayerTypes eCityOwner = pCity->getOwnerINLINE();
+			for (int i = 0; i < NUM_CITY_PLOTS_1_PLOT; ++i)
+			{
+				CvPlot* pLoopPlot = ::plotCity(getX_INLINE(), getY_INLINE(), i);
+				if (pLoopPlot != NULL && pLoopPlot->isOwned() && !pLoopPlot->isCity())
+				{
+					const PlayerTypes eSeller = pLoopPlot->findHighestCulturePlayer();
+					if (eSeller != NO_PLAYER && GET_PLAYER(eSeller).isNative() && !GET_TEAM(GET_PLAYER(eSeller).getTeam()).isAtWar(getTeam()))
+					{
+						const int iCulture = std::max(pLoopPlot->getBuyCultureAmount(eCityOwner), pLoopPlot->getCulture(eSeller));
+						pLoopPlot->setBoughtFromNatives(true);
+						pLoopPlot->setCulture(eSeller, 0, false);
+						pLoopPlot->changeCulture(eCityOwner, iCulture, true);
+					}
+				}
+			}
+		}
 	}
 }
 //Ende ray18
@@ -8539,6 +9025,7 @@ bool CvUnit::doFound(bool bBuyLand)
 
 	//first city takes land for free
 	bool bIsFirstCity = (GET_PLAYER(getOwnerINLINE()).getNumCities() == 0);
+	std::vector<CvPlot*> apBoughtFromNatives; // WTP
 	if (bBuyLand || bIsFirstCity)
 	{
 		for (int i = 0; i < NUM_CITY_PLOTS_1_PLOT; ++i) // R&R, ray, 2 Plot Radius
@@ -8551,7 +9038,10 @@ bool CvUnit::doFound(bool bBuyLand)
 					//don't buy land if at war, it will be taken
 					if (GET_PLAYER(pLoopPlot->getOwnerINLINE()).isNative() && !GET_TEAM(pLoopPlot->getTeam()).isAtWar(getTeam()))
 					{
-						GET_PLAYER(getOwnerINLINE()).buyLand(pLoopPlot, bIsFirstCity);
+						if (GET_PLAYER(getOwnerINLINE()).buyLand(pLoopPlot, bIsFirstCity) && !isNative())
+						{
+							apBoughtFromNatives.push_back(pLoopPlot);
+						}
 					}
 				}
 			}
@@ -8579,6 +9069,16 @@ bool CvUnit::doFound(bool bBuyLand)
 		FAssert(NULL != pCity);
 		if (NULL != pCity)
 		{
+			// WTP: bought land stays ours. Marked again now that the colony exists: without its culture range the buyer did not
+			// get the plot in buyLand, and the change of owner cleared the mark
+			for (uint i = 0; i < apBoughtFromNatives.size(); ++i)
+			{
+				if (apBoughtFromNatives[i]->getOwnerINLINE() == getOwnerINLINE())
+				{
+					apBoughtFromNatives[i]->setBoughtFromNatives(true);
+				}
+			}
+
 			pCity->addPopulationUnit(this, NO_PROFESSION);
 
 			//WTP, ray, Settler Professsion - START
@@ -8662,6 +9162,11 @@ bool CvUnit::doFound(bool bBuyLand)
 bool CvUnit::canJoinCity(const CvPlot* pPlot, bool bTestVisible, bool bIgnoreFood) const
 // TAC - Clear Specialty Fix - koma13 - END
 {
+	// WTP: the private pioneer does not join a colony
+	if (static_cast<const CvUnitAI*>(this)->AI_getPrivateBuild() != NO_BUILD)
+	{
+		return false;
+	}
 	CvCity* pCity = pPlot->getPlotCity();
 
 	if (pCity == NULL)
@@ -8837,7 +9342,10 @@ bool CvUnit::canBuild(const CvPlot* pPlot, BuildTypes eBuild, bool bTestVisible)
 	// R&R, ray, prevent Forts and Monasteries to be built on Peaks - end
 
 	// R&R, ray, AI Improvement - START
-	if (!isHuman() || isAutomated())  //R&R 2.3, ray's fix for automated pioneers
+	// (WTP: not the private pioneer: the player chose its improvement, it may replace one or clear a feature; WTP (user
+	// 2026-10-27): nor a pioneer working the pioneer plan: the player marked the improvement)
+	if ((!isHuman() || isAutomated()) && static_cast<const CvUnitAI*>(this)->AI_getPrivateBuild() == NO_BUILD  //R&R 2.3, ray's fix for automated pioneers
+		&& (getGroup() == NULL || getGroup()->getAutomateType() != AUTOMATE_PIONEER_PLAN))
 	{
 		// only go into here, if there is a Terrain Feature and build would remove it
 		if (pPlot->getFeatureType() != NO_FEATURE && GC.getBuildInfo(eBuild).isFeatureRemove(pPlot->getFeatureType()))
@@ -8896,6 +9404,25 @@ bool CvUnit::build(BuildTypes eBuild)
 
 	if (bFinished)
 	{
+		// WTP: the private pioneer has done its work and leaves
+		if (static_cast<const CvUnitAI*>(this)->AI_getPrivateBuild() != NO_BUILD)
+		{
+			const CvCity* const pNear = plot()->getWorkingCity();
+			const CvWString szBuffer = gDLL->getText("TXT_KEY_PRIVATE_BUILD_DONE", GC.getBuildInfo(eBuild).getTextKeyWide(),
+				(pNear != NULL) ? pNear->getNameKey() : L"-");
+			gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, plot(), "AS2D_POSITIVE_DINK", MESSAGE_TYPE_INFO,
+				GC.getBuildInfo(eBuild).getButton(), COLOR_WHITE, true, true);
+			kill(true);
+		}
+		// WTP: pioneer plan: the mark of this improvement is done
+		{
+			CvPlayer& kOwner = GET_PLAYER(getOwnerINLINE());
+			const int iPlotIndex = GC.getMap().plotNumINLINE(getX_INLINE(), getY_INLINE());
+			if (kOwner.getPioneerPlanBuild(iPlotIndex) == eBuild)
+			{
+				kOwner.setPioneerPlan(iPlotIndex, NO_BUILD, 0);
+			}
+		}
 		// WTP: pioneer log
 		if (gUnitLogLevel >= 1 && !isHuman())
 		{
@@ -8910,6 +9437,12 @@ bool CvUnit::build(BuildTypes eBuild)
 			{
 				if(plot()->getOwnerINLINE() == NO_PLAYER)
 				{
+					plot()->setOwner(getOwnerINLINE(),true);
+				}
+				// WTP, forts on native land: the fort plot passes to the builder, the natives resent it
+				else if (GET_PLAYER(plot()->getOwnerINLINE()).isNative() && !GET_PLAYER(getOwnerINLINE()).isNative())
+				{
+					GET_PLAYER(plot()->getOwnerINLINE()).AI_changeAttitudeExtra(getOwnerINLINE(), -GLOBAL_DEFINE_FORT_ON_NATIVE_LAND_ATTITUDE_PENALTY);
 					plot()->setOwner(getOwnerINLINE(),true);
 				}
 			}
@@ -10038,6 +10571,12 @@ int CvUnit::baseMoves() const
 	}
 	// WTP, Faster Ships game option - END
 
+	// WTP: the pirate ships of the barbarian player (Wild Animals) are slower (PIRATE_BARBARIAN_MOVES in GlobalDefinesAlt.xml)
+	if (getDomainType() == DOMAIN_SEA && m_pUnitInfo->isHiddenNationality() && GC.getGameINLINE().isBarbarianPlayer(getOwnerINLINE()))
+	{
+		iBaseMoves = std::min(iBaseMoves, GC.getDefineINT("PIRATE_BARBARIAN_MOVES"));
+	}
+
 	return iBaseMoves;
 }
 
@@ -10498,6 +11037,11 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 		if (!noDefensiveBonus())
 		{
 			iExtraModifier = pPlot->defenseModifier(getTeam());
+			// WTP: siege: besieging soldiers get only half the defense bonus of the plot
+			if (iExtraModifier > 0 && isBesieging(pPlot))
+			{
+				iExtraModifier /= 2;
+			}
 			iModifier += iExtraModifier;
 			if (pCombatDetails != NULL)
 			{
@@ -10726,6 +11270,12 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 	else
 	{
 		iCombat = ((baseCombatStr() * 10000) / (100 - iModifier));
+	}
+
+	// WTP: artillery without black powder (not enough for a bombardment) loses most of its strength
+	if (isOutOfPowder())
+	{
+		iCombat = (iCombat * std::max(0, 100 - GC.getDefineINT("ARTILLERY_NO_POWDER_COMBAT_MALUS"))) / 100;
 	}
 
 	if (pCombatDetails != NULL)
@@ -12114,6 +12664,21 @@ void CvUnit::jumpTo(Coordinates toCoord, bool bGroup, bool bUpdate, bool bShow, 
 		}
 		// Super Forts end
 
+		// WTP, forts block foreign trade: tell the player why the village will not trade
+		if (pNewPlot->isCity() && cargoSpace() > 0 && !getUnitInfo().isGatherBoat() && GET_PLAYER(getOwnerINLINE()).isHuman())
+		{
+			const CvCity* const pVillage = pNewPlot->getPlotCity();
+			if (pVillage->isNative() && pVillage->getOwnerINLINE() != getOwnerINLINE())
+			{
+				const PlayerTypes eBlocker = pVillage->getTradeBlockingFortOwner(getOwnerINLINE());
+				if (eBlocker != NO_PLAYER)
+				{
+					CvWString szBuffer = gDLL->getText("TXT_KEY_TRADE_BLOCKED_BY_FORT", pVillage->getNameKey(), GET_PLAYER(eBlocker).getCivilizationShortDescriptionKey());
+					gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_ADVISOR_SUGGEST", MESSAGE_TYPE_INFO, getButton(), COLOR_WARNING_TEXT, pNewPlot->getX_INLINE(), pNewPlot->getY_INLINE(), true, true);
+				}
+			}
+		}
+
 		//update facing direction
 		if(pOldPlot != NULL)
 		{
@@ -13365,6 +13930,20 @@ bool CvUnit::setProfession(ProfessionTypes eProfession, bool bForce, bool bRemov
 		processProfession(getProfession(), -1, false, bRemoveYieldsFromCity);
 		const ProfessionTypes eOldProfession = getProfession();
 
+		// WTP: artillery gives back its black powder less what it has fired
+		if (bRemoveYieldsFromCity && eOldProfession != NO_PROFESSION && getPowderShortfall() > 0 && !gDLL->GetWorldBuilderMode())
+		{
+			CvCity* pCity = GET_PLAYER(getOwnerINLINE()).getPopulationUnitCity(getID());
+			if (pCity == NULL && plot() != NULL)
+			{
+				pCity = plot()->getPlotCity();
+			}
+			if (pCity != NULL && pCity->getOwnerINLINE() == getOwnerINLINE() && !pCity->AI_isWorkforceHack())
+			{
+				pCity->changeYieldStored(YIELD_BLACK_POWDER, -std::min(getPowderShortfall(), GET_PLAYER(getOwnerINLINE()).getYieldEquipmentAmount(eOldProfession, YIELD_BLACK_POWDER)));
+			}
+		}
+
 		// actually change profession
 		m_eProfession = eProfession;
 
@@ -13374,6 +13953,7 @@ bool CvUnit::setProfession(ProfessionTypes eProfession, bool bForce, bool bRemov
 			setPromotions();
 		}
 		processProfession(getProfession(), 1, true, bRemoveYieldsFromCity);
+		resetPowder(); // WTP: new artillery starts with full black powder
 
 		bool shouldReloadEntity = true;
 		if (eOldProfession != NO_PROFESSION && m_eProfession != NO_PROFESSION)
@@ -13524,7 +14104,11 @@ bool CvUnit::canHaveProfession(ProfessionTypes eProfession, bool bBumpOther, con
 			{
 				for (YieldTypes eYieldType = FIRST_YIELD; eYieldType < NUM_YIELD_TYPES; ++eYieldType)
 				{
-					const int iYieldCarried  = kOwner.getYieldEquipmentAmountSecure(getProfession(), eYieldType); // cache CvPlayer::getYieldEquipmentAmount - Nightinggale
+					int iYieldCarried  = kOwner.getYieldEquipmentAmountSecure(getProfession(), eYieldType); // cache CvPlayer::getYieldEquipmentAmount - Nightinggale
+					if (eYieldType == YIELD_BLACK_POWDER)
+					{
+						iYieldCarried = std::max(0, iYieldCarried - getPowderShortfall()); // WTP: fired black powder of artillery
+					}
 					const int iYieldRequired = kOwner.getYieldEquipmentAmount(eProfession, eYieldType);
 					if (iYieldRequired > 0)
 					{
@@ -13678,51 +14262,8 @@ bool CvUnit::canHaveProfession(ProfessionTypes eProfession, bool bBumpOther, con
 		}
 	}
 
-	// WTP, ray, Barracks System, check if there is still enough Barracks Space - START
-	// Comment: I am afraid to damage AI logc thus I will only check this for Human
-	int iBarracksSpaceChangeByProfessionChange = kNewProfession.getBarracksSpaceNeededChange();
-	if (GLOBAL_DEFINE_ENABLE_NEW_BARRACKS_SYSTEM && pPlot != NULL && isHuman() && iBarracksSpaceChangeByProfessionChange > 0)
-	{
-		// Case real City
-		if (pPlot->getImprovementType() == NO_IMPROVEMENT)
-		{
-			// this is only checked for Colonial Cities, Native Villages can always be entered
-			CvCity* pCity = pPlot->getPlotCity();
-			if (pCity != NULL)
-			{
-				// here we ensure we check this only for the Owner of the Unit being Owner of the City
-				if(!pCity->isNative() && pCity->getOwnerINLINE() == getOwnerINLINE())
-				{
-					// this is how much the Unit without a Profession needs
-					// but we do not need to calculate it because it will not change
-					// int iBarracksSpaceNeededByUnit = getUnitInfo().getBarracksSpaceNeeded();
-
-					int iCurrentBarracksSpaceNeededByProfession = 0; // default case for No Profession
-					if (getProfession() != NO_PROFESSION)
-					{
-						iCurrentBarracksSpaceNeededByProfession = GC.getProfessionInfo(getProfession()).getBarracksSpaceNeededChange();
-					}
-
-					// So when changing the profession the new value will be added and the old will be substracted
-					int iAdditionalBarracksSpaceNeededForProfession = iBarracksSpaceChangeByProfessionChange - iCurrentBarracksSpaceNeededByProfession;
-
-					// Caclulating free Barracks Space in City
-					int iBarracksSpaceMaxInCity = pPlot->getPlotCity()->getCityBarracksSpace();
-					int iBarracksSpaceUsedInCity = pPlot->getPlotCity()->getCityBarracksSpaceUsed();
-					int iBarracksSpaceAvailableInCity = iBarracksSpaceMaxInCity - iBarracksSpaceUsedInCity;
-
-					if (iAdditionalBarracksSpaceNeededForProfession > iBarracksSpaceAvailableInCity)
-					{
-						return false;
-					}
-				}
-			}
-		}
-
-		// Case "actAsCity" Improvement does not need to be considered - already caught otherwise
-		// Profession changes like this are not allowed outside Cities
-	}
-	// WTP, ray, Barracks System, check if there is still enough Barracks Space - END
+	// WTP: no barracks limit for a profession change in a colony any more; units over its barracks space lower its defense
+	// bonus instead (CvCity::getBarracksDefensePercent)
 
 
 	return true;
@@ -13855,6 +14396,10 @@ int CvUnit::getProfessionChangeYieldRequired(ProfessionTypes eProfession, YieldT
 	if (getProfession() != NO_PROFESSION)
 	{
 		iYieldCarried += kOwner.getYieldEquipmentAmount(getProfession(), eYield);
+		if (eYield == YIELD_BLACK_POWDER)
+		{
+			iYieldCarried = std::max(0, iYieldCarried - getPowderShortfall()); // WTP: fired black powder of artillery
+		}
 	}
 	return (kOwner.getYieldEquipmentAmount(eProfession, eYield) - iYieldCarried);
 }
@@ -14099,6 +14644,11 @@ PlayerTypes CvUnit::getCapturingPlayer() const
 
 void CvUnit::setCapturingPlayer(PlayerTypes eNewValue)
 {
+	// WTP: a private pioneer is destroyed, not captured
+	if (eNewValue != NO_PLAYER && static_cast<const CvUnitAI*>(this)->AI_getPrivateBuild() != NO_BUILD)
+	{
+		eNewValue = NO_PLAYER;
+	}
 	m_eCapturingPlayer = eNewValue;
 }
 
@@ -15294,10 +15844,79 @@ bool CvUnit::potentialWarAction(const CvPlot* pPlot) const
 
 // Protected Functions...
 
+// WTP: siege: this unit on pPlot is one of the besiegers of a city beside it
+bool CvUnit::isBesieging(const CvPlot* pPlot) const
+{
+	if (pPlot == NULL || getDomainType() != DOMAIN_LAND)
+	{
+		return false;
+	}
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		const CvPlot* pCityPlot = plotDirection(pPlot->getX_INLINE(), pPlot->getY_INLINE(), (DirectionTypes)iI);
+		const CvCity* pCity = (pCityPlot != NULL) ? pCityPlot->getPlotCity() : NULL;
+		if (pCity != NULL && CvCity::isSiegeUnit(*this, pCity->getTeam()) && pCity->isBesieged())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+// WTP: siege: the city beside this unit it can put under siege (COMMAND_SIEGE): at least SIEGE_MIN_STACK_SIZE soldiers of its
+// team on its plot, no movement needed
+CvCity* CvUnit::getSiegeTargetCity() const
+{
+	if (getDomainType() != DOMAIN_LAND || isCargo() || plot() == NULL || plot()->isWater())
+	{
+		return NULL;
+	}
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		CvPlot* pCityPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		CvCity* pCity = (pCityPlot != NULL) ? pCityPlot->getPlotCity() : NULL;
+		if (pCity == NULL || !CvCity::isSiegeUnit(*this, pCity->getTeam()) || pCity->isBesieged())
+		{
+			continue;
+		}
+		if (CvCity::getSiegeStackSize(*plot(), getTeam(), pCity->getTeam()) >= GLOBAL_DEFINE_SIEGE_MIN_STACK_SIZE && pCity->canBeBesiegedBy(getTeam()))
+		{
+			return pCity;
+		}
+	}
+	return NULL;
+}
+
+// WTP: siege: the city beside this unit its owner besieges (COMMAND_LIFT_SIEGE)
+CvCity* CvUnit::getLiftSiegeCity() const
+{
+	if (getDomainType() != DOMAIN_LAND || plot() == NULL)
+	{
+		return NULL;
+	}
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		CvPlot* pCityPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		CvCity* pCity = (pCityPlot != NULL) ? pCityPlot->getPlotCity() : NULL;
+		if (pCity != NULL && pCity->getBesieger() == getOwnerINLINE())
+		{
+			return pCity;
+		}
+	}
+	return NULL;
+}
+
 bool CvUnit::canAdvance(const CvPlot* pPlot, int iThreshold) const
 {
 	FAssert(canFight());
 	FAssert(getDomainType() != DOMAIN_IMMOBILE);
+
+	// WTP: siege: the defenders of a besieged city attack without leaving it
+	const CvCity* const pCity = plot()->getPlotCity();
+	if (pCity != NULL && !GET_TEAM(getTeam()).isAtWar(pCity->getTeam()) && pCity->isBesieged())
+	{
+		return false;
+	}
 
 	if (pPlot->getNumVisibleEnemyDefenders(this) > iThreshold)
 	{
@@ -17763,6 +18382,20 @@ bool CvUnit::gatherResource()
 		BonusTypes eBonus = plot()->getBonusType();
 		int iNumYieldChanges = GC.getBonusInfo(eBonus).getNumYieldChanges();
 		std::vector<int> eBonusYieldChanges = GC.getBonusInfo(eBonus).getYieldChangesArray();
+
+		// WTP, fishing boats gather more: minimum 10 per turn, then the fishing boat bonus on top
+		for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+		{
+			int& iAmount = eBonusYieldChanges[eYield];
+			if (iAmount > 0 && iAmount < 10)
+			{
+				iAmount = 10;
+			}
+			if (iAmount > 0 && isFishingBoat())
+			{
+				iAmount = iAmount * GLOBAL_DEFINE_FISHING_BOAT_GATHER_PERCENT / 100;
+			}
+		}
 
 		if (pPlot != NULL)
 		{

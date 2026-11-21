@@ -125,6 +125,10 @@ public:
 	int getGold();
 	int getMilitaryUpkeep(); // WTP
 	int getDomesticMarketIncome(); // WTP
+	void setPioneerPlan(int iX, int iY, int iBuild, int iPriority); // WTP
+	int getPioneerPlanBuild(int iX, int iY); // WTP
+	int getPioneerPlanPriority(int iX, int iY); // WTP
+	bool startPrivateBuild(int iX, int iY, int iBuild); // WTP
 	void setGold(int iNewValue);
 	void changeGold(int iChange);
 	int getAdvancedStartPoints();
@@ -283,6 +287,7 @@ public:
 	int getYieldSellPrice(int /*YieldTypes*/ eYield);
 	int getYieldBuyPrice(int /*YieldTypes*/ eYield);
 	void setYieldBuyPrice(int /*YieldTypes*/ eYield, int iPrice, bool bMessage);
+	void setYieldBuyPriceAboveMax(int /*YieldTypes*/ eYield, int iPrice, bool bMessage);
 
 	// R&R, ray, Africa
 	int getYieldAfricaSellPrice(int /*YieldTypes*/ eYield);

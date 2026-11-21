@@ -389,6 +389,8 @@ public:
 	void setFatherTeam(AssertCallerData assertData, FatherTypes eFather, TeamTypes eTeam);
 	bool getRemainingFathers(FatherPointTypes ePointType, std::vector<FatherTypes>& aFathers);
 	int getFatherCategoryPosition(FatherTypes eFather) const;
+	int getFatherPointCost(FatherTypes eFather, FatherPointTypes ePointType) const;
+	void shuffleFatherCosts();
 
 	void changeYieldBoughtTotal(TradeLocationTypes eLocation, PlayerTypes eMainEurope, YieldTypes eYield, int iChange) const;
 
@@ -464,11 +466,16 @@ protected:
 	int m_iLogGameStart; // WTP: time the game was started (time_t): names its log folder
 public:
 	int getLogGameStart() const { return m_iLogGameStart; }
+	// WTP: a map mode of the interface (pioneer plan, private pioneer, territorial influence) takes the clicks on the map;
+	// meanwhile no unit is selected by the automatic unit cycling (not saved)
+	void setMapClickMode(bool bNewValue) { m_bMapClickMode = bNewValue; }
+	bool isMapClickMode() const { return m_bMapClickMode; }
 protected:
 
 	bool m_bScoreDirty;
 	bool m_bDebugMode;
 	bool m_bDebugModeCache;
+	bool m_bMapClickMode; // WTP
 	bool m_bFinalInitialized;
 	bool m_bPbemTurnSent;
 	bool m_bHotPbemBetweenTurns;
@@ -504,6 +511,8 @@ protected:
 
 	EnumMap<FatherTypes, TeamTypes> m_em_eFatherTeam;
 	EnumMap<FatherTypes, int, -1> m_em_iFatherGameTurn;
+	// WTP: random founding fathers: the position in its category whose cost the father takes (-1: its own cost)
+	EnumMap<FatherTypes, int, -1> m_em_iFatherCostPosition;
 
 	EnumMap<SpecialUnitTypes, bool> m_em_bSpecialUnitValid;
 	EnumMap<SpecialBuildingTypes, bool> m_em_bSpecialBuildingValid;

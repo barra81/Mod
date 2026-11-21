@@ -112,6 +112,10 @@ public:
 	bool shareAdjacentArea( const CvPlot* pPlot) const;
 	bool isAdjacentToLand() const;
 	bool isCoastalLand(int iMinWaterSize = -1) const;
+	bool isBesiegedCityRing(TeamTypes eTeam) const; // WTP: siege
+	ImprovementTypes getSiegeArt() const; // WTP: siege
+	void updateSiegeCamp(); // WTP: siege
+	void updateSiegeCampsNearby(); // WTP: siege
 	bool hasDeepWaterCoast() const;
 	bool isNextTo(TerrainTypes eTerrain) const;
 	bool hasOtherAdjacentOceanOrDeepWaterCoast() const; //WTP, ray, Safety Check for Deep Water Coast if there is Ocean or Deep Coast adjacent - START
@@ -148,6 +152,7 @@ public:
 	bool canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam = NO_TEAM, bool bPotential = false, bool bIgnoreFeature = false) const; // build feature removal detection - Nightinggale
 
 	bool canBuild(BuildTypes eBuild, PlayerTypes ePlayer = NO_PLAYER, bool bTestVisible = false) const;
+	bool canBuildFortOnNativeLand(ImprovementTypes eImprovement) const;
 	int getBuildTime(BuildTypes eBuild) const;
 	int getBuildTurnsLeft(BuildTypes eBuild, int iNowExtra, int iThenExtra) const;
 	int getFeatureYield(BuildTypes eBuild, YieldTypes eYield, TeamTypes eTeam, CvCity** ppCity) const;
@@ -190,6 +195,7 @@ public:
 	int movementCost(const CvUnit* pUnit, const CvPlot* pFromPlot,														// Exposed to Python
 		bool bAssumeRevealed = false) const; // advc.001i, WTP: default is false rather than true
 	int navalControlMovementCost(const CvUnit* pMovingUnit) const; // WTP, Schmiddie, Naval Control Movement
+	int fortZoneMovementCost(const CvUnit* pMovingUnit) const; // WTP: occupied forts slow down their enemies around them
 	
 	bool isAdjacentOwned() const;
 	bool isAdjacentPlayer(PlayerTypes ePlayer, bool bLandOnly = false) const;
@@ -334,6 +340,10 @@ public:
 	bool isForceUnowned() const;
 	void setForceUnownedTimer(int iNewValue);
 	void changeForceUnownedTimer(int iChange);
+
+	// WTP: land bought from natives: native culture no longer counts on this plot
+	bool isBoughtFromNatives() const;
+	void setBoughtFromNatives(bool bNewValue);
 
 	int getCityRadiusCount() const;
 	int isCityRadius() const;
@@ -601,6 +611,8 @@ protected:
 	bool m_bPlotLayoutDirty:1;
 	bool m_bLayoutStateWorked:1;
 	bool m_bImpassable:1;
+	bool m_bBoughtFromNatives:1;
+	short m_eSiegeArt; // WTP: siege: the siege art shown (ImprovementTypes; not saved, only to notice changes)
 
 	PlotTypes m_ePlotType : 16;
 	TerrainTypes m_eTerrainType : 16;

@@ -453,6 +453,11 @@
 		<DefineTextVal>PROFESSION_FISHING_BOAT_WORKING</DefineTextVal>
 	</Define>
 	<Define>
+		<!-- percentage of the normal amount a fishing boat gathers per turn (minimum 10 applied first) -->
+		<DefineName>FISHING_BOAT_GATHER_PERCENT</DefineName>
+		<iDefineIntVal>120</iDefineIntVal>
+	</Define>
+	<Define>
 		<DefineName>BONUS_HIGH_SEA_FISH</DefineName>
 		<DefineTextVal>BONUS_HIGH_SEA_FISH</DefineTextVal>
 	</Define>
@@ -546,6 +551,26 @@
 	<Define>
 		<DefineName>PRICE_INCREASE_BARGAIN_SELL</DefineName>
 		<iDefineIntVal>300</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- bargaining when selling to natives: up to this percent of the first offer the price rises by PRICE_INCREASE_BARGAIN_SELL per bargain -->
+		<DefineName>BARGAIN_SELL_SOFT_CAP_PERCENT</DefineName>
+		<iDefineIntVal>200</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- above the soft cap each bargain only closes a small part of the gap to this percent of the first offer, which is never exceeded -->
+		<DefineName>BARGAIN_SELL_MAX_PERCENT</DefineName>
+		<iDefineIntVal>350</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- a defended fort within this many plots of a native village blocks trade there for other players -->
+		<DefineName>FORT_TRADE_BLOCK_RANGE</DefineName>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- attitude loss of natives towards a player who builds a fort on their land (the fort plot passes to the builder) -->
+		<DefineName>FORT_ON_NATIVE_LAND_ATTITUDE_PENALTY</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- AI: minimum number of a team's land plots bordering the AI's territory for it to count as a land target (vanilla 8) -->
@@ -664,8 +689,13 @@
 		<iDefineIntVal>10</iDefineIntVal>
 	</Define>
 	<Define>
+		<!-- percentage of the normal starting gold (incl. unspent advanced start points) natives receive -->
+		<DefineName>NATIVE_STARTING_GOLD_PERCENT</DefineName>
+		<iDefineIntVal>70</iDefineIntVal>
+	</Define>
+	<Define>
 		<DefineName>PER_ROUND_PER_VILLAGE_INCOME_MAX</DefineName>
-		<iDefineIntVal>10</iDefineIntVal>
+		<iDefineIntVal>7</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>PER_VILLAGE_FEATURE_GENERATION_LIMIT</DefineName>
@@ -817,7 +847,7 @@
 	</Define>
 	<Define>
 		<DefineName>MISSIONARY_THRESHOLD</DefineName>
-		<iDefineIntVal>2000</iDefineIntVal>
+		<iDefineIntVal>833</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>TRADE_POST_MESTIZO_THRESHOLD</DefineName>
@@ -1258,7 +1288,12 @@
 	</Define>
 	<Define>
 		<DefineName>TRADE_POST_GOLD_PER_NATIVE</DefineName>
-		<iDefineIntVal>8</iDefineIntVal>
+		<iDefineIntVal>7</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- percent of the trade post gold (TRADE_POST_GOLD_PER_NATIVE) that is actually earned -->
+		<DefineName>TRADE_POST_GOLD_PERCENT</DefineName>
+		<iDefineIntVal>80</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>CHANCE_PENALTY_OTHER_TRADE_POST_ALREADY_EXISTS</DefineName>
@@ -1658,6 +1693,21 @@
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 	<Define>
+		<!-- domestic market profit change in percent per point of net law (positive) or net crime (negative) -->
+		<DefineName>DOMESTIC_MARKET_PERCENT_PER_NET_LAW</DefineName>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- maximum domestic market bonus in percent from net law; the malus from net crime is not capped -->
+		<DefineName>DOMESTIC_MARKET_MAX_LAW_BONUS_PERCENT</DefineName>
+		<iDefineIntVal>16</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- gold stolen each turn per point of net crime in a colony -->
+		<DefineName>CRIME_GOLD_STOLEN_PER_NET_CRIME</DefineName>
+		<iDefineIntVal>5</iDefineIntVal>
+	</Define>
+	<Define>
 		<DefineName>CRIME_PERCENT_BONUS_FACTOR_OVERFLOW</DefineName>
 		<iDefineIntVal>60</iDefineIntVal>
 	</Define>
@@ -1783,6 +1833,106 @@
 		<DefineName>BASE_TERRAINS_WITHOUT_FEATURE_PERCENTAGE</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
 	</Define>
+	<!-- WTP: siege: a stack of at least SIEGE_MIN_STACK_SIZE enemy soldiers (units that can attack) beside a city can put it under
+		siege (button, no movement needed); it lasts while the enemy soldiers beside the city are at least as strong as the land
+		soldiers in it (unmodified strength). Each turn the city defense drops by SIEGE_DEFENSE_DAMAGE_PER_TURN percent and does
+		not recover. A coastal city is only half besieged unless SIEGE_BLOCKADE_SHIPS enemy ships that can attack are within
+		SIEGE_BLOCKADE_RANGE plots. For the besieged team entering a plot beside its besieged city costs SIEGE_MOVE_COST_PERCENT of the
+		movement; a military unit that has moved can not leave those plots again in the same turn -->
+	<Define>
+		<DefineName>SIEGE_MIN_STACK_SIZE</DefineName>
+		<iDefineIntVal>4</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_DEFENSE_DAMAGE_PER_TURN</DefineName>
+		<iDefineIntVal>10</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_BLOCKADE_SHIPS</DefineName>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_BLOCKADE_RANGE</DefineName>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_MOVE_COST_PERCENT</DefineName>
+		<iDefineIntVal>10</iDefineIntVal>
+	</Define>
+	<!-- WTP: siege AI: a stack attacking a city takes one artillery unit per SIEGE_AI_UNITS_PER_ARTILLERY units along (from
+		SIEGE_AI_MIN_ARTILLERY to SIEGE_AI_MAX_ARTILLERY); with bad odds it besieges and bombards first. It gives up a siege when
+		enemies within 2 plots of the stack (those in the city included) have SIEGE_AI_ABORT_ENEMY_PERCENT of its strength. A wagon train
+		follows it with SIEGE_AI_WAGON_POWDER black powder (fetched again below SIEGE_AI_WAGON_MIN_POWDER) -->
+	<!-- WTP: war defense of the colonial AI against colonial powers or the king: colonies more than SIEGE_AI_FAR_DISTANCE plots
+		from an enemy colony give one needed defender each to those within SIEGE_AI_NEAR_DISTANCE plots (the king attacks the coast);
+		visible enemy soldiers within SIEGE_AI_THREAT_RANGE plots (also aboard ships) add one needed defender per two. Against an enemy
+		siege stack within SIEGE_AI_COUNTER_RANGE plots of a colony offensive units within SIEGE_AI_COUNTER_GATHER_RANGE plots become
+		counter units until they have SIEGE_AI_COUNTER_PERCENT of its strength. They gather beside the most valuable threatened colony
+		(on the side away from the stack) and attack the stack once their group compares with it by SIEGE_AI_MUSTER_ATTACK_PERCENT -->
+	<Define>
+		<DefineName>SIEGE_AI_NEAR_DISTANCE</DefineName>
+		<iDefineIntVal>6</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_FAR_DISTANCE</DefineName>
+		<iDefineIntVal>12</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_THREAT_RANGE</DefineName>
+		<iDefineIntVal>3</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_COUNTER_RANGE</DefineName>
+		<iDefineIntVal>6</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_COUNTER_GATHER_RANGE</DefineName>
+		<iDefineIntVal>12</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_COUNTER_PERCENT</DefineName>
+		<iDefineIntVal>150</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_MUSTER_ATTACK_PERCENT</DefineName>
+		<iDefineIntVal>130</iDefineIntVal>
+	</Define>
+	<!-- WTP: 1 logs every action of the human players with its situation (WTP_P00_<civ>_human.log in the game's log folder),
+		as data to tune the AI by; 0 turns this log off -->
+	<Define>
+		<DefineName>WTP_LOG_HUMAN_ACTIONS</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+	<!-- WTP: AI: a unit in a city too weak against the enemies nearby (AI_leaveAttack strength threshold) still attacks a
+		reachable enemy with odds of at least AI_LEAVE_ATTACK_SURE_ODDS percent, if another defender stays in the city -->
+	<Define>
+		<DefineName>AI_LEAVE_ATTACK_SURE_ODDS</DefineName>
+		<iDefineIntVal>95</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_UNITS_PER_ARTILLERY</DefineName>
+		<iDefineIntVal>4</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_MIN_ARTILLERY</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_MAX_ARTILLERY</DefineName>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_ABORT_ENEMY_PERCENT</DefineName>
+		<iDefineIntVal>90</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_WAGON_POWDER</DefineName>
+		<iDefineIntVal>100</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SIEGE_AI_WAGON_MIN_POWDER</DefineName>
+		<iDefineIntVal>30</iDefineIntVal>
+	</Define>
 	<!-- WTP: automatic market imports (trade route preset in the import/export dialog): every AUTO_MARKET_IMPORT_INTERVAL turns
 		the goods the domestic market asks for are imported with the feeder, maintain level AUTO_MARKET_IMPORT_MAINTAIN_TURNS and
 		import limit AUTO_MARKET_IMPORT_LIMIT_TURNS times the demand, both at least AUTO_MARKET_IMPORT_MIN_LEVEL -->
@@ -1816,7 +1966,47 @@
 	<Define>
 		<!-- see comments for TRADE_DECAY_TURN -->
 		<DefineName>TRADE_DECAY_PRICE_CHANGE</DefineName>
-		<iDefineIntVal>128</iDefineIntVal>
+		<iDefineIntVal>512</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- WTP: black powder a land artillery carries -->
+		<DefineName>ARTILLERY_POWDER_CAPACITY</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- WTP: black powder a bombardment uses -->
+		<DefineName>ARTILLERY_POWDER_PER_SHOT</DefineName>
+		<iDefineIntVal>3</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- WTP: strength malus in percent of artillery without black powder for a bombardment -->
+		<DefineName>ARTILLERY_NO_POWDER_COMBAT_MALUS</DefineName>
+		<iDefineIntVal>90</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- WTP: artillery duel: strength bonus in percent of artillery on hills -->
+		<DefineName>BOMBARD_ARTILLERY_HILLS_BONUS</DefineName>
+		<iDefineIntVal>25</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- WTP: artillery duel: chance in percent of a full bombardment against enemy artillery as strong or stronger -->
+		<DefineName>BOMBARD_ARTILLERY_EQUAL_CHANCE</DefineName>
+		<iDefineIntVal>5</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- WTP: artillery duel: bombardment effect in percent with twice the enemy artillery strength -->
+		<DefineName>BOMBARD_ARTILLERY_PERCENT_2X</DefineName>
+		<iDefineIntVal>30</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- WTP: artillery duel: bombardment effect in percent with four times the enemy artillery strength -->
+		<DefineName>BOMBARD_ARTILLERY_PERCENT_4X</DefineName>
+		<iDefineIntVal>50</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- WTP: artillery duel: bombardment effect in percent with eight times (or more) the enemy artillery strength -->
+		<DefineName>BOMBARD_ARTILLERY_PERCENT_8X</DefineName>
+		<iDefineIntVal>75</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- WTP: native supply automation (coastal ships): villages within this many plots of the home colony are visited -->
@@ -1828,6 +2018,10 @@
 		<DefineName>NATIVE_SUPPLY_TRIP_TURNS</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
 	</Define>
+	<Define>
+		<!-- WTP: the pirate ships of the barbarian player (Wild Animals) have at most this many moves -->
+		<DefineName>PIRATE_BARBARIAN_MOVES</DefineName>
+		<iDefineIntVal>7
 	<!-- WTP: factor for the map scroll speed (edge scrolling) while the shift key is held. 1.0 = no change, 2.5 = two and a half times as fast -->
 	<!-- WTP: military upkeep of the human player, gold per unit and turn (the Civilopedia text still shows the default numbers) -->
 	<Define>
@@ -1932,5 +2126,7 @@
 		<!-- Buildup mode -->
 		<DefineName>MILITARY_UPKEEP_SPEED_BUILDUP</DefineName>
 		<iDefineIntVal>100</iDefineIntVal>
+	</Define>
+</iDefineIntVal>
 	</Define>
 </Civ4Defines>

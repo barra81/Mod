@@ -185,6 +185,8 @@ public:
 	bool hasTrait(TraitTypes eTrait) const;
 	bool isHuman() const;
 	bool isNative() const;
+	PlayerTypes getTradeBlockingFortOwner(PlayerTypes eTrader) const;
+	bool hasTradeBlockingWalls() const;
 	DllExport bool isVisible(TeamTypes eTeam, bool bDebug) const;
 
 	DllExport bool isCapital() const;
@@ -328,6 +330,21 @@ public:
 	void setNeverLost(bool bNewValue);
 
 	bool isBombarded() const;
+
+	// WTP: siege: started by a stack of enemy soldiers beside the city (COMMAND_SIEGE), it lasts while they are at least as
+	// strong as the soldiers in the city
+	static bool isSiegeUnit(const CvUnit& kUnit, TeamTypes eCityTeam);
+	static int getSiegeStackSize(const CvPlot& kPlot, TeamTypes eTeam, TeamTypes eCityTeam);
+	bool canBeBesiegedBy(TeamTypes eTeam) const;
+	int getSiegeDefenderStrength() const;
+	int getSiegeLevel() const; // 0: none, 1: half besieged (sea side open), 2: besieged
+	bool isBesieged() const;
+	bool isFullSiege() const;
+	bool isNavalBlockade() const; // enemy warships before the port, also without a siege on land
+	PlayerTypes getBesieger() const; // the player who started the siege, also while it is broken until the owner's turn ends
+	void startSiege(PlayerTypes eBesieger);
+	void endSiege();
+	void updateSiegeCamps(); // the siege art (works, camps) on the plots beside the city
 	void setBombarded(bool bNewValue);
 
 	void setAllCitizensAutomated(bool bAutomated);
@@ -573,6 +590,7 @@ public:
 	int getCityBarracksSpace() const;
 	void changeCityBarracksSpace(int iValue);
 	int getCityBarracksSpaceUsed() const;
+	int getBarracksDefensePercent() const; // WTP
 	bool bShouldShowCityBarracksSystem() const;
 	// WTP, ray, new Barracks  System - END
 
@@ -797,14 +815,14 @@ public:
 	int getMaintainLevel(YieldTypes eYield) const;
 	// R&R mod, vetiarvind, max yield import limit - Start
 	void setImportsLimit(YieldTypes eYield, int iValue);
-	// WTP: the colony takes colonists of the job automation (switch of the city screen, off by default)
-	bool isAutoAssignTarget() const { return m_bAutoAssignTarget; }
-	void setAutoAssignTarget(bool bNewValue) { m_bAutoAssignTarget = bNewValue; }
 	// WTP: trade route presets of the city screen
 	void applyTradeRoutePreset(int iPreset);
 	void setImportFeeder(YieldTypes eYield, int iMaintainLevel, int iImportLimit);
 	bool getAutoMarketImportLevels(YieldTypes eYield, int& iMaintainLevel, int& iImportLimit) const; // WTP: the levels the automatic market import sets for the good (false: the market does not ask for it)
 	bool isAutoMarketImport() const { return m_bAutoMarketImport; }
+	// WTP: the colony takes colonists of the job automation (switch of the city screen, off by default)
+	bool isAutoAssignTarget() const { return m_bAutoAssignTarget; }
+	void setAutoAssignTarget(bool bNewValue) { m_bAutoAssignTarget = bNewValue; }
 	void updateAutoMarketImport();
 	int getImportsLimit(YieldTypes eYield) const;
 	// R&R mod, vetiarvind, max yield import limit - End
@@ -946,8 +964,9 @@ protected:
 	mutable EnumMap<YieldTypes,int,-1> m_em_iYieldRank;
 	mutable EnumMap<YieldTypes,bool> m_em_bYieldRankValid;
 
-	bool m_bAutoAssignTarget; // WTP: the colony takes colonists of the job automation
+	PlayerTypes m_eBesieger; // WTP: siege: the player who started it, NO_PLAYER: none
 	bool m_bAutoMarketImport; // WTP: trade route preset 1, the market goods imports are updated every few turns
+	bool m_bAutoAssignTarget; // WTP: the colony takes colonists of the job automation
 	bool m_bHasHurried; // Needed to remember (cache) if a hurry was conducted and we should complete the current build
 	int m_iSlaveWorkerProductionBonus;
 

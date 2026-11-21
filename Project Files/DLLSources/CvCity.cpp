@@ -525,9 +525,22 @@ void CvCity::doTurn()
 
 	PROFILE_FUNC();
 
-	if (!isBombarded())
+	// WTP: siege: it ends when the besiegers are gone, too few or weaker than the soldiers in the city (checked at the end of
+	// the owner's turn, so besiegers killed in that turn do not count any more); while it lasts the defense does not recover
+	// and the besiegers wear it down by SIEGE_DEFENSE_DAMAGE_PER_TURN percent each turn
+	const bool bBesieged = isBesieged();
+	if (!bBesieged && m_eBesieger != NO_PLAYER)
+	{
+		endSiege();
+	}
+
+	if (!isBombarded() && !bBesieged)
 	{
 		changeDefenseDamage(-(GC.getDefineINT("CITY_DEFENSE_DAMAGE_HEAL_RATE")));
+	}
+	if (bBesieged)
+	{
+		changeDefenseDamage(GC.getMAX_CITY_DEFENSE_DAMAGE() * GLOBAL_DEFINE_SIEGE_DEFENSE_DAMAGE_PER_TURN / 100);
 	}
 
 	setLastDefenseDamage(getDefenseDamage());
@@ -3059,6 +3072,93 @@ bool CvCity::isNative() const
 	return GET_PLAYER(getOwnerINLINE()).isNative();
 }
 
+// WTP, forts block foreign trade: a defended fort or a colony with at least a stockade (walls level 2) near a
+// native village keeps other players from trading there, unless the natives are furious with or at war with
+// its owner. Forts and colonies of natives do not block. A trader whose own team has such a fort or colony
+// there may still trade, so rival powers holding the same village can both trade with it.
+// Returns the blocking player or NO_PLAYER.
+PlayerTypes CvCity::getTradeBlockingFortOwner(PlayerTypes eTrader) const
+{
+	if (!isNative() || eTrader == NO_PLAYER)
+	{
+		return NO_PLAYER;
+	}
+
+	CvPlayerAI& kNative = GET_PLAYER(getOwnerINLINE());
+	const TeamTypes eTraderTeam = GET_PLAYER(eTrader).getTeam();
+	const int iRange = GLOBAL_DEFINE_FORT_TRADE_BLOCK_RANGE;
+	PlayerTypes eForeignBlocker = NO_PLAYER;
+
+	for (int iDX = -iRange; iDX <= iRange; ++iDX)
+	{
+		for (int iDY = -iRange; iDY <= iRange; ++iDY)
+		{
+			CvPlot* const pLoopPlot = plotXY(getX_INLINE(), getY_INLINE(), iDX, iDY);
+			if (pLoopPlot == NULL)
+			{
+				continue;
+			}
+
+			PlayerTypes eHolder = NO_PLAYER;
+			if (pLoopPlot->isFort())
+			{
+				const CvUnit* const pDefender = pLoopPlot->getFortDefender();
+				if (pDefender != NULL)
+				{
+					eHolder = pDefender->getOwnerINLINE();
+				}
+			}
+			else if (pLoopPlot->isCity())
+			{
+				const CvCity* const pLoopCity = pLoopPlot->getPlotCity();
+				if (pLoopCity->hasTradeBlockingWalls())
+				{
+					eHolder = pLoopCity->getOwnerINLINE();
+				}
+			}
+
+			if (eHolder == NO_PLAYER || GET_PLAYER(eHolder).isNative())
+			{
+				continue;
+			}
+
+			const TeamTypes eHolderTeam = GET_PLAYER(eHolder).getTeam();
+			if (GET_TEAM(kNative.getTeam()).isAtWar(eHolderTeam) || kNative.AI_getAttitude(eHolder) == ATTITUDE_FURIOUS)
+			{
+				continue;
+			}
+
+			if (eHolderTeam == eTraderTeam)
+			{
+				// the trader holds the village too
+				return NO_PLAYER;
+			}
+
+			if (eForeignBlocker == NO_PLAYER)
+			{
+				eForeignBlocker = eHolder;
+			}
+		}
+	}
+
+	return eForeignBlocker;
+}
+
+// WTP, forts block foreign trade: walls of at least the second level (stockade or better)
+bool CvCity::hasTradeBlockingWalls() const
+{
+	const int eWalls = getIndexForType(JIT_ARRAY_BUILDING_SPECIAL, "SPECIALBUILDING_WALLS");
+	for (BuildingTypes eBuilding = FIRST_BUILDING; eBuilding < NUM_BUILDING_TYPES; ++eBuilding)
+	{
+		const CvBuildingInfo& kBuilding = GC.getBuildingInfo(eBuilding);
+		if (kBuilding.getSpecialBuildingType() == eWalls && kBuilding.getSpecialBuildingPriority() >= 1 && isHasConceptualBuilding(eBuilding))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool CvCity::isVisible(TeamTypes eTeam, bool bDebug) const
 {
 	if (SAVEGAME_IS_LOADING)
@@ -4022,6 +4122,200 @@ void CvCity::setLastDefenseDamage(int iNewValue)
 }
 
 
+// WTP: siege
+// a unit that can besiege a city of this team: an enemy land unit that can attack (no animal)
+bool CvCity::isSiegeUnit(const CvUnit& kUnit, TeamTypes eCityTeam)
+{
+	return kUnit.getDomainType() == DOMAIN_LAND && !kUnit.isCargo() && !kUnit.getUnitInfo().isAnimal() && kUnit.canAttack() && GET_TEAM(kUnit.getTeam()).isAtWar(eCityTeam);
+}
+
+// the soldiers of team eTeam on kPlot that can besiege a city of team eCityTeam
+int CvCity::getSiegeStackSize(const CvPlot& kPlot, TeamTypes eTeam, TeamTypes eCityTeam)
+{
+	if (kPlot.isWater())
+	{
+		return 0;
+	}
+	int iCount = 0;
+	CLLNode<IDInfo>* pUnitNode = kPlot.headUnitNode();
+	while (pUnitNode != NULL)
+	{
+		const CvUnit* pLoopUnit = kPlot.getUnitNodeLoop(pUnitNode);
+		if (pLoopUnit != NULL && pLoopUnit->getTeam() == eTeam && isSiegeUnit(*pLoopUnit, eCityTeam))
+		{
+			++iCount;
+		}
+	}
+	return iCount;
+}
+
+// team eTeam can besiege the city (or keep besieging it): at war, a native village only with a wall, at least
+// SIEGE_MIN_STACK_SIZE of its soldiers on one plot beside the city, and the land soldiers in the city not stronger than all
+// enemy soldiers beside it (unmodified strength, no ships)
+bool CvCity::canBeBesiegedBy(TeamTypes eTeam) const
+{
+	if (eTeam == NO_TEAM || !GET_TEAM(eTeam).isAtWar(getTeam()))
+	{
+		return false;
+	}
+	if (isNative() && getBuildingDefense() <= 0)
+	{
+		return false;
+	}
+	bool bStack = false;
+	int iBesiegerStrength = 0;
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		const CvPlot* pLoopPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		if (pLoopPlot == NULL || pLoopPlot->isWater())
+		{
+			continue;
+		}
+		int iStack = 0;
+		CLLNode<IDInfo>* pUnitNode = pLoopPlot->headUnitNode();
+		while (pUnitNode != NULL)
+		{
+			const CvUnit* pLoopUnit = pLoopPlot->getUnitNodeLoop(pUnitNode);
+			if (pLoopUnit != NULL && isSiegeUnit(*pLoopUnit, getTeam()))
+			{
+				iBesiegerStrength += pLoopUnit->baseCombatStr();
+				if (pLoopUnit->getTeam() == eTeam)
+				{
+					++iStack;
+				}
+			}
+		}
+		if (iStack >= GLOBAL_DEFINE_SIEGE_MIN_STACK_SIZE)
+		{
+			bStack = true;
+		}
+	}
+	if (!bStack)
+	{
+		return false;
+	}
+	return getSiegeDefenderStrength() <= iBesiegerStrength;
+}
+
+// the unmodified strength of the land soldiers in the city (compared with the besiegers)
+int CvCity::getSiegeDefenderStrength() const
+{
+	int iDefenderStrength = 0;
+	CLLNode<IDInfo>* pUnitNode = plot()->headUnitNode();
+	while (pUnitNode != NULL)
+	{
+		const CvUnit* pLoopUnit = plot()->getUnitNodeLoop(pUnitNode);
+		if (pLoopUnit != NULL && pLoopUnit->getTeam() == getTeam() && pLoopUnit->getDomainType() == DOMAIN_LAND && !pLoopUnit->isCargo() && pLoopUnit->canAttack())
+		{
+			iDefenderStrength += pLoopUnit->baseCombatStr();
+		}
+	}
+	return iDefenderStrength;
+}
+
+// 0: not besieged; 1: half besieged (a coastal city, its sea side open: ships and their cargo can come and go, the sea plots
+// produce); 2: besieged (an inland city, or a coastal one with at least SIEGE_BLOCKADE_SHIPS enemy ships that can attack
+// within SIEGE_BLOCKADE_RANGE plots)
+int CvCity::getSiegeLevel() const
+{
+	if (m_eBesieger == NO_PLAYER || !canBeBesiegedBy(GET_PLAYER(m_eBesieger).getTeam()))
+	{
+		return 0;
+	}
+	if (!plot()->isCoastalLand(GC.getMIN_WATER_SIZE_FOR_OCEAN()) || isNavalBlockade())
+	{
+		return 2;
+	}
+	return 1;
+}
+
+// naval blockade: at least SIEGE_BLOCKADE_SHIPS enemy ships that can attack within SIEGE_BLOCKADE_RANGE plots of the city (with
+// or without a siege on land)
+bool CvCity::isNavalBlockade() const
+{
+	const int iRange = GLOBAL_DEFINE_SIEGE_BLOCKADE_RANGE;
+	int iShips = 0;
+	for (int iDX = -iRange; iDX <= iRange; ++iDX)
+	{
+		for (int iDY = -iRange; iDY <= iRange; ++iDY)
+		{
+			const CvPlot* pLoopPlot = plotXY(getX_INLINE(), getY_INLINE(), iDX, iDY);
+			if (pLoopPlot == NULL || !pLoopPlot->isWater())
+			{
+				continue;
+			}
+			CLLNode<IDInfo>* pUnitNode = pLoopPlot->headUnitNode();
+			while (pUnitNode != NULL)
+			{
+				const CvUnit* pLoopUnit = pLoopPlot->getUnitNodeLoop(pUnitNode);
+				if (pLoopUnit != NULL && pLoopUnit->getDomainType() == DOMAIN_SEA && pLoopUnit->canAttack() && pLoopUnit->getTeam() != getTeam()
+					&& (GET_TEAM(pLoopUnit->getTeam()).isAtWar(getTeam()) || pLoopUnit->getUnitInfo().isHiddenNationality()))
+				{
+					if (++iShips >= GLOBAL_DEFINE_SIEGE_BLOCKADE_SHIPS)
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool CvCity::isBesieged() const
+{
+	return getSiegeLevel() > 0;
+}
+
+bool CvCity::isFullSiege() const
+{
+	return getSiegeLevel() == 2;
+}
+
+PlayerTypes CvCity::getBesieger() const
+{
+	return m_eBesieger;
+}
+
+void CvCity::startSiege(PlayerTypes eBesieger)
+{
+	FAssert(eBesieger != NO_PLAYER);
+	m_eBesieger = eBesieger;
+	setYieldRateDirty();
+	setBillboardDirty(true);
+	updateSiegeCamps();
+	gDLL->UI().addPlayerMessage(getOwnerINLINE(), true, GC.getEVENT_MESSAGE_TIME(), gDLL->getText("TXT_KEY_CITY_BESIEGED", getNameKey()), "AS2D_CITYCAPTURED", MESSAGE_TYPE_MAJOR_EVENT, NULL, COLOR_RED, getX_INLINE(), getY_INLINE(), true, true);
+	gDLL->UI().addPlayerMessage(eBesieger, false, GC.getEVENT_MESSAGE_TIME(), gDLL->getText("TXT_KEY_CITY_BESIEGED_ENEMY", getNameKey()), "AS2D_CITYCAPTURED", MESSAGE_TYPE_MAJOR_EVENT, NULL, COLOR_GREEN, getX_INLINE(), getY_INLINE(), true, true);
+}
+
+void CvCity::endSiege()
+{
+	if (m_eBesieger == NO_PLAYER)
+	{
+		return;
+	}
+	const PlayerTypes eBesieger = m_eBesieger;
+	m_eBesieger = NO_PLAYER;
+	setYieldRateDirty();
+	setBillboardDirty(true);
+	updateSiegeCamps();
+	const CvWString szBuffer = gDLL->getText("TXT_KEY_CITY_SIEGE_ENDED", getNameKey());
+	gDLL->UI().addPlayerMessage(getOwnerINLINE(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_POSITIVE_DINK", MESSAGE_TYPE_MAJOR_EVENT, NULL, COLOR_GREEN, getX_INLINE(), getY_INLINE(), true, true);
+	gDLL->UI().addPlayerMessage(eBesieger, false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_CITY_REVOLT", MESSAGE_TYPE_MAJOR_EVENT, NULL, COLOR_RED, getX_INLINE(), getY_INLINE(), true, true);
+}
+
+void CvCity::updateSiegeCamps()
+{
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		CvPlot* pLoopPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		if (pLoopPlot != NULL)
+		{
+			pLoopPlot->updateSiegeCamp();
+		}
+	}
+}
+
 bool CvCity::isBombardable(const CvUnit* pUnit) const
 {
 	if (NULL != pUnit && !pUnit->isEnemy(getTeam()))
@@ -4054,7 +4348,8 @@ int CvCity::getDefenseModifier() const
 		return 0;
 	}
 
-	return ((getTotalDefense() * (GC.getMAX_CITY_DEFENSE_DAMAGE() - getDefenseDamage())) / GC.getMAX_CITY_DEFENSE_DAMAGE());
+	// WTP: less with too many military units for the barracks space
+	return ((getTotalDefense() * (GC.getMAX_CITY_DEFENSE_DAMAGE() - getDefenseDamage())) / GC.getMAX_CITY_DEFENSE_DAMAGE()) * getBarracksDefensePercent() / 100;
 }
 
 
@@ -7848,6 +8143,10 @@ void CvCity::doGrowth()
 			gDLL->getEventReporterIFace()->cityGrowth(this, getOwnerINLINE());
 		}
 	}
+	else if (getFood() < 0 && isBesieged())
+	{
+		setFood(0); // WTP: siege: a besieged colony does not lose citizens to starvation
+	}
 	else if (getFood() < 0)
 	{
 		setFood(0);
@@ -8028,7 +8327,11 @@ void CvCity::calculateDomesticMarketSales(const int aiYields[NUM_YIELD_TYPES], c
 	// WTP, ray, Happiness - END
 
 	// WTP, ray, Crime and Law - START
-	int iCityLawDomesticMarketGoldModifiers = getCityLaw() - getCityCrime();
+	// WTP: each point of net law or crime changes domestic market profits by a percentage; the bonus is capped,
+	// the malus only so far that sales never cost money
+	int iCityLawDomesticMarketGoldModifiers = (getCityLaw() - getCityCrime()) * GLOBAL_DEFINE_DOMESTIC_MARKET_PERCENT_PER_NET_LAW;
+	iCityLawDomesticMarketGoldModifiers = std::min(iCityLawDomesticMarketGoldModifiers, GLOBAL_DEFINE_DOMESTIC_MARKET_MAX_LAW_BONUS_PERCENT);
+	iCityLawDomesticMarketGoldModifiers = std::max(iCityLawDomesticMarketGoldModifiers, -100);
 	// WTP, ray, Crime and Law - END
 
 	// WTP, ray, Domestic Market Profit Modifier - START
@@ -8844,6 +9147,24 @@ void CvCity::doProduction(bool bAllowNoProduction)
 			if (getProduction() >= getProductionNeeded(YIELD_HAMMERS))
 			{
 				popOrder(0, true, true);
+
+				// WTP: the overflow goes into the next item of the build list at once; as long as it covers that item (and its
+				// required yields are there), it is finished in this turn too (at most 10 items per turn)
+				for (int iItems = 1; iItems < 10; ++iItems)
+				{
+					if (!isProduction() || isProductionConvince() || getProductionFatherPoint() != NO_FATHER_POINT_TYPE || getOverflowProduction() <= 0)
+					{
+						break;
+					}
+					const int iOverflow = getOverflowProduction();
+					setOverflowProduction(0);
+					changeProduction(iOverflow);
+					if (getProduction() < getProductionNeeded(YIELD_HAMMERS) || !checkRequiredYields(headOrderQueueNode()->m_data))
+					{
+						break;
+					}
+					popOrder(0, true, true);
+				}
 			}
 		}
 	}
@@ -8919,7 +9240,9 @@ void CvCity::doNativeTradePost()
 		
 		int iNativeTradeModifierNation = 100 + GET_PLAYER(getOwnerINLINE()).getNativeTradeModifier();
 		int iNativeTradeModifierTradePostOwner = 100 + GET_PLAYER(ePlayer).getNativeTradeModifier();
-		int iNativeTradeRateCity = 100 + getNativeTradeRate();
+		// trade rate scales gold relative to the base Native Trader (Expert = 2x)
+		int iBaseNativeTradeRate = std::max(1, GC.getProfessionInfo(PROFESSION_NATIVE_TRADER).getNativeTradeRate());
+		int iNativeTradeRateCity = getNativeTradeRate() * 100 / iBaseNativeTradeRate;
 		int iNativeVillagePopulation = getPopulation();
 		int iGoldPerNative = GC.getTRADE_POST_GOLD_PER_NATIVE();
 
@@ -8928,6 +9251,7 @@ void CvCity::doNativeTradePost()
 
 		// calculate fixed gold
 		int calculatedNewGold = (iTotalVillageGold * iTotalModifier) / 100 / 100 / 100;
+		calculatedNewGold = calculatedNewGold * GLOBAL_DEFINE_TRADE_POST_GOLD_PERCENT / 100;
 		// make a random from double value, because meanvalue should be similar to calculated value
 		int doubleGoldValue = calculatedNewGold * 2;
 		int randomizedGoldToAdd = GC.getGameINLINE().getSorenRandNum(doubleGoldValue, "Randomized Trade Post Gold");
@@ -11284,12 +11608,14 @@ void CvCity::doCityCrime()
 	CvPlayerAI& kPlayer = GET_PLAYER(eOwner);
 
 	// we substract gold if there is enough
-	if (kPlayer.getGold() > iCityCrime)
+	// WTP: thieves take CRIME_GOLD_STOLEN_PER_NET_CRIME gold per point of net crime
+	const int iGoldStolen = iCityCrime * GLOBAL_DEFINE_CRIME_GOLD_STOLEN_PER_NET_CRIME;
+	if (kPlayer.getGold() > iGoldStolen)
 	{
-		OOS_LOG_3("Crime", CvString(getName()).c_str(), iCityCrime);
-		kPlayer.changeGold(-iCityCrime);
+		OOS_LOG_3("Crime", CvString(getName()).c_str(), iGoldStolen);
+		kPlayer.changeGold(-iGoldStolen);
 		// WTP: one message per turn for all colonies (CvPlayer::doTurn)
-		kPlayer.changeTurnCrimeGold(iCityCrime);
+		kPlayer.changeTurnCrimeGold(iGoldStolen);
 
 	}
 
@@ -11575,6 +11901,27 @@ int CvCity::getCityBarracksSpaceUsed() const
 	}
 
 	return iCityBarracksSpaceUsed;
+}
+
+// WTP: the share of its defense bonus a human player's colony keeps with its military units: all of it up to its barracks
+// space, falling evenly to none at twice the space (the units' own city defense bonuses are not affected)
+int CvCity::getBarracksDefensePercent() const
+{
+	if (!GLOBAL_DEFINE_ENABLE_NEW_BARRACKS_SYSTEM || !isHuman())
+	{
+		return 100;
+	}
+	const int iSpace = getCityBarracksSpace();
+	const int iUsed = getCityBarracksSpaceUsed();
+	if (iUsed <= iSpace)
+	{
+		return 100;
+	}
+	if (iSpace <= 0 || iUsed >= 2 * iSpace)
+	{
+		return 0;
+	}
+	return 100 * (2 * iSpace - iUsed) / iSpace;
 }
 
 bool CvCity::bShouldShowCityBarracksSystem() const

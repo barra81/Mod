@@ -333,7 +333,7 @@ enum SavegameVariableTypes
 	PlayerSave_MilitaryDismissTurn, // WTP
 	PlayerSave_MilitaryShortTurn, // WTP
 	PlayerSave_DomesticMarketIncome, // WTP
-
+	PlayerSave_PioneerPlans, // WTP
 	PlayerSave_NativeWaypoints, // WTP
 	NUM_SAVE_ENUM_VALUES,
 };
@@ -546,6 +546,7 @@ const char* getSavedEnumNamePlayer(SavegameVariableTypes eType)
 	case PlayerSave_MilitaryDismissTurn: return "PlayerSave_MilitaryDismissTurn";
 	case PlayerSave_MilitaryShortTurn: return "PlayerSave_MilitaryShortTurn";
 	case PlayerSave_DomesticMarketIncome: return "PlayerSave_DomesticMarketIncome";
+	case PlayerSave_PioneerPlans: return "PlayerSave_PioneerPlans";
 	case PlayerSave_NativeWaypoints: return "PlayerSave_NativeWaypoints";
 	// WTP, Schmiddie, Slave Emancipation - END
 	// WTP, Schmiddie, Trade Post Mestizo - START
@@ -736,6 +737,7 @@ void CvPlayer::resetSavedData(PlayerTypes eID, bool bConstructorCall)
 	m_iMilitaryDismissTurn = defaultMilitaryDismissTurn;
 	m_iMilitaryShortTurn = defaultMilitaryShortTurn;
 	m_iDomesticMarketIncome = defaultDomesticMarketIncome;
+	m_mapPioneerPlans.clear();
 	m_iTurnCrimeGold = 0;
 	m_iTurnCultureGold = 0;
 	// WTP, Schmiddie, Slave Emancipation - END
@@ -1007,6 +1009,18 @@ void CvPlayer::read(CvSavegameReader reader)
 		case PlayerSave_DomesticMarketIncome:
 			reader.Read(m_iDomesticMarketIncome);
 			break;
+		case PlayerSave_PioneerPlans:
+		{
+			// WTP: pioneer plan (pairs of plot index and build * 10 + priority)
+			std::vector<int> aiPlans;
+			reader.Read(aiPlans);
+			m_mapPioneerPlans.clear();
+			for (uint i = 0; i + 1 < aiPlans.size(); i += 2)
+			{
+				m_mapPioneerPlans[aiPlans[i]] = aiPlans[i + 1];
+			}
+			break;
+		}
 		case PlayerSave_MilitaryDismissTurn:
 			reader.Read(m_iMilitaryDismissTurn);
 			break;
@@ -1286,6 +1300,16 @@ void CvPlayer::write(CvSavegameWriter writer)
 	writer.Write(PlayerSave_MilitaryDismissTurn, m_iMilitaryDismissTurn, defaultMilitaryDismissTurn);
 	writer.Write(PlayerSave_MilitaryShortTurn, m_iMilitaryShortTurn, defaultMilitaryShortTurn);
 	writer.Write(PlayerSave_DomesticMarketIncome, m_iDomesticMarketIncome, defaultDomesticMarketIncome);
+	if (!m_mapPioneerPlans.empty())
+	{
+		std::vector<int> aiPlans;
+		for (std::map<int, int>::const_iterator it = m_mapPioneerPlans.begin(); it != m_mapPioneerPlans.end(); ++it)
+		{
+			aiPlans.push_back(it->first);
+			aiPlans.push_back(it->second);
+		}
+		writer.Write(PlayerSave_PioneerPlans, aiPlans);
+	}
 	// WTP, Schmiddie, Slave Emancipation - END
 	writer.Write(PlayerSave_FatherPointMultiplier, m_iFatherPointMultiplier, defaultFatherPointMultiplier);
 	writer.Write(PlayerSave_MissionaryRateModifier, m_iMissionaryRateModifier, defaultMissionaryRateModifier);

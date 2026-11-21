@@ -147,6 +147,17 @@ public:
 	bool AI_travelPlan(const CvPlot& kTarget, CvPlot*& pPickup, CvPlot*& pDrop, int& iShipID, int& iTurns);
 	int AI_getTravelShipID() const { return m_iTravelShipID; }
 
+	// WTP: pioneer plan: a human player's pioneer builds the improvements the player marked (AUTOMATE_PIONEER_PLAN)
+	bool AI_doPioneerPlan();
+	// WTP: private pioneer: a hardy pioneer the player paid for builds one improvement and leaves (AUTOMATE_PRIVATE_BUILD);
+	// the player cannot command it
+	BuildTypes AI_getPrivateBuild() const { return (BuildTypes)m_iPrivateBuild; }
+	void AI_setPrivateBuild(BuildTypes eBuild) { m_iPrivateBuild = (int)eBuild; }
+	void AI_doPrivateBuild();
+	// WTP: patrol of a human player's military unit or warship (AUTOMATE_PATROL) around the plot where it was switched on
+	void AI_setPatrolCenter(const CvPlot* pPlot);
+	bool AI_doPatrol();
+	bool AI_isPatrolTarget(const CvUnit& kTarget, const CvPlot& kPlot) const;
 	// WTP: treasure automation of a human player: a treasure (AUTOMATE_TREASURE) moves like the AI's treasures, a galleon or
 	// West Indiaman (AUTOMATE_TREASURE_SHIP) fetches the treasures waiting for a ship like the AI's transports and takes them
 	// to Europe; the ship keeps the role while the automation of its group is lost on the way to or from Europe
@@ -154,6 +165,7 @@ public:
 	void AI_setTreasureShip(bool bNewValue) { m_bTreasureShip = bNewValue; }
 	void AI_treasureShipMove();
 	bool AI_treasureShipEurope();
+
 	// WTP: native trade automation of a human player's ship: it trades with the villages around its home colony (the nearest
 	// colony when the automation was switched on) and comes back there from Europe
 	void AI_startNativeTrade();
@@ -199,6 +211,11 @@ protected:
 	int m_iWfPlotY;
 	int m_iWfVillageX;
 	int m_iWfVillageY;
+	int m_iTravelShipID; // WTP: transport to a city or plot: the ship that takes the unit (-1: it walks)
+	int m_iTravelPickup; // WTP: transport to a city or plot: plot number of the port where the ship picks it up (-1: none)
+	int m_iPatrolCenter; // WTP: patrol: plot number of the plot it patrols around (-1: none)
+	int m_iPrivateBuild; // WTP: private pioneer: the build it was paid for (NO_BUILD: none)
+	bool m_bTreasureShip; // WTP: treasure automation (human): the ship fetches treasures
 	enum { NUM_FOUND_BLOCKED_SITES = 4 };
 	int m_aiFoundBlockedPlot[NUM_FOUND_BLOCKED_SITES]; // WTP (not saved): sites this settler could not reach lately
 	int m_aiFoundBlockedTurn[NUM_FOUND_BLOCKED_SITES];
@@ -208,9 +225,6 @@ protected:
 	int m_iSettlerLogTurn; // WTP: settler log (not saved): the turn of the counts below
 	int m_iSettlerLogCount; // updates of this settler in that turn
 	int m_iSettlerSearchLogTurn; // the turn its site search was logged in
-	int m_iTravelShipID; // WTP: transport to a city or plot: the ship that takes the unit (-1: it walks)
-	int m_iTravelPickup; // WTP: transport to a city or plot: plot number of the port where the ship picks it up (-1: none)
-	bool m_bTreasureShip; // WTP: treasure automation (human): the ship fetches treasures
 	int m_iNativeTradeBuyTurn; // WTP: native trade ship: turn of its last purchase at a village
 	int m_iNativeTradeArriveTurn; // WTP: native trade ship: turn of its first move on the map after Europe (-1: not yet)
 	int m_iNativeTradeSlotsFullTurn; // WTP: native trade ship: turn all its cargo slots were taken (-1: not yet)
@@ -338,6 +352,7 @@ protected:
 	bool AI_routeCityNear(int iMaxDistance);
 	bool AI_wfImproveStages(); // WTP
 	void AI_logPioneer(const char* szReason); // WTP
+	void AI_logStack(const char* szReason); // WTP
 
 	bool AI_requestPickup(int iMaxPath = MAX_INT);
 	void AI_wakeTransportForPickup(const CvPlot* pPickupPlot); // WTP
@@ -430,6 +445,14 @@ protected:
 	// TAC - AI Attack City - koma13, jdog5000(BBAI) - END
 
 	bool AI_bombardCity();
+	// WTP: siege
+	bool AI_canBesiege(const CvCity* pCity) const;
+	bool AI_siegeBlockade();
+	bool AI_siegeSupply();
+public:
+	int AI_siegeArtilleryCount() const;
+	bool AI_isSiegeArtilleryNear() const;
+protected:
 	bool AI_cityAttack(int iRange, int iOddsThreshold, bool bFollow = false);
 	// TAC - AI Attack City - koma13 - START
 	//bool AI_anyAttack(int iRange, int iOddsThreshold, int iMinStack = 0, bool bFollow = false);
@@ -438,6 +461,9 @@ protected:
 	bool AI_adjacentSeaAttack(int iOddsThreshold); // WTP, Schmiddie, Naval AI adjacent attack
 	bool AI_smartAttack(int iRange, int iLowOddsThreshold, int iHighOddsThreshold, CvPlot* pHintPlot);
 	bool AI_leaveAttack(int iRange, int iThreshold, int iStrengthThreshold);
+	bool AI_defendTeritory(int iThreshold, int iFlags, int iMaxPathTurns, bool bLocal = false); // K-Mod
+	bool AI_stackVsStack(int iSearchRange, int iAttackThreshold, int iRiskThreshold, int iFlags); // K-Mod
+	bool AI_siegeMuster(); // WTP: siege
 	bool AI_seaBombardRange(int iMaxRange);
 	bool AI_blockade(int iRange);
 	bool AI_pillage();
@@ -522,6 +548,12 @@ protected:
 	bool AI_plotValid(const CvPlot* pPlot) const;
 
 	int AI_finalOddsThreshold(CvPlot* pPlot, int iOddsThreshold);
+	// K-Mod: attack odds weighted by the worth of the units, wounds, the defensive terrain and a last city defender
+	int AI_getWeightedOdds(CvPlot* pPlot, bool bPotentialEnemy = false);
+	int AI_combatWorth(const CvUnit& kUnit) const;
+	bool AI_isWeightedOdds() const;
+	int AI_attackOddsToCompare(CvPlot* pPlot);
+	void AI_logAttackDecision(const char* szFunction, const CvPlot& kTarget, int iOdds) const; // WTP: war AI log
 
 	int AI_stackOfDoomExtra();
 
