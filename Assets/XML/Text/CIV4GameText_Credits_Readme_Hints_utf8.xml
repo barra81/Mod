@@ -1976,4 +1976,10 @@ Viel Spass![NEWLINE]
 		<German>Drücken Sie [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT], um den Handelsrouten-Manager zu öffnen: Handelsrouten, Automatisierung und Namen aller Transporter auf einen Blick.</German>
 		<Russian>Нажмите [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT], чтобы открыть менеджер торговых маршрутов: торговые маршруты, автоматизация и названия всех ваших транспортов на одном экране.</Russian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_78</Tag>
+		<English>In the Native Advisor of the Domestic Advisor click the column Waypoint of a native settlement where you have a mission or a trading post and choose one of your colonies: the units that are created there go to this colony by themselves. Click again to remove the waypoint.</English>
+		<German>Klicken Sie im Eingeborenen-Berater des Inlandsberaters auf die Spalte Wegpunkt einer Eingeborenensiedlung, in der Sie eine Mission oder einen Handelsposten haben, und wählen Sie eine Ihrer Kolonien: Die dort entstehenden Einheiten gehen von selbst zu dieser Kolonie. Ein erneuter Klick entfernt den Wegpunkt.</German>
+		<Russian>В советнике по туземцам (внутренний советник) щёлкните по столбцу «Путевая точка» туземного поселения, где у вас есть миссия или торговый пост, и выберите одну из своих колоний: созданные там отряды сами пойдут в эту колонию. Повторный щелчок убирает путевую точку.</Russian>
+	</TEXT>
 </Civ4GameText>
