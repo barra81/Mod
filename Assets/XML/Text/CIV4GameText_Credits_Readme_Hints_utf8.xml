@@ -1970,4 +1970,10 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_86</Tag>
+		<English>Private trade routes: in the Trade Routes screen build routes for the chosen goods and add them with the button for private routes (blue). They leave the export and import settings of the colonies alone, unload without import limit, Automate Transport never uses them and every transport can be assigned to them. The button with the cross deletes the ticked private routes.</English>
+		<German>Private Handelsrouten: Im Handelsrouten-Bildschirm Routen für die gewählten Waren zusammenstellen und mit der Schaltfläche für private Routen (blau) hinzufügen. Sie lassen die Export- und Importeinstellungen der Kolonien unverändert, entladen ohne Importlimit, Transport automatisieren nutzt sie nie und jeder Transporter kann ihnen zugewiesen werden. Die Schaltfläche mit dem Kreuz löscht die markierten privaten Routen.</German>
+		<Russian>Частные торговые маршруты: на экране торговых маршрутов составьте маршруты для выбранных товаров и добавьте их кнопкой частных маршрутов (синие). Они не меняют настройки экспорта и импорта колоний, выгружают без лимита импорта, автоматический транспорт их не использует, и к ним можно приписать любой транспорт. Кнопка с крестом удаляет отмеченные частные маршруты.</Russian>
+	</TEXT>
 </Civ4GameText>
