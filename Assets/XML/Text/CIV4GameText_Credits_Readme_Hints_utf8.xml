@@ -1970,4 +1970,10 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_83</Tag>
+		<English>Treasures: "Automate Treasure" sends a treasure to the nearest own colony with a deep water harbour, where it waits for a ship with the automation "Fetch Treasures". That ship takes the treasures to Europe and sells them, then sails to the next waiting treasure. Without such a ship the king transports them for his commission.</English>
+		<German>Schätze: "Schatz automatisieren" schickt einen Schatz zur nächsten eigenen Kolonie mit Tiefwasserhafen, wo er auf ein Schiff mit der Automatik "Schätze holen" wartet. Dieses Schiff bringt die Schätze nach Europa und verkauft sie, danach fährt es zum nächsten wartenden Schatz. Ohne ein solches Schiff befördert sie der König gegen seine Provision.</German>
+		<Russian>Сокровища: «Автоматизировать сокровище» отправляет сокровище в ближайшую свою колонию с глубоководной гаванью, где оно ждёт корабль с автоматизацией «Забирать сокровища». Этот корабль везёт сокровища в Европу и продаёт их, затем плывёт к следующему ожидающему сокровищу. Без такого корабля их перевозит король за свою комиссию.</Russian>
+	</TEXT>
 </Civ4GameText>
