@@ -351,10 +351,10 @@ class CvTransportRoutesOverview:
 		for pRoute in self.player.getViableTradeRoutes(pHead):
 			iRoute = pRoute.getID()
 			bAssigned = pGroup.isAssignedTradeRoute(iRoute)
-			aRoutes.append((not bAssigned, pRoute.getSourceCityName(), pRoute.getYield(), pRoute.getDestinationCityName(), iRoute, pRoute.getDistanceBetweenCities(), pRoute.isPrivate(), pRoute.isReserved(), pRoute.getDestinationCity().iID == -1))
+			aRoutes.append((bAssigned, pRoute.getSourceCityName(), pRoute.getYield(), pRoute.getDestinationCityName(), iRoute, pRoute.getDistanceBetweenCities(), pRoute.isPrivate(), pRoute.isReserved(), pRoute.getDestinationCity().iID == -1))
 			dAssigned[iRoute] = bAssigned
 			dOriginal[iRoute] = bAssigned
-		aRoutes.sort() # assigned routes first, then by source, yield and destination
+		aRoutes.sort() # routes not activated yet first, then the activated ones; each by source, yield and destination
 		dTransport["routes"] = aRoutes
 		dTransport["assigned"] = dAssigned
 		dTransport["original"] = dOriginal

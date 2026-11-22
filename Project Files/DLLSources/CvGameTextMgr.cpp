@@ -383,6 +383,29 @@ void CvGameTextMgr::setMinimizePopupHelp(CvWString& szString, const CvPopupInfo 
 	}
 }
 
+// WTP: the name of a place of the statistics of a transport (see CvUnit::m_aiTransportLog): a city, Europe / Africa / Port Royal, on the way, or the coordinates
+static CvWString wtpTransportPlaceName(int iPlace)
+{
+	const int iA = iPlace & 0xFFF;
+	const int iB = iPlace >> 12;
+	if (iA == 1)
+	{
+		switch ((UnitTravelStates)iB)
+		{
+		case UNIT_TRAVEL_STATE_IN_EUROPE: return gDLL->getText("TXT_KEY_WTP_HARBOR_EUROPE");
+		case UNIT_TRAVEL_STATE_IN_AFRICA: return gDLL->getText("TXT_KEY_WTP_HARBOR_AFRICA");
+		case UNIT_TRAVEL_STATE_IN_PORT_ROYAL: return gDLL->getText("TXT_KEY_WTP_HARBOR_PORT_ROYAL");
+		default: return gDLL->getText("TXT_KEY_WTP_TS_LOG_AT_SEA");
+		}
+	}
+	const CvPlot* pPlot = GC.getMap().plotINLINE(iA - 2, iB - 2);
+	if (pPlot != NULL && pPlot->isCity())
+	{
+		return pPlot->getPlotCity()->getName();
+	}
+	return CvWString::format(L"(%d/%d)", iA - 2, iB - 2);
+}
+
 void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, bool bOneLine, bool bShort)
 {
 	CxDesyncMonitor StartAsyncExecution;
@@ -719,6 +742,110 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 			else
 			{
 				szTempBuffer = NEWLINE + gDLL->getText("TXT_KEY_UNIT_CARGO_SPACE", pUnit->cargoSpace());
+			}
+			// (the statistics come above the line of the cargo space: the cargo line is appended after them)
+
+			// WTP: statistics of a transport of the active player (a line, the rows marked with \x00AB become its child window in the Python tooltip)
+			if (pUnit->getTeam() == GC.getGameINLINE().getActiveTeam() && pUnit->isHuman() && !pUnit->isCargo() && pUnit->getTransportStat(CvUnit::TS_TURNS) > 0)
+			{
+				const int iTurns = pUnit->getTransportStat(CvUnit::TS_TURNS);
+				const int iSlotSum = pUnit->getTransportStat(CvUnit::TS_SLOT_SUM);
+				const int iCapacitySum = pUnit->getTransportStat(CvUnit::TS_CAPACITY_SUM);
+				const int iEmpty = pUnit->getTransportStat(CvUnit::TS_EMPTY);
+				const int iFull = pUnit->getTransportStat(CvUnit::TS_FULL);
+				const int iHalfOrLess = pUnit->getTransportStat(CvUnit::TS_HALF_OR_LESS);
+				const int iDelSlots = pUnit->getTransportStat(CvUnit::TS_DELIVERED_SLOTS);
+				const int iDelValue = pUnit->getTransportStat(CvUnit::TS_DELIVERED_VALUE);
+				const int iIdle = pUnit->getTransportStat(CvUnit::TS_IDLE);
+				szString.append(NEWLINE);
+				szString.append(gDLL->getText("TXT_KEY_WTP_TRANSPORT_STATS"));
+				// the first row: the line "Logs" (its child window: the cargo of the last turns, the lines marked with \x00AA)
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_LOGS").GetCString()));
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TURNS", iTurns).GetCString()));
+				// (the averages with one decimal)
+				const int iAvgSlots10 = (iSlotSum * 10 + iTurns / 2) / iTurns;
+				const int iAvgCapacity = (iCapacitySum + iTurns / 2) / iTurns;
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_SLOTS", CvWString::format(L"%d.%d", iAvgSlots10 / 10, iAvgSlots10 % 10).GetCString(), iAvgCapacity, (iCapacitySum > 0 ? iSlotSum * 100 / iCapacitySum : 0)).GetCString()));
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_EMPTY", iEmpty, iEmpty * 100 / iTurns).GetCString()));
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_FULL", iFull, iFull * 100 / iTurns).GetCString()));
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_HALF_OR_LESS", iHalfOrLess, iHalfOrLess * 100 / iTurns).GetCString()));
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_VALUE", pUnit->getTransportStat(CvUnit::TS_VALUE_SUM) / iTurns).GetCString()));
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_AMOUNT", pUnit->getTransportStat(CvUnit::TS_AMOUNT_SUM) / iTurns).GetCString()));
+				const int iDelSlots10 = (iDelSlots * 10 + iTurns / 2) / iTurns;
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED", iDelSlots, CvWString::format(L"%d.%d", iDelSlots10 / 10, iDelSlots10 % 10).GetCString()).GetCString()));
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED_VALUE", iDelValue, iDelValue / iTurns).GetCString()));
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_IDLE", iIdle, iIdle * 100 / iTurns).GetCString()));
+				// the good that was on board most (slots summed over the turns)
+				YieldTypes eTopYield = NO_YIELD;
+				int iTopTurns = 0;
+				int iAllYieldTurns = 0;
+				for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+				{
+					const int iYieldTurns = pUnit->getTransportYieldTurns(eYield);
+					iAllYieldTurns += iYieldTurns;
+					if (iYieldTurns > iTopTurns)
+					{
+						iTopTurns = iYieldTurns;
+						eTopYield = eYield;
+					}
+				}
+				if (eTopYield != NO_YIELD && iAllYieldTurns > 0)
+				{
+					szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD", CvWString::format(L"%c %s", GC.getYieldInfo(eTopYield).getChar(), GC.getYieldInfo(eTopYield).getDescription()).GetCString(), iTopTurns * 100 / iAllYieldTurns).GetCString()));
+				}
+				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_NOTE").GetCString()));
+				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 48[goods] [export] place of loading, T469, [map] destination, 6[moves]"
+				// (cyan header with the turn and the place of the ship, green amounts; the symbols are glyphs of the game font; the place of every
+				// number: see CvUnit::m_aiTransportLog)
+				const std::vector<int>& aiLog = pUnit->getTransportLog();
+				for (int iRec = (int)aiLog.size() / CvUnit::TS_LOG_RECORD - 1; iRec >= 0; --iRec)
+				{
+					const int* piRec = &aiLog[iRec * CvUnit::TS_LOG_RECORD];
+					CvWString szGoods;
+					for (int iPair = 0; iPair < piRec[3]; ++iPair)
+					{
+						const int* piPair = &piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair];
+						if (iPair > 0)
+						{
+							szGoods.append(L"; ");
+						}
+						szGoods.append(CvWString::format(SETCOLR L"%d" ENDCOLR L"%c", TEXT_COLOR("COLOR_POSITIVE_TEXT"), piPair[1], GC.getYieldInfo((YieldTypes)piPair[0]).getChar()));
+						CvWString szDetails;
+						if (piPair[3] != 0 && piPair[2] > 0)
+						{
+							szDetails = CvWString::format(L"%c %s, %s%d", GC.getSymbolID(EXPORT_CHAR), wtpTransportPlaceName(piPair[3]).GetCString(), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piPair[2]);
+						}
+						if (piPair[4] != 0)
+						{
+							if (szDetails.length() > 0)
+							{
+								szDetails.append(L", ");
+							}
+							if (piPair[5] >= 0)
+							{
+								szDetails.append(CvWString::format(L"%c %s, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[5], GC.getSymbolID(MOVES_CHAR)));
+							}
+							else
+							{
+								szDetails.append(CvWString::format(L"%c %s", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString()));
+							}
+						}
+						if (szDetails.length() > 0)
+						{
+							szGoods.append(CvWString::format(L" %s", szDetails.GetCString()));
+						}
+					}
+					if (piRec[3] == 0)
+					{
+						szGoods = gDLL->getText("TXT_KEY_WTP_TS_LOG_EMPTY");
+					}
+					CvWString szLogPlace = wtpTransportPlaceName(piRec[1]);
+					if (szLogPlace.length() > 0 && szLogPlace[0] != L'(')
+					{
+						szLogPlace = L"(" + szLogPlace + L")";
+					}
+					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0], szLogPlace.GetCString(), szGoods.GetCString()));
+				}
 			}
 			szString.append(szTempBuffer);
 
