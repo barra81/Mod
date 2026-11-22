@@ -19721,8 +19721,10 @@ void CvPlayerAI::AI_doWorkforcePlan()
 		}
 	}
 	// WTP performance: classes of identical regular colonists. The value of a pair of a regular (not expert) colonist and a job of the
-	// colony depends only on its unit type, its home colony, the job it holds now and the travel time to the colony (an expert is
-	// never in a class: wfIsExpertFor is only true for an expert). Each list a scan keeps changes only for a strictly higher value
+	// colony depends only on its unit type, the travel time to the colony, whether its home colony is another one (the x2/3 for a
+	// colonist that would move), and whether it holds a job of this colony now (the x1.2 for exactly that job); the home colony itself
+	// and a job of another colony do not matter for the scan of this colony, so colonists that differ only there are one class (an
+	// expert is never in a class: wfIsExpertFor is only true for an expert). Each list a scan keeps changes only for a strictly higher value
 	// and holds at most three entries (two distinct workers in the food and lumber lists), so the fourth identical colonist
 	// of a scan offers what the first ones have offered already and changes no list: a scan looks at three of them at most. The
 	// chosen pairs stay the same (tie breaks included: an equal value never replaces a kept candidate).
@@ -19741,8 +19743,10 @@ void CvPlayerAI::AI_doWorkforcePlan()
 				{
 					continue;
 				}
+				const int iCurrentJobHere = (aWorkers[w].iCurrentJob >= 0 && aJobs[aWorkers[w].iCurrentJob].iCity == c) ? aWorkers[w].iCurrentJob : -1;
+				const int iMoves = (aiHomeCity[w] >= 0 && aiHomeCity[w] != c) ? 1 : 0;
 				const std::pair<std::pair<int, int>, std::pair<int, int> > kKey(
-					std::make_pair(c * 10000 + aWorkers[w].iTypeIdx, aiHomeCity[w]), std::make_pair(aWorkers[w].iCurrentJob, aiEta[w * iNumCities + c]));
+					std::make_pair(c * 10000 + aWorkers[w].iTypeIdx, iMoves), std::make_pair(iCurrentJobHere, aiEta[w * iNumCities + c]));
 				std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, int>::iterator it = mapClasses.find(kKey);
 				if (it == mapClasses.end())
 				{

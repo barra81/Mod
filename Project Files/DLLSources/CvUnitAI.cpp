@@ -13631,11 +13631,18 @@ bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 	static std::map<int, __int64> aiNoGoodyKey;
 	const int iNoGoodyUnit = (int)getOwnerINLINE() * 1000000 + getID();
 	const __int64 iNoGoodyKey = (((__int64)getX_INLINE() * 1000 + getY_INLINE()) * 64 + iRange) * 2 + (bIgnoreCity ? 1 : 0) + (__int64)iMaxPathTurns * 100000000;
+	// WTP: a goody plot that a unit could not reach this turn is not searched again for another unit of the same owner and type that starts in
+	// the same water (area) or on the same plot: the search of a plot that cannot be reached goes through all of the water that can be reached (about
+	// 1 ms on a big map) and ten of them per ship and turn, for all warships, were 6 s per turn change (turns 480-482, wars of the kings)
+	static std::set<__int64> asUnreachableGoody;
 	if (iNoGoodyTurn != GC.getGameINLINE().getGameTurn())
 	{
 		iNoGoodyTurn = GC.getGameINLINE().getGameTurn();
 		aiNoGoodyKey.clear();
+		asUnreachableGoody.clear();
 	}
+	const __int64 iGoodyStart = (plot()->isWater() ? (__int64)plot()->getArea() : (__int64)1000000 + (__int64)getX_INLINE() * 1000 + getY_INLINE());
+	const __int64 iGoodyUnitKey = ((__int64)getOwnerINLINE() * 1000 + (__int64)getUnitType()) * 4000000 + iGoodyStart;
 	{
 		const std::map<int, __int64>::const_iterator itNoGoody = aiNoGoodyKey.find(iNoGoodyUnit);
 		if (itNoGoody != aiNoGoodyKey.end() && itNoGoody->second == iNoGoodyKey)
@@ -13681,7 +13688,26 @@ bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 						if (GET_PLAYER(getOwnerINLINE()).AI_plotTargetMissionAIs(pLoopPlot, MISSIONAI_EXPLORE, getGroup(), 1) == 0)
 						{
 							int iPathTurns = 0;
-							if (!atPlot(pLoopPlot) && generatePath(pLoopPlot, MOVE_NO_ENEMY_TERRITORY, true, &iPathTurns) && iPathTurns <= iMaxPathTurns)
+							const __int64 iGoodyFailKey = iGoodyUnitKey * 1000000 + (__int64)pLoopPlot->getX_INLINE() * 1000 + pLoopPlot->getY_INLINE();
+							bool bGoodyPath = false;
+							if (!atPlot(pLoopPlot))
+							{
+								if (asUnreachableGoody.find(iGoodyFailKey) != asUnreachableGoody.end())
+								{
+									WtpTiming::count(WtpTiming::CNT_GOODY_MEMO_HITS, 1);
+								}
+								else
+								{
+									WtpTiming::count(WtpTiming::CNT_GOODY_SEARCHES, 1);
+									bGoodyPath = generatePath(pLoopPlot, MOVE_NO_ENEMY_TERRITORY, true, &iPathTurns);
+									if (!bGoodyPath)
+									{
+										asUnreachableGoody.insert(iGoodyFailKey);
+										WtpTiming::count(WtpTiming::CNT_GOODY_SEARCHES_FAILED, 1);
+									}
+								}
+							}
+							if (bGoodyPath && iPathTurns <= iMaxPathTurns)
 							{
 								iValue += GC.getGameINLINE().getSorenRandNum(250 * abs(xDistance(getX_INLINE(), pLoopPlot->getX_INLINE())) + abs(yDistance(getY_INLINE(), pLoopPlot->getY_INLINE())), "AI explore");
 
@@ -13915,6 +13941,16 @@ bool CvUnitAI::AI_exploreRange(int iRange)
 			return true;
 		}
 	}
+
+	// WTP: a unit looks for a goody only every second turn (half of the units in one turn, the other half in the next: unit id + turn is even).
+	// Collecting a goody is of little weight for the AI, and the searches for the goodies of the water were 5-6 s per turn change on a big map
+	if (((getID() + GC.getGameINLINE().getGameTurn()) % 2) != 0)
+	{
+		WtpTiming::count(WtpTiming::CNT_GOODY_HALF_SKIPPED, 1);
+		return false;
+	}
+
+	WtpTiming::count(WtpTiming::CNT_GOODY_CALLS, 1);
 
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;

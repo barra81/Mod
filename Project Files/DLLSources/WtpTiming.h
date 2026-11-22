@@ -125,6 +125,20 @@
 //     The counters "colonist visits skipped" and "classes" show the effect: the pairs looked at must fall by about the skipped share.
 //     Not measured yet (the turns after it have no timing log). Other big items of these turns: AI_moveTowardsDanger 1.3-4.2 s (13-17 ms per
 //     call), AI_anyAttack 1.3-1.7 s, paths outside the unit AIs 4-6 s in two of the turns (55,000 searches): next candidates.
+// 12. Turns 474-482 (with the class dedup of note 11; big map, 4,800-4,900 units, kings at war with the colonies): the workforce plan fell from
+//     8.4-8.6 s to 6.3-7.2 s (step 3 6.5 s -> 4.8-5.4 s; the skipped colonist visits are only 0.4% of the pairs, the rest is the number of
+//     pairs itself: next candidate, the colonies that need no new scan). Update moves 40-50 s, of it AI_unitUpdate 27-31 s and path searches
+//     21 s. The biggest single item: UNITAI_COMBAT_SEA 8-11 s, of it AI_goodyRange 5.5-6.7 s (613 calls, 10 ms per call, about 10 path searches
+//     per call to plots with a revealed goody in the water, nearly all without result: the waters are enemy territory in the wars). Fix: a
+//     plot that a unit could not reach is not searched again this turn for another unit of the same owner and type from the same water (or
+//     the same plot); the counters CNT_GOODY_* show calls, searches, failed searches and memory hits.
+//     In addition a unit (ship or land unit) searches for a goody only every second turn (unit id + turn even), so the other half is skipped. Other items: AI_tradeRoutes 2.5-10 s,
+//     UNITAI_TRANSPORT_SEA 354,000 tiny searches (2.7 s), UNITAI_TRANSPORT_COAST 2 s (22 calls), AI_doTurnPost of France 4.4 s once (turn 482).
+// 13. Workforce plan, second step of the classes (note 11 skipped only 0.4% of the pairs: the classes held the home colony and the job held
+//     exactly, so nearly every colonist was a class of its own). A scan of a colony only needs to know whether the home colony is another
+//     one and whether the held job is a job of this colony (the values depend on nothing else), so the classes are made from the unit type,
+//     the travel time, that "moves" flag and the held job of this colony. The pairs chosen stay the same. The counters "pairs looked at" and
+//     "colonist visits skipped" show the effect: the pairs (242 million per turn change before) must fall by the skipped share.
 //  7. The long times matter more with more AI players (the tester plays with only 3 opponents because of the turn time): the plan
 //     scales about linearly with the number of European AIs, so the per player table is there to measure that.
 //
@@ -244,6 +258,11 @@ namespace WtpTiming
 		CNT_WF_PAIRS_VALUED,
 		CNT_WF_WORKERS_SKIPPED,
 		CNT_WF_WORKER_CLASSES,
+		CNT_GOODY_CALLS,
+		CNT_GOODY_SEARCHES,
+		CNT_GOODY_SEARCHES_FAILED,
+		CNT_GOODY_MEMO_HITS,
+		CNT_GOODY_HALF_SKIPPED,
 		CNT_COUNT
 	};
 
@@ -259,7 +278,12 @@ namespace WtpTiming
 		"  of these: the colonist can do the job and reaches it in time",
 		"  of these: the job has its input and a value above 0 (the pair is worth a candidate)",
 		"colonist visits skipped in the scans of step 3 (a fourth identical colonist cannot change a kept candidate)",
-		"classes of identical regular colonists (per colony) in the plans"
+		"classes of identical regular colonists (per colony) in the plans",
+		"AI_goodyRange: calls that searched (not answered by the memory of the unit)",
+		"AI_goodyRange: path searches to a goody plot",
+		"  of these: no path found (the search went through all water that can be reached)",
+		"AI_goodyRange: goody plots without a search, another unit of the same owner and type had no path to it from the same water this turn",
+		"AI_goodyRange: calls that skipped the search because it is the other half of the units' turn (every second turn)"
 	};
 
 	// buckets of the single updateMoves calls (ms, upper limits)
