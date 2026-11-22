@@ -5532,7 +5532,7 @@ int CvUnit::loadYieldAmount(YieldTypes eYield, int iAmount, bool bTrade)
 }
 
 // WTP: fills all free cargo slots with goods of the city, one slot after the other, always with the most valuable good (the sell price for 100 units in the
-// harbour where the whole load of a sea transport sells best, see below) that can still be loaded and would fill at least 15% of a slot (without livestock, building material, military goods, raw materials); the same good again as long as the city has more of it
+// harbour where the whole load of a sea transport sells best, see below) that can still be loaded and would fill at least 15% of a slot (without food, trade goods, livestock, building material, military goods, raw materials); the same good again as long as the city has more of it
 // WTP: can this ship sell in the harbour at all (ship type and the rights of the player), regardless of moves left or where it is now
 bool CvUnit::canReachHarbour(int iHarbour) const
 {
@@ -5572,8 +5572,9 @@ void CvUnit::loadAllYieldsByValue()
 	{
 		abExcluded[i] = false;
 	}
-	// not loaded: livestock, building material, military goods and all raw materials (goods that a profession turns into another good)
+	// not loaded: food, trade goods, livestock, building material, military goods and all raw materials (goods that a profession turns into another good)
 	static const char* const aszExcluded[] = {
+		"YIELD_FOOD", "YIELD_TRADE_GOODS", // food and the goods for trading with the natives
 		"YIELD_CLAY", "YIELD_STONE", "YIELD_TOOLS", "YIELD_HORSES", "YIELD_SAILCLOTH", "YIELD_HARDWOOD", "YIELD_ROPE", // building material
 		"YIELD_MUSKETS", "YIELD_BLADES", "YIELD_CANNONS", "YIELD_BLACK_POWDER", "YIELD_BAKERY_GOODS" // military goods
 	};
@@ -7141,7 +7142,9 @@ void CvUnit::establishMission()
 	if (GC.getGameINLINE().getSorenRandNum(100, "Mission failure roll") > getMissionarySuccessPercent())
 	{
 		CvWString szBuffer = gDLL->getText("TXT_KEY_MISSION_FAILED", plot()->getPlotCity()->getNameKey());
+		WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 		gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_POSITIVE_DINK", MESSAGE_TYPE_MINOR_EVENT, GC.getCommandInfo(COMMAND_ESTABLISH_MISSION).getButton(), COLOR_HIGHLIGHT_TEXT, getX_INLINE(), getY_INLINE(), true, true);
+		WtpHudMessages::setPriority(false);
 		kCityOwner.AI_changeMemoryCount((getOwnerINLINE()), MEMORY_MISSIONARY_FAIL, 1);
 
 		//Ramstormp, Disillusioned missionary - START
@@ -7154,7 +7157,9 @@ void CvUnit::establishMission()
 				CvUnit* FailedMissionaryUnit = GET_PLAYER(getOwnerINLINE()).initUnit(FailedMissionaryType, GC.getUnitInfo(FailedMissionaryType).getDefaultProfession(), pCity->getX_INLINE(), pCity->getY_INLINE());
 				//  WTP, ray, we still need to display a message - your missionary failed and became a Failed Missionary
 				CvWString szBuffer = gDLL->getText("TXT_KEY_FAILED_MISSIONARY_SPAWNED_FROM_FAIL", plot()->getPlotCity()->getNameKey());
+				WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 				gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_POSITIVE_DINK", MESSAGE_TYPE_MINOR_EVENT, GC.getCommandInfo(COMMAND_ESTABLISH_MISSION).getButton(), COLOR_HIGHLIGHT_TEXT, getX_INLINE(), getY_INLINE(), true, true);
+				WtpHudMessages::setPriority(false);
 			}
 		}
 		//Ramstormp, Disillusioned missionary - END
@@ -7234,7 +7239,9 @@ void CvUnit::establishTradePost()
 	if (GC.getGameINLINE().getSorenRandNum(100, "Trade Post failure roll") > getNativeTradePostSuccessPercent())
 	{
 		CvWString szBuffer = gDLL->getText("TXT_KEY_TRADE_POST_FAILED", plot()->getPlotCity()->getNameKey());
+		WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 		gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_POSITIVE_DINK", MESSAGE_TYPE_MINOR_EVENT, GC.getCommandInfo(COMMAND_ESTABLISH_TRADE_POST).getButton(), COLOR_HIGHLIGHT_TEXT, getX_INLINE(), getY_INLINE(), true, true);
+		WtpHudMessages::setPriority(false);
 		// removed the Memory Count because it display strange unfitting since it is not a Mission and there is no special Memory Count for Trade Posts
 		//GET_PLAYER(pCity->getOwnerINLINE()).AI_changeMemoryCount((getOwnerINLINE()), MEMORY_MISSIONARY_FAIL, 1);
 
@@ -7249,7 +7256,9 @@ void CvUnit::establishTradePost()
 				CvUnit* FailedTraderUnit = GET_PLAYER(getOwnerINLINE()).initUnit(FailedTraderType, GC.getUnitInfo(FailedTraderType).getDefaultProfession(), pCity->getX_INLINE(), pCity->getY_INLINE());
 				//  WTP, ray, we still need to display a message - your trader failed and became a Failed Trader
 				CvWString szBuffer = gDLL->getText("TXT_KEY_FAILED_TRADER_SPAWNED_FROM_FAIL", plot()->getPlotCity()->getNameKey());
+				WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 				gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_POSITIVE_DINK", MESSAGE_TYPE_MINOR_EVENT, GC.getCommandInfo(COMMAND_ESTABLISH_TRADE_POST).getButton(), COLOR_HIGHLIGHT_TEXT, getX_INLINE(), getY_INLINE(), true, true);
+				WtpHudMessages::setPriority(false);
 			}
 		}
 		// WTP, ray, Failed Trader - END

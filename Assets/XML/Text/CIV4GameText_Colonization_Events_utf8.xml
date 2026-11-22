@@ -574,6 +574,30 @@
 		<Hungarian>[COLOR_FONT_GOLD]Nemesek és polgárok követik Őfelsége példáját. A gyarmati termékeink iránti kereslet növekszik.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_EVENT_FESTIVITY_5</Tag>
+		<English>The best is not enough for our King! Give him everything, and send him my best wishes together with a gift of gold (20% of our treasury, at least 6000)!</English>
+		<German>Das Beste ist nicht genug für unseren König! Gebt ihm alles und schickt ihm meine besten Wünsche, zusammen mit einem Geschenk in Gold (20% unserer Kasse, mindestens 6000)!</German>
+		<Russian>Лучшего недостаточно для нашего Короля! Отдайте ему всё и передайте ему мои наилучшие пожелания вместе с даром в золоте (20% нашей казны, но не менее 6000)!</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_FESTIVITY_5_HELP</Tag>
+		<English>[COLOR_FONT_GOLD]His Majesty is overwhelmed by our generosity. The whole court talks of nothing else, and the King promises to ease the burden of our taxes.[COLOR_REVERT]</English>
+		<German>[COLOR_FONT_GOLD]Seine Majestät ist überwältigt von unserer Großzügigkeit. Am ganzen Hof spricht man von nichts anderem, und der König verspricht, die Steuerlast unserer Kolonien zu lindern.[COLOR_REVERT]</German>
+		<Russian>[COLOR_FONT_GOLD]Его Величество потрясён нашей щедростью. При дворе только об этом и говорят, и Король обещает облегчить налоговое бремя наших колоний.[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_GOLD_LOOSE</Tag>
+		<English>[ICON_BULLET][COLOR_NEGATIVE_TEXT]%D1[COLOR_REVERT][ICON_GOLD] gift to the King</English>
+		<German>[ICON_BULLET][COLOR_NEGATIVE_TEXT]%D1[COLOR_REVERT][ICON_GOLD] Geschenk an den König</German>
+		<Russian>[ICON_BULLET][COLOR_NEGATIVE_TEXT]%D1[COLOR_REVERT][ICON_GOLD] подарок Королю</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_TAX_DECREASE</Tag>
+		<English>[ICON_BULLET]Tax rate decreases by [COLOR_POSITIVE_TEXT]%D1%%[COLOR_REVERT] to %D2%% total</English>
+		<German>[ICON_BULLET]Steuersatz sinkt um [COLOR_POSITIVE_TEXT]%D1%%[COLOR_REVERT] auf %D2%%</German>
+		<Russian>[ICON_BULLET]Налоговая ставка снижена на [COLOR_POSITIVE_TEXT]%D1%%[COLOR_REVERT] до %D2%%</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_EVENTTRIGGER_WINTER</Tag>
 		<English>Cold winter in Europe</English>
 		<Portuguese>Inverno frio na Europa.</Portuguese>
@@ -2771,6 +2795,102 @@
 		<German>Milord! man hat einige königliche Verwaltungsbeamte beim Glückspiel in einer Spelunke erwischt und leichte Mädchen sollen auch dabei gewesen sein. Das Ansehen der Krone und auch Euer Amt werden dadurch beschmutzt, wenn Ihr nichts tut.</German>
 		<Russian>Милорд! Несколько королевских чиновников были пойманы за азартными играми в подпольном заведении и, говорят, что там также присутствовали женщины легкого поведения. Если вы ничего не предпримете, это опозорит Корону и Вашу должность.</Russian>
 		<Hungarian>Uram! Több királyi tisztviselőt is rajtakaptak, amint egy kocsmában szerencsejátékot űztek, és úgy hírlik, hogy könnyűvérű nők is jelen voltak. Ha nem tesz semmit, ez rossz hírbe hozza a Koronát és a hivatalát.</Hungarian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_HANG_BUTCHER</Tag>
+		<English>Hang the butcher in the name of the King! Let everyone see that the Crown's justice reaches even the colonies.</English>
+		<German>Den Metzger im Namen des Königs hängen! Jeder soll sehen, dass die Gerechtigkeit der Krone auch bis in die Kolonien reicht.</German>
+		<Russian>Повесить мясника именем Короля! Пусть все видят, что правосудие Короны достигает даже колоний.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_REMOVE_ONE_BUTCHER</Tag>
+		<English>[ICON_BULLET]One butcher will disappear from the city.</English>
+		<German>[ICON_BULLET]Ein Metzger wird aus der Stadt entfernt.</German>
+		<Russian>[ICON_BULLET]Один мясник исчезнет из города.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENTTRIGGER_KING_DISPATCH_WAR</Tag>
+		<English>The King of the [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] colonial empire has sent a dispatch under the royal seal, in view of the colonists' wars.</English>
+		<German>Der König des [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] Kolonialreichs hat angesichts der Kriege der Kolonisten eine Depesche mit royalem Siegel gesandt.</German>
+		<Russian>Король колониальной империи [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] отправил депешу с королевской печатью ввиду войн колонистов.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENTTRIGGER_KING_DISPATCH</Tag>
+		<English>The King of the [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] colonial empire has sent a dispatch under the royal seal.</English>
+		<German>Der König des [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] Kolonialreichs hat eine Depesche mit royalem Siegel gesandt.</German>
+		<Russian>Король колониальной империи [COLOR_HIGHLIGHT_TEXT]%s1:3_civ_adjective[COLOR_REVERT] отправил депешу с королевской печатью.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_TRIGGER_KING_DISPATCH_WAR</Tag>
+		<English>My Lord! A dispatch with the royal seal has arrived. The King takes note of your campaigns in the New World and is in a generous mood - yet the tax rate you pay is already above the limit he once set.</English>
+		<German>Milord! Eine Depesche mit royalem Siegel ist eingetroffen. Der König nimmt Eure Feldzüge in der Neuen Welt zur Kenntnis und ist großzügig gestimmt - doch der Steuersatz, den Ihr zahlt, liegt bereits über der Grenze, die er einst gesetzt hat.</German>
+		<Russian>Милорд! Прибыла депеша с королевской печатью. Король принимает к сведению ваши походы в Новом Свете и настроен великодушно, но налог, который вы платите, уже выше установленного им предела.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_TRIGGER_KING_DISPATCH</Tag>
+		<English>My Lord! A dispatch with the royal seal has arrived. The King is in a strange mood and has remembered the colonies - the tax rate you pay is above the limit he once set.</English>
+		<German>Milord! Eine Depesche mit royalem Siegel ist eingetroffen. Der König ist in sonderbarer Laune und hat sich der Kolonien erinnert - der Steuersatz, den Ihr zahlt, liegt über der Grenze, die er einst gesetzt hat.</German>
+		<Russian>Милорд! Прибыла депеша с королевской печатью. Король в странном расположении духа и вспомнил о колониях: налог, который вы платите, выше установленного им предела.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_KING_DISPATCH_1</Tag>
+		<English>The King welcomes your military activities in the New World and offers to finance them by lowering the maximum tax rate.</English>
+		<German>Der König begrüßt Eure militärischen Aktivitäten in der Neuen Welt und bietet Euch zu deren Finanzierung eine Senkung des maximalen Steuersatzes an.</German>
+		<Russian>Король приветствует ваши военные действия в Новом Свете и предлагает для их финансирования снизить максимальную ставку налога.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_KING_DISPATCH_2</Tag>
+		<English>The King is bored, so provide some variety! A tribe that already dislikes us will get its war.</English>
+		<German>Den König langweilt es, sorgt für Abwechslung! Ein Stamm, der uns ohnehin nicht gewogen ist, bekommt seinen Krieg.</German>
+		<Russian>Королю скучно, внесите разнообразие! Племя, и без того настроенное против нас, получит свою войну.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_KING_DISPATCH_3</Tag>
+		<English>The King lies in fever! For his recovery he needs 400 coca leaves and the best doctors.</English>
+		<German>Der König liegt im Fieber! Zu seiner Genesung benötigt er 400 Cocablätter und die besten Ärzte.</German>
+		<Russian>Король лежит в лихорадке! Для выздоровления ему нужны 400 листьев коки и лучшие врачи.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_KING_DISPATCH_4</Tag>
+		<English>We cannot oblige him with that.</English>
+		<German>Damit kann ich nicht dienen.</German>
+		<Russian>Этим я служить не могу.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_DISPATCH_DECLARE_WAR</Tag>
+		<English>[ICON_BULLET][COLOR_NEGATIVE_TEXT]War[COLOR_REVERT] is declared on the %s1</English>
+		<German>[ICON_BULLET]Dem Stamm %s1 wird der [COLOR_NEGATIVE_TEXT]Krieg[COLOR_REVERT] erklärt</German>
+		<Russian>[ICON_BULLET]Племени %s1 объявляется [COLOR_NEGATIVE_TEXT]война[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_REMOVE_ONE_DOCTOR</Tag>
+		<English>[ICON_BULLET]One doctor will disappear from the city.</English>
+		<German>[ICON_BULLET]Ein Arzt wird aus der Stadt entfernt.</German>
+		<Russian>[ICON_BULLET]Один врач исчезнет из города.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_DISPATCH_MAXTAX_INCREASE</Tag>
+		<English>[ICON_BULLET]Maximum tax rate rises by [COLOR_NEGATIVE_TEXT]%D1%%[COLOR_REVERT] to %D2%% total</English>
+		<German>[ICON_BULLET]Maximaler Steuersatz steigt um [COLOR_NEGATIVE_TEXT]%D1%%[COLOR_REVERT] auf %D2%%</German>
+		<Russian>[ICON_BULLET]Максимальная ставка налога растёт на [COLOR_NEGATIVE_TEXT]%D1%%[COLOR_REVERT] до %D2%%</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_DISPATCH_TAX_INCREASE</Tag>
+		<English>[ICON_BULLET]Tax rate rises by [COLOR_NEGATIVE_TEXT]%D1%%[COLOR_REVERT] to %D2%% total</English>
+		<German>[ICON_BULLET]Steuersatz steigt um [COLOR_NEGATIVE_TEXT]%D1%%[COLOR_REVERT] auf %D2%%</German>
+		<Russian>[ICON_BULLET]Ставка налога растёт на [COLOR_NEGATIVE_TEXT]%D1%%[COLOR_REVERT] до %D2%%</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_DISPATCH_BOYCOTT</Tag>
+		<English>[ICON_BULLET][COLOR_NEGATIVE_TEXT]Boycott[COLOR_REVERT]: %F1_yield %s2 can no longer be traded in Europe</English>
+		<German>[ICON_BULLET][COLOR_NEGATIVE_TEXT]Boykott[COLOR_REVERT]: %F1_yield %s2 kann in Europa nicht mehr gehandelt werden</German>
+		<Russian>[ICON_BULLET][COLOR_NEGATIVE_TEXT]Бойкот[COLOR_REVERT]: %F1_yield %s2 больше нельзя продавать в Европе</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_CORRUPT_STATESMAN_4</Tag>
+		<English>A show trial! The statesman must resign and will be sent far away. It costs us a fortune to keep this quiet, but the King will see that we keep order in the colonies.</English>
+		<German>Ein Scheinprozess! Der Staatsmann muss zurücktreten und zieht in die Ferne. Das Schweigen kostet uns ein Vermögen, aber der König wird sehen, dass wir in den Kolonien für Ordnung sorgen.</German>
+		<Russian>Показательный процесс! Государственный деятель должен подать в отставку и уедет в дальние края. Молчание обойдётся нам в целое состояние, но король увидит, что мы поддерживаем порядок в колониях.</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_CORRUPT_STATESMAN_1</Tag>

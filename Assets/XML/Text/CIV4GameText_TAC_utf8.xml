@@ -1699,6 +1699,12 @@
 		<Hungarian>%s2_city : Egy ügyes lakos %d1_Num [NUM1:kör:kör] múlva befejezi a városi %s3_building falai között a tanulmányait.</Hungarian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_MISC_STUDENTS_ALMOST_GRADUATED</Tag>
+		<English>[COLOR_CAT_RESEARCH]%s2_city : %d4 striving citizens will finish their education at the %s3_building in %d1_Num [NUM1:turn:turns].[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_RESEARCH]%s2_city : In %d1 [NUM1:Runde:Runden] werden %d4 strebsame Bürger an der %s3_building ihre Ausbildung beenden.[COLOR_REVERT]</German>
+		<Russian>[COLOR_CAT_RESEARCH]%s2_city : Способные горожане (%d4) закончат обучение в %s3_building через %d1_Num [NUM1:ход:хода].[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_LBD_EXPERT</Tag>
 		<English>[COLOR_POSITIVE_TEXT]A free colonist who has worked in his profession for many years now has enough knowledge to be considered an %s1_expert.[COLOR_REVERT]</English>
 		<Portuguese>[COLOR_POSITIVE_TEXT]Um colono livre que atua em sua profissão há muitos anos agora possui conhecimento suficiente para ser considerado um %s1_expert.[COLOR_REVERT]</Portuguese>
@@ -2541,6 +2547,12 @@
 		<German>Reiseziel in der [COLOR_HIGHLIGHT_TEXT]Neuen Welt[COLOR_REVERT] auswählen</German>
 		<Russian>Выберите, куда плыть в [COLOR_HIGHLIGHT_TEXT]Новом мире[COLOR_REVERT]</Russian>
 		<Hungarian>Válaszd ki az úticélt az [COLOR_HIGHLIGHT_TEXT]Újvilágban[COLOR_REVERT]</Hungarian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EU_SAIL_ALL</Tag>
+		<English>Select destination in the [COLOR_HIGHLIGHT_TEXT]New World[COLOR_REVERT] for [COLOR_HIGHLIGHT_TEXT]all ships[COLOR_REVERT] that can reach it</English>
+		<German>Reiseziel in der [COLOR_HIGHLIGHT_TEXT]Neuen Welt[COLOR_REVERT] für [COLOR_HIGHLIGHT_TEXT]alle Schiffe[COLOR_REVERT] auswählen, die es erreichen können</German>
+		<Russian>Выберите порт в [COLOR_HIGHLIGHT_TEXT]Новом мире[COLOR_REVERT] для [COLOR_HIGHLIGHT_TEXT]всех кораблей[COLOR_REVERT], которые могут до него дойти</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EU_PREVIEW_MODE</Tag>
@@ -3544,6 +3556,18 @@
 		<Russian>[COLOR_HIGHLIGHT_TEXT]Переместить окно[COLOR_REVERT][NEWLINE]Перемещает окно; удерживайте кнопку для непрерывного перемещения. Стрелки на клавиатуре делают то же самое. Shift: двойные шаги, Ctrl: половинные шаги, оба: треть шага.[NEWLINE]Ctrl+Shift+Q: вернуть на место по умолчанию.[NEWLINE]Положение: %d1, %d2</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_PLOT_COORDS</Tag>
+		<English>Plot coordinates: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</English>
+		<German>Feldkoordinaten: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</German>
+		<Russian>Координаты клетки: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_SAIL_ALL_SHIFT_HELP</Tag>
+		<English>Shift + click: after choosing the destination all ships in the port that can reach it sail at once.</English>
+		<German>Umschalt + Klick: nach der Wahl des Ziels segeln alle Schiffe im Hafen, die es erreichen können, gleichzeitig los.</German>
+		<Russian>Shift + щелчок: после выбора порта назначения одновременно отплывают все корабли в порту, которые могут до него дойти.</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_SELL_ALL_SHIFT_HELP</Tag>
 		<English>Shift + click: sells the goods of all ships in the port.</English>
 		<German>Umschalt + Klick: verkauft die Waren aller Schiffe im Hafen.</German>
@@ -4307,6 +4331,18 @@
 		<Russian>[COLOR:140:255:40:255]Задать путевую точку...[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_WAYPOINT_IS_SET</Tag>
+		<English>[COLOR_SELECTED_TEXT]Set as WP:[COLOR_REVERT] %s1</English>
+		<German>[COLOR_SELECTED_TEXT]Gesetzt als WP:[COLOR_REVERT] %s1</German>
+		<Russian>[COLOR_SELECTED_TEXT]Задана как путевая точка:[COLOR_REVERT] %s1</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_WAYPOINT_PLOT_OPTIONS</Tag>
+		<English>Ctrl + right click: delete waypoint[NEWLINE]Shift + right click: rename</English>
+		<German>Strg + Rechtsklick: Wegpunkt löschen[NEWLINE]Umschalt + Rechtsklick: umbenennen</German>
+		<Russian>Ctrl + щелчок правой кнопкой: удалить путевую точку[NEWLINE]Shift + щелчок правой кнопкой: переименовать</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_WAYPOINT_SET_ROW</Tag>
 		<English>[COLOR_SELECTED_TEXT]Set waypoint...[COLOR_REVERT]</English>
 		<German>[COLOR_SELECTED_TEXT]Wegpunkt setzen...[COLOR_REVERT]</German>
@@ -4674,9 +4710,21 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_TRADERS_NET_ALL</Tag>
-		<English>All colonies, per turn: %s1</English>
-		<German>Alle Kolonien, pro Runde: %s1</German>
-		<Russian>Все колонии, за ход: %s1</Russian>
+		<English>All colonies, net per turn: %s1</English>
+		<German>Alle Kolonien, netto pro Runde: %s1</German>
+		<Russian>Все колонии, чистый итог за ход: %s1</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_TRADERS_NET_ALL_HELP</Tag>
+		<English>Net surplus of all your colonies together: production minus the use of the colonies themselves (consumption already deducted, planned use included). Green = more is made than used, red = more is used than made.</English>
+		<German>Netto-Überschuss aller deiner Kolonien zusammen: Produktion abzüglich des Eigenverbrauchs der Kolonien (Verbrauch ist bereits eingerechnet, geplanter Verbrauch inklusive). Grün = es wird mehr hergestellt als verbraucht, rot = es wird mehr verbraucht als hergestellt.</German>
+		<Russian>Чистый избыток всех ваших колоний вместе: производство за вычетом собственного потребления колоний (потребление уже учтено, включая плановый расход). Зелёный — производится больше, чем потребляется, красный — потребляется больше, чем производится.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_TRADERS_NET_NOTRADE</Tag>
+		<English>(no import / export)</English>
+		<German>(kein Import / Export)</German>
+		<Russian>(нет импорта / экспорта)</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_TRADERS_MORE</Tag>

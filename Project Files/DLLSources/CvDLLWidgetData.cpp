@@ -3607,7 +3607,54 @@ void CvDLLWidgetData::parseCityYieldHelp(const CvWidgetDataStruct &widgetDataStr
 
 	if (NULL != pCity)
 	{
-		GAMETEXT.setYieldHelp(szBuffer, *pCity, eYield);
+		if (widgetDataStruct.m_eWidgetType == WIDGET_MOVE_CARGO_TO_TRANSPORT && !g_bWtpInternalHelp && eYield >= FIRST_YIELD && eYield < NUM_YIELD_TYPES)
+		{
+			// WTP: the goods bar of the city screen: the net surplus of all colonies directly under the name of the good (the first line)
+			CvWStringBuffer szYieldHelp;
+			GAMETEXT.setYieldHelp(szYieldHelp, *pCity, eYield);
+			CvWString szAll = szYieldHelp.getCString();
+			int iNet = 0;
+			int iLoopCity;
+			for (CvCity* pLoopCity = kPlayer.firstCity(&iLoopCity); pLoopCity != NULL; pLoopCity = kPlayer.nextCity(&iLoopCity))
+			{
+				int iShare = pLoopCity->calculateNetYield(eYield);
+				if (eYield != YIELD_FOOD)
+				{
+					// (the planned use counts fully, also the part that is not used up because another raw material is missing)
+					iShare -= std::max(0, pLoopCity->getRawYieldConsumed(eYield) - pLoopCity->calculateActualYieldConsumed(eYield));
+				}
+				iNet += iShare;
+			}
+			CvWString szNum;
+			if (iNet > 0)
+			{
+				szNum = CvWString::format(SETCOLR L"+%d" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), iNet);
+			}
+			else if (iNet < 0)
+			{
+				szNum = CvWString::format(SETCOLR L"%d" ENDCOLR, TEXT_COLOR("COLOR_NEGATIVE_TEXT"), iNet);
+			}
+			else
+			{
+				szNum = L"0";
+			}
+			CvWString szLine = gDLL->getText("TXT_KEY_WTP_TIP_TRADERS_NET_ALL", szNum.GetCString());
+			szLine += CvWString::format(L" %c", GC.getYieldInfo(eYield).getChar());
+			size_t iPos = szAll.find(L'\n');
+			if (iPos == CvWString::npos)
+			{
+				szAll += L"\n" + szLine;
+			}
+			else
+			{
+				szAll.insert(iPos, L"\n" + szLine);
+			}
+			szBuffer.append(szAll.c_str());
+		}
+		else
+		{
+			GAMETEXT.setYieldHelp(szBuffer, *pCity, eYield);
+		}
 	}
 	else
 	{

@@ -196,6 +196,7 @@ public:
 	//ray10
 	void NBMOD_IncreaseMaxTaxRate(); // Steuergrenze anheben
     void NBMOD_DecreaseMaxTaxRate(); // Steuergrenze senken
+	int NBMOD_ChangeMaxTaxRate(int iChange); // WTP: Steuergrenze um iChange aendern (geklemmt MIN..MAX), liefert die tatsaechliche Aenderung
 	//Ende ray10
 
 /** NBMOD TAX **/

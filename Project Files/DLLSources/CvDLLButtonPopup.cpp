@@ -1621,7 +1621,13 @@ void CvDLLButtonPopup::OnFocus(CvPopup* pPopup, CvPopupInfo &info)
 	case BUTTONPOPUP_CHOOSEPRODUCTION:
 		if (info.getData2() == WTP_BUY_MATERIALS_POPUP)
 		{
-			break; // WTP: the buy panel is wanted while the city is producing
+			// WTP: the buy panel is wanted while the city is producing; the view jumps to the city as for the popup of a finished project
+			CvCity* pBuyCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getCity(info.getData1());
+			if (pBuyCity != NULL)
+			{
+				gDLL->getInterfaceIFace()->lookAtCityOffset(pBuyCity->getID());
+			}
+			break;
 		}
 		if (info.getData2() == WTP_NATIVE_WAYPOINT_POPUP)
 		{

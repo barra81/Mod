@@ -4237,7 +4237,11 @@ PlayerTypes CvPlot::calculateCulturalOwner() const
 									if (isWithinCultureRange(pLoopCity->getOwnerINLINE()))
 									{
 										int iPriority = GC.getCityPlotPriority()[iI] + 5;
-										if ((iPriority < iBestPriority) || ((iPriority == iBestPriority) && (pLoopCity->getOwnerINLINE() == eBestPlayer)))
+										// WTP: with the same priority (cities of two players at the same distance) the one with more culture on the plot wins;
+										// before, the city that was found first in the scan of the plots won, whatever the culture was
+										const bool bMoreCulture = (iPriority == iBestPriority) && (pBestCity != NULL) && (pBestCity->getOwnerINLINE() != eBestPlayer)
+											&& (getCulture(pLoopCity->getOwnerINLINE()) > getCulture(pBestCity->getOwnerINLINE()));
+										if ((iPriority < iBestPriority) || ((iPriority == iBestPriority) && (pLoopCity->getOwnerINLINE() == eBestPlayer)) || bMoreCulture)
 										{
 											iBestPriority = iPriority;
 											pBestCity = pLoopCity;

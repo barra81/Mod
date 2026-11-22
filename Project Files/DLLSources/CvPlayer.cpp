@@ -2460,15 +2460,19 @@ void CvPlayer::NBMOD_DecreaseMaxTaxRate()
         m_iMaxTaxRate = GC.getMIN_TAX_RATE();
     }
 
-//NEUER CODE von RAY
-	// ist die max_Steuerrate < aktueler_Steuerrate, wird die max_Steuerrate wieder auf aktueler_Steuerrate hochgesetzt
-	if (m_iMaxTaxRate < getTaxRate())
-	{
-		m_iMaxTaxRate = getTaxRate();
-	}
-//Ende NEUER CODE von RAY
+	// WTP: the maximum tax rate may fall below the tax rate that is paid now (it was set back up to the paid rate before, so paying the
+	// maximum made meeting the king's demand change nothing). The king raises no tax while the paid rate is at or above the maximum
+	// (getTaxRaiseChance, NBMOD_GetNewTaxRate); the paid rate falls only through an event that lowers it.
 
     return ;
+}
+
+// WTP: change the maximum tax rate by an arbitrary amount (events); returns the change that was really applied
+int CvPlayer::NBMOD_ChangeMaxTaxRate(int iChange)
+{
+	const int iOld = m_iMaxTaxRate;
+	m_iMaxTaxRate = std::max(GC.getMIN_TAX_RATE(), std::min(GC.getMAX_TAX_RATE(), m_iMaxTaxRate + iChange));
+	return m_iMaxTaxRate - iOld;
 }
 
 /***************************************************************************/
@@ -4296,7 +4300,7 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 				int currentmaxtax = kPlayer.NBMOD_GetMaxTaxRate();
 
 				int absolutMinTaxrate = GC.getMIN_TAX_RATE();
-				while ((currentmaxtax - maxtaxdecrease) < kPlayer.NBMOD_GetMaxTaxRate() && kPlayer.NBMOD_GetMaxTaxRate() > absolutMinTaxrate && kPlayer.getTaxRate() < kPlayer.NBMOD_GetMaxTaxRate() )
+				while ((currentmaxtax - maxtaxdecrease) < kPlayer.NBMOD_GetMaxTaxRate() && kPlayer.NBMOD_GetMaxTaxRate() > absolutMinTaxrate)
 				{
 					kPlayer.NBMOD_DecreaseMaxTaxRate();
 				}
@@ -14916,14 +14920,18 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 		}
 		else if (!kTriggeredData.m_szText.empty())
 		{
+			// WTP: the message that an event has started: top priority in the message panel, in its own bright color (magenta)
+			const CvWString szEventText = CvWString(L"<color=255,64,255,255>") + kTriggeredData.m_szText + CvWString(L"</color>");
+			WtpHudMessages::setPriority(true);
 			if (kTrigger.isShowPlot() && NULL != pPlot && pPlot->isRevealed(getTeam(), false))
 			{
-				gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), kTriggeredData.m_szText, coord, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
+				gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szEventText, coord, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
 			}
 			else
 			{
-				gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), kTriggeredData.m_szText, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE);
+				gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szEventText, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE);
 			}
+			WtpHudMessages::setPriority(false);
 		}
 	}
 
