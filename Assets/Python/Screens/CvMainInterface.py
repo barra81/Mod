@@ -4136,6 +4136,36 @@ class CvMainInterface:
 			self.iMsgHoldWait = 3
 			self.moveMessagePanel(list(self.aMsgHeld))
 
+	# WTP: the collapsed panel is paler and less dense as long as the mouse is not over it (the colors of the texts get this alpha at most)
+	MESSAGE_IDLE_ALPHA = 150
+
+	def isMessagePanelIdle(self):
+		return (not self.bMessagePanelExpanded) and (not getattr(self, "bMsgHover", False))
+
+	def fadeMessageText(self, szText, bIdle):
+		if not bIdle:
+			return szText
+		try:
+			iAlpha = self.MESSAGE_IDLE_ALPHA
+			szFaded = re.sub(u"<color=(\\d+),(\\d+),(\\d+),(\\d+)>", lambda m: u"<color=%s,%s,%s,%d>" % (m.group(1), m.group(2), m.group(3), min(int(m.group(4)), iAlpha)), szText)
+			return u"<color=235,230,215,%d>%s</color>" % (iAlpha, szFaded)
+		except:
+			return szText
+
+	# every frame: the collapsed panel takes its full look while the mouse is over it and goes pale again when the mouse leaves
+	def updateMessageHover(self):
+		try:
+			if self.tMessagePanelKey is None:
+				return
+			bOver = False
+			if not self.bMessagePanelExpanded:
+				bOver = self.isCursorOnOwnPanel()
+			if bOver != getattr(self, "bMsgHover", False):
+				self.bMsgHover = bOver
+				self.updateMessagePanel()
+		except:
+			pass
+
 	def hideMessagePanel(self, screen):
 		for szName in self.aszMessageLines:
 			screen.hide(szName)
@@ -4197,7 +4227,7 @@ class CvMainInterface:
 			if self.bMsgWpView:
 				aWpEntries = self.getMsgWaypointEntries()
 				tWpKey = (self.iMsgWpPage, tuple([t[5] for t in aWpEntries]))
-			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes, self.bMsgWpView, self.bMsgWpSea, tWpKey)
+			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes, self.bMsgWpView, self.bMsgWpSea, tWpKey, self.isMessagePanelIdle())
 			if tKey == self.tMessagePanelKey:
 				return
 			self.tMessagePanelKey = tKey
@@ -4333,9 +4363,12 @@ class CvMainInterface:
 			screen.deleteWidget("HudMsgPanel")
 			screen.deleteWidget("HudMsgPanelBack1")
 			screen.deleteWidget("HudMsgPanelBack2")
-			screen.addPanel("HudMsgPanelBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			screen.show("HudMsgPanelBack1")
-			screen.moveToFront("HudMsgPanelBack1")
+			bIdle = self.isMessagePanelIdle()
+			if not bIdle:
+				# (collapsed and not under the mouse: only the one layer of the panel itself, paler text, so that the panel is less in the way)
+				screen.addPanel("HudMsgPanelBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+				screen.show("HudMsgPanelBack1")
+				screen.moveToFront("HudMsgPanelBack1")
 			if self.bMessagePanelExpanded:
 				screen.addPanel("HudMsgPanelBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 				screen.show("HudMsgPanelBack2")
@@ -4363,7 +4396,7 @@ class CvMainInterface:
 					eWidget = WidgetTypes.WIDGET_GENERAL
 					iData1 = self.BUTTON_MESSAGE_LINE
 					iData2 = i
-					screen.setText(szName, "Background", self.setFontSize(szLine, -1), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+					screen.setText(szName, "Background", self.fadeMessageText(self.setFontSize(szLine, -1), bIdle), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
 					self.dMessageLineIndex[szName] = i
 					screen.show(szName)
 					screen.moveToFront(szName)
@@ -4391,7 +4424,7 @@ class CvMainInterface:
 				screen.show("HudMsgFooterPrevious")
 				screen.moveToFront("HudMsgFooterPrevious")
 
-			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
+			screen.setText("HudMsgHeader", "Background", self.fadeMessageText(self.setFontSize(szHeader, -1), bIdle), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
 			screen.show("HudMsgHeader")
 			screen.moveToFront("HudMsgHeader")
 			# the option at the top right corner
@@ -4401,7 +4434,7 @@ class CvMainInterface:
 				szAuto = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_AUTO_OFF", ())
 			iAutoWidth = int(len(re.sub(u"<[^>]*>", u"", szAuto)) * iLine * 0.32) + iPad
 			self.tMsgAutoRect = (iX + iWidth - iPad - iAutoWidth, iY, iAutoWidth + iPad, iHeaderHeight + iPad)
-			screen.setText("HudMsgAuto", "Background", self.setFontSize(szAuto, -1), CvUtil.FONT_RIGHT_JUSTIFY, iX + iWidth - iPad, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_AUTO, -1)
+			screen.setText("HudMsgAuto", "Background", self.fadeMessageText(self.setFontSize(szAuto, -1), bIdle), CvUtil.FONT_RIGHT_JUSTIFY, iX + iWidth - iPad, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_AUTO, -1)
 			screen.show("HudMsgAuto")
 			screen.moveToFront("HudMsgAuto")
 			self.drawMsgWpToggle(screen, iX, iY, iPad)
@@ -5197,6 +5230,7 @@ class CvMainInterface:
 	def update( self, fDelta ):
 		self.updateTerritorialInfluenceEditor()
 		self.updateMessageMove()
+		self.updateMessageHover()
 		try:
 			self.updateMessageScroll()
 		except:
