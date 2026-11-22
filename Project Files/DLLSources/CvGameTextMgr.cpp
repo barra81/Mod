@@ -773,7 +773,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED", iDelSlots, CvWString::format(L"%d.%d", iDelSlots10 / 10, iDelSlots10 % 10).GetCString()).GetCString()));
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED_VALUE", iDelValue, iDelValue / iTurns).GetCString()));
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_IDLE", iIdle, iIdle * 100 / iTurns).GetCString()));
-				// the good that was on board most (slots summed over the turns)
+				// the good that was on board most in all turns (slots summed over the turns, saved with the unit)
 				YieldTypes eTopYield = NO_YIELD;
 				int iTopTurns = 0;
 				int iAllYieldTurns = 0;
@@ -791,9 +791,80 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				{
 					szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD", CvWString::format(L"%c %s", GC.getYieldInfo(eTopYield).getChar(), GC.getYieldInfo(eTopYield).getDescription()).GetCString(), iTopTurns * 100 / iAllYieldTurns).GetCString()));
 				}
+				// the good that was carried most in the logged turns (the amounts of the last turns in service; the row above counts all turns)
+				{
+					const std::vector<int>& aiYieldLog = pUnit->getTransportLog();
+					std::vector<int> aiYieldAmounts(NUM_YIELD_TYPES, 0);
+					int iAllAmounts = 0;
+					const int iYieldRecords = (int)aiYieldLog.size() / CvUnit::TS_LOG_RECORD;
+					for (int iRec = 0; iRec < iYieldRecords; ++iRec)
+					{
+						const int* piRec = &aiYieldLog[iRec * CvUnit::TS_LOG_RECORD];
+						for (int iPair = 0; iPair < piRec[3]; ++iPair)
+						{
+							const int* piPair = &piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair];
+							if (piPair[0] >= 0 && piPair[0] < NUM_YIELD_TYPES && piPair[1] > 0)
+							{
+								aiYieldAmounts[piPair[0]] += piPair[1];
+								iAllAmounts += piPair[1];
+							}
+						}
+					}
+					YieldTypes eLogYield = NO_YIELD;
+					int iLogAmount = 0;
+					for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+					{
+						if (aiYieldAmounts[eYield] > iLogAmount)
+						{
+							iLogAmount = aiYieldAmounts[eYield];
+							eLogYield = eYield;
+						}
+					}
+					if (eLogYield != NO_YIELD && iAllAmounts > 0)
+					{
+						szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD_LOG", CvWString::format(L"%c %s", GC.getYieldInfo(eLogYield).getChar(), GC.getYieldInfo(eLogYield).getDescription()).GetCString(), iLogAmount * 100 / iAllAmounts, iYieldRecords).GetCString()));
+					}
+				}
+				// the destination that the goods of the logged turns went to most often (the turns of the log: every turn counts once for a place)
+				{
+					const std::vector<int>& aiDestLog = pUnit->getTransportLog();
+					std::map<int, int> aiDestTurns;
+					const int iDestRecords = (int)aiDestLog.size() / CvUnit::TS_LOG_RECORD;
+					for (int iRec = 0; iRec < iDestRecords; ++iRec)
+					{
+						const int* piRec = &aiDestLog[iRec * CvUnit::TS_LOG_RECORD];
+						std::set<int> aiPlaces;
+						for (int iPair = 0; iPair < piRec[3]; ++iPair)
+						{
+							const int iPlace = piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair + 4];
+							if (iPlace != 0)
+							{
+								aiPlaces.insert(iPlace);
+							}
+						}
+						for (std::set<int>::const_iterator it = aiPlaces.begin(); it != aiPlaces.end(); ++it)
+						{
+							++aiDestTurns[*it];
+						}
+					}
+					int iTopPlace = 0;
+					int iTopTurns = 0;
+					for (std::map<int, int>::const_iterator it = aiDestTurns.begin(); it != aiDestTurns.end(); ++it)
+					{
+						if (it->second > iTopTurns)
+						{
+							iTopTurns = it->second;
+							iTopPlace = it->first;
+						}
+					}
+					if (iTopPlace != 0)
+					{
+						szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_DEST", wtpTransportPlaceName(iTopPlace).GetCString(), iTopTurns, iDestRecords).GetCString()));
+					}
+				}
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_NOTE").GetCString()));
-				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 48[goods] [export] place of loading, T469, [map] destination, 6[moves]"
-				// (cyan header with the turn and the place of the ship, green amounts; the symbols are glyphs of the game font; the place of every
+				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 48[goods] [export] place of loading, T469; [map] destination, 6[moves];; 200[goods] ..." (the separator ;; between the goods is yellow)
+				// (cyan header with the turn and the brackets, the place of the ship inside of them and the turn of the loading (T469) in a paler yellow (240,225,130), the separators ;; in the plain yellow, green amounts; the symbols are glyphs of the game font; the place of every
 				// number: see CvUnit::m_aiTransportLog)
 				const std::vector<int>& aiLog = pUnit->getTransportLog();
 				for (int iRec = (int)aiLog.size() / CvUnit::TS_LOG_RECORD - 1; iRec >= 0; --iRec)
@@ -805,19 +876,19 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 						const int* piPair = &piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair];
 						if (iPair > 0)
 						{
-							szGoods.append(L"; ");
+							szGoods.append(CvWString::format(SETCOLR L";;" ENDCOLR L" ", TEXT_COLOR("COLOR_YELLOW")));
 						}
 						szGoods.append(CvWString::format(SETCOLR L"%d" ENDCOLR L"%c", TEXT_COLOR("COLOR_POSITIVE_TEXT"), piPair[1], GC.getYieldInfo((YieldTypes)piPair[0]).getChar()));
 						CvWString szDetails;
 						if (piPair[3] != 0 && piPair[2] > 0)
 						{
-							szDetails = CvWString::format(L"%c %s, %s%d", GC.getSymbolID(EXPORT_CHAR), wtpTransportPlaceName(piPair[3]).GetCString(), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piPair[2]);
+							szDetails = CvWString::format(L"%c %s, " SETCOLR L"%s%d" ENDCOLR, GC.getSymbolID(EXPORT_CHAR), wtpTransportPlaceName(piPair[3]).GetCString(), 240, 225, 130, 255, gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piPair[2]);
 						}
 						if (piPair[4] != 0)
 						{
 							if (szDetails.length() > 0)
 							{
-								szDetails.append(L", ");
+								szDetails.append(L"; ");
 							}
 							if (piPair[5] >= 0)
 							{
@@ -837,12 +908,15 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					{
 						szGoods = gDLL->getText("TXT_KEY_WTP_TS_LOG_EMPTY");
 					}
+					// the place without brackets (a place off the colonies is already "(x/y)"): the brackets are cyan, the place yellow
 					CvWString szLogPlace = wtpTransportPlaceName(piRec[1]);
-					if (szLogPlace.length() > 0 && szLogPlace[0] != L'(')
+					if (szLogPlace.length() > 2 && szLogPlace[0] == L'(' && szLogPlace[szLogPlace.length() - 1] == L')')
 					{
-						szLogPlace = L"(" + szLogPlace + L")";
+						szLogPlace = szLogPlace.substr(1, szLogPlace.length() - 2);
 					}
-					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0], szLogPlace.GetCString(), szGoods.GetCString()));
+					CvWString szLogPlaceOpen = (szLogPlace.length() > 0) ? L"(" : L"";
+					CvWString szLogPlaceClose = (szLogPlace.length() > 0) ? L")" : L"";
+					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s" ENDCOLR SETCOLR L"%s" ENDCOLR SETCOLR L"%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0], szLogPlaceOpen.GetCString(), 240, 225, 130, 255, szLogPlace.GetCString(), TEXT_COLOR("COLOR_CYAN"), szLogPlaceClose.GetCString(), szGoods.GetCString()));
 				}
 			}
 			szString.append(szTempBuffer);

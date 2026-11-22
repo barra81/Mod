@@ -3973,9 +3973,21 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_TOP_YIELD</Tag>
-		<English>Most carried good: %s1 (%d2%% of the slots)</English>
-		<German>Am meisten transportierte Ware: %s1 (%d2%% der Slots)</German>
-		<Russian>Чаще всего перевозилось: %s1 (%d2%% мест)</Russian>
+		<English>Most carried good (overall): %s1 (%d2%% of the slots)</English>
+		<German>Am meisten transportierte Ware (gesamt): %s1 (%d2%% der Slots)</German>
+		<Russian>Чаще всего перевозилось (всего): %s1 (%d2%% мест)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_TOP_YIELD_LOG</Tag>
+		<English>Most carried good (last %d3 turns in service): %s1 (%d2%% of the amount)</English>
+		<German>Am meisten transportierte Ware (letzte %d3 Runden im Dienst): %s1 (%d2%% der Menge)</German>
+		<Russian>Чаще всего перевозилось (последние %d3 ходов на службе): %s1 (%d2%% количества)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_TOP_DEST</Tag>
+		<English>Most visited destination: %s1 (%d2 of the last %d3 turns in service)</English>
+		<German>Am meisten angesteuerter Lagerort: %s1 (%d2 der letzten %d3 Runden im Dienst)</German>
+		<Russian>Чаще всего пункт назначения: %s1 (%d2 из последних %d3 ходов на службе)</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_NOTE</Tag>
