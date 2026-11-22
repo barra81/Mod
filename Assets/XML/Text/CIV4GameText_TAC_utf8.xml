@@ -4139,6 +4139,7 @@
 		<German>Feldkoordinaten: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</German>
 		<Russian>Координаты клетки: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</Russian>
 	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_WAYPOINT_IS_SET</Tag>
 		<English>[COLOR_SELECTED_TEXT]Set as WP:[COLOR_REVERT] %s1</English>
 		<German>[COLOR_SELECTED_TEXT]Gesetzt als WP:[COLOR_REVERT] %s1</German>
@@ -4150,5 +4151,4 @@
 		<German>Strg + Rechtsklick: Wegpunkt löschen[NEWLINE]Umschalt + Rechtsklick: umbenennen</German>
 		<Russian>Ctrl + щелчок правой кнопкой: удалить путевую точку[NEWLINE]Shift + щелчок правой кнопкой: переименовать</Russian>
 	</TEXT>
-	<TEXT>
 </Civ4GameText>
