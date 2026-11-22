@@ -6132,18 +6132,11 @@ class CvMainInterface:
 			pPlot = pUnit.plot()
 			if pPlot is None or pPlot.isNone():
 				return
-			szUnit = CyGameTextMgr().getSpecificUnitHelp(pUnit, False, True).strip()
-			if len(szUnit) == 0:
+			# the help text of the plot as the game shows it when only this ship stood on it (the DLL lists only this unit): the full
+			# help of the unit with its statistics and the lines of the plot
+			szHelp = self.stripCarries(CyGameTextMgr().getPlotHelpAlone(pPlot, pUnit)).strip()
+			if len(szHelp) == 0:
 				return
-			szHelp = szUnit
-			try:
-				# the lines of the plot: what the help text of the plot has behind the lines of its units
-				aPlotRaw = self.stripCarries(CyGameTextMgr().getPlotHelp(pPlot)).split(u"\n")
-				iPlotStart = self.getPlotStartPara(self.carryColors(aPlotRaw), pPlot)
-				if iPlotStart < len(aPlotRaw):
-					szHelp += u"\n" + u"\n".join(aPlotRaw[iPlotStart:])
-			except:
-				self.tipError("showLoadedUnitTip plot lines")
 			if len(self.szAutoSelPrefix) > 0:
 				self.closeAutoSelWindows()
 			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)

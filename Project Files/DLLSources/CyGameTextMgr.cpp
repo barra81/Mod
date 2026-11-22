@@ -71,6 +71,15 @@ std::wstring CyGameTextMgr::getSpecificUnitHelp(CyUnit* pUnit, bool bOneLine, bo
 	}
 	return szBuffer.getCString();
 }
+std::wstring CyGameTextMgr::getPlotHelpAlone(CyPlot* pPlot, CyUnit* pUnit)
+{
+	CvWStringBuffer szBuffer;
+	if (pPlot && pPlot->getPlot() && pUnit && pUnit->getUnit())
+	{
+		GAMETEXT.setPlotHelpAlone(szBuffer, pPlot->getPlot(), pUnit->getUnit());
+	}
+	return szBuffer.getCString();
+}
 std::wstring CyGameTextMgr::getPlotHelp(CyPlot* pPlot)
 {
 	CvWStringBuffer szBuffer;

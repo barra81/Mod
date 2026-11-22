@@ -1670,6 +1670,26 @@ void CvGameTextMgr::setProfessionHelp(CvWStringBuffer &szBuffer, ProfessionTypes
 	}
 }
 
+// WTP: set while setPlotHelpAlone builds the list of the units: setPlotListHelp then lists only this unit and its cargo
+static const CvUnit* g_pWtpAloneUnit = NULL;
+
+// WTP: the help text of a plot as the game shows it when only this unit stood on the plot (the tooltip window that opens after loading a ship
+// with Shift + click on Load goods): the full help of the unit (statistics included) and the lines of the plot
+void CvGameTextMgr::setPlotHelpAlone(CvWStringBuffer& szString, CvPlot* pPlot, const CvUnit* pUnit)
+{
+	// (the game puts the list of the units and the help of the plot together: the units come from setPlotListHelp, the lines of the plot from setPlotHelp)
+	g_pWtpAloneUnit = pUnit;
+	setPlotListHelp(szString, pPlot, false, false);
+	g_pWtpAloneUnit = NULL;
+	CvWStringBuffer szPlotLines;
+	setPlotHelp(szPlotLines, pPlot);
+	if (!szPlotLines.isEmpty())
+	{
+		szString.append(NEWLINE);
+		szString.append(szPlotLines.getCString());
+	}
+}
+
 void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPlot, bool bOneLine, bool bShort)
 {
 	CxDesyncMonitor StartAsyncExecution;
@@ -1964,6 +1984,24 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 
 	GC.getGame().getPlotUnits(pPlot, plotUnits);
 
+	// WTP: the tooltip window after loading a ship (see wtpGetPlotHelpAlone): the plot is shown as if only this unit (with its cargo) stood on it
+	CvUnit* pCenterUnit = pPlot->getCenterUnit();
+	if (g_pWtpAloneUnit != NULL)
+	{
+		// (the unit and its cargo: the goods on board are listed below the ship as they are in the tooltip of the plot)
+		std::vector<CvUnit*> apAloneUnits;
+		apAloneUnits.push_back(const_cast<CvUnit*>(g_pWtpAloneUnit));
+		for (uint iU = 0; iU < plotUnits.size(); ++iU)
+		{
+			if (plotUnits[iU] != g_pWtpAloneUnit && plotUnits[iU]->getTransportUnit() == g_pWtpAloneUnit)
+			{
+				apAloneUnits.push_back(plotUnits[iU]);
+			}
+		}
+		plotUnits = apAloneUnits;
+		pCenterUnit = const_cast<CvUnit*>(g_pWtpAloneUnit);
+	}
+
 	int iNumVisibleUnits = 0;
 	if (pPlot->isVisible(GC.getGameINLINE().getActiveTeam(), GC.getGameINLINE().isDebugMode()))
 	{
@@ -1976,6 +2014,10 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 			{
 				++iNumVisibleUnits;
 			}
+		}
+		if (g_pWtpAloneUnit != NULL && iNumVisibleUnits > 0)
+		{
+			iNumVisibleUnits = (int)plotUnits.size();
 		}
 	}
 
@@ -2012,7 +2054,7 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 	{
 		pLoopUnit = plotUnits[iI];
 
-		if (pLoopUnit != NULL && pLoopUnit != pPlot->getCenterUnit())
+		if (pLoopUnit != NULL && pLoopUnit != pCenterUnit)
 		{
 			apUnits.push_back(pLoopUnit);
 
@@ -2057,17 +2099,17 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 			}
 		}
 
-		if (pPlot->getCenterUnit())
+		if (pCenterUnit)
 		{
-			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
+			if (pCenterUnit->getYield() != NO_YIELD)
 			{
-				m_iYieldTotalForHelp = aiYieldTotal[pPlot->getCenterUnit()->getYield()];
+				m_iYieldTotalForHelp = aiYieldTotal[pCenterUnit->getYield()];
 			}
-			setUnitHelp(szString, pPlot->getCenterUnit(), iNumVisibleUnits > iMaxNumUnits, true);
+			setUnitHelp(szString, pCenterUnit, iNumVisibleUnits > iMaxNumUnits, true);
 			m_iYieldTotalForHelp = 0;
-			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
+			if (pCenterUnit->getYield() != NO_YIELD)
 			{
-				abYieldPricesShown[pPlot->getCenterUnit()->getYield()] = true;
+				abYieldPricesShown[pCenterUnit->getYield()] = true;
 			}
 		}
 
@@ -2075,7 +2117,7 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 		for (uint iI = 0; iI < iNumShown && iI < (int) plotUnits.size(); ++iI)
 		{
 			CvUnit* pLoopUnit = plotUnits[iI];
-			if (pLoopUnit != pPlot->getCenterUnit())
+			if (pLoopUnit != pCenterUnit)
 			{
 				szString.append(NEWLINE);
 				YieldTypes eLoopYield = pLoopUnit->getYield();
