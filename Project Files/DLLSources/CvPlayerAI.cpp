@@ -19720,6 +19720,41 @@ void CvPlayerAI::AI_doWorkforcePlan()
 			}
 		}
 	}
+	// WTP performance: classes of identical regular colonists. The value of a pair of a regular (not expert) colonist and a job of the
+	// colony depends only on its unit type, its home colony, the job it holds now and the travel time to the colony (an expert is
+	// never in a class: wfIsExpertFor is only true for an expert). Each list a scan keeps changes only for a strictly higher value
+	// and holds at most three entries (two distinct workers in the food and lumber lists), so the fourth identical colonist
+	// of a scan offers what the first ones have offered already and changes no list: a scan looks at three of them at most. The
+	// chosen pairs stay the same (tie breaks included: an equal value never replaces a kept candidate).
+	std::vector<std::vector<int> > aaiCityWorkerClass(iNumCities);
+	int iNumWorkerClasses = 0;
+	{
+		std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, int> mapClasses;
+		for (int c = 0; c < iNumCities; ++c)
+		{
+			const std::vector<int>& aiListed = aaiCityWorkers[c];
+			aaiCityWorkerClass[c].assign(aiListed.size(), -1);
+			for (size_t i = 0; i < aiListed.size(); ++i)
+			{
+				const int w = aiListed[i];
+				if (aWorkers[w].bExpert)
+				{
+					continue;
+				}
+				const std::pair<std::pair<int, int>, std::pair<int, int> > kKey(
+					std::make_pair(c * 10000 + aWorkers[w].iTypeIdx, aiHomeCity[w]), std::make_pair(aWorkers[w].iCurrentJob, aiEta[w * iNumCities + c]));
+				std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, int>::iterator it = mapClasses.find(kKey);
+				if (it == mapClasses.end())
+				{
+					it = mapClasses.insert(std::make_pair(kKey, iNumWorkerClasses++)).first;
+				}
+				aaiCityWorkerClass[c][i] = it->second;
+			}
+		}
+	}
+	std::vector<int> aiClassSeen(iNumWorkerClasses + 1, 0);
+	std::vector<int> aiClassTouched;
+	int iWtpSkipped = 0;
 	std::vector<bool> abWfDirty(iNumCities, true);
 	std::vector<WfCand> aCityBest(iNumCities, kWfNoCand);
 	// per colony: the two best food jobs and the two best lumber jobs (distinct workers), the three best jobs that need
@@ -19759,6 +19794,9 @@ void CvPlayerAI::AI_doWorkforcePlan()
 	}
 	int iWtpRounds = 0; // (counters of the timing report)
 	int iWtpScans = 0;
+	int iWtpPairsLooked = 0;
+	int iWtpPairsFree = 0;
+	int iWtpPairsValued = 0;
 	{ // (a block of its own: the timer of step 3 ends with it)
 	WtpTiming::Scope wtpPlanTimer(WtpTiming::SLOT_WF_PLAN);
 	for (int iRound = 0; iRound < iNumWorkers * 2 + 10; ++iRound)
@@ -19813,6 +19851,7 @@ void CvPlayerAI::AI_doWorkforcePlan()
 				}
 			}
 			const std::vector<int>& aiScanWorkers = aaiCityWorkers[iScanCity];
+			const std::vector<int>& aiScanClasses = aaiCityWorkerClass[iScanCity];
 			for (size_t iScanWorker = 0; iScanWorker < aiScanWorkers.size(); ++iScanWorker)
 			{
 				const int w = aiScanWorkers[iScanWorker];
@@ -19820,6 +19859,20 @@ void CvPlayerAI::AI_doWorkforcePlan()
 				if (kWorker.iJob >= 0 || kWorker.bLearning)
 				{
 					continue;
+				}
+				const int iWorkerClass = aiScanClasses[iScanWorker];
+				if (iWorkerClass >= 0)
+				{
+					if (aiClassSeen[iWorkerClass] >= 3)
+					{
+						++iWtpSkipped;
+						continue;
+					}
+					if (aiClassSeen[iWorkerClass] == 0)
+					{
+						aiClassTouched.push_back(iWorkerClass);
+					}
+					++aiClassSeen[iWorkerClass];
 				}
 				for (int iCityJob = 0; iCityJob < iNumCityJobs; ++iCityJob)
 				{
@@ -19829,6 +19882,7 @@ void CvPlayerAI::AI_doWorkforcePlan()
 						continue;
 					}
 					const WfJob& kJob = aJobs[j];
+					++iWtpPairsLooked;
 					const int iT = WF_TYPE(w, j);
 					const int iGold = aiGold[iT * iNumJobs + j];
 					if (iGold <= -1000000 || aiEta[w * iNumCities + kJob.iCity] >= 1000)
@@ -19841,6 +19895,7 @@ void CvPlayerAI::AI_doWorkforcePlan()
 					{
 						continue;
 					}
+					++iWtpPairsFree;
 					WfCity& kCity = aCities[kJob.iCity];
 					const int iOutput = aiOutput[iT * iNumJobs + j];
 					const bool bCarpenter = kJob.eYield == YIELD_HAMMERS;
@@ -19906,6 +19961,7 @@ void CvPlayerAI::AI_doWorkforcePlan()
 					{
 						continue;
 					}
+					++iWtpPairsValued;
 					iValue = std::max(1, iValue) * 20 / (20 + aiEta[w * iNumCities + kJob.iCity]);
 					// a colonist in a colony or on its way to one goes to another colony only for a job worth half as much again
 					// (no going back and forth between two colonies for jobs of about the same value)
@@ -20021,6 +20077,12 @@ void CvPlayerAI::AI_doWorkforcePlan()
 				}
 			}
 		}
+		// (the classes seen in the scans of this round: counted again in the next ones)
+		for (size_t iTouched = 0; iTouched < aiClassTouched.size(); ++iTouched)
+		{
+			aiClassSeen[aiClassTouched[iTouched]] = 0;
+		}
+		aiClassTouched.clear();
 		// the best pair of all colonies: the highest value, on a tie the first one in the order of the full scan (worker, then job)
 		WfCand kBest = kWfNoCand;
 		for (int c = 0; c < iNumCities; ++c)
@@ -20124,6 +20186,11 @@ void CvPlayerAI::AI_doWorkforcePlan()
 	WtpTiming::count(WtpTiming::CNT_WF_JOBS, iNumJobs);
 	WtpTiming::count(WtpTiming::CNT_WF_ROUNDS, iWtpRounds);
 	WtpTiming::count(WtpTiming::CNT_WF_COLONY_SCANS, iWtpScans);
+	WtpTiming::count(WtpTiming::CNT_WF_PAIRS_LOOKED, iWtpPairsLooked);
+	WtpTiming::count(WtpTiming::CNT_WF_PAIRS_FREE, iWtpPairsFree);
+	WtpTiming::count(WtpTiming::CNT_WF_PAIRS_VALUED, iWtpPairsValued);
+	WtpTiming::count(WtpTiming::CNT_WF_WORKERS_SKIPPED, iWtpSkipped);
+	WtpTiming::count(WtpTiming::CNT_WF_WORKER_CLASSES, iNumWorkerClasses);
 	#undef WF_PLAN_TOUCH
 
 	wtpLap.next(WtpTiming::SLOT_WF_S4);

@@ -109,6 +109,22 @@
 //     scan of a colony went through ALL workers for each of its jobs; now only through the workers that can be considered for it).
 //     New slots SLOT_TR_PATH_POS / SLOT_TR_PATH_ROUTE: the path searches inside AI_tradeRoutes, from the position of the transport
 //     (not cached) and from colony to colony (cache misses), to see how much of its 2-9 s they are.
+// 10. Turn 464 (big map, 275 cities, 4,675 units, 45 s): pathfinding 22 s with 506,000 searches; UNITAI_COMBAT_SEA 8.8 s (607 updates, 66,700
+//     searches, 110 per update): AI_moveTowardsVictimCity searched a path to every water plot next to every coastal city of every other player
+//     for every warship in a port; now a plot whose upper bound of the value cannot beat the best one found has no search (same result).
+//     Workforce plan 9 s, of it step 3 6.9 s (6,775 scans of colonies, about 1 ms each): the counters "pairs of colonist and job" show where
+//     the scan spends its time. New slots SLOT_CS_* (AI_moveTowardsVictimCity / Danger / anyAttack / adjacentSeaAttack / siegeBlockade /
+//     moveTowardsOcean) show which warship function takes the time.
+// 11. Turns 466-470 (version with the pruning of note 10; big map, 277 cities, 4,771 units): workforce plan 8.4-8.6 s per turn change, of it step 3
+//     6.5 s, nearly all of it France (61 cities, 1,406 units: 6.5 s; England and Spain about 0.9 s each). The counters show why: 3,468 free
+//     colonists (about 1,150 per plan) and 9,546 free jobs; 2,594 rounds with 6,658 scans of a colony, each scan 42,000 pairs of colonist and
+//     job (279 million pairs per turn change, 23 ns per pair: the cost is the number of pairs, not the work per pair). Fix: in the scan of a
+//     colony a regular (not expert) colonist counts for a class of its unit type, home colony, held job and travel time to the colony; the
+//     scan looks at three free colonists of a class at most, as a fourth one offers the same values and cannot change a list that keeps
+//     strictly better candidates only (same chosen pairs; checked with a model on 200,000 random cases, not yet with the real game).
+//     The counters "colonist visits skipped" and "classes" show the effect: the pairs looked at must fall by about the skipped share.
+//     Not measured yet (the turns after it have no timing log). Other big items of these turns: AI_moveTowardsDanger 1.3-4.2 s (13-17 ms per
+//     call), AI_anyAttack 1.3-1.7 s, paths outside the unit AIs 4-6 s in two of the turns (55,000 searches): next candidates.
 //  7. The long times matter more with more AI players (the tester plays with only 3 opponents because of the turn time): the plan
 //     scales about linearly with the number of European AIs, so the per player table is there to measure that.
 //
@@ -185,6 +201,12 @@ namespace WtpTiming
 		SLOT_SHIP_GOODY,
 		SLOT_TR_PATH_POS,
 		SLOT_TR_PATH_ROUTE,
+		SLOT_CS_VICTIM,
+		SLOT_CS_DANGER,
+		SLOT_CS_ANYATTACK,
+		SLOT_CS_ADJACENT,
+		SLOT_CS_SIEGE,
+		SLOT_CS_OCEAN,
 		SLOT_COUNT
 	};
 
@@ -217,6 +239,11 @@ namespace WtpTiming
 		CNT_WF_JOBS,
 		CNT_WF_ROUNDS,
 		CNT_WF_COLONY_SCANS,
+		CNT_WF_PAIRS_LOOKED,
+		CNT_WF_PAIRS_FREE,
+		CNT_WF_PAIRS_VALUED,
+		CNT_WF_WORKERS_SKIPPED,
+		CNT_WF_WORKER_CLASSES,
 		CNT_COUNT
 	};
 
@@ -227,7 +254,12 @@ namespace WtpTiming
 		"free colonists (workers) in the plans",
 		"free jobs in the plans",
 		"rounds of step 3 (one pair assigned per round)",
-		"colony scans in step 3 (colonies searched again after an assignment)"
+		"colony scans in step 3 (colonies searched again after an assignment)",
+		"pairs of colonist and job looked at in the scans of step 3 (free colonist x free job of the colony)",
+		"  of these: the colonist can do the job and reaches it in time",
+		"  of these: the job has its input and a value above 0 (the pair is worth a candidate)",
+		"colonist visits skipped in the scans of step 3 (a fourth identical colonist cannot change a kept candidate)",
+		"classes of identical regular colonists (per colony) in the plans"
 	};
 
 	// buckets of the single updateMoves calls (ms, upper limits)
@@ -289,7 +321,13 @@ namespace WtpTiming
 		"  in the unit AIs (ships and others, all callers): AI_exploreCoast / AI_exploreOcean / AI_exploreDeep",
 		"  in the unit AIs (ships and others, all callers): AI_goodyRange",
 		"  path searches of the trade routes (AI_tradeRoutes) from the position of the transport (not cached)",
-		"  path searches of the trade routes (AI_tradeRoutes) from colony to colony (cache misses)"
+		"  path searches of the trade routes (AI_tradeRoutes) from colony to colony (cache misses)",
+		"  in the unit AIs (warships and others, all callers): AI_moveTowardsVictimCity",
+		"  in the unit AIs (warships and others, all callers): AI_moveTowardsDanger",
+		"  in the unit AIs (warships and others, all callers): AI_anyAttack",
+		"  in the unit AIs (warships and others, all callers): AI_adjacentSeaAttack",
+		"  in the unit AIs (warships and others, all callers): AI_siegeBlockade",
+		"  in the unit AIs (warships and others, all callers): AI_moveTowardsOcean"
 	};
 
 	struct Data
