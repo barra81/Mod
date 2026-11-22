@@ -771,65 +771,65 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_RISE</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ has risen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ [COLOR_GREEN]has risen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] em %s2_civ aumentou para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix pour [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] a augmenté pour atteindre %d3[ICON_GOLD] dans les %s2_civ</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ ist auf %d3[ICON_GOLD] gestiegen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ ist auf %d3[ICON_GOLD] [COLOR_GREEN]gestiegen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ è salito a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en %s2_civ ha subido a %d3[ICON_GOLD].</Spanish>
-		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в %s2_civ поднялась до %d3[ICON_GOLD]</Russian>
+		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в %s2_civ [COLOR_GREEN]поднялась до[COLOR_REVERT] %d3[ICON_GOLD]</Russian>
 		<Hungarian>[COLOR_POSITIVE_TEXT]Áremelkedés![COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] ára %s2_civ piacán %d3[ICON_GOLD] lett.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_FALL</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ has fallen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ [COLOR_RED]has fallen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] em %s2_civ caiu para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix pour [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] a chuté pour atteindre %d3[ICON_GOLD] dans les %s2_civ</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ ist auf %d3[ICON_GOLD] gefallen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ ist auf %d3[ICON_GOLD] [COLOR_RED]gefallen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in %s2_civ è sceso a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en %s2_civ ha bajado a %d3[ICON_GOLD].</Spanish>
-		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в %s2_civ упала до %d3[ICON_GOLD]</Russian>
+		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в %s2_civ [COLOR_RED]упала до[COLOR_REVERT] %d3[ICON_GOLD]</Russian>
 		<Hungarian>[COLOR_WARNING_TEXT]Árcsökkenés![COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] ára %s2_civ piacán %d3[ICON_GOLD] lett.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_RISE_AFRICA</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa has risen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa [COLOR_GREEN]has risen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] na África aumentou para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en Afrique a augmenté pour atteindre %d3[ICON_GOLD]</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Afrika ist auf %d3[ICON_GOLD] gestiegen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Afrika ist auf %d3[ICON_GOLD] [COLOR_GREEN]gestiegen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa è salito a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en África ha subido a %d3[ICON_GOLD].</Spanish>
-		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Африке выросла до %d3[ICON_GOLD]</Russian>
+		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Африке [COLOR_GREEN]выросла до[COLOR_REVERT] %d3[ICON_GOLD]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_FALL_AFRICA</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa has fallen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa [COLOR_RED]has fallen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] na África caiu para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en Afrique a chuté pour atteindre %d3[ICON_GOLD]</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Afrika ist auf %d3[ICON_GOLD] gefallen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Afrika ist auf %d3[ICON_GOLD] [COLOR_RED]gefallen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Africa è sceso a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en África ha bajado a %d3[ICON_GOLD].</Spanish>
-		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Африке упала до %d3[ICON_GOLD]</Russian>
+		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Африке [COLOR_RED]упала до[COLOR_REVERT] %d3[ICON_GOLD]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_RISE_PORT_ROYAL</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal has risen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal [COLOR_GREEN]has risen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] em Port Royal aumentou para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] à Port Royal a augmenté pour atteindre %d3[ICON_GOLD]</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal ist auf %d3[ICON_GOLD] gestiegen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal ist auf %d3[ICON_GOLD] [COLOR_GREEN]gestiegen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] a Port Royal è salito a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en Port Royal ha subido a %d3[ICON_GOLD].</Spanish>
-		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Порт-Ройале выросла до %d3[ICON_GOLD]</Russian>
+		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Порт-Ройале [COLOR_GREEN]выросла до[COLOR_REVERT] %d3[ICON_GOLD]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PRICE_FALL_PORT_ROYAL</Tag>
-		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal has fallen to %d3[ICON_GOLD]</English>
+		<English>The price of [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal [COLOR_RED]has fallen to[COLOR_REVERT] %d3[ICON_GOLD]</English>
 		<Portuguese>O preço de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] em Port Royal caiu para %d3[ICON_GOLD]</Portuguese>
 		<French>Le prix de [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] à Port Royal a chuté pour atteindre %d3[ICON_GOLD]</French>
-		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal ist auf %d3[ICON_GOLD] gefallen</German>
+		<German>Der Preis für [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] in Port Royal ist auf %d3[ICON_GOLD] [COLOR_RED]gefallen[COLOR_REVERT]</German>
 		<Italian>Il prezzo di [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] a Port Royal è sceso a %d3[ICON_GOLD]</Italian>
 		<Spanish>El precio [NUM1:del:de la:de los:de las] [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] en Port Royal ha bajado a %d3[ICON_GOLD].</Spanish>
-		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Порт-Ройале упала до %d3[ICON_GOLD]</Russian>
+		<Russian>Цена на [COLOR_HIGHLIGHT_TEXT]%s1_yield[COLOR_REVERT] в Порт-Ройале [COLOR_RED]упала до[COLOR_REVERT] %d3[ICON_GOLD]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUY_AND_SELL_YIELD</Tag>
@@ -1532,25 +1532,25 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FATHER_JOINED_TEAM</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT] has been able to enlist the support of [COLOR_FONT_CREAM]%s1_person[COLOR_REVERT].</English>
-		<Portuguese>[COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT] conseguiu o apoio de [COLOR_FONT_CREAM]%s1_person[COLOR_REVERT].</Portuguese>
-		<French>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] a rejoint [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT].</French>
-		<German>[COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT] hat die Unterstützung von [COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] gewinnen können.</German>
-		<Italian>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] si è unito alla squadra [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT].</Italian>
-		<Spanish>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [NUM1:se ha:se ha:se han:se han] unido a [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT].</Spanish>
-		<Russian>[COLOR_HIGHLIGHT_TEXT]%s1_person[COLOR_REVERT] вошел в состав Континентального конгресса [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT].</Russian>
-		<Hungarian>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT] mellé állt.</Hungarian>
+		<English>[COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT] [COLOR_CULTURE_STORED]has been able to enlist the support of[COLOR_REVERT] [COLOR_FONT_CREAM]%s1_person[COLOR_REVERT].</English>
+		<Portuguese>[COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT] [COLOR_CULTURE_STORED]conseguiu o apoio de[COLOR_REVERT] [COLOR_FONT_CREAM]%s1_person[COLOR_REVERT].</Portuguese>
+		<French>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]a rejoint[COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT].</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT] [COLOR_CULTURE_STORED]hat die Unterstützung von[COLOR_REVERT] [COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] gewinnen können.</German>
+		<Italian>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]si è unito alla squadra[COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT].</Italian>
+		<Spanish>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED][NUM1:se ha:se ha:se han:se han] unido a[COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT].</Spanish>
+		<Russian>[COLOR_HIGHLIGHT_TEXT]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]вошел в состав Континентального конгресса[COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s2_team[COLOR_REVERT] [COLOR_CULTURE_STORED]mellé állt[COLOR_REVERT].</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FATHER_JOINED_UNKNOWN</Tag>
-		<English>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] is no longer available to join our cause.</English>
-		<Portuguese>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] não está mais disponível para se juntar à nossa causa.</Portuguese>
-		<French>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] n'est plus disponible pour rallier votre cause.</French>
-		<German>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] kann sich unserer Sache nun nicht mehr anschließen.</German>
-		<Italian>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] non è più disponibile per unirsi alla nostra causa.</Italian>
-		<Spanish>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] ya no [NUM1:está disponible:está disponible:están disponibles:están disponibles] para unirse a nuestra causa.</Spanish>
-		<Russian>[COLOR_HIGHLIGHT_TEXT]%s1_person[COLOR_REVERT] больше не может присоединиться к нашему делу.</Russian>
-		<Hungarian>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] már nem választható a Kontinentális Kongresszusodba.</Hungarian>
+		<English>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]is no longer available to join our cause[COLOR_REVERT].</English>
+		<Portuguese>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]não está mais disponível para se juntar à nossa causa[COLOR_REVERT].</Portuguese>
+		<French>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]n'est plus disponible pour rallier votre cause[COLOR_REVERT].</French>
+		<German>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]kann sich unserer Sache nun nicht mehr anschließen[COLOR_REVERT].</German>
+		<Italian>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]non è più disponibile per unirsi alla nostra causa[COLOR_REVERT].</Italian>
+		<Spanish>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]ya no [NUM1:está disponible:está disponible:están disponibles:están disponibles] para unirse a nuestra causa[COLOR_REVERT].</Spanish>
+		<Russian>[COLOR_HIGHLIGHT_TEXT]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]больше не может присоединиться к нашему делу[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_FONT_CREAM]%s1_person[COLOR_REVERT] [COLOR_CULTURE_STORED]már nem választható a Kontinentális Kongresszusodba[COLOR_REVERT].</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FATHER_REJECTED</Tag>
@@ -3814,13 +3814,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CITY_GROWTH</Tag>
-		<English>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]The people are so well-fed and healthy that they bring many children into the world - the city is growing!</English>
+		<English>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]The people are so [COLOR_POSITIVE_TEXT]well-fed and healthy[COLOR_REVERT] that they bring many children into the world - [COLOR_POSITIVE_TEXT]the city is growing![COLOR_REVERT]</English>
 		<Portuguese>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]As pessoas estão tão bem alimentadas e saudáveis que trazem muitas crianças ao mundo - a cidade está crescendo!</Portuguese>
 		<French>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]L'abondance de nourriture a permis à la population de croître !</French>
-		<German>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Die Menschen sind so wohlgenährt und gesund, dass sie viele Kinder in die Welt setzen - die Stadt wächst!</German>
+		<German>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Die Menschen sind so [COLOR_POSITIVE_TEXT]wohlgenährt und gesund[COLOR_REVERT], dass sie viele Kinder in die Welt setzen - [COLOR_POSITIVE_TEXT]die Stadt wächst![COLOR_REVERT]</German>
 		<Italian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]L'abbondanza di cibo a ha causato un aumento della popolazione!</Italian>
 		<Spanish>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]La abundancia de Alimentos en ha comportado un aumento de población.</Spanish>
-		<Russian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Люди настолько сыты и здоровы, что рожают на свет много детей - город растет!</Russian>
+		<Russian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Люди настолько [COLOR_POSITIVE_TEXT]сыты и здоровы[COLOR_REVERT], что рожают на свет много детей - [COLOR_POSITIVE_TEXT]город растет![COLOR_REVERT]</Russian>
 		<Hungarian>[COLOR_POSITIVE_TEXT]%s1_city : [COLOR_REVERT]Az emberek olyan jól tápláltak és egészségesek, hogy sok gyermek született - a város növekszik!</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -4704,11 +4704,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRADE_POST_FAILED</Tag>
-		<English>Your native trader failed to set up a trading post in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</English>
+		<English>Your native trader [COLOR_NEGATIVE_TEXT]failed to set up a trading post[COLOR_REVERT] in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</English>
 		<Portuguese>Seu comerciante nativo não conseguiu configurar uma feitoria em [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</Portuguese>
 		<French>Votre marchand a échoué à établir un comptoir de commerce à [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</French>
-		<German>Eurem Ureinwohnerhändler ist es nicht gelungen, in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] einen Handelsposten einzurichten.</German>
-		<Russian>Наш торговец с индейцами не смог договориться об установке торгового поста в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT]. Кажется, с него сняли скальп...</Russian>
+		<German>Eurem Ureinwohnerhändler ist es [COLOR_NEGATIVE_TEXT]nicht gelungen[COLOR_REVERT], in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] einen Handelsposten einzurichten.</German>
+		<Russian>Наш торговец с индейцами [COLOR_NEGATIVE_TEXT]не смог договориться[COLOR_REVERT] об установке торгового поста в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT]. Кажется, с него сняли скальп...</Russian>
 		<Hungarian>Az Indián kereskedőd nem tudott Kereskedelmi Állomást létesíteni [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] faluban.</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -4733,11 +4733,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISSION_FAILED</Tag>
-		<English>Milord, your missionary failed to establish a mission in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</English>
+		<English>Milord, your missionary [COLOR_NEGATIVE_TEXT]failed to establish a mission[COLOR_REVERT] in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</English>
 		<Portuguese>Milorde, seu missionário não conseguiu estabelecer uma missão em [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</Portuguese>
 		<French>Sire, votre missionnaire a échoué à établir une mission à [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT].</French>
-		<German>Milord, Eurem Missionar ist es nicht gelungen, in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] eine Mission zu errichten.</German>
-		<Russian>Милорд, нашему миссионеру не удалось договориться с индейцами об установке миссии в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT]. Помолимся за него, братья...</Russian>
+		<German>Milord, Eurem Missionar ist es [COLOR_NEGATIVE_TEXT]nicht gelungen[COLOR_REVERT], in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] eine Mission zu errichten.</German>
+		<Russian>Милорд, нашему миссионеру [COLOR_NEGATIVE_TEXT]не удалось договориться[COLOR_REVERT] с индейцами об установке миссии в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT]. Помолимся за него, братья...</Russian>
 		<Hungarian>Uram, a Misszionáriusodnak nem sikerült missziót alapítania [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] faluban.</Hungarian>
 	</TEXT>
 	<TEXT>

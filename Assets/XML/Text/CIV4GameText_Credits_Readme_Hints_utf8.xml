@@ -1423,14 +1423,14 @@ Viel Spass![NEWLINE]
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_16</Tag>
-		<English>Press the middle mouse button to center the camera on the active unit.</English>
-		<Portuguese>Pressione o botão do meio do mouse para centralizar a câmera na unidade ativa.</Portuguese>
-		<French>Appuyez sur le bouton central de la souris pour centrer la caméra sur l'unité active.</French>
-		<German>Drücken Sie die mittlere Maustaste, um die Kamera über der aktiven Einheit zu zentrieren.</German>
-		<Italian>Premi il pulsante centrale del mouse per centrare la visuale sull'unità attiva.</Italian>
-		<Spanish>Pulsar el botón central del ratón para centrar la cámara en la unidad activa.</Spanish>
-		<Russian>Нажмите среднюю кнопку мыши, чтобы центрировать камеру на активном объекте.</Russian>
-		<Hungarian>A középső egérgombbal a kamerát az aktív egységre állíthatod.</Hungarian>
+		<English>Press [COLOR:140:255:40:255]&lt; middle mouse button &gt;[COLOR_REVERT] to center the camera on the active unit.</English>
+		<Portuguese>Pressione [COLOR:140:255:40:255]&lt; botão do meio do mouse &gt;[COLOR_REVERT] para centralizar a câmera na unidade ativa.</Portuguese>
+		<French>Appuyez sur [COLOR:140:255:40:255]&lt; bouton central de la souris &gt;[COLOR_REVERT] pour centrer la caméra sur l'unité active.</French>
+		<German>Drücken Sie die [COLOR:140:255:40:255]&lt; mittlere Maustaste &gt;[COLOR_REVERT], um die Kamera über der aktiven Einheit zu zentrieren.</German>
+		<Italian>Premi [COLOR:140:255:40:255]&lt; pulsante centrale del mouse &gt;[COLOR_REVERT] per centrare la visuale sull'unità attiva.</Italian>
+		<Spanish>Pulsar [COLOR:140:255:40:255]&lt; botón central del ratón &gt;[COLOR_REVERT] para centrar la cámara en la unidad activa.</Spanish>
+		<Russian>Нажмите [COLOR:140:255:40:255]среднюю кнопку мыши[COLOR_REVERT], чтобы центрировать камеру на активном объекте.</Russian>
+		<Hungarian>A [COLOR:140:255:40:255]&lt; középső egérgombbal &gt;[COLOR_REVERT] a kamerát az aktív egységre állíthatod.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_17</Tag>
@@ -1665,14 +1665,14 @@ Viel Spass![NEWLINE]
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_39</Tag>
-		<English>To view combat odds, hold down the right mouse button on the target tile.</English>
-		<Portuguese>Para visualizar as probabilidades de combate, mantenha pressionado o botão direito do mouse no lote alvo.</Portuguese>
-		<French>Pour connaître vos chances en cas de combat, maintenez le bouton droit de la souris enfoncé sur la case visée.</French>
-		<German>Möchten Sie Ihre Kampfchancen betrachten, halten Sie die rechte Maustaste über dem gewünschten Geländefeld gedrückt.</German>
-		<Italian>Per visualizzare le probabilità di vittoria di uno scontro, tieni premuto il pulsante destro del mouse su una casella bersaglio.</Italian>
+		<English>To view combat odds, hold down [COLOR:140:255:40:255]&lt; right mouse button &gt;[COLOR_REVERT] on the target tile.</English>
+		<Portuguese>Para visualizar as probabilidades de combate, mantenha pressionado [COLOR:140:255:40:255]&lt; botão direito do mouse &gt;[COLOR_REVERT] no lote alvo.</Portuguese>
+		<French>Pour connaître vos chances en cas de combat, maintenez [COLOR:140:255:40:255]&lt; bouton droit de la souris &gt;[COLOR_REVERT] enfoncé sur la case visée.</French>
+		<German>Möchten Sie Ihre Kampfchancen betrachten, halten Sie die [COLOR:140:255:40:255]&lt; rechte Maustaste &gt;[COLOR_REVERT] über dem gewünschten Geländefeld gedrückt.</German>
+		<Italian>Per visualizzare le probabilità di vittoria di uno scontro, tieni premuto [COLOR:140:255:40:255]&lt; pulsante destro del mouse &gt;[COLOR_REVERT] su una casella bersaglio.</Italian>
 		<Spanish>Mantener el cursor encima de la casilla objetivo para ver las probabilidades del combate.</Spanish>
-		<Russian>Чтобы просмотреть примерный расчет итогов сражения, удерживайте правую кнопку мыши на целевой клетке.</Russian>
-		<Hungarian>A harci esélyek megtekintéséhez tartsd lenyomva a jobb egérgombot a célpont mezőn.</Hungarian>
+		<Russian>Чтобы просмотреть примерный расчет итогов сражения, удерживайте [COLOR:140:255:40:255]правую кнопку мыши[COLOR_REVERT] на целевой клетке.</Russian>
+		<Hungarian>A harci esélyek megtekintéséhez tartsd lenyomva [COLOR:140:255:40:255]&lt; jobb egérgombot &gt;[COLOR_REVERT] a célpont mezőn.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_40</Tag>
@@ -1731,14 +1731,14 @@ Viel Spass![NEWLINE]
 	</TEXT>-->
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_45</Tag>
-		<English>Press the forward and back buttons on your mouse to cycle through units on the same plot.</English>
-		<Portuguese>Pressione os botões avançar e voltar do mouse para percorrer as unidades no mesmo lote.</Portuguese>
-		<French>Appuyez sur le bouton Suivant et Précédent de votre souris pour faire défiler les unités stationnées sur la même case.</French>
-		<German>Drücken Sie die Vorwärts-/Rückwärts-Tasten Ihrer Maus, um durch alle Einheiten auf einem Geländefeld zu schalten.</German>
-		<Italian>Premi i pulsanti su e giù sul mouse per scorrere le unità sulla stessa casella.</Italian>
-		<Spanish>Pulsar los botones de adelante y atrás del ratón para pasar de una unidad a otra en la misma casilla.</Spanish>
-		<Russian>Нажимайте кнопки "Вперед" и "Назад" на мыши, чтобы переключаться между юнитами на одной клетке.</Russian>
-		<Hungarian>Az egér előre és vissza gombjaival válthatsz az ugyanazon a mezőn lévő egységek között.</Hungarian>
+		<English>Press [COLOR:140:255:40:255]&lt; forward and back buttons &gt;[COLOR_REVERT] on your mouse to cycle through units on the same plot.</English>
+		<Portuguese>Pressione [COLOR:140:255:40:255]&lt; botões avançar e voltar &gt;[COLOR_REVERT] do mouse para percorrer as unidades no mesmo lote.</Portuguese>
+		<French>Appuyez sur [COLOR:140:255:40:255]&lt; bouton Suivant et Précédent &gt;[COLOR_REVERT] de votre souris pour faire défiler les unités stationnées sur la même case.</French>
+		<German>Drücken Sie die [COLOR:140:255:40:255]&lt; Vorwärts-/Rückwärts-Tasten &gt;[COLOR_REVERT] Ihrer Maus, um durch alle Einheiten auf einem Geländefeld zu schalten.</German>
+		<Italian>Premi [COLOR:140:255:40:255]&lt; pulsanti su e giù &gt;[COLOR_REVERT] sul mouse per scorrere le unità sulla stessa casella.</Italian>
+		<Spanish>Pulsar [COLOR:140:255:40:255]&lt; botones de adelante y atrás &gt;[COLOR_REVERT] del ratón para pasar de una unidad a otra en la misma casilla.</Spanish>
+		<Russian>Нажимайте [COLOR:140:255:40:255]кнопки "Вперед" и "Назад"[COLOR_REVERT] на мыши, чтобы переключаться между юнитами на одной клетке.</Russian>
+		<Hungarian>Az [COLOR:140:255:40:255]&lt; egér előre és vissza gombjaival &gt;[COLOR_REVERT] válthatsz az ugyanazon a mezőn lévő egységek között.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_46</Tag>
@@ -1862,47 +1862,47 @@ Viel Spass![NEWLINE]
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_57</Tag>
-		<English>If you hold down the [SHIFT] key while clicking on the Settlement Bar, you can "select" multiple settlements. You can also [SHIFT + RIGHT-CLICK] to set a rally point.</English>
-		<Portuguese>Se você mantiver pressionada a tecla [SHIFT] enquanto clica na Barra de Colônia, você poderá "selecionar" múltiplas colônias. Você também pode [SHIFT + RIGHT-CLICK] para definir um ponto de encontro.</Portuguese>
-		<French>Maintenez la touche [MAJ] enfoncée et cliquez sur la barre des colonies pour "sélectionner" plusieurs colonies. Vous pouvez aussi définir un point de ralliement sur la carte en utilisant [MAJ] + [CLIC DROIT].</French>
-		<German>Halten Sie [UMSCHALTEN] gedrückt und klicken Sie auf die Siedlungsleiste, wenn Sie mehrere Siedlungen auswählen möchten. Mit [UMSCHALTEN + RECHTSKLICK] können Sie Sammelpunkte bestimmen.</German>
-		<Italian>Se tieni premuto il tasto [MAIUSC] mentre clicchi sulla barra degli insediamenti, puoi "selezionare" più insediamenti. Puoi anche usare [MAIUSC + PULSANTE DESTRO] per impostare un punto di raduno...</Italian>
-		<Spanish>Si se mantiene pulsada la tecla [MAYÚS] mientras se hace clic en la barra del asentamiento, se pueden "seleccionar" varios asentamientos. También se puede usar [MAYÚS] + [CLIC DERECHO] para establecer un punto de concentración.</Spanish>
+		<English>If you hold down the [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] key while clicking on the Settlement Bar, you can "select" multiple settlements. You can also [COLOR:140:255:40:255]&lt; SHIFT + RIGHT-CLICK &gt;[COLOR_REVERT] to set a rally point.</English>
+		<Portuguese>Se você mantiver pressionada a tecla [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] enquanto clica na Barra de Colônia, você poderá "selecionar" múltiplas colônias. Você também pode [COLOR:140:255:40:255]&lt; SHIFT + RIGHT-CLICK &gt;[COLOR_REVERT] para definir um ponto de encontro.</Portuguese>
+		<French>Maintenez la touche [COLOR:140:255:40:255]&lt; MAJ &gt;[COLOR_REVERT] enfoncée et cliquez sur la barre des colonies pour "sélectionner" plusieurs colonies. Vous pouvez aussi définir un point de ralliement sur la carte en utilisant [COLOR:140:255:40:255]&lt; MAJ &gt;[COLOR_REVERT] + [COLOR:140:255:40:255]&lt; CLIC DROIT &gt;[COLOR_REVERT].</French>
+		<German>Halten Sie [COLOR:140:255:40:255]&lt; UMSCHALTEN &gt;[COLOR_REVERT] gedrückt und klicken Sie auf die Siedlungsleiste, wenn Sie mehrere Siedlungen auswählen möchten. Mit [COLOR:140:255:40:255]&lt; UMSCHALTEN + RECHTSKLICK &gt;[COLOR_REVERT] können Sie Sammelpunkte bestimmen.</German>
+		<Italian>Se tieni premuto il tasto [COLOR:140:255:40:255]&lt; MAIUSC &gt;[COLOR_REVERT] mentre clicchi sulla barra degli insediamenti, puoi "selezionare" più insediamenti. Puoi anche usare [COLOR:140:255:40:255]&lt; MAIUSC + PULSANTE DESTRO &gt;[COLOR_REVERT] per impostare un punto di raduno...</Italian>
+		<Spanish>Si se mantiene pulsada la tecla [COLOR:140:255:40:255]&lt; MAYÚS &gt;[COLOR_REVERT] mientras se hace clic en la barra del asentamiento, se pueden "seleccionar" varios asentamientos. También se puede usar [COLOR:140:255:40:255]&lt; MAYÚS &gt;[COLOR_REVERT] + [COLOR:140:255:40:255]&lt; CLIC DERECHO &gt;[COLOR_REVERT] para establecer un punto de concentración.</Spanish>
 		<Russian>Если удерживать клавишу [COLOR:140:255:40:255]SHIFT[COLOR_REVERT] и нажимать на панель поселения в круге строительства, можно не заходя в поселение изменять строительство. Также вы можете "выбрать" несколько поселений (зачем?). А выделив колонию и применив комбинацию [COLOR:140:255:40:255]SHIFT + ПКМ[COLOR_REVERT] на какой-либо клетке, можно установить точку сбора для юнитов.</Russian>
-		<Hungarian>Ha lenyomva tartod a [SHIFT] billentyűt, miközben rákattintasz a Települések sávra, több települést is „kiválaszthatsz”. A [SHIFT + JOBB EGÉRGOMB] billentyűkombinációval beállíthatsz egy gyülekezőhelyet is.</Hungarian>
+		<Hungarian>Ha lenyomva tartod a [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] billentyűt, miközben rákattintasz a Települések sávra, több települést is „kiválaszthatsz”. A [COLOR:140:255:40:255]&lt; SHIFT + JOBB EGÉRGOMB &gt;[COLOR_REVERT] billentyűkombinációval beállíthatsz egy gyülekezőhelyet is.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_58</Tag>
-		<English>If you hold down the [CTRL] key while clicking on the Settlement Bar, you will "select" all of your settlements on that continent.</English>
-		<Portuguese>Se você mantiver pressionada a tecla [CTRL] enquanto clica na Barra de Colônia, você “selecionará” todos os suas colônias naquele continente.</Portuguese>
-		<French>Maintenez la touche [CTRL] enfoncée et cliquez sur la barre des villes pour sélectionner toutes vos colonies sur le même continent.</French>
-		<German>Halten Sie [STRG] gedrückt und klicken Sie auf die Siedlungsleiste, um alle Ihre Siedlungen auf diesem Kontinent auszuwählen.</German>
-		<Italian>Se tieni premuto il tasto [CTRL] mentre clicchi sulla barra dell'insediamento, puoi "selezionare" tutti gli insediamenti di quel continente...</Italian>
-		<Spanish>Si se mantiene pulsada la tecla [CTRL] mientras se hace clic en la barra del asentamiento, se "seleccionan" todos los asentamientos propios en ese continente.</Spanish>
+		<English>If you hold down the [COLOR:140:255:40:255]&lt; CTRL &gt;[COLOR_REVERT] key while clicking on the Settlement Bar, you will "select" all of your settlements on that continent.</English>
+		<Portuguese>Se você mantiver pressionada a tecla [COLOR:140:255:40:255]&lt; CTRL &gt;[COLOR_REVERT] enquanto clica na Barra de Colônia, você “selecionará” todos os suas colônias naquele continente.</Portuguese>
+		<French>Maintenez la touche [COLOR:140:255:40:255]&lt; CTRL &gt;[COLOR_REVERT] enfoncée et cliquez sur la barre des villes pour sélectionner toutes vos colonies sur le même continent.</French>
+		<German>Halten Sie [COLOR:140:255:40:255]&lt; STRG &gt;[COLOR_REVERT] gedrückt und klicken Sie auf die Siedlungsleiste, um alle Ihre Siedlungen auf diesem Kontinent auszuwählen.</German>
+		<Italian>Se tieni premuto il tasto [COLOR:140:255:40:255]&lt; CTRL &gt;[COLOR_REVERT] mentre clicchi sulla barra dell'insediamento, puoi "selezionare" tutti gli insediamenti di quel continente...</Italian>
+		<Spanish>Si se mantiene pulsada la tecla [COLOR:140:255:40:255]&lt; CTRL &gt;[COLOR_REVERT] mientras se hace clic en la barra del asentamiento, se "seleccionan" todos los asentamientos propios en ese continente.</Spanish>
 		<Russian>Если удерживать клавишу [COLOR:140:255:40:255]CTRL[COLOR_REVERT] и нажать на панель поселения, можно "выбрать" все свои поселения на текущем континенте.</Russian>
-		<Hungarian>Ha lenyomva tartod a [CTRL] billentyűt, miközben rákattintasz a Települések sávra, akkor az adott kontinensen található összes települést „kiválasztod”.</Hungarian>
+		<Hungarian>Ha lenyomva tartod a [COLOR:140:255:40:255]&lt; CTRL &gt;[COLOR_REVERT] billentyűt, miközben rákattintasz a Települések sávra, akkor az adott kontinensen található összes települést „kiválasztod”.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_59</Tag>
-		<English>If you hold down the [ALT] key while clicking on the Settlement Bar, you will select all of your settlements.</English>
-		<Portuguese>Se você mantiver pressionada a tecla [ALT] enquanto clica na Barra de Colônia, você selecionará todos os suas colônias.</Portuguese>
-		<French>Maintenez la touche [ALT] enfoncée et cliquez sur la barre des colonies pour sélectionner toutes vos colonies.</French>
-		<German>Halten Sie [ALT] gedrückt und klicken Sie auf die Siedlungsleiste, um alle Ihre Siedlungen auszuwählen.</German>
-		<Italian>Se tieni premuto il tasto [ALT] mentre clicchi sulla barra dell'insediamento, puoi "selezionare" tutti i tuoi insediamenti...</Italian>
-		<Spanish>Si se mantiene pulsada la tecla [ALT] mientras se hace clic en la barra del asentamiento, se "seleccionan" todos los asentamientos propios en el mundo.</Spanish>
+		<English>If you hold down the [COLOR:140:255:40:255]&lt; ALT &gt;[COLOR_REVERT] key while clicking on the Settlement Bar, you will select all of your settlements.</English>
+		<Portuguese>Se você mantiver pressionada a tecla [COLOR:140:255:40:255]&lt; ALT &gt;[COLOR_REVERT] enquanto clica na Barra de Colônia, você selecionará todos os suas colônias.</Portuguese>
+		<French>Maintenez la touche [COLOR:140:255:40:255]&lt; ALT &gt;[COLOR_REVERT] enfoncée et cliquez sur la barre des colonies pour sélectionner toutes vos colonies.</French>
+		<German>Halten Sie [COLOR:140:255:40:255]&lt; ALT &gt;[COLOR_REVERT] gedrückt und klicken Sie auf die Siedlungsleiste, um alle Ihre Siedlungen auszuwählen.</German>
+		<Italian>Se tieni premuto il tasto [COLOR:140:255:40:255]&lt; ALT &gt;[COLOR_REVERT] mentre clicchi sulla barra dell'insediamento, puoi "selezionare" tutti i tuoi insediamenti...</Italian>
+		<Spanish>Si se mantiene pulsada la tecla [COLOR:140:255:40:255]&lt; ALT &gt;[COLOR_REVERT] mientras se hace clic en la barra del asentamiento, se "seleccionan" todos los asentamientos propios en el mundo.</Spanish>
 		<Russian>Если удерживать клавишу [COLOR:140:255:40:255]ALT[COLOR_REVERT] и нажать на панель поселения, можно "выбрать" все свои поселения.</Russian>
-		<Hungarian>Ha lenyomva tartod az [ALT] billentyűt, miközben rákattintasz a Települések sávra, akkor az összes települést „kiválasztod”.</Hungarian>
+		<Hungarian>Ha lenyomva tartod az [COLOR:140:255:40:255]&lt; ALT &gt;[COLOR_REVERT] billentyűt, miközben rákattintasz a Települések sávra, akkor az összes települést „kiválasztod”.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_61</Tag>
-		<English>You can give a unit consecutive orders by pressing the [SHIFT] key. For example, you could tell a Pioneer to build a road and then a mine by clicking on both buttons while holding down [SHIFT].</English>
-		<Portuguese>Você pode dar ordens consecutivas a uma unidade pressionando a tecla [SHIFT]. Por exemplo, você poderia dizer a um Pioneiro para construir uma estrada e depois uma mina clicando em ambos os botões enquanto mantém pressionado [SHIFT].</Portuguese>
+		<English>You can give a unit consecutive orders by pressing the [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] key. For example, you could tell a Pioneer to build a road and then a mine by clicking on both buttons while holding down [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT].</English>
+		<Portuguese>Você pode dar ordens consecutivas a uma unidade pressionando a tecla [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT]. Por exemplo, você poderia dizer a um Pioneiro para construir uma estrada e depois uma mina clicando em ambos os botões enquanto mantém pressionado [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT].</Portuguese>
 		<French>Vous pouvez donner des ordres consécutifs à une unité en appuyant sur la touche MAJ. Ainsi, vous pouvez ordonner à un pionnier de construire une route suivie d'une mine en cliquant sur les deux boutons correspondants tout en maintenant la touche MAJ enfoncée.</French>
-		<German>Drücken Sie die UMSCHALT-Taste, um einer Einheit aufeinander folgende Befehle zu erteilen. So können Sie beispielsweise einem Pionier befehlen, zunächst eine Straße und anschließend eine Mine zu bauen, indem Sie bei gedrückter UMSCHALT-Taste beide Buttons anklicken.</German>
-		<Italian>Puoi dare a un'unità ordini consecutivi premendo il tasto [MAIUSC]. Per esempio puoi ordinare a un pioniere di costruire prima una strada e poi una miniera cliccando sui rispettivi pulsanti mentre tieni premuto [MAIUSC].</Italian>
-		<Spanish>Es posible darle órdenes consecutivas a una unidad si se pulsa la tecla [MAYÚS]. Por ejemplo, se le puede decir a un Pionero que construya primero una carretera y luego una mina haciendo clic en esos dos botones mientras se mantiene pulsada la tecla [MAYÚS].</Spanish>
+		<German>Drücken Sie die Taste [COLOR:140:255:40:255]&lt; UMSCHALT &gt;[COLOR_REVERT], um einer Einheit aufeinander folgende Befehle zu erteilen. So können Sie beispielsweise einem Pionier befehlen, zunächst eine Straße und anschließend eine Mine zu bauen, indem Sie bei gedrückter Taste [COLOR:140:255:40:255]&lt; UMSCHALT &gt;[COLOR_REVERT] beide Buttons anklicken.</German>
+		<Italian>Puoi dare a un'unità ordini consecutivi premendo il tasto [COLOR:140:255:40:255]&lt; MAIUSC &gt;[COLOR_REVERT]. Per esempio puoi ordinare a un pioniere di costruire prima una strada e poi una miniera cliccando sui rispettivi pulsanti mentre tieni premuto [COLOR:140:255:40:255]&lt; MAIUSC &gt;[COLOR_REVERT].</Italian>
+		<Spanish>Es posible darle órdenes consecutivas a una unidad si se pulsa la tecla [COLOR:140:255:40:255]&lt; MAYÚS &gt;[COLOR_REVERT]. Por ejemplo, se le puede decir a un Pionero que construya primero una carretera y luego una mina haciendo clic en esos dos botones mientras se mantiene pulsada la tecla [COLOR:140:255:40:255]&lt; MAYÚS &gt;[COLOR_REVERT].</Spanish>
 		<Russian>Вы можете отдавать отряду последовательные приказы, зажимая клавишу [COLOR:140:255:40:255]SHIFT[COLOR_REVERT]. Например, вы можете приказать первопроходцу построить сначала ферму, а затем шахту, нажав на обе кнопки приказов и удерживая при этом нажатой клавишу [COLOR:140:255:40:255]SHIFT[COLOR_REVERT].</Russian>
-		<Hungarian>A [SHIFT] billentyű lenyomásával egymást követő parancsokat adhatsz egy egységnek. Például, ha lenyomva tartod a [SHIFT] billentyűt és mindkét gombra rákattintasz, akkor megparancsolhatod az Utásznak, hogy építsen egy utat, majd egy bányát.</Hungarian>
+		<Hungarian>A [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] billentyű lenyomásával egymást követő parancsokat adhatsz egy egységnek. Például, ha lenyomva tartod a [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] billentyűt és mindkét gombra rákattintasz, akkor megparancsolhatod az Utásznak, hogy építsen egy utat, majd egy bányát.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_62</Tag>
@@ -1920,7 +1920,7 @@ Viel Spass![NEWLINE]
 		<English>The NUMPAD arrow keys can be used to jump between Settlements when the Settlement Screen is up.</English>
 		<Portuguese>As teclas de seta do NUMPAD podem ser usadas para alternar entre as colônias quando a tela da colônia estiver ativa.</Portuguese>
 		<French>Utilisez les flèches du PAVE NUMERIQUE pour passer d'une colonie à l'autre lorsque l'écran de colonie est affiché.</French>
-		<German>Nutzen Sie die Pfeiltasten im ZIFFERNBLOCK, um bei geöffnetem Siedlungsbildschirm zwischen den einzelnen Siedlungen zu wechseln</German>
+		<German>Nutzen Sie die [COLOR:140:255:40:255]&lt; Pfeiltasten im ZIFFERNBLOCK &gt;[COLOR_REVERT], um bei geöffnetem Siedlungsbildschirm zwischen den einzelnen Siedlungen zu wechseln</German>
 		<Italian>Quando sei nella schermata dell'insediamento puoi usare i tasti freccia del tastierino numerico per passare da un insediamento all'altro.</Italian>
 		<Spanish>Las flechas del TECLADO NUMÉRICO se pueden usar para pasar de un asentamiento a otro en la pantalla del asentamiento.</Spanish>
 		<Russian>Клавиши со стрелками [COLOR:140:255:40:255]NUMPAD[COLOR_REVERT] можно использовать для перехода между поселениями, когда открыт экран поселений.</Russian>
@@ -1975,5 +1975,15 @@ Viel Spass![NEWLINE]
 		<English>Press [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT] to open the Trade Route Manager: the trade routes, automation and names of all your transports at a glance.</English>
 		<German>Drücken Sie [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT], um den Handelsrouten-Manager zu öffnen: Handelsrouten, Automatisierung und Namen aller Transporter auf einen Blick.</German>
 		<Russian>Нажмите [COLOR:140:255:40:255]&lt; SHIFT + ALT + T &gt;[COLOR_REVERT], чтобы открыть менеджер торговых маршрутов: торговые маршруты, автоматизация и названия всех ваших транспортов на одном экране.</Russian>
+		<Tag>TXT_KEY_HINT_INTERFACE_69</Tag>
+		<English>Press [COLOR:140:255:40:255]&lt; CTRL + SHIFT + T &gt;[COLOR_REVERT] to switch the tooltip mode: nested tooltips (window at the mouse cursor, the game tooltip is off), own tooltip window at the original position, or the game tooltip.</English>
+		<German>Drücken Sie [COLOR:140:255:40:255]&lt; STRG + SHIFT + T &gt;[COLOR_REVERT], um den Tooltip-Modus umzuschalten: Nested Tooltips (Fenster am Mauszeiger, der Spiel-Tooltip ist aus), eigenes Tooltip-Fenster an der ursprünglichen Position oder der Spiel-Tooltip.</German>
+		<Russian>Нажмите [COLOR:140:255:40:255]&lt; CTRL + SHIFT + T &gt;[COLOR_REVERT], чтобы переключить режим подсказок: вложенные подсказки (окно у курсора мыши, игровая подсказка отключена), собственное окно подсказки на исходном месте или игровая подсказка.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_70</Tag>
+		<English>Nested tooltips: press [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] while a tooltip is shown to freeze it. Move the cursor onto it: right click a line opens the Colopedia page of the first thing named there, and the tooltip of that line appears beside it, which [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] freezes in turn, and so on. [COLOR:140:255:40:255]&lt; ESC &gt;[COLOR_REVERT] unfreezes the last frozen tooltip, holding [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] closes all of them. [COLOR:140:255:40:255]&lt; SHIFT + X &gt;[COLOR_REVERT] stacks the frozen tooltips one below the other. If the tooltip still waits for its delay, [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] shows it at once.</English>
+		<German>Nested Tooltips: Drücken Sie [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT], während ein Tooltip angezeigt wird, um ihn einzufrieren. Fahren Sie mit dem Mauszeiger darauf: Rechtsklick auf eine Zeile öffnet die Colopedia-Seite des ersten genannten Begriffs, und der Tooltip dieser Zeile erscheint daneben, den [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] wiederum einfriert, und so weiter. [COLOR:140:255:40:255]&lt; ESC &gt;[COLOR_REVERT] hebt das Einfrieren des letzten Tooltips auf, [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] gehalten schließt alle. [COLOR:140:255:40:255]&lt; SHIFT + X &gt;[COLOR_REVERT] stapelt die eingefrorenen Tooltips untereinander. Wartet der Tooltip noch auf seine Verzögerung, zeigt [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] ihn sofort an.</German>
+		<Russian>Вложенные подсказки: нажмите [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT], пока показана подсказка, чтобы закрепить её. Наведите на неё курсор: щелчок правой кнопкой по строке открывает страницу Колопедии для первого названного там объекта, а рядом появляется подсказка этой строки, которую [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] в свою очередь закрепляет, и так далее. [COLOR:140:255:40:255]&lt; ESC &gt;[COLOR_REVERT] открепляет последнюю закреплённую подсказку, удержание [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] закрывает их все. [COLOR:140:255:40:255]&lt; SHIFT + X &gt;[COLOR_REVERT] выстраивает закреплённые подсказки одну под другой. Если подсказка ещё ждёт своей задержки, [COLOR:140:255:40:255]&lt; X &gt;[COLOR_REVERT] показывает её сразу.</Russian>
 	</TEXT>
 </Civ4GameText>

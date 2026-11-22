@@ -2878,6 +2878,20 @@ float CvGlobals::getDefineFLOAT( const char * szName ) const
 		static const float val = getDefineFLOATUncached("MINIMAP_PARABOLA_MIN_Y_PERCENT");
 		return val;
 	}
+	else if (0 == strcmp(szName, "CAMERA_MIN_SCROLL_SPEED") || 0 == strcmp(szName, "CAMERA_MAX_SCROLL_SPEED"))
+	{
+		// WTP: holding shift scrolls the map faster (edge scrolling), factor configurable in GlobalDefinesAlt.xml
+		float fSpeed = getDefineFLOATUncached(szName);
+		if (gDLL != NULL && gDLL->shiftKey())
+		{
+			float fFactor = getDefineFLOATUncached("SHIFT_SCROLL_SPEED_MULTIPLIER");
+			if (fFactor > 0.0f)
+			{
+				fSpeed *= fFactor;
+			}
+		}
+		return fSpeed;
+	}
 	else
 	{
 		return getDefineFLOATUncached(szName);

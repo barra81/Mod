@@ -1442,13 +1442,26 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 
 	// TAC - Goto Menu - koma13 - START
 	case BUTTONPOPUP_GOTO_MENU:
-		if (pPopupReturn->getButtonClicked() >= 0)
+		if (pPopupReturn->getButtonClicked() >= 100000)
+		{
+			// WTP: a waypoint (the number is 100000 + x * 1000 + y)
+			const int iWpCode = pPopupReturn->getButtonClicked() - 100000;
+			gDLL->sendPushMission(info.getData1(), MISSION_MOVE_TO, iWpCode / 1000, iWpCode % 1000, 0, false);
+		}
+		else if (pPopupReturn->getButtonClicked() >= 0)
 		{
 			CvCity* pCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getCity(pPopupReturn->getButtonClicked());
 			if (pCity != NULL)
 			{
 				gDLL->sendPushMission(info.getData1(), MISSION_MOVE_TO, pCity->getX(), pCity->getY(), 0, false);
 			}
+		}
+		else if (pPopupReturn->getButtonClicked() == -5)
+		{
+			// WTP: "Set waypoint...": the unit is selected and the next order to move of it is saved as a waypoint (python)
+			CyArgsList argsListWp;
+			argsListWp.add(info.getData1());
+			gDLL->getPythonIFace()->callFunction(PYScreensModule, "startGotoWaypointMode", argsListWp.makeFunctionArgs());
 		}
 		else if (pPopupReturn->getButtonClicked() == -2)
 		{
@@ -4209,6 +4222,10 @@ bool CvDLLButtonPopup::launchGotoMenuPopup(CvPopup* pPopup, CvPopupInfo &info)
 
 	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, gDLL->getText("TXT_KEY_COMMAND_GOTO_MENU_TITLE"));
 
+	// WTP: the function "Set waypoint..." of the tooltips of the mod is always the first entry (button -5: python takes over the unit)
+	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, L"  " + gDLL->getText("TXT_KEY_WTP_TIP_WAYPOINT_SET_ROW"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), -5, WIDGET_GENERAL, pUnit->getID(), -1);
+	bValid = true;
+
 	// WTP, Schmiddie, Unit Travel Restrictions - START
 	if (pUnit->getUnitInfo().canSailToEurope() && (pUnit->canCrossOcean(pUnit->plot(), UNIT_TRAVEL_STATE_TO_EUROPE) || pUnit->canAutoCrossOcean(pUnit->plot())))
 	// WTP, Schmiddie, Unit Travel Restrictions - END
@@ -4245,6 +4262,50 @@ bool CvDLLButtonPopup::launchGotoMenuPopup(CvPopup* pPopup, CvPopupInfo &info)
 				const int iPathTurns = alt_finder.GetPathTurns();
 				gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, L"  " + gDLL->getText("TXT_KEY_COMMAND_GOTO_MENU_SELECTION", pLoopCity->getNameKey(), iPathTurns), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), pLoopCity->getID(), WIDGET_GENERAL, pUnit->getID(), -1);
 				bValid = true;
+			}
+		}
+	}
+
+	// WTP: the own waypoints (from the Python tooltips; those at own colonies are left out there, the colonies are listed above)
+	{
+		CvWString szWaypoints;
+		CyArgsList argsListWp;
+		argsListWp.add(pUnit->getID());
+		if (gDLL->getPythonIFace()->callFunction(PYScreensModule, "getGotoWaypoints", argsListWp.makeFunctionArgs(), &szWaypoints) && !szWaypoints.empty())
+		{
+			size_t iPos = 0;
+			while (iPos < szWaypoints.length())
+			{
+				size_t iEnd = szWaypoints.find(L'\n', iPos);
+				if (iEnd == CvWString::npos)
+				{
+					iEnd = szWaypoints.length();
+				}
+				const CvWString szLine = szWaypoints.substr(iPos, iEnd - iPos);
+				iPos = iEnd + 1;
+				const size_t iTab1 = szLine.find(L'\t');
+				const size_t iTab2 = (iTab1 == CvWString::npos) ? CvWString::npos : szLine.find(L'\t', iTab1 + 1);
+				if (iTab2 == CvWString::npos)
+				{
+					continue;
+				}
+				const int iWpX = _wtoi(szLine.substr(0, iTab1).c_str());
+				const int iWpY = _wtoi(szLine.substr(iTab1 + 1, iTab2 - iTab1 - 1).c_str());
+				const CvWString szName = szLine.substr(iTab2 + 1);
+				CvPlot* pWpPlot = GC.getMap().plotINLINE(iWpX, iWpY);
+				if (pWpPlot == NULL || pWpPlot == pUnit->plot())
+				{
+					continue;
+				}
+				KmodPathFinder wp_finder;
+				wp_finder.SetSettings(pUnit->getGroup());
+				if (wp_finder.GeneratePath(pWpPlot))
+				{
+					const int iPathTurns = wp_finder.GetPathTurns();
+					// the button number: 100000 + x * 1000 + y (the colonies have their number, the other entries are negative)
+					gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, L"  " + gDLL->getText("TXT_KEY_COMMAND_GOTO_MENU_SELECTION", szName.c_str(), iPathTurns), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), 100000 + iWpX * 1000 + iWpY, WIDGET_GENERAL, pUnit->getID(), -1);
+					bValid = true;
+				}
 			}
 		}
 	}

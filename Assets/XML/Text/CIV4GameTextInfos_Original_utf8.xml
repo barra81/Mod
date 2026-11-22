@@ -414,11 +414,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_REQUIRED_TERRAIN_YIELDS_TEXT</Tag>
-		<English>[ICON_BULLET]Required Terrain Yields: </English>
+		<English>[ICON_BULLET][COLOR:255:150:50:255]Required Terrain Yields:[COLOR_REVERT] </English>
 		<Portuguese>[ICON_BULLET]Recursos de terreno necessários: </Portuguese>
 		<French>[ICON_BULLET]Ressource nécessaire sur le Terrain:</French>
-		<German>[ICON_BULLET]Benötigte Terrain Yields: </German>
-		<Russian>[ICON_BULLET]Требуемая урожайность местности: </Russian>
+		<German>[ICON_BULLET][COLOR:255:150:50:255]Benötigte Terrain Yields:[COLOR_REVERT] </German>
+		<Russian>[ICON_BULLET][COLOR:255:150:50:255]Требуемая урожайность местности:[COLOR_REVERT] </Russian>
 		<Hungarian>[ICON_BULLET]Szükséges Terep Hozam: </Hungarian>
 	</TEXT>
 	<TEXT>
@@ -549,11 +549,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FEATURE_STREAM_EFFECT</Tag>
-		<English>[ICON_BULLET]Doubles movement with current[NEWLINE][ICON_BULLET]Halves movement against current</English>
+		<English>[ICON_BULLET][COLOR:110:150:255:255]Doubles movement[COLOR_REVERT] with current[NEWLINE][ICON_BULLET][COLOR:110:150:255:255]Halves movement[COLOR_REVERT] against current</English>
 		<Portuguese>[ICON_BULLET]Duplica o movimento com a corrente[NEWLINE][ICON_BULLET]Reduz pela metade o movimento contra a corrente</Portuguese>
 		<French>[ICON_BULLET]Doubles le mouvement suivant le courant[NEWLINE][ICON_BULLET]Divise le mouvement à contre-courant</French>
-		<German>[ICON_BULLET]Verdoppelt Bewegung mit Strom[NEWLINE][ICON_BULLET]Halbiert Bewegung gegen Strom</German>
-		<Russian>[ICON_BULLET]Движение по течению удваивает скорость перемещения[NEWLINE][ICON_BULLET]Движение против течения вдвое замедляет скорость перемещения</Russian>
+		<German>[ICON_BULLET][COLOR:110:150:255:255]Verdoppelt Bewegung[COLOR_REVERT] mit Strom[NEWLINE][ICON_BULLET][COLOR:110:150:255:255]Halbiert Bewegung[COLOR_REVERT] gegen Strom</German>
+		<Russian>[ICON_BULLET][COLOR:110:150:255:255]Движение по течению удваивает скорость перемещения[COLOR_REVERT][NEWLINE][ICON_BULLET][COLOR:110:150:255:255]Движение против течения вдвое замедляет скорость перемещения[COLOR_REVERT]</Russian>
 		<Hungarian>[ICON_BULLET]Dupla mozgás folyásirányban[NEWLINE][ICON_BULLET]Fele mozgás folyásiránnyal szemben</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -699,13 +699,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PROMOTION_WITHDRAWAL_TEXT</Tag>
-		<English>[ICON_BULLET]%D1_Change%% withdrawal chance on attack</English>
+		<English>[ICON_BULLET]%D1_Change%% [COLOR:110:150:255:255]withdrawal chance[COLOR_REVERT] on attack</English>
 		<Portuguese>[ICON_BULLET]%D1_Change%% chance de retirada no ataque</Portuguese>
 		<French>[ICON_BULLET]Chances de repli en attaque de %D1_Change%%</French>
-		<German>[ICON_BULLET]%D1_Change%% Rückzugswahrscheinlichkeitdes Rückzugs im Angriff</German>
+		<German>[ICON_BULLET]%D1_Change%% [COLOR:110:150:255:255]Rückzugswahrscheinlichkeitdes Rückzugs[COLOR_REVERT] im Angriff</German>
 		<Italian>[ICON_BULLET]%D1_Change%% di probabilità di ritirata in attacco</Italian>
 		<Spanish>[ICON_BULLET]%D1_Change%% a la probabilidad de retirarse en ataque</Spanish>
-		<Russian>[ICON_BULLET]%D1_Change%% к шансу выйти из боя при атаке</Russian>
+		<Russian>[ICON_BULLET]%D1_Change%% [COLOR:110:150:255:255]к шансу выйти из боя[COLOR_REVERT] при атаке</Russian>
 		<Hungarian>[ICON_BULLET]%D1_Change%% Visszavonulási Esély Támadáskor</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -1062,24 +1062,24 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_WITHDRAWL_PROBABILITY_SHORT</Tag>
-		<English>[ICON_BULLET]Withdrawal chance on attack: %d1_Amount%%</English>
+		<English>[ICON_BULLET][COLOR:110:150:255:255]Withdrawal chance on attack:[COLOR_REVERT] %d1_Amount%%</English>
 		<Portuguese>[ICON_BULLET]Chance de retirada no ataque: %d1_Amount%%</Portuguese>
 		<French>[ICON_BULLET]Chances de rompre le combat en attaque: %d1_Amount%%</French>
-		<German>[ICON_BULLET]Chance auf Rückzug beim Angriff: %d1_Amount%%</German>
+		<German>[ICON_BULLET][COLOR:110:150:255:255]Chance auf Rückzug beim Angriff:[COLOR_REVERT] %d1_Amount%%</German>
 		<Italian>[ICON_BULLET]Probabilità di ritirata in attacco: %d1_Amount%%</Italian>
 		<Spanish>[ICON_BULLET]Probabilidad de retirarse en ataque: %d1_Amount%%</Spanish>
-		<Russian>[ICON_BULLET]Шанс отступить при атаке: %d1_Amount%%</Russian>
+		<Russian>[ICON_BULLET][COLOR:110:150:255:255]Шанс отступить при атаке:[COLOR_REVERT] %d1_Amount%%</Russian>
 		<Hungarian>[ICON_BULLET]Visszavonulási Esély Támadáskor: %d1_Amount%%</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_WITHDRAWL_PROBABILITY</Tag>
-		<English>[ICON_BULLET]Can withdraw from combat on attack (%d1_Amount%% chance)</English>
+		<English>[ICON_BULLET]Can [COLOR:110:150:255:255]withdraw from combat[COLOR_REVERT] on attack (%d1_Amount%% chance)</English>
 		<Portuguese>[ICON_BULLET]Pode se retirar do combate ao atacar (%d1_Amount%% chance)</Portuguese>
 		<French>[ICON_BULLET]Peut rompre le combat en attaque(%d1_Amount%% de chance)</French>
-		<German>[ICON_BULLET]Kann im Angriff den Rückzug antreten (Wahrscheinlichkeit: %d1_Amount%%)</German>
+		<German>[ICON_BULLET]Kann im Angriff den [COLOR:110:150:255:255]Rückzug[COLOR_REVERT] antreten (Wahrscheinlichkeit: %d1_Amount%%)</German>
 		<Italian>[ICON_BULLET]Può ritirarsi dal combattimento in attacco(%d1_Amount%% di probabilità)</Italian>
 		<Spanish>[ICON_BULLET]Puede retirarse del combate en ataque(probabilidad del %d1_Amount%%)</Spanish>
-		<Russian>[ICON_BULLET]Может выйти из боя при атаке (шанс %d1_Amount%%)</Russian>
+		<Russian>[ICON_BULLET]Может [COLOR:110:150:255:255]выйти из боя[COLOR_REVERT] при атаке (шанс %d1_Amount%%)</Russian>
 		<Hungarian>[ICON_BULLET]Visszavonulhat csatából támadáskor (%d1_Amount%% esély)</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -1584,23 +1584,23 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TIMELINE_AVAILABLE_FROM</Tag>
-		<English>Available from : %d1_Num</English>
+		<English>[COLOR:40:225:235:255]Available from :[COLOR_REVERT] %d1_Num</English>
 		<Portuguese>Disponível em: %d1_Num</Portuguese>
 		<French>Disponible à partir du : %d1_Num</French>
-		<German>Verfügbar ab : %d1_Num</German>
+		<German>[COLOR:40:225:235:255]Verfügbar ab :[COLOR_REVERT] %d1_Num</German>
 		<Italian>Disponibile a partire dal : %d1_Num</Italian>
 		<Spanish>Disponible a partir del : %d1_Num</Spanish>
-		<Russian>[COLOR_SELECTED_TEXT]Доступен с :[COLOR_REVERT] %d1_Num</Russian>
+		<Russian>[COLOR:40:225:235:255]Доступен с :[COLOR_REVERT] %d1_Num</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TIMELINE_OBSOLETE_FROM</Tag>
-		<English>No longer available from : %d1_Num</English>
+		<English>[COLOR:255:150:50:255]No longer available from :[COLOR_REVERT] %d1_Num</English>
 		<Portuguese>Não está mais disponível em: %d1_Num</Portuguese>
 		<French>N'est plus disponible auprès de : %d1_Num</French>
-		<German>Nicht mehr verfügbar ab : %d1_Num</German>
+		<German>[COLOR:255:150:50:255]Nicht mehr verfügbar ab :[COLOR_REVERT] %d1_Num</German>
 		<Italian>Non più disponibile presso : %d1_Num</Italian>
 		<Spanish>Ya no está disponible en : %d1_Num</Spanish>
-		<Russian>[COLOR_SELECTED_TEXT]Недоступен с :[COLOR_REVERT] %d1_Num</Russian>
+		<Russian>[COLOR:255:150:50:255]Недоступен с :[COLOR_REVERT] %d1_Num</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PEDIA_MOVEMENT</Tag>
@@ -3458,35 +3458,35 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLOT_PEAK</Tag>
-		<English>Peak</English>
+		<English>[COLOR_CAT_HILLS]Peak[COLOR_REVERT]</English>
 		<Portuguese>Pico</Portuguese>
 		<French>Montagne</French>
-		<German>Berg</German>
+		<German>[COLOR_CAT_HILLS]Berg[COLOR_REVERT]</German>
 		<Italian>Montagna</Italian>
 		<Spanish>Pico</Spanish>
-		<Russian>Горы</Russian>
+		<Russian>[COLOR_CAT_HILLS]Горы[COLOR_REVERT]</Russian>
 		<Hungarian>Hegység</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLOT_HILLS</Tag>
-		<English>Hills/</English>
+		<English>[COLOR_CAT_HILLS]Hills[COLOR_REVERT]/</English>
 		<Portuguese>Colinas/</Portuguese>
 		<French>Collines/</French>
-		<German>Hügel/</German>
+		<German>[COLOR_CAT_HILLS]Hügel[COLOR_REVERT]/</German>
 		<Italian>Colline/</Italian>
 		<Spanish>Colina/</Spanish>
-		<Russian>Холмы/</Russian>
+		<Russian>[COLOR_CAT_HILLS]Холмы[COLOR_REVERT]/</Russian>
 		<Hungarian>Dombság/</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLOT_FRESH_WATER_LAKE</Tag>
-		<English>Fresh Water Lake</English>
+		<English>[COLOR_CAT_TERRAIN]Fresh Water Lake[COLOR_REVERT]</English>
 		<Portuguese>Lago de água doce</Portuguese>
 		<French>Lac d'eau douce</French>
-		<German>Süßwassersee</German>
+		<German>[COLOR_CAT_TERRAIN]Süßwassersee[COLOR_REVERT]</German>
 		<Italian>Lago d'acqua dolce</Italian>
 		<Spanish>Lago de agua dulce</Spanish>
-		<Russian>Пресноводное озеро</Russian>
+		<Russian>[COLOR_CAT_TERRAIN]Пресноводное озеро[COLOR_REVERT]</Russian>
 		<Hungarian>Édesvizű Tó</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -4181,13 +4181,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_YOU_UNITS_UNDER_ATTACK</Tag>
-		<English>Your forces are under attack by %s1_player!</English>
+		<English>[COLOR_WARNING_TEXT]Your forces are under attack by %s1_player![COLOR_REVERT]</English>
 		<Portuguese>Suas forças estão sob ataque de %s1_player!</Portuguese>
 		<French>Vos forces sont attaquées (%s1_player)!</French>
-		<German>Eure Truppen werden angegriffen (%s1_player)!</German>
+		<German>[COLOR_WARNING_TEXT]Eure Truppen werden angegriffen (%s1_player)![COLOR_REVERT]</German>
 		<Italian>Le tue forze sono sotto attacco (%s1_player)!</Italian>
 		<Spanish>Atacan a vuestras fuerzas (%s1_player).</Spanish>
-		<Russian>Наши войска атакованы %s1_player!</Russian>
+		<Russian>[COLOR_WARNING_TEXT]Наши войска атакованы %s1_player![COLOR_REVERT]</Russian>
 		<Hungarian>%s1_player megtámadta haderőidet!</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -4214,13 +4214,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_IMP_DESTROYED</Tag>
-		<English>A %s1_ImpName has been destroyed by a marauding [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</English>
+		<English>A %s1_ImpName [COLOR_WARNING_TEXT]has been destroyed[COLOR_REVERT] by a marauding [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</English>
 		<Portuguese>Um %s1_ImpName foi destruído por um saqueador [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</Portuguese>
 		<French>Destruction de [NUM1:un:une:des:des] %s1_ImpName - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT]) !</French>
-		<German>Eine Modernisierung %s1_ImpName wurde zerstört - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT])!</German>
+		<German>Eine Modernisierung %s1_ImpName [COLOR_WARNING_TEXT]wurde zerstört[COLOR_REVERT] - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT])!</German>
 		<Italian>[NUM1:Un:Una] %s1_ImpName è [NUM1:stato sabotato:stata sabotata] - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT])!</Italian>
 		<Spanish>[NUM1:Un:Una:Unos:Unas] %s1_ImpName [NUM1:ha sido destruido:ha sido destruida:han sido destruidos:han sido destruidas] - %s2_UnitName ([COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT]).</Spanish>
-		<Russian>%s1_ImpName уничтожена [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</Russian>
+		<Russian>%s1_ImpName [COLOR_WARNING_TEXT]уничтожена[COLOR_REVERT] [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName!</Russian>
 		<Hungarian>Egy fosztogató [COLOR_HIGHLIGHT_TEXT]%s3_civ_adjective[COLOR_REVERT] %s2_UnitName egység megsemmisítette: %s1_ImpName!</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -12129,13 +12129,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_CITY_IMPROVEMENT_DESTROYED</Tag>
-		<English>Your %s1_improvement has been destroyed</English>
+		<English>Your %s1_improvement [COLOR_WARNING_TEXT]has been destroyed[COLOR_REVERT]</English>
 		<Portuguese>Seu %s1_improvement foi destruído</Portuguese>
 		<French>Votre %s1_improvement a été détruit(e)</French>
-		<German>Eure Modernisierung %s1_improvement wurde zerstört</German>
+		<German>Eure Modernisierung %s1_improvement [COLOR_WARNING_TEXT]wurde zerstört[COLOR_REVERT]</German>
 		<Italian>[NUM1:Il tuo:La tua] %s1_improvement è [NUM1:stato distrutto:stata distrutta]</Italian>
 		<Spanish>[NUM1:Vuestro:Vuestra:Vuestros:Vuestras] %s1_improvement [NUM1:ha quedado destruido:ha quedado destruida:han quedado destruidos:han quedado destruidas]</Spanish>
-		<Russian>Ваше %s1_improvement было уничтожено</Russian>
+		<Russian>Ваше %s1_improvement [COLOR_WARNING_TEXT]было уничтожено[COLOR_REVERT]</Russian>
 		<Hungarian>%s1_improvement fejlesztésed megsemmisült</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -12424,10 +12424,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_NAVAL_CONTROL</Tag>
-		<English>[ICON_BULLET]Naval Control: Radius %d1_Num plots; Movement Cost deduction from other ships -%d2_Num</English>
+		<English>[ICON_BULLET][COLOR:110:150:255:255]Naval Control:[COLOR_REVERT] Radius %d1_Num plots; Movement Cost deduction from other ships -%d2_Num</English>
 		<Portuguese>[ICON_BULLET]Controle Naval: Raio de %d1_Num lotes; Dedução do custo de movimento de outros navios -%d2_Num</Portuguese>
-		<German>[ICON_BULLET]Seekontrolle: Radius %d1_Num Felder; Bewegungskosten-Abzug bei anderen Schiffen -%d2_Num</German>
-		<Russian>[ICON_BULLET]Зона контроля: радиус — %d1_Num; увеличивает стоимость перемещения для других кораблей на %d2_Num</Russian>
+		<German>[ICON_BULLET][COLOR:110:150:255:255]Seekontrolle:[COLOR_REVERT] Radius %d1_Num Felder; Bewegungskosten-Abzug bei anderen Schiffen -%d2_Num</German>
+		<Russian>[ICON_BULLET][COLOR:110:150:255:255]Зона контроля:[COLOR_REVERT] радиус — %d1_Num; увеличивает стоимость перемещения для других кораблей на %d2_Num</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_IS_SLAVE_SHIP</Tag>
@@ -12642,13 +12642,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_YOU_UNITS_UNDER_ATTACK_UNKNOWN</Tag>
-		<English>Your forces are under attack!</English>
+		<English>[COLOR_WARNING_TEXT]Your forces are under attack![COLOR_REVERT]</English>
 		<Portuguese>Suas forças estão sob ataque!</Portuguese>
 		<French>Vos troupes sont attaquées !</French>
-		<German>Eure Truppen werden angegriffen!</German>
+		<German>[COLOR_WARNING_TEXT]Eure Truppen werden angegriffen![COLOR_REVERT]</German>
 		<Italian>Le tue forze sono sotto attacco!</Italian>
 		<Spanish>Atacan a vuestras fuerzas.</Spanish>
-		<Russian>Ваши войска атакованы!</Russian>
+		<Russian>[COLOR_WARNING_TEXT]Ваши войска атакованы![COLOR_REVERT]</Russian>
 		<Hungarian>Csapatod támadás alatt áll!</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -12882,13 +12882,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ACTION_LEAD_TROOPS</Tag>
-		<English>Gives a total of %d1_Num experience points to units in the same tile. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</English>
+		<English>Gives a total of %d1_Num [COLOR:40:225:235:255]experience points[COLOR_REVERT] to units in the same tile. Notice: [COLOR:40:225:235:255]Experience points[COLOR_REVERT] are granted only once, even if the officer can be assigned to a unit multiple times.</English>
 		<Portuguese>Dá um total de %d1_Num pontos de experiência para unidades no mesmo lote. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</Portuguese>
 		<French>Octroie un total de %d1_Num expérience aux unités dans la même case. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</French>
-		<German>Überträgt insgesamt %d1_Num Erfahrungspunkte auf Einheiten auf demselben Geländefeld. Achtung, die Erfahrungspunkte werden nur einmal vergeben, auch wenn der Offizier mehrfach einer Einheit zugeordnet werden kann.</German>
+		<German>Überträgt insgesamt %d1_Num [COLOR:40:225:235:255]Erfahrungspunkte[COLOR_REVERT] auf Einheiten auf demselben Geländefeld. Achtung, die [COLOR:40:225:235:255]Erfahrungspunkte[COLOR_REVERT] werden nur einmal vergeben, auch wenn der Offizier mehrfach einer Einheit zugeordnet werden kann.</German>
 		<Italian>Dà un totale di %d1_Num di esperienza alle unità presenti nella stessa casella. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</Italian>
 		<Spanish>Da un total de %d1_Num de experiencia a las unidades en la misma casilla. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</Spanish>
-		<Russian>Дает %d1_Num очков опыта юнитам на этой клетке. Очки опыта начисляются только один раз; полученные при этом повышения остаются у офицера, а не у отряда.</Russian>
+		<Russian>Дает %d1_Num [COLOR:40:225:235:255]очков опыта[COLOR_REVERT] юнитам на этой клетке. [COLOR:40:225:235:255]Очки опыта[COLOR_REVERT] начисляются только один раз; полученные при этом повышения остаются у офицера, а не у отряда.</Russian>
 		<Hungarian>Az ugyanazon a területen álló egységeknek összesen %d1_Num Tapasztalati Pontot ad. Notice: Experience points are granted only once, even if the officer can be assigned to a unit multiple times.</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -13119,56 +13119,56 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_BL_BORN</Tag>
-		<English>The warriors stationed in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] look up to their lieutenant for his courage.</English>
+		<English>The warriors stationed in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] look up to their [COLOR_UNIT_TEXT]Brave Lieutenant[COLOR_REVERT] for his courage.</English>
 		<Portuguese>Os guerreiros estacionados em [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] admiram seu tenente por sua coragem.</Portuguese>
 		<French>Les guerriers en garnison à [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] admirent leur lieutenant pour sa bravoure.</French>
-		<German>Der unerschrockene Leutnant gilt den in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] stationierten Kämpfern als ein Vorbild an Tapferkeit und Manneszucht.</German>
-		<Russian>Воины в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] уважают своего лейтенанта за его храбрость.</Russian>
+		<German>Ein [COLOR_UNIT_TEXT]Mutiger Leutnant[COLOR_REVERT] gilt den in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] stationierten Kämpfern als ein Vorbild an Tapferkeit und Manneszucht.</German>
+		<Russian>Воины в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] уважают своего [COLOR_UNIT_TEXT]лейтенанта[COLOR_REVERT] за его храбрость.</Russian>
 		<Hungarian>[COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] katonái felnéznek Hadnagyukra a bátorsága miatt.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_BL_BORN_SOMEWHERE</Tag>
-		<English>In a distant region, a young soldier is making a name for himself as a brave lieutenant.</English>
+		<English>In a distant region, a young soldier is making a name for himself as a [COLOR_UNIT_TEXT]Brave Lieutenant[COLOR_REVERT].</English>
 		<Portuguese>Em uma região distante, um jovem soldado está se destacando como um valente tenente.</Portuguese>
 		<French>Dans une région lointaine, un jeune soldat se distingue comme un lieutenant courageux. </French>
-		<German>In einer fernen Gegend macht ein junger Soldat als ein mutiger Leutnant von sich reden.</German>
-		<Russian>В далеком крае молодой солдат стал известным храбрым лейтенантом.</Russian>
+		<German>In einer fernen Gegend macht ein junger Soldat als [COLOR_UNIT_TEXT]Mutiger Leutnant[COLOR_REVERT] von sich reden.</German>
+		<Russian>В далеком крае молодой солдат стал известным [COLOR_UNIT_TEXT]храбрым лейтенантом[COLOR_REVERT].</Russian>
 		<Hungarian>Egy távoli vidéken egy fiatal katona bátor Hadnagyként szerez magának hírnevet.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_BL_BORN_FIELD</Tag>
-		<English>In the recent battle a young soldier fell upon his enemies like a wolf among the lambs. He is now known everywhere as a truly brave lieutenant.</English>
+		<English>In the recent battle a young soldier fell upon his enemies like a wolf among the lambs. He is now known everywhere as a truly [COLOR_UNIT_TEXT]Brave Lieutenant[COLOR_REVERT].</English>
 		<Portuguese>Na recente batalha, um jovem soldado caiu sobre seus inimigos como um lobo entre cordeiros. Ele agora é conhecido em todos os lugares como um tenente verdadeiramente corajoso.</Portuguese>
 		<French>Lors des derniers combats un jeune soldat s'est distingué par sa bravoure face à l'ennemi. Il est maintenant reconnu comme un lieutenant courageux. </French>
-		<German>In der jüngsten Schlacht fiel ein junger Soldat über seine Feinde her wie der Wolf über die Lämmer. Er gilt nun allerorten als mutiger Leutnant.</German>
-		<Russian>В недавнем сражении молодой воин бросался на своих врагов, как волк на ягнят. Теперь повсюду он известен как поистине храбрый лейтенант.</Russian>
+		<German>In der jüngsten Schlacht fiel ein junger Soldat über seine Feinde her wie der Wolf über die Lämmer. Er gilt nun allerorten als [COLOR_UNIT_TEXT]Mutiger Leutnant[COLOR_REVERT].</German>
+		<Russian>В недавнем сражении молодой воин бросался на своих врагов, как волк на ягнят. Теперь повсюду он известен как поистине [COLOR_UNIT_TEXT]храбрый лейтенант[COLOR_REVERT].</Russian>
 		<Hungarian>A legutóbbi csatában egy fiatal katona úgy esett neki ellenségeinek, mint farkas a bárányoknak. Most már mindenütt úgy ismerik, mint egy igazán bátor Hadnagyot.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_CC_BORN</Tag>
-		<English>The sailors stationed in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] respect their captain for his leadership and tactics.</English>
+		<English>The sailors stationed in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] respect their [COLOR_UNIT_TEXT]Able Captain[COLOR_REVERT] for his leadership and tactics.</English>
 		<Portuguese>Os marinheiros estacionados em [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] respeitam seu capitão por sua liderança e táticas.</Portuguese>
 		<French>Les marins rattachés à  [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] respectent leur capitaine pour son sens tactique et son commandement.</French>
-		<German>Der fähiger Seemann gilt den in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] stationierten Kämpfern als ein Vorbild an Fähigkeit und Schläue.</German>
-		<Russian>Воины в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] уважают своего капитана за его умелое руководство и знания тактики.</Russian>
+		<German>Ein [COLOR_UNIT_TEXT]Fähiger Kapitän[COLOR_REVERT] gilt den in [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] stationierten Kämpfern als ein Vorbild an Fähigkeit und Schläue.</German>
+		<Russian>Воины в [COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] уважают своего [COLOR_UNIT_TEXT]капитана[COLOR_REVERT] за его умелое руководство и знания тактики.</Russian>
 		<Hungarian>[COLOR_SELECTED_TEXT]%s1_CityName[COLOR_REVERT] tengerészei tisztelik a Kapitányukat a vezetési és taktikái képességeiért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_CC_BORN_SOMEWHERE</Tag>
-		<English>In a distant region, a young sailor is making a name for himself as a capable captain.</English>
+		<English>In a distant region, a young sailor is making a name for himself as an [COLOR_UNIT_TEXT]Able Captain[COLOR_REVERT].</English>
 		<Portuguese>Numa região distante, um jovem marinheiro está se destacando como um capitão competente.</Portuguese>
 		<French>Dans une région lointaine, un jeune marin se fait un nom comme capitaine capable. </French>
-		<German>In einer fernen Gegend macht ein junger Seeman als ein fähiger Kapitän von sich reden.</German>
-		<Russian>Люди говорят, где-то далеко молодой моряк смог стать умелым капитаном.</Russian>
+		<German>In einer fernen Gegend macht ein junger Seemann als [COLOR_UNIT_TEXT]Fähiger Kapitän[COLOR_REVERT] von sich reden.</German>
+		<Russian>Люди говорят, где-то далеко молодой моряк смог стать [COLOR_UNIT_TEXT]умелым капитаном[COLOR_REVERT].</Russian>
 		<Hungarian>Egy távoli vidéken egy fiatal tengerész tehetséges Kapitányként szerez magának hírnevet.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_CC_BORN_FIELD</Tag>
-		<English>In the recent sea battle a young captain cut through the enemy like a shark into a school of tuna. He is now known everywhere as a truly capable commander.</English>
+		<English>In the recent sea battle a young captain cut through the enemy like a shark into a school of tuna. He is now known everywhere as a truly [COLOR_UNIT_TEXT]Able Captain[COLOR_REVERT].</English>
 		<Portuguese>Na recente batalha naval, um jovem capitão liderou sua tripulação contra o inimigo como um tubarão contra um bando de atum. Ele agora é conhecido em todos os lugares como um comandante verdadeiramente capaz.</Portuguese>
 		<French>Lors de la dernière bataille navale un jeune capitaine a mené son équipage contre l'ennemi comme un requin dans un banc de thons. Il est reconnu de tous comme un commandant vraiment capable. </French>
-		<German>In der jüngsten Seeschlacht fiel ein junger Seemann und seine Mannschaft über seine Feinde her wie der Hai über Thunfische. Er gilt nun allerorten als wahrhaft fähiger Kapitän.</German>
-		<Russian>В недавнем морском сражении молодой командер, искусно управляя своим кораблём, нанёс противнику серьёзный ушерб. Теперь повсюду его знают как действительно способного капитана.</Russian>
+		<German>In der jüngsten Seeschlacht fiel ein junger Seemann und seine Mannschaft über seine Feinde her wie der Hai über Thunfische. Er gilt nun allerorten als [COLOR_UNIT_TEXT]Fähiger Kapitän[COLOR_REVERT].</German>
+		<Russian>В недавнем морском сражении молодой командер, искусно управляя своим кораблём, нанёс противнику серьёзный ушерб. Теперь повсюду его знают как действительно [COLOR_UNIT_TEXT]способного капитана[COLOR_REVERT].</Russian>
 		<Hungarian>A legutóbbi tengeri csatában egy fiatal kapitány úgy vezette legénységét az ellenség ellen, mint a vad cápa. Most már mindenütt úgy ismerik, mint igazán rátermett Parancsnokot.</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -13941,24 +13941,24 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMBAT_MESSAGE_TERRAIN_ATTACK</Tag>
-		<English>(Terrain Attack: %D1%%)</English>
+		<English>([COLOR:110:150:255:255]Terrain Attack:[COLOR_REVERT] %D1%%)</English>
 		<Portuguese>(Ataque Terreno: %D1%%)</Portuguese>
 		<French>(Attaque terrain : %D1%%)</French>
-		<German>(Geländeangriff: %D1%%)</German>
+		<German>([COLOR:110:150:255:255]Geländeangriff:[COLOR_REVERT] %D1%%)</German>
 		<Italian>(Attacco da terreno: %D1%%)</Italian>
 		<Spanish>(Ataque a terreno: %D1%%)</Spanish>
-		<Russian>(Атака на местности : %D1%%)</Russian>
+		<Russian>([COLOR:110:150:255:255]Атака на местности :[COLOR_REVERT] %D1%%)</Russian>
 		<Hungarian>(Terep Támadás: %D1%%)</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMBAT_MESSAGE_TERRAIN</Tag>
-		<English>(Terrain defense : %d1%%)</English>
+		<English>([COLOR:110:150:255:255]Terrain defense :[COLOR_REVERT] %d1%%)</English>
 		<Portuguese>(Defesa de terreno: %d1%%)</Portuguese>
 		<French>(Défense terrain : %d1%%)</French>
-		<German>(Gelände-Verteidigung : %d1%%)</German>
+		<German>([COLOR:110:150:255:255]Gelände-Verteidigung :[COLOR_REVERT] %d1%%)</German>
 		<Italian>(Difesa da terreno : %d1%%)</Italian>
 		<Spanish>(Defender terreno : %d1%%)</Spanish>
-		<Russian>(Защита на местности : %D1%%)</Russian>
+		<Russian>([COLOR:110:150:255:255]Защита на местности :[COLOR_REVERT] %D1%%)</Russian>
 		<Hungarian>(Terep védelem : %D1%%)</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -14170,13 +14170,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_YOU_UNIT_WAS_DESTROYED_UNKNOWN</Tag>
-		<English>[COLOR_WARNING_TEXT]Bad news, Milord! [COLOR_REVERT]While defending, your [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] was destroyed by an enemy [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT]!</English>
+		<English>[COLOR_WARNING_TEXT]Bad news, Milord! [COLOR_REVERT]While defending, your [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] [COLOR_WARNING_TEXT]was destroyed[COLOR_REVERT] by an enemy [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT]!</English>
 		<Portuguese>[COLOR_WARNING_TEXT]Más notícias, Milorde! [COLOR_REVERT]Enquanto defendia, seu [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] foi destruído por um inimigo [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT]!</Portuguese>
 		<French>En se défendant, [NUM1:votre:votre:vos:vos] %s1_UnitName a été [NUM1:détruit:détruite:détruits:détruites] par l'unité ennemie : %s2_EnUName !</French>
 		<German>[COLOR_WARNING_TEXT]Schlechte Nachrichten, Milord! [COLOR_REVERT]Eure Einheit [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] wurde von einer feindlichen Einheit [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT] angegriffen und bei der Verteidigung vernichtet!</German>
 		<Italian>Difendendo, la tua unità %s1_UnitName è stata distrutta dall'unità nemica %s2_EnUName!</Italian>
 		<Spanish>Mientras se [NUM1:defendía:defendía:defendían:defendían], [NUM1:vuestro:vuestra:vuestros:vuestras] %s1_UnitName [NUM1:ha sido destruido:ha sido destruida:han sido destruidos:han sido destruidas] por [NUM2:un:una:unos:unas] %s2_EnUName.</Spanish>
-		<Russian>[COLOR_WARNING_TEXT]Плохие новости, Милорд! [COLOR_REVERT]Наш оборонявшийся [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] был уничтожен вражеским [COLOR_SELECTED_TEXT]%s2_EnUName[COLOR_REVERT]!</Russian>
+		<Russian>[COLOR_WARNING_TEXT]Плохие новости, Милорд! [COLOR_REVERT]Наш оборонявшийся [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] [COLOR_WARNING_TEXT]был уничтожен[COLOR_REVERT] вражеским [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT]!</Russian>
 		<Hungarian>[COLOR_WARNING_TEXT]Rossz hírek, Uram! [COLOR_REVERT]Védekezés közben [COLOR_UNIT_TEXT]%s1_UnitName[COLOR_REVERT] egységedet egy ellenséges [COLOR_WARNING_TEXT]%s2_EnUName[COLOR_REVERT] megsemmisítette!</Hungarian>
 	</TEXT>
 	<TEXT>
@@ -14254,20 +14254,20 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_SLAVE_EMANCIPATION_UNREST</Tag>
-		<English>The emancipation of slaves has caused unrest in %s1.</English>
-		<German>Die Freilassung von Sklaven hat in %s1 Unruhe ausgelöst.</German>
-		<Russian>Освобождение рабов вызвало волнения в городе %s1.</Russian>
+		<English>The emancipation of slaves has caused [COLOR_WARNING_TEXT]unrest[COLOR_REVERT] in %s1.</English>
+		<German>Die Freilassung von Sklaven hat in %s1 [COLOR_WARNING_TEXT]Unruhe[COLOR_REVERT] ausgelöst.</German>
+		<Russian>Освобождение рабов вызвало [COLOR_WARNING_TEXT]волнения[COLOR_REVERT] в городе %s1.</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_HELP_COMMANDED_BY</Tag>
-		<English>Unit is commanded by </English>
-		<German>Einheit wird kommandiert von </German>
-		<Russian>Подразделением командует </Russian>
+		<English>Unit is [COLOR:110:150:255:255]commanded by[COLOR_REVERT] </English>
+		<German>Einheit wird [COLOR:110:150:255:255]kommandiert von[COLOR_REVERT] </German>
+		<Russian>Командование подразделением осуществляет </Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ACTION_ATTACH_LEADER</Tag>
-		<English>Assigns this commander to an eligible unit. The commander can later be detached from the unit.</English>
-		<German>Der Befehlshaber wird einer geeigneten Einheit zugeteilt und kann später wieder von ihr abkommandiert werden.</German>
-		<Russian>Назначает этого командира в выбранный отряд. Впоследствии командира можно будет убрать из отряда.</Russian>
+		<English>Assigns this [COLOR:110:150:255:255]commander[COLOR_REVERT] to an eligible unit. The [COLOR:110:150:255:255]commander[COLOR_REVERT] can later be detached from the unit.</English>
+		<German>Der [COLOR:110:150:255:255]Befehlshaber[COLOR_REVERT] wird einer geeigneten Einheit zugeteilt und kann später wieder von ihr abkommandiert werden.</German>
+		<Russian>Назначает этого [COLOR:110:150:255:255]командира[COLOR_REVERT] в выбранный отряд. Впоследствии [COLOR:110:150:255:255]командира[COLOR_REVERT] можно будет убрать из отряда.</Russian>
 	</TEXT>
 </Civ4GameText>

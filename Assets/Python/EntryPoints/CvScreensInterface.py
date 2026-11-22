@@ -73,6 +73,32 @@ def showMainInterface():
 	DesyncDetectorInstance = gc.startDesyncMonitor()
 	mainInterface.interfaceScreen()
 
+# WTP: the own waypoints for the window "Select destination" of the Go to button (called by the DLL): one line per waypoint "x<TAB>y<TAB>text",
+# without the waypoints that lead to an own colony (those are listed as colonies anyway); the waypoints of ships for ships, the others for land units
+def getGotoWaypoints(argsList):
+	try:
+		iUnit = argsList[0]
+		ePlayer = gc.getGame().getActivePlayer()
+		pUnit = gc.getPlayer(ePlayer).getUnit(iUnit)
+		bSea = mainInterface.isSeaUnit(pUnit)
+		szResult = u""
+		for tEntry in mainInterface.getWaypointView(bSea, ePlayer):
+			if mainInterface.getOwnColonyAt(tEntry[1], tEntry[2], ePlayer) is not None:
+				continue
+			szResult += u"%d\t%d\t%s\n" % (tEntry[1], tEntry[2], tEntry[4].replace(u"\t", u" ").replace(u"\n", u" "))
+		return szResult
+	except:
+		return u""
+
+# WTP: the entry "Set waypoint..." of the window "Select destination" (called by the DLL): the same as the line of the tooltip of the unit
+def startGotoWaypointMode(argsList):
+	try:
+		pUnit = gc.getPlayer(gc.getGame().getActivePlayer()).getUnit(argsList[0])
+		if pUnit is not None and not pUnit.isNone():
+			mainInterface.startWaypointMode(pUnit)
+	except:
+		pass
+
 def numPlotListButtons():
 	return mainInterface.numPlotListButtons()
 
@@ -697,6 +723,18 @@ def handleForward(screens):
 	return 0
 
 def getWidgetHelp(argsList):
+	szText = getWidgetHelpText(argsList)
+	# WTP: the own tooltip window at the cursor shows the same text
+	try:
+		mainInterface.widgetHelpSeen(szText, argsList[1])
+		# the HUD elements of the mod give their help text through here: with the diplomacy screen open the game would show it a second time
+		if mainInterface.bHoverTip and gc.getGame().isDiplomacyUp():
+			return u""
+	except:
+		pass
+	return szText
+
+def getWidgetHelpText(argsList):
 	iScreen = argsList[0]
 	if (HandleMouseoverMap.has_key(iScreen)):
 		screen = HandleMouseoverMap.get(iScreen)

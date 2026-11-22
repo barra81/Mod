@@ -51,6 +51,9 @@ public:
 
 	DllExport void update();
 	void doCloseCityScreenOnMiddleMouse();
+	int getMiddleClickX() const; // WTP: where the cursor was at the last wheel click (game window)
+	int getMiddleClickY() const;
+	bool takeMiddleClick(); // WTP: was the mouse wheel clicked (a short time ago, and not asked for since)?
 	void updateScore(bool bForce = false);
 	// <advc.003y>
 	int getScoreComponent(int iRawScore, int iInitial, int iMax, int iMultiplier,

@@ -14,6 +14,7 @@ public:
 	static void freeInstance();
 
 	void parseHelp(CvWStringBuffer &szBuffer, const CvWidgetDataStruct &widgetDataStruct);
+	void parseHelpInner(CvWStringBuffer &szBuffer, const CvWidgetDataStruct &widgetDataStruct); // WTP: the original parseHelp (parseHelp stores its result)
 
 	bool executeAction(const CvWidgetDataStruct &widgetDataStruct);
 	bool executeAltAction(const CvWidgetDataStruct &widgetDataStruct);

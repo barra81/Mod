@@ -1238,18 +1238,91 @@ int CvGame::getTeamClosenessScore(int** aaiDistances, int* aiStartingLocs)
 // The EXE mouseEvent enum has no middle button, so Python never sees wheel-click.
 // Bit 0 of GetAsyncKeyState is set if the button went down since the last poll,
 // so a short click is not missed when update() skips frames.
+// WTP: the time of the last wheel click (CyGame.takeMiddleClick: the nested tooltips jump to a waypoint with it)
+static volatile DWORD s_dwMiddleClickTick = 0;
+
+// WTP: ONE thread reads the wheel button (every 2 ms: a click is shorter than a slow frame of the game, and the polls in the frames lost it, two
+// readers counted one click twice); the game (city screen) and Python (takeMiddleClick) only ask what the thread found
+static volatile LONG s_iMiddleClicks = 0;
+// where the cursor was at the click (in the game window): Python is not asked in every frame, a click can wait for it
+static volatile LONG s_iMiddleX = -1;
+static volatile LONG s_iMiddleY = -1;
+
+static DWORD WINAPI middleButtonThread(LPVOID)
+{
+	bool bWasDown = false;
+	for (;;)
+	{
+		Sleep(2);
+		const SHORT iState = GetAsyncKeyState(VK_MBUTTON);
+		const bool bDown = (iState < 0);
+		// (bit 0: the button went down since the last call, a click between two looks is not lost)
+		if ((bDown && !bWasDown) || (!bDown && (iState & 1) != 0))
+		{
+			// (only a click while the game window is active)
+			HWND hWnd = GetForegroundWindow();
+			DWORD iProcess = 0;
+			if (hWnd != NULL && GetWindowThreadProcessId(hWnd, &iProcess) != 0 && iProcess == GetCurrentProcessId())
+			{
+				POINT pt;
+				if (GetCursorPos(&pt) && ScreenToClient(hWnd, &pt))
+				{
+					s_iMiddleX = pt.x;
+					s_iMiddleY = pt.y;
+				}
+				s_dwMiddleClickTick = GetTickCount() | 1;
+				InterlockedIncrement(&s_iMiddleClicks);
+			}
+		}
+		bWasDown = bDown;
+	}
+	return 0;
+}
+
+static void startMiddleButtonThread()
+{
+	static bool bThreadStarted = false;
+	if (!bThreadStarted)
+	{
+		bThreadStarted = true;
+		HANDLE hThread = CreateThread(NULL, 0, middleButtonThread, NULL, 0, NULL);
+		if (hThread != NULL)
+		{
+			CloseHandle(hThread);
+		}
+	}
+}
+
+bool CvGame::takeMiddleClick()
+{
+	startMiddleButtonThread();
+	const DWORD dwTick = s_dwMiddleClickTick;
+	s_dwMiddleClickTick = 0;
+	// (a click that nobody took does not count later; Python is asked only when the interface is redrawn, that can be seconds after a click when
+	// the mouse stands still: Python compares the place of the click with the place of the cursor)
+	return dwTick != 0 && GetTickCount() - dwTick < 10000;
+}
+
+int CvGame::getMiddleClickX() const
+{
+	return (int)s_iMiddleX;
+}
+
+int CvGame::getMiddleClickY() const
+{
+	return (int)s_iMiddleY;
+}
+
 void CvGame::doCloseCityScreenOnMiddleMouse()
 {
-	static bool bWasDown = false;
-	const SHORT iState = GetAsyncKeyState(VK_MBUTTON);
-	const bool bDown = (iState < 0);
-	const bool bPressedSincePoll = (iState & 1) != 0;
-	const bool bClicked = bPressedSincePoll || (bDown && !bWasDown);
-	bWasDown = bDown;
-	if (!bClicked)
+	startMiddleButtonThread();
+	static LONG iSeen = 0;
+	const LONG iClicks = s_iMiddleClicks;
+	if (iClicks == iSeen)
 	{
 		return;
 	}
+	iSeen = iClicks;
 	if (gDLL->isDiplomacy() || gDLL->getInterfaceIFace()->isPopupUp())
 	{
 		return;
@@ -7493,7 +7566,9 @@ void CvGame::setFatherTeam(AssertCallerData assertData, FatherTypes eFather, Tea
 							szBuffer = gDLL->getText("TXT_KEY_FATHER_JOINED_UNKNOWN", GC.getFatherInfo(eFather).getTextKeyWide());
 						}
 
+						WtpHudMessages::setPriority(true); // WTP: founding father messages are shown at the top of the message panel
 						gDLL->UI().addPlayerMessage(((PlayerTypes)iI), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_GLOBECIRCUMNAVIGATED", MESSAGE_TYPE_MAJOR_EVENT, NULL, COLOR_HIGHLIGHT_TEXT);
+						WtpHudMessages::setPriority(false);
 					}
 				}
 				szBuffer = gDLL->getText("TXT_KEY_FATHER_JOINED_TEAM", GC.getFatherInfo(eFather).getTextKeyWide(), GET_TEAM(getFatherTeam(eFather)).getName().GetCString());

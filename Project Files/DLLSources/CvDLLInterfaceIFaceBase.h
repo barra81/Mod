@@ -424,5 +424,28 @@ public:
 	virtual void setBusy(bool bBusy) = 0;
 };
 
+// WTP: the messages of the human player since the end of his last turn, for the message panel of the main interface (Python,
+// CyGame.getNumHudMessages ...). The panel can be clicked to expand it, the messages of the game's own message area are too short-lived to read.
+namespace WtpHudMessages
+{
+	void add(const CvWString& szText, int iX, int iY);
+	void addTop(const CvWString& szText); // a message of the mod: always at the very top of the panel (before the other priority messages)
+	void setPriority(bool bPriority); // the messages that are added while it is set are shown at the top of the panel
+	int getNumPriority();
+	int getNumPriorityPrevious();
+	void clear();
+	int getNum();
+	const CvWString& getText(int i);
+	int getX(int i);
+	int getY(int i);
+	int getNumPrevious();
+	const CvWString& getPreviousText(int i);
+	int getPreviousX(int i);
+	int getPreviousY(int i);
+	// for the savegame: the messages are kept over a save / load
+	CvWString serialize();
+	void deserialize(const CvWString& szData);
+}
+
 
 #endif // CvDLLInterfaceIFaceBase_h

@@ -164,23 +164,23 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMMAND_GOTO_MENU</Tag>
-		<English>Go to mode (city selection)</English>
-		<Portuguese>Ir para (seleção de colônia)</Portuguese>
-		<French>Aller à (Choisir une ville)</French>
-		<German>Gehe-zu-Modus (Stadtliste)</German>
-		<Italian>Vai alla modalità (selezione della città)</Italian>
-		<Spanish>Modo ir a (selección de ciudad)</Spanish>
-		<Russian>Идти к выбранному городу</Russian>
+		<English>Go to mode (Waypoint selection)</English>
+		<Portuguese>Ir para (seleção de ponto de passagem)</Portuguese>
+		<French>Aller à (Choisir un point de passage)</French>
+		<German>Gehe-zu-Modus (Wegpunkt-Auswahl)</German>
+		<Italian>Vai alla modalità (selezione del waypoint)</Italian>
+		<Spanish>Modo ir a (selección de punto de ruta)</Spanish>
+		<Russian>Идти к выбранной точке (выбор путевой точки)</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMMAND_GOTO_MENU_HELP</Tag>
-		<English>Opens a menu that allows you to send the selected unit to a specific city.</English>
-		<Portuguese>Abre um menu que permite enviar a unidade selecionada para uma colônia específica.</Portuguese>
-		<French>Ouvre un menu qui vous permet d'envoyer l'unité sélectionnée vers une ville spécifique.</French>
-		<German>Öffnet ein Menü, mit dem man die gewählte Einheit zu einer bestimmten Stadt schicken kann.</German>
-		<Italian>Apre un menu che permette di inviare l'unità selezionata a una città specifica.</Italian>
-		<Spanish>Abre un menú que permite enviar la unidad seleccionada a una ciudad concreta.</Spanish>
-		<Russian>Открывает меню, позволяющее отправить выбранный юнит в нужный город</Russian>
+		<English>Opens a menu that allows you to send the selected unit to a specific waypoint.</English>
+		<Portuguese>Abre um menu que permite enviar a unidade selecionada para um ponto de passagem específico.</Portuguese>
+		<French>Ouvre un menu qui vous permet d'envoyer l'unité sélectionnée vers un point de passage spécifique.</French>
+		<German>Öffnet ein Menü, mit dem man die gewählte Einheit zu einem bestimmten Wegpunkt schicken kann.</German>
+		<Italian>Apre un menu che permette di inviare l'unità selezionata a un waypoint specifico.</Italian>
+		<Spanish>Abre un menú que permite enviar la unidad seleccionada a un punto de ruta concreto.</Spanish>
+		<Russian>Открывает меню, позволяющее отправить выбранный юнит на нужную путевую точку</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_COMMAND_HOTKEY</Tag>

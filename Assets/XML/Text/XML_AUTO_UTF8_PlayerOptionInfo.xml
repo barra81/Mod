@@ -102,16 +102,17 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLAYEROPTION_MODDER_1</Tag>
-		<English>ModPlayerOption1</English>
-		<Portuguese>ModPlayerOption1</Portuguese>
-		<French>Mod Option du joueur 1</French>
-		<German>Mod-Spieleroption1</German>
-		<Italian>ModPlayerOption1</Italian>
-		<Spanish>ModPlayerOption1</Spanish>
+		<English>New message panel</English>
+		<Portuguese>New message panel</Portuguese>
+		<French>New message panel</French>
+		<German>Neues Meldungsfenster</German>
+		<Italian>New message panel</Italian>
+		<Spanish>New message panel</Spanish>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLAYEROPTION_MODDER_1_HELP</Tag>
-		<English>????</English>
+		<English>The messages of a turn stay in a panel at the top center of the screen (click to expand, Ctrl+Shift+W/A/S/D moves it). Off: the game's own message display.</English>
+		<German>Die Meldungen einer Runde bleiben in einem Fenster oben in der Bildschirmmitte (Klick klappt es aus, Strg+Umschalt+W/A/S/D verschiebt es). Aus: die normale Meldungsanzeige des Spiels.</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PLAYEROPTION_MODDER_2</Tag>

@@ -62,6 +62,8 @@ CvGameTextMgr& CvGameTextMgr::GetInstance()
 //
 //----------------------------------------------------------------------------
 CvGameTextMgr::CvGameTextMgr()
+:m_iYieldTotalForHelp(0)
+,m_bSkipYieldPrices(false)
 {
 
 }
@@ -442,7 +444,14 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 		szString.append(szTempBuffer);
 	}
 
-	if (pUnit->getYield() != NO_YIELD)
+	if (pUnit->getYield() != NO_YIELD && m_bSkipYieldPrices)
+	{
+		// same yield in another cargo slot: only the amount, the sell prices were shown with the first slot of this yield
+		szString.append(L", ");
+		szTempBuffer.Format(L"%d%c", pUnit->getYieldStored(), GC.getYieldInfo(pUnit->getYield()).getChar());
+		szString.append(szTempBuffer);
+	}
+	else if (pUnit->getYield() != NO_YIELD)
 	{
 		// R&R, ray, Africa - START
 		szString.append(L", ");
@@ -479,6 +488,19 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 			szString.append(szTempBuffer);
 		}
 		// R&R, ray, Port Royal - END
+
+		// WTP: a fourth line with the sell prices of the total amount of this yield in all cargo slots of the unit (also with one slot only: the
+		// lines of the three markets are the child tooltip of this line in the tooltip of the mod, see foldUnitDetails in CvMainInterface.py)
+		{
+			const int iYieldTotal = std::max(m_iYieldTotalForHelp, (int)pUnit->getYieldStored());
+			const CvPlayer& kOwner = GET_PLAYER(pUnit->getOwnerINLINE());
+			szString.append(L", ");
+			szString.append(gDLL->getText("TXT_KEY_WTP_TOTAL_PRICE_HELP"));
+			szTempBuffer.Format(L"%d%c (%d / %d / %d%c)", iYieldTotal, GC.getYieldInfo(pUnit->getYield()).getChar(),
+				kOwner.getSellToEuropeProfit(pUnit->getYield(), iYieldTotal), kOwner.getSellToAfricaProfit(pUnit->getYield(), iYieldTotal),
+				kOwner.getSellToPortRoyalProfit(pUnit->getYield(), iYieldTotal), GC.getSymbolID(GOLD_CHAR));
+			szString.append(szTempBuffer);
+		}
 	}
 
 	eBuild = pUnit->getBuildType();
@@ -1961,9 +1983,29 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 
 	if (iNumVisibleUnits > 0)
 	{
+		// WTP: the sell prices of a cargo yield are shown once, for the first slot of this yield only
+		std::vector<bool> abYieldPricesShown(NUM_YIELD_TYPES, false);
+		std::vector<int> aiYieldTotal(NUM_YIELD_TYPES, 0);
+		for (uint iK = 0; iK < plotUnits.size(); ++iK)
+		{
+			if (plotUnits[iK]->getYield() != NO_YIELD)
+			{
+				aiYieldTotal[plotUnits[iK]->getYield()] += plotUnits[iK]->getYieldStored();
+			}
+		}
+
 		if (pPlot->getCenterUnit())
 		{
+			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
+			{
+				m_iYieldTotalForHelp = aiYieldTotal[pPlot->getCenterUnit()->getYield()];
+			}
 			setUnitHelp(szString, pPlot->getCenterUnit(), iNumVisibleUnits > iMaxNumUnits, true);
+			m_iYieldTotalForHelp = 0;
+			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
+			{
+				abYieldPricesShown[pPlot->getCenterUnit()->getYield()] = true;
+			}
 		}
 
 		uint iNumShown = std::min<uint>(iMaxNumUnits, iNumVisibleUnits);
@@ -1973,7 +2015,16 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 			if (pLoopUnit != pPlot->getCenterUnit())
 			{
 				szString.append(NEWLINE);
+				YieldTypes eLoopYield = pLoopUnit->getYield();
+				if (eLoopYield != NO_YIELD)
+				{
+					m_bSkipYieldPrices = abYieldPricesShown[eLoopYield];
+					abYieldPricesShown[eLoopYield] = true;
+					m_iYieldTotalForHelp = aiYieldTotal[eLoopYield];
+				}
 				setUnitHelp(szString, pLoopUnit, true, true);
+				m_bSkipYieldPrices = false;
+				m_iYieldTotalForHelp = 0;
 			}
 		}
 

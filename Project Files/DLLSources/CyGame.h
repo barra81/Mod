@@ -166,8 +166,32 @@ public:
 	int getReplayMessagePlayer(int i) const;
 	ColorTypes getReplayMessageColor(int i) const;
 	std::wstring getReplayMessageText(int i) const;
+	void setCursorClient(int iX, int iY) const; // WTP: puts the cursor on a place of the game window
+	int getMiddleClickX() const; // WTP: where the cursor was at the last wheel click
+	int getMiddleClickY() const;
+	bool takeMiddleClick(); // WTP: was the mouse wheel clicked (frozen tooltip: jump to the waypoint)?
+	std::wstring getWidgetHelpText() const; // WTP: the last help text the game asked for (widget under the cursor)
+	int getWidgetHelpCount() const; // WTP: counts the help requests (a change means a new request)
+	int getWidgetHelpType() const; // WTP: widget type of the last help request
+	std::wstring getWidgetHelpFor(int eWidgetType, int iData1, int iData2, bool bOption) const; // WTP: the help text of a widget (as parseHelp makes it)
+	std::wstring getCityBarHelpFor(int iPlayer, int iCityID) const; // WTP: the tooltip text of the banner of a city (tooltip of the cities list)
+	bool isDiplomacyUp() const; // WTP: is a diplomacy screen open
+	void setHideYieldHelp(bool bNewValue); // WTP: no game help for the goods pictures of the import / export window in the city screen (own tooltip)
+	void setHideGameHelp(bool bNewValue); // WTP: no game help text for HUD elements while the diplomacy screen is open (own tooltip on)
 	uint getNumReplayMessages() const;
 	void openDomesticMarket(int iCityID) const; // WTP: opens the domestic market popup of a city
+	// WTP: the messages of the turn for the message panel of the main interface
+	int getNumHudMessages() const;
+	std::wstring getHudMessageText(int i) const;
+	int getHudMessageX(int i) const;
+	int getHudMessageY(int i) const;
+	int getNumHudMessagesPrevious() const;
+	int getNumHudPriority() const;
+	void addHudMessage(std::wstring szText, bool bPriority) const; // WTP: a message of the Python code for the message panel (priority: at the top)
+	int getNumHudPriorityPrevious() const;
+	std::wstring getHudMessagePreviousText(int i) const;
+	int getHudMessagePreviousX(int i) const;
+	int getHudMessagePreviousY(int i) const;
 	CyReplayInfo* getReplayInfo() const;
 	void saveReplay(int iPlayer);
 	void addPlayer(int /*PlayerTypes*/ eNewPlayer, int /*LeaderHeadTypes*/ eLeader, int /*CivilizationTypes*/ eCiv);
@@ -194,6 +218,14 @@ public:
 	void setChurchPlayer(int /*PlayerTypes*/ eNewValue);
 	bool isChurchPlayer(int /*PlayerTypes*/ ePlayer);
 	// R&R, ray, the Church - END
+
+	// WTP: helpers for the python windows: mouse wheel, cursor position, control / shift key
+	void setWheelCapture(bool bOn) const; // the mouse wheel is collected (takeWheelNotches) instead of zooming the map
+	int takeWheelNotches() const; // the notches of the wheel since the last call (positive: away from the user)
+	bool isCtrlKeyPressed() const;
+	bool isShiftKeyPressed() const; // is the shift key down
+	int getCursorClientX() const; // mouse position in the game window (-1 if unknown)
+	int getCursorClientY() const;
 
 protected:
 	const CvGame* const m_pGame;
