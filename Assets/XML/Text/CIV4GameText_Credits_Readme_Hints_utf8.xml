@@ -1970,4 +1970,10 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_77</Tag>
+		<English>Hold down [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] while you scroll the map: the map scrolls 2.5 times as fast.</English>
+		<German>Halten Sie [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] gedrückt, während Sie die Karte scrollen: Die Karte scrollt 2,5-mal so schnell.</German>
+		<Russian>Удерживайте [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] при прокрутке карты: карта прокручивается в 2,5 раза быстрее.</Russian>
+	</TEXT>
 </Civ4GameText>
