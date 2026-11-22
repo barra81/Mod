@@ -720,6 +720,123 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 			}
 			szString.append(szTempBuffer);
 
+			// WTP: a loaded sea transport of the active player: what the goods on board are worth in the harbours (the best one in green)
+			if (pUnit->getTeam() == GC.getGameINLINE().getActiveTeam() && pUnit->getDomainType() == DOMAIN_SEA && pUnit->getCargo() > 0)
+			{
+				std::vector<int> aiOnBoard(NUM_YIELD_TYPES, 0);
+				CvPlot* pCargoPlot = pUnit->plot();
+				if (pCargoPlot != NULL)
+				{
+					CLLNode<IDInfo>* pCargoNode = pCargoPlot->headUnitNode();
+					while (pCargoNode != NULL)
+					{
+						const CvUnit* pLoopCargo = ::getUnit(pCargoNode->m_data);
+						pCargoNode = pCargoPlot->nextUnitNode(pCargoNode);
+						if (pLoopCargo != NULL && pLoopCargo->getTransportUnit() == pUnit && pLoopCargo->getYield() != NO_YIELD && pLoopCargo->getYieldStored() > 0)
+						{
+							aiOnBoard[pLoopCargo->getYield()] += pLoopCargo->getYieldStored();
+						}
+					}
+				}
+				const CvPlayer& kCargoOwner = GET_PLAYER(pUnit->getOwnerINLINE());
+				int aiHarbour[3] = {0, 0, 0}; // Europe, Africa, Port Royal
+				bool bAnyGoods = false;
+				for (YieldTypes eOnBoard = FIRST_YIELD; eOnBoard < NUM_YIELD_TYPES; ++eOnBoard)
+				{
+					if (aiOnBoard[eOnBoard] > 0)
+					{
+						bAnyGoods = true;
+						aiHarbour[0] += kCargoOwner.getSellToEuropeProfit(eOnBoard, aiOnBoard[eOnBoard]);
+						aiHarbour[1] += kCargoOwner.getSellToAfricaProfit(eOnBoard, aiOnBoard[eOnBoard]);
+						aiHarbour[2] += kCargoOwner.getSellToPortRoyalProfit(eOnBoard, aiOnBoard[eOnBoard]);
+					}
+				}
+				if (bAnyGoods)
+				{
+					// only the harbours this ship can sail to
+					int aiReach[3];
+					int iHarbours = 0;
+					for (int iH = 0; iH < 3; ++iH)
+					{
+						if (pUnit->canReachHarbour(iH))
+						{
+							aiReach[iHarbours++] = iH;
+						}
+					}
+					int iBest = (iHarbours > 0) ? aiReach[0] : 0;
+					for (int iR = 1; iR < iHarbours; ++iR)
+					{
+						if (aiHarbour[aiReach[iR]] > aiHarbour[iBest])
+						{
+							iBest = aiReach[iR];
+						}
+					}
+					const char* aszHarbour[3] = {"TXT_KEY_WTP_HARBOR_EUROPE", "TXT_KEY_WTP_HARBOR_AFRICA", "TXT_KEY_WTP_HARBOR_PORT_ROYAL"};
+					CvWString szValues;
+					for (int iI = 0; iI < iHarbours; ++iI)
+					{
+						const int iH = aiReach[iI];
+						if (iI > 0)
+						{
+							szValues.append(L" / ");
+						}
+						if (iH == iBest)
+						{
+							szValues.append(CvWString::format(SETCOLR L"%s %d" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), gDLL->getText(aszHarbour[iH]).GetCString(), aiHarbour[iH]));
+						}
+						else
+						{
+							szValues.append(CvWString::format(L"%s %d", gDLL->getText(aszHarbour[iH]).GetCString(), aiHarbour[iH]));
+						}
+					}
+					if (iHarbours > 0)
+					{
+					szString.append(NEWLINE);
+					szString.append(gDLL->getText("TXT_KEY_WTP_CARGO_VALUE_HELP", szValues.GetCString()));
+					szString.append(CvWString::format(L"%c", GC.getSymbolID(GOLD_CHAR)));
+					// one line per good on board (marked with >>, the Python tooltip folds them into the child window of the line Total value):
+					// amount and the value in every harbour, the best harbour for this good in green
+					for (YieldTypes eRow = FIRST_YIELD; eRow < NUM_YIELD_TYPES; ++eRow)
+					{
+						if (aiOnBoard[eRow] <= 0)
+						{
+							continue;
+						}
+						int aiRow[3];
+						aiRow[0] = kCargoOwner.getSellToEuropeProfit(eRow, aiOnBoard[eRow]);
+						aiRow[1] = kCargoOwner.getSellToAfricaProfit(eRow, aiOnBoard[eRow]);
+						aiRow[2] = kCargoOwner.getSellToPortRoyalProfit(eRow, aiOnBoard[eRow]);
+						int iRowBest = aiReach[0];
+						for (int iR = 1; iR < iHarbours; ++iR)
+						{
+							if (aiRow[aiReach[iR]] > aiRow[iRowBest])
+							{
+								iRowBest = aiReach[iR];
+							}
+						}
+						szString.append(CvWString::format(L"\n\x00BB%d%c (", aiOnBoard[eRow], GC.getYieldInfo(eRow).getChar()));
+						for (int iI = 0; iI < iHarbours; ++iI)
+						{
+							const int iH = aiReach[iI];
+							if (iI > 0)
+							{
+								szString.append(L" / ");
+							}
+							if (iH == iRowBest)
+							{
+								szString.append(CvWString::format(SETCOLR L"%d" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), aiRow[iH]));
+							}
+							else
+							{
+								szString.append(CvWString::format(L"%d", aiRow[iH]));
+							}
+						}
+						szString.append(CvWString::format(L"%c)", GC.getSymbolID(GOLD_CHAR)));
+					}
+					}
+				}
+			}
+
 			//TAC Whaling, ray
 			if (pUnit->specialCargo() != NO_SPECIALUNIT && !pUnit->getUnitInfo().isGatherBoat())
 			{

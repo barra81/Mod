@@ -443,6 +443,8 @@ class CvMainInterface:
 	szLastTipError = u""
 	dHeaderUnits = {} # frozen window (prefix) -> {paragraph of the name of a unit: (owner, id)} as it was when the window was frozen
 	tAutoSelUnit = None # (owner, id) of the unit that the frozen tooltips of szAutoSelPrefix belong to
+	tForceAnchor = None # (x, y) of the plot that a tooltip opened by showLoadedUnitTip belongs to (makeAnchor)
+	tLoadTip = None # (x, y, turn, window, owner, id) of the unit whose tooltip showLoadedUnitTip opened: it closes when the unit has moved or the turn changed
 	fCursorTipShownAt = 0.0 # when the tooltip of the cursor was built (ms)
 	iSecondTipLines = 0
 	aszTipParas = []
@@ -1957,6 +1959,34 @@ class CvMainInterface:
 		return 0
 
 	# Will hide and show the selection buttons and their associated buttons
+	# WTP: is an own ship in the port of this sail command (Europe / Africa / Port Royal)?
+	def isOwnShipInPort(self, iAction):
+		try:
+			# the sail buttons are automate actions (AUTOMATE_SAIL_TO_*), recognized by their button art (the Africa / Port Royal
+			# automate types are not exposed to Python); the plain sail commands are handled as well
+			kAction = gc.getActionInfo(iAction)
+			szButton = kAction.getButton().lower()
+			iCommand = kAction.getCommandType()
+			if iCommand == CommandTypes.COMMAND_SAIL_TO_EUROPE or "sail_to_mother" in szButton:
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_EUROPE
+			elif iCommand == CommandTypes.COMMAND_SAIL_TO_AFRICA or "sail_to_africa" in szButton:
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_AFRICA
+			elif iCommand == CommandTypes.COMMAND_SAIL_TO_PORT_ROYAL or "sail_to_portroyal" in szButton:
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_PORT_ROYAL
+			else:
+				return False
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			(pUnit, iter) = pPlayer.firstUnit()
+			while (pUnit):
+				# the ships in a port have this travel state (the docks list of the player only holds the colonists)
+				if gc.getUnitInfo(pUnit.getUnitType()).getDomainType() == DomainTypes.DOMAIN_SEA:
+					if (pUnit.getUnitTravelState() == eState and not pUnit.isCargo() and not pUnit.isDelayedDeath()):
+						return True
+				(pUnit, iter) = pPlayer.nextUnit(iter)
+		except:
+			pass
+		return False
+
 	def updateSelectionButtons( self ):
 		global g_pSelectedUnit
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
@@ -2259,6 +2289,8 @@ class CvMainInterface:
 						ACTION_BUTTON_X_STEP = ACTION_BUTTON_X_STEP * iMaxSpace / iSpaceNeeded
 
 					ActionButtonList = []
+					for iRing in range(40):
+						screen.deleteWidget("WtpPortRing" + str(iRing))
 					for i in actions:
 						if CyInterface().canHandleAction(i, True):
 							Xcord = ACTION_BUTTON_X_BEGIN - iCount * ACTION_BUTTON_X_STEP - LARGE_BUTTON_SIZE
@@ -2269,8 +2301,16 @@ class CvMainInterface:
 							screen.setHitMargins(szName, 18, 18)
 							if not CyInterface().canHandleAction(i, False):
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_DISABLED_BUTTON").getPath())
-							elif pHeadSelectedUnit.isActionRecommended(i):
+							elif pHeadSelectedUnit.isActionRecommended(i) and not self.isOwnShipInPort(i):
+								# (WTP: the buttons to sail to Europe / Africa / Port Royal are marked with a ring when an own ship is in that port)
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath())
+							if CyInterface().canHandleAction(i, False) and self.isOwnShipInPort(i):
+								# WTP: a ring above the sail button (Europe / Africa / Port Royal) whose port has an own ship, a bit larger than the button
+								szRing = "WtpPortRing" + str(iCount)
+								iRingPad = -(LARGE_BUTTON_SIZE / 4)
+								screen.addDDSGFC(szRing, "Art/Interface/Game Hud/Actions/port_ring.dds", int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)
+								screen.setHitTest(szRing, HitTestTypes.HITTEST_NOHIT)
+								ActionButtonList.append(szRing)
 							ActionButtonList.append(szName)
 
 							iCount += 1
@@ -3699,18 +3739,19 @@ class CvMainInterface:
 
 	# WTP: own tooltip window at the mouse cursor (the tooltip of the game stays at its place). It shows the same text, is vertically
 	# centered on the cursor, right of it (left if there is no room) and lies in front of the HUD elements.
-	def showCursorTooltip( self, screen, szHelp, bWidget = False, bFromPending = False ):
+	# tForce = (x, y): the window is built at that place of the screen whatever the cursor does (showLoadedUnitTip)
+	def showCursorTooltip( self, screen, szHelp, bWidget = False, bFromPending = False, tForce = None ):
 		if not self.bHoverTip:
 			return
 		# (the cursor on a frozen window: its lines have tooltips of their own, the plot under the window is not interesting)
-		if self.bTipFrozen and self.getFrozenAt(gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()) >= 0:
+		if tForce is None and self.bTipFrozen and self.getFrozenAt(gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()) >= 0:
 			return
 		try:
 			# the help of the map plot is not shown while the cursor is on a HUD element (the game reports the plot behind it)
-			if not bWidget and self.isHudHover():
+			if tForce is None and not bWidget and self.isHudHover():
 				return
 			# the same on the own panels of the HUD: no plot help while the cursor is on them (a shown one goes away)
-			if not bWidget and self.isCursorOnOwnPanel():
+			if tForce is None and not bWidget and self.isCursorOnOwnPanel():
 				self.szSuppressHelp = u""
 				self.hideCursorTooltip(screen)
 				return
@@ -3719,18 +3760,21 @@ class CvMainInterface:
 				self.hideCursorTooltip(screen)
 				return
 			# the tooltip of the thing that was just frozen does not appear a second time at once
-			if szHelp == self.szSuppressHelp:
+			if tForce is None and szHelp == self.szSuppressHelp:
 				return
 			self.szSuppressHelp = u""
 			iCursorX = gc.getGame().getCursorClientX()
 			iCursorY = gc.getGame().getCursorClientY()
+			if tForce is not None:
+				iCursorX = tForce[0]
+				iCursorY = tForce[1]
 			# the same text again with the cursor near the last place: the window stays as it is (no flicker)
-			if self.bCursorTipShown and szHelp == self.szCursorTipText and abs(iCursorX - self.tCursorTipAt[0]) < 80 and abs(iCursorY - self.tCursorTipAt[1]) < 80:
+			if tForce is None and self.bCursorTipShown and szHelp == self.szCursorTipText and abs(iCursorX - self.tCursorTipAt[0]) < 80 and abs(iCursorY - self.tCursorTipAt[1]) < 80:
 				return
 			# tooltip delay: a tooltip waits until the cursor has rested for the time of the option. Another text (the cursor has gone from one
 			# thing to the next) removes the tooltip that is shown and starts the time again
 			# (in the import / export window the tooltips come at once, whatever the delay is)
-			if self.iTipDelay != 0 and not bFromPending and not self.isCursorInTradeWindow() and (not self.bCursorTipShown or (szHelp != self.szCursorTipText and not self.bTipQuick)):
+			if tForce is None and self.iTipDelay != 0 and not bFromPending and not self.isCursorInTradeWindow() and (not self.bCursorTipShown or (szHelp != self.szCursorTipText and not self.bTipQuick)):
 				if self.bCursorTipShown:
 					self.hideCursorTooltip(screen)
 				if self.szPendingHelp is None:
@@ -3783,7 +3827,7 @@ class CvMainInterface:
 					self.tTipWp = None
 			# a plot that is saved as a waypoint says so in its last line (above the hint of the freezing)
 			try:
-				if not bWidget and not self.bHudHover and self.getTerrainLineIndex(aszParas) >= 0:
+				if tForce is None and not bWidget and not self.bHudHover and self.getTerrainLineIndex(aszParas) >= 0:
 					pPlotWp = CyInterface().getMouseOverPlot()
 					if pPlotWp is not None and not pPlotWp.isNone():
 						szWp = self.getWaypointPlotLine(pPlotWp.getX(), pPlotWp.getY())
@@ -6074,6 +6118,70 @@ class CvMainInterface:
 		except:
 			self.tipError("onUnitActivated")
 
+	# Shift + click on the button "Load cargo" (the DLL calls this after the goods are loaded): the tooltip of the ship opens frozen, as if the
+	# ship stood alone on its plot (its own help text, then the lines of the plot). It closes with the next order of the ship (onWaypointMission,
+	# as the tooltip of a unit that was selected from a stack), when the ship has moved away or the turn has changed (updateLoadTip).
+	def showLoadedUnitTip( self, iUnitId ):
+		try:
+			if not self.bHoverTip or self.isPediaActive() or CyInterface().isCityScreenUp():
+				return
+			ePlayer = gc.getGame().getActivePlayer()
+			pUnit = gc.getPlayer(ePlayer).getUnit(iUnitId)
+			if pUnit is None or pUnit.isNone():
+				return
+			pPlot = pUnit.plot()
+			if pPlot is None or pPlot.isNone():
+				return
+			szUnit = CyGameTextMgr().getSpecificUnitHelp(pUnit, False, True).strip()
+			if len(szUnit) == 0:
+				return
+			szHelp = szUnit
+			try:
+				# the lines of the plot: what the help text of the plot has behind the lines of its units
+				aPlotRaw = self.stripCarries(CyGameTextMgr().getPlotHelp(pPlot)).split(u"\n")
+				iPlotStart = self.getPlotStartPara(self.carryColors(aPlotRaw), pPlot)
+				if iPlotStart < len(aPlotRaw):
+					szHelp += u"\n" + u"\n".join(aPlotRaw[iPlotStart:])
+			except:
+				self.tipError("showLoadedUnitTip plot lines")
+			if len(self.szAutoSelPrefix) > 0:
+				self.closeAutoSelWindows()
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			self.tForceAnchor = (pPlot.getX(), pPlot.getY())
+			try:
+				self.showCursorTooltip(screen, szHelp, False, True, self.getPlotScreen(pPlot.getX(), pPlot.getY()))
+				if self.bCursorTipShown and self.szCursorTipText == szHelp and self.freezeCursorTooltip() and len(self.aFrozen) > 0:
+					self.szAutoSelPrefix = self.aFrozen[-1][0]
+					self.tAutoSelUnit = (pUnit.getOwner(), pUnit.getID())
+					self.tLoadTip = (pPlot.getX(), pPlot.getY(), gc.getGame().getGameTurn(), self.aFrozen[-1][0], pUnit.getOwner(), pUnit.getID())
+			finally:
+				self.tForceAnchor = None
+		except:
+			self.tipError("showLoadedUnitTip")
+
+	# every frame: the tooltip of showLoadedUnitTip closes when the ship has left its plot or the turn has changed
+	def updateLoadTip( self ):
+		try:
+			tLoad = self.tLoadTip
+			if tLoad is None:
+				return
+			bOpen = False
+			for tFz in self.aFrozen:
+				if tFz[0] == tLoad[3]:
+					bOpen = True
+					break
+			if not bOpen:
+				self.tLoadTip = None
+				return
+			pUnit = gc.getPlayer(tLoad[4]).getUnit(tLoad[5])
+			if pUnit is None or pUnit.isNone() or pUnit.getX() != tLoad[0] or pUnit.getY() != tLoad[1] or gc.getGame().getGameTurn() != tLoad[2]:
+				self.tLoadTip = None
+				if self.szAutoSelPrefix == tLoad[3]:
+					self.closeAutoSelWindows()
+		except:
+			self.tLoadTip = None
+			self.tipError("updateLoadTip")
+
 	# the window that the choice is for: the tooltip of the cursor (-2), a frozen tooltip of the good under the cursor (its index; after a jump
 	# the tooltip of the good is frozen), -1: none
 	def getTradeTipTarget( self ):
@@ -6686,6 +6794,9 @@ class CvMainInterface:
 	# plot under the cursor and the distance of the window to the place of that plot on the screen. None: the window stays on the screen.
 	def makeAnchor( self, tLayout, tPlot = None ):
 		try:
+			if tPlot is None and self.tForceAnchor is not None:
+				# (the tooltip that was opened by the game for a unit: it belongs to the plot of the unit, the cursor is somewhere else)
+				tPlot = self.tForceAnchor
 			if tPlot is None:
 				if self.bHudHover:
 					return None
@@ -9593,6 +9704,7 @@ class CvMainInterface:
 			pass
 		self.updateEscHold()
 		self.updateAutoFreeze()
+		self.updateLoadTip()
 		self.updateTradeTipSelect()
 		if self.bXHeld and not self.bXHoldDone and self.getTipNow() - self.fXStart >= 600:
 			# X held: all frozen windows are closed; with stacked import / export windows (jumps) all of them and back to the start of the first jump

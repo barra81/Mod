@@ -160,6 +160,8 @@ public:
 	//void loadYield(YieldTypes eYield, bool bTrade);
 	//void loadYieldAmount(YieldTypes eYield, int iAmount, bool bTrade);
 	int loadYield(YieldTypes eYield, bool bTrade);
+	void loadAllYieldsByValue(); // WTP: Shift + click on the button Load goods
+	bool canReachHarbour(int iHarbour) const; // WTP: 0 Europe, 1 Africa, 2 Port Royal: can this unit sell there at all (ship type, trade rights), regardless of its moves
 	int loadYieldAmount(YieldTypes eYield, int iAmount, bool bTrade);
 	//R&R mod, vetiarvind, max yield import limit - end
 	int getMaxLoadYieldAmount(YieldTypes eYield) const;
@@ -179,6 +181,7 @@ public:
 	void unloadStoredAmountIntoCity(int iAmount);
 	bool canUnloadAll() const;
 	void unloadAll();
+	void unloadAllTransportsOnPlot(); // WTP: unload all of all own transports of the same domain on the plot (Shift + click on Unload all, Ctrl + Shift + U)
 
 	bool canLearn() const;
 	void learn();

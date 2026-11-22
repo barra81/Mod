@@ -203,11 +203,11 @@
 			<bShiftDown>1</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>1</iHotKeyPriority>
-			<HotKeyAlt/>
+			<HotKeyAlt>KB_U</HotKeyAlt>
 			<bAltDownAlt>0</bAltDownAlt>
-			<bShiftDownAlt>0</bShiftDownAlt>
-			<bCtrlDownAlt>0</bCtrlDownAlt>
-			<iHotKeyPriorityAlt>0</iHotKeyPriorityAlt>
+			<bShiftDownAlt>1</bShiftDownAlt>
+			<bCtrlDownAlt>1</bCtrlDownAlt>
+			<iHotKeyPriorityAlt>1</iHotKeyPriorityAlt>
 			<bVisible>1</bVisible>
 			<Button>Art/Interface/Game Hud/Actions/unload_all_high_res.dds</Button>
 		</CommandInfo>

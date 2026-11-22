@@ -1308,7 +1308,7 @@ void CvDLLWidgetData::doPlayerHurry(const CvWidgetDataStruct &widgetDataStruct)
 
 void CvDLLWidgetData::doAction(const CvWidgetDataStruct &widgetDataStruct)
 {
-	GC.getGameINLINE().handleAction(widgetDataStruct.m_iData1);
+	GC.getGameINLINE().handleActionEx(widgetDataStruct.m_iData1, true);
 }
 
 void CvDLLWidgetData::doContactCiv(const CvWidgetDataStruct &widgetDataStruct)

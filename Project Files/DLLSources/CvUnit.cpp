@@ -3233,6 +3233,20 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 
 		case COMMAND_LOAD_CARGO:
+			if (iData1 == 1)
+			{
+				// WTP: fill all free cargo slots (Shift + click on the button)
+				loadAllYieldsByValue();
+				// WTP: the tooltip of the ship opens frozen as if it stood alone on its plot, it closes with the next order of the ship or at the turn
+				// change (python: CvMainInterface.showLoadedUnitTip)
+				if (getOwnerINLINE() == GC.getGameINLINE().getActivePlayer())
+				{
+					CyArgsList argsListTip;
+					argsListTip.add(getID());
+					gDLL->getPythonIFace()->callFunction(PYScreensModule, "wtpShowLoadedUnitTip", argsListTip.makeFunctionArgs());
+				}
+			}
+			else
 			{
 				CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_LOAD_CARGO);
 				gDLL->getInterfaceIFace()->addPopup(pInfo);
@@ -3454,7 +3468,14 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 
 		case COMMAND_UNLOAD_ALL:
-			unloadAll();
+			if (iData1 == 1)
+			{
+				unloadAllTransportsOnPlot();
+			}
+			else
+			{
+				unloadAll();
+			}
 			bCycle = true;
 			break;
 
@@ -5257,6 +5278,195 @@ int CvUnit::loadYieldAmount(YieldTypes eYield, int iAmount, bool bTrade)
 	return iAmount; //R&R mod, vetiarvind, max yield import limit
 }
 
+// WTP: fills all free cargo slots with goods of the city, one slot after the other, always with the most valuable good (the sell price for 100 units in the
+// harbour where the whole load of a sea transport sells best, see below) that can still be loaded and would fill at least 15% of a slot (without food, trade goods, livestock, building material, military goods, raw materials); the same good again as long as the city has more of it
+// WTP: can this ship sell in the harbour at all (ship type and the rights of the player), regardless of moves left or where it is now
+bool CvUnit::canReachHarbour(int iHarbour) const
+{
+	const CvPlayer& kOwner = GET_PLAYER(getOwnerINLINE());
+	if (getDomainType() != DOMAIN_SEA || (kOwner.getParent() == NO_PLAYER && !kOwner.isEurope()))
+	{
+		return false;
+	}
+	if (iHarbour == 1)
+	{
+		return getUnitInfo().canSailToAfrica() && kOwner.canTradeWithAfrica();
+	}
+	if (iHarbour == 2)
+	{
+		return (getUnitInfo().isHiddenNationality() || getUnitInfo().isSlaveShip()) && kOwner.canTradeWithPortRoyal();
+	}
+	return getUnitInfo().canSailToEurope() && kOwner.canTradeWithEurope();
+}
+
+static int wtpHarbourProfit(const CvPlayer& kOwner, int iHarbour, YieldTypes eYield, int iAmount)
+{
+	if (iHarbour == 1)
+	{
+		return kOwner.getSellToAfricaProfit(eYield, iAmount);
+	}
+	if (iHarbour == 2)
+	{
+		return kOwner.getSellToPortRoyalProfit(eYield, iAmount);
+	}
+	return kOwner.getSellToEuropeProfit(eYield, iAmount);
+}
+
+void CvUnit::loadAllYieldsByValue()
+{
+	bool abExcluded[NUM_YIELD_TYPES];
+	for (int i = 0; i < NUM_YIELD_TYPES; ++i)
+	{
+		abExcluded[i] = false;
+	}
+	// not loaded: food, trade goods, livestock, building material, military goods and all raw materials (goods that a profession turns into another good)
+	static const char* const aszExcluded[] = {
+		"YIELD_FOOD", "YIELD_TRADE_GOODS", // food and the goods for trading with the natives
+		"YIELD_CLAY", "YIELD_STONE", "YIELD_TOOLS", "YIELD_HORSES", "YIELD_SAILCLOTH", "YIELD_HARDWOOD", "YIELD_ROPE", // building material
+		"YIELD_MUSKETS", "YIELD_BLADES", "YIELD_CANNONS", "YIELD_BLACK_POWDER", "YIELD_BAKERY_GOODS" // military goods
+	};
+	for (int i = 0; i < (int)(sizeof(aszExcluded) / sizeof(aszExcluded[0])); ++i)
+	{
+		const int iYield = GC.getInfoTypeForString(aszExcluded[i], true);
+		if (iYield >= 0 && iYield < NUM_YIELD_TYPES)
+		{
+			abExcluded[iYield] = true;
+		}
+	}
+	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+	{
+		if (GC.getYieldInfo(eYield).isLivestock())
+		{
+			abExcluded[eYield] = true;
+		}
+	}
+	for (int iProf = 0; iProf < GC.getNumProfessionInfos(); ++iProf)
+	{
+		const CvProfessionInfo& kProfession = GC.getProfessionInfo((ProfessionTypes)iProf);
+		if (kProfession.getNumYieldsProduced() > 0)
+		{
+			for (int k = 0; k < kProfession.getNumYieldsConsumed(); ++k)
+			{
+				const int iConsumed = kProfession.getYieldsConsumed(k);
+				if (iConsumed >= 0 && iConsumed < NUM_YIELD_TYPES)
+				{
+					abExcluded[iConsumed] = true;
+				}
+			}
+		}
+	}
+	const CvPlayer& kOwner = GET_PLAYER(getOwnerINLINE());
+	// goods that would fill less than 15% of a slot are skipped
+	const int iMinAmount = (15 * GC.getGameINLINE().getCargoYieldCapacity() + 99) / 100;
+	// all goods of one trip should sell best in one harbour: for every harbour the ship can reach the whole load (what is on board plus what the
+	// free slots would take, the best goods for this harbour first) is valued, the harbour with the highest total value decides the order of loading
+	int iHarbour = 0;
+	const CvCity* const pLoadCity = plot()->getPlotCity();
+	if (getDomainType() == DOMAIN_SEA && pLoadCity != NULL)
+	{
+		const int iFreeSlots = std::max(0, cargoSpace() - getCargo());
+		const int iCapacity = GC.getGameINLINE().getCargoYieldCapacity();
+		int iBestTotal = -1;
+		for (int iH = 0; iH < 3; ++iH)
+		{
+			if (!canReachHarbour(iH))
+			{
+				continue;
+			}
+			int aiAvailable[NUM_YIELD_TYPES];
+			for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+			{
+				aiAvailable[eYield] = (isHuman() && !isAutomated()) ? pLoadCity->getYieldStored(eYield) : pLoadCity->getExportAvailable(eYield);
+			}
+			int iTotal = 0;
+			// what is on board already
+			int aiOnBoard[NUM_YIELD_TYPES];
+			for (int i = 0; i < NUM_YIELD_TYPES; ++i)
+			{
+				aiOnBoard[i] = 0;
+			}
+			CvPlot* pShipPlot = plot();
+			for (CLLNode<IDInfo>* pNode = pShipPlot->headUnitNode(); pNode != NULL; pNode = pShipPlot->nextUnitNode(pNode))
+			{
+				const CvUnit* pLoopCargo = ::getUnit(pNode->m_data);
+				if (pLoopCargo != NULL && pLoopCargo->getTransportUnit() == this && pLoopCargo->getYield() != NO_YIELD)
+				{
+					aiOnBoard[pLoopCargo->getYield()] += pLoopCargo->getYieldStored();
+				}
+			}
+			for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+			{
+				if (aiOnBoard[eYield] > 0)
+				{
+					iTotal += wtpHarbourProfit(kOwner, iH, eYield, aiOnBoard[eYield]);
+				}
+			}
+			for (int iSlot = 0; iSlot < iFreeSlots; ++iSlot)
+			{
+				YieldTypes eSlotBest = NO_YIELD;
+				int iSlotBestValue = 0;
+				for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+				{
+					const int iAmount = std::min(iCapacity, aiAvailable[eYield]);
+					if (abExcluded[eYield] || iAmount < iMinAmount || !canLoadYield(plot(), eYield, false))
+					{
+						continue;
+					}
+					const int iValue = wtpHarbourProfit(kOwner, iH, eYield, iAmount);
+					if (iValue > iSlotBestValue)
+					{
+						iSlotBestValue = iValue;
+						eSlotBest = eYield;
+					}
+				}
+				if (eSlotBest == NO_YIELD)
+				{
+					break;
+				}
+				iTotal += iSlotBestValue;
+				aiAvailable[eSlotBest] -= std::min(iCapacity, aiAvailable[eSlotBest]);
+			}
+			if (iTotal > iBestTotal)
+			{
+				iBestTotal = iTotal;
+				iHarbour = iH;
+			}
+		}
+	}
+	const bool bSeaTarget = (getDomainType() == DOMAIN_SEA && canReachHarbour(iHarbour));
+	for (int iGuard = 0; iGuard < 100; ++iGuard)
+	{
+		YieldTypes eBest = NO_YIELD;
+		int iBestValue = -1;
+		for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+		{
+			if (abExcluded[eYield] || !canLoadYield(plot(), eYield, false) || getMaxLoadYieldAmount(eYield) < iMinAmount)
+			{
+				continue;
+			}
+			const int iValue = wtpHarbourProfit(kOwner, iHarbour, eYield, 100);
+			// a good that cannot be sold in the target harbour (boycott, not tradable there) is skipped
+			if (bSeaTarget && iValue <= 0)
+			{
+				continue;
+			}
+			if (iValue > iBestValue)
+			{
+				iBestValue = iValue;
+				eBest = eYield;
+			}
+		}
+		if (eBest == NO_YIELD)
+		{
+			break;
+		}
+		if (loadYield(eBest, false) <= 0)
+		{
+			abExcluded[eBest] = true;
+		}
+	}
+}
+
 // Returns how much of eYield the city can safely export (stored minus auto-maintain threshold, clamped to zero).
 int CvUnit::getMaxLoadYieldAmount(YieldTypes eYield) const
 {
@@ -6169,6 +6379,36 @@ void CvUnit::unloadAll()
 				FAssert(isHuman());
 				pLoopUnit->getGroup()->setActivityType(ACTIVITY_AWAKE);
 			}
+		}
+	}
+}
+
+void CvUnit::unloadAllTransportsOnPlot()
+{
+	CvPlot* pPlot = plot();
+	if (pPlot == NULL)
+	{
+		return;
+	}
+
+	// (only the transports of the domain of this one: land transports with land transports, ships with ships)
+	// (the transports are collected first: unloading changes the list of the units on the plot)
+	std::vector<IDInfo> aTransports;
+	CLLNode<IDInfo>* pUnitNode = pPlot->headUnitNode();
+	while (pUnitNode != NULL)
+	{
+		CvUnit* pLoopUnit = pPlot->getUnitNodeLoop(pUnitNode);
+		if (pLoopUnit != NULL && pLoopUnit->getOwnerINLINE() == getOwnerINLINE() && pLoopUnit->getDomainType() == getDomainType() && pLoopUnit->getCargo() > 0)
+		{
+			aTransports.push_back(pLoopUnit->getIDInfo());
+		}
+	}
+	for (size_t i = 0; i < aTransports.size(); ++i)
+	{
+		CvUnit* pTransport = ::getUnit(aTransports[i]);
+		if (pTransport != NULL)
+		{
+			pTransport->unloadAll(); // (does nothing for a transport that cannot unload)
 		}
 	}
 }

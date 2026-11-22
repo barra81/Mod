@@ -98,6 +98,13 @@ def startGotoWaypointMode(argsList):
 	except:
 		pass
 
+# Shift + click on the button "Load cargo": the tooltip of the ship opens frozen (called by the DLL after the goods are loaded)
+def wtpShowLoadedUnitTip(argsList):
+	try:
+		mainInterface.showLoadedUnitTip(argsList[0])
+	except:
+		pass
+
 def numPlotListButtons():
 	return mainInterface.numPlotListButtons()
 

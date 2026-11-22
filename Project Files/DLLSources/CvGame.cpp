@@ -2751,6 +2751,11 @@ void CvGame::setupActionCache()
 
 void CvGame::handleAction(int iAction)
 {
+	handleActionEx(iAction, false);
+}
+
+void CvGame::handleActionEx(int iAction, bool bClicked)
+{
 	CxDesyncMonitor StartMonitoring;
 
 	CvUnit* pHeadSelectedUnit;
@@ -2817,8 +2822,16 @@ void CvGame::handleAction(int iAction)
 		}
 		else if (GC.getActionInfo(iAction).getCommandType() == COMMAND_LOAD_CARGO)
 		{
-			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_LOAD_CARGO);
-			gDLL->getInterfaceIFace()->addPopup(pInfo);
+			if (bShift && bClicked)
+			{
+				// WTP: Shift + click on the button: all free cargo slots are filled at once, the most valuable good first (iData1 = 1, see CvUnit::doCommand)
+				selectionListGameNetMessage(GAMEMESSAGE_DO_COMMAND, COMMAND_LOAD_CARGO, 1, -1, 0, bAlt);
+			}
+			else
+			{
+				CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_LOAD_CARGO);
+				gDLL->getInterfaceIFace()->addPopup(pInfo);
+			}
 			bSkip = true;
 		}
 
@@ -2833,7 +2846,14 @@ void CvGame::handleAction(int iAction)
 			}
 			else
 			{
-				selectionListGameNetMessage(GAMEMESSAGE_DO_COMMAND, GC.getActionInfo(iAction).getCommandType(), GC.getActionInfo(iAction).getCommandData(), -1, 0, bAlt);
+				int iCommandData = GC.getActionInfo(iAction).getCommandData();
+				// WTP: unload all with Shift + click on the button or with Ctrl + Shift + U (the second hotkey of the command): all transports on
+				// the plot of the selected one are unloaded (iData1 = 1), Shift + U unloads the selected transport only as before
+				if (GC.getActionInfo(iAction).getCommandType() == COMMAND_UNLOAD_ALL && bShift && (bClicked || gDLL->ctrlKey()))
+				{
+					iCommandData = 1;
+				}
+				selectionListGameNetMessage(GAMEMESSAGE_DO_COMMAND, GC.getActionInfo(iAction).getCommandType(), iCommandData, -1, 0, bAlt);
 			}
 		}
 	}

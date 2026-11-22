@@ -86,6 +86,7 @@ public:
 	DllExport bool canHandleAction(int iAction, CvPlot* pPlot = NULL, bool bTestVisible = false, bool bUseCache = false);
 	DllExport void setupActionCache();
 	DllExport void handleAction(int iAction);
+	void handleActionEx(int iAction, bool bClicked); // WTP: bClicked: a click on the action button (the game calls handleAction for the hotkeys)
 
 	bool canDoControl(ControlTypes eControl);
 	DllExport void doControl(ControlTypes eControl);
