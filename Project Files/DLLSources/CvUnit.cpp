@@ -25,6 +25,7 @@
 #include "CvInfos.h"
 #include "FProfiler.h"
 #include "CvPopupInfo.h"
+#include "CvDLLButtonPopup.h"
 #include "CvArtFileMgr.h"
 #include "CvDiploParameters.h"
 #include "CvTradeRoute.h"
@@ -3317,7 +3318,8 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 		case COMMAND_PROFESSION:
 			if (iData1 == -1)
 			{
-				if (gDLL->getInterfaceIFace()->getHeadSelectedUnit() == this)
+				// WTP: a unit that belongs to the group of selected units that is already being asked for opens no popup of its own (CvDLLButtonPopup.cpp, WtpProfessionBatch)
+				if (gDLL->getInterfaceIFace()->getHeadSelectedUnit() == this && !WtpProfessionBatch::isWaiting(getID()))
 				{
 					CvPlot* pPlot = plot();
 					if (pPlot != NULL)
@@ -3325,6 +3327,19 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 						CvCity* pCity = pPlot->getPlotCity();
 						if (pCity != NULL)
 						{
+							// the other selected units in the colony: they get the profession that is chosen, as far as the colony has free places for it
+							std::vector<int> aOtherSelected;
+							CLLNode<IDInfo>* pSelectedNode = gDLL->getInterfaceIFace()->headSelectionListNode();
+							while (pSelectedNode != NULL)
+							{
+								CvUnit* const pSelected = ::getUnit(pSelectedNode->m_data);
+								pSelectedNode = gDLL->getInterfaceIFace()->nextSelectionListNode(pSelectedNode);
+								if (pSelected != NULL && pSelected != this && pSelected->getOwnerINLINE() == getOwnerINLINE() && pSelected->plot() == pPlot && pSelected->getProfession() != NO_PROFESSION)
+								{
+									aOtherSelected.push_back(pSelected->getID());
+								}
+							}
+							WtpProfessionBatch::begin(aOtherSelected);
 							CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSE_PROFESSION, pCity->getID(), getID());
 							gDLL->getInterfaceIFace()->addPopup(pInfo, getOwnerINLINE(), true, true);
 						}

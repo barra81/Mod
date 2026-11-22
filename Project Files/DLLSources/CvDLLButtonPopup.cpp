@@ -3,6 +3,7 @@
 #include "CvGameCoreDLL.h"
 #include "CvDLLButtonPopup.h"
 #include <algorithm>
+#include <ctime>
 #include <utility>
 #include "CvGlobals.h"
 #include "CvPlayerAI.h"
@@ -469,6 +470,10 @@ void CvDLLButtonPopup::OnEscape(CvPopup& popup, CvPopupInfo &info)
 		return;
 	}
 
+	if (info.getButtonPopupType() == BUTTONPOPUP_CHOOSE_PROFESSION)
+	{
+		WtpProfessionBatch::end();
+	}
 	switch (info.getButtonPopupType())
 	{
 	case BUTTONPOPUP_CHOOSE_PROFESSION:
@@ -1067,6 +1072,10 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 		break;
 
 	case BUTTONPOPUP_CHOOSE_PROFESSION:
+		if (pPopupReturn->getButtonClicked() == -1 || pPopupReturn->getButtonClicked() == -2 || pPopupReturn->getButtonClicked() >= GC.getNumProfessionInfos())
+		{
+			WtpProfessionBatch::end(); // (no profession was chosen: the group of selected units is over)
+		}
 		if (pPopupReturn->getButtonClicked() == -1)
 		{
 			gDLL->sendDoTask(info.getData1(), TASK_SET_CITIZEN_AUTOMATED, info.getData2(), pPopupReturn->getButtonClicked(), false, false, false, false);
@@ -1082,6 +1091,8 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 			if (GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getUnit(info.getData2()) != NULL)
 			{
 				gDLL->sendDoCommand(info.getData2(), COMMAND_PROFESSION, pPopupReturn->getButtonClicked(), -1, false);
+				// WTP: several selected units: the others get the same profession as far as the colony has free places for it
+				WtpProfessionBatch::apply(info.getData1(), info.getData2(), (ProfessionTypes)pPopupReturn->getButtonClicked(), info.getData3());
 			}
 			else if (GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getEuropeUnitById(info.getData2()) != NULL)
 			{
@@ -1747,6 +1758,10 @@ bool CvDLLButtonPopup::launchButtonPopup(CvPopup* pPopup, CvPopupInfo &info)
 		break;
 	case BUTTONPOPUP_CHOOSE_PROFESSION:
 		bLaunched = launchChooseProfessionPopup(pPopup, info);
+		if (!bLaunched)
+		{
+			WtpProfessionBatch::end();
+		}
 		break;
 	case BUTTONPOPUP_PURCHASE_EUROPE_UNIT:
 		bLaunched = launchPurchaseEuropeUnitPopup(pPopup, info);
@@ -2435,6 +2450,144 @@ static int countOpenProfessionSlots(const CvPlayer& kPlayer, ProfessionTypes ePr
 	}
 
 	return iOpen;
+}
+
+namespace WtpProfessionBatch
+{
+	// the units that are still to be asked for
+	static std::vector<int> s_aRemaining;
+	// the units that were handled or are asked for just now: their own (queued) Change profession commands of the same click must not open popups
+	// (kept only for a few seconds, then a new click on the button works for them again)
+	static std::vector<int> s_aGuard;
+	static clock_t s_iGuardTime = 0;
+	static const clock_t GUARD_TICKS = 5 * CLOCKS_PER_SEC;
+
+	void begin(const std::vector<int>& aOtherUnits)
+	{
+		s_aRemaining = aOtherUnits;
+		s_aGuard.clear();
+		s_iGuardTime = clock();
+	}
+
+	bool isWaiting(int iUnitId)
+	{
+		if (std::find(s_aRemaining.begin(), s_aRemaining.end(), iUnitId) != s_aRemaining.end())
+		{
+			return true;
+		}
+		return (clock() - s_iGuardTime < GUARD_TICKS) && std::find(s_aGuard.begin(), s_aGuard.end(), iUnitId) != s_aGuard.end();
+	}
+
+	void end()
+	{
+		s_aRemaining.clear();
+		s_aGuard.clear();
+	}
+
+	void apply(int iCityId, int iPopupUnitId, ProfessionTypes eProfession, int iFlag)
+	{
+		const PlayerTypes ePlayer = GC.getGameINLINE().getActivePlayer();
+		std::vector<int> aRest;
+		aRest.swap(s_aRemaining);
+		CvCity* const pCity = (ePlayer != NO_PLAYER) ? GET_PLAYER(ePlayer).getCity(iCityId) : NULL;
+		if (pCity == NULL || aRest.empty() || eProfession == NO_PROFESSION)
+		{
+			return;
+		}
+		const CvProfessionInfo& kProfession = GC.getProfessionInfo(eProfession);
+		// the free places of the colony for the profession (the commands of this group are not executed yet, so they are counted here)
+		const bool bLimited = kProfession.isCitizen();
+		int iFreePlots = 0;
+		int iFreeBuilding = 0;
+		if (bLimited)
+		{
+			if (kProfession.isWorkPlot())
+			{
+				iFreePlots = pCity->getNumAvailableWorkPlots();
+			}
+			else
+			{
+				for (BuildingTypes eBuilding = FIRST_BUILDING; eBuilding < NUM_BUILDING_TYPES; ++eBuilding)
+				{
+					if (GC.getBuildingInfo(eBuilding).getSpecialBuildingType() == kProfession.getSpecialBuilding() && pCity->isHasBuilding(eBuilding))
+					{
+						iFreeBuilding += GC.getBuildingInfo(eBuilding).getMaxWorkers();
+					}
+				}
+				for (int i = 0; i < pCity->getPopulation(); ++i)
+				{
+					const CvUnit* const pWorker = pCity->getPopulationUnitByIndex(i);
+					if (pWorker != NULL && pWorker->getProfession() != NO_PROFESSION && GC.getProfessionInfo(pWorker->getProfession()).getSpecialBuilding() == kProfession.getSpecialBuilding())
+					{
+						--iFreeBuilding;
+					}
+				}
+			}
+		}
+		// the unit of the popup takes its place first, the others follow in the order of the selection
+		std::vector<int> aOrder;
+		aOrder.push_back(iPopupUnitId);
+		aOrder.insert(aOrder.end(), aRest.begin(), aRest.end());
+		s_aGuard.insert(s_aGuard.end(), aOrder.begin(), aOrder.end());
+		s_iGuardTime = clock();
+		std::vector<int> aLeft;
+		for (size_t i = 0; i < aOrder.size(); ++i)
+		{
+			CvUnit* const pUnit = GET_PLAYER(ePlayer).getUnit(aOrder[i]);
+			if (pUnit == NULL || pUnit->getProfession() == NO_PROFESSION || pUnit->plot() != pCity->plot())
+			{
+				continue;
+			}
+			bool bTakesPlace = true;
+			if (bLimited)
+			{
+				if (kProfession.isWorkPlot())
+				{
+					if (!pCity->isUnitWorkingAnyPlot(pUnit))
+					{
+						bTakesPlace = (iFreePlots > 0);
+						if (bTakesPlace)
+						{
+							--iFreePlots;
+						}
+					}
+				}
+				else if (pUnit->getProfession() == NO_PROFESSION || GC.getProfessionInfo(pUnit->getProfession()).getSpecialBuilding() != kProfession.getSpecialBuilding())
+				{
+					bTakesPlace = (iFreeBuilding > 0);
+					if (bTakesPlace)
+					{
+						--iFreeBuilding;
+					}
+				}
+			}
+			if (i == 0)
+			{
+				continue; // (the command for the unit of the popup is sent by the caller)
+			}
+			if (pUnit->getProfession() == eProfession)
+			{
+				continue; // (already has it)
+			}
+			if (bTakesPlace && pUnit->canHaveProfession(eProfession, true, pCity->plot()))
+			{
+				gDLL->sendDoCommand(pUnit->getID(), COMMAND_PROFESSION, eProfession, -1, false);
+			}
+			else
+			{
+				aLeft.push_back(pUnit->getID());
+			}
+		}
+		if (!aLeft.empty())
+		{
+			// the profession is full (or not possible for them): the popup asks again for the rest
+			const int iNext = aLeft[0];
+			aLeft.erase(aLeft.begin());
+			s_aRemaining = aLeft;
+			CvPopupInfo* const pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSE_PROFESSION, iCityId, iNext, iFlag);
+			gDLL->getInterfaceIFace()->addPopup(pInfo, ePlayer, true, true);
+		}
+	}
 }
 
 namespace WtpDeferredEducation
