@@ -4736,6 +4736,13 @@ class CvMainInterface:
 		if self.iTipMode == 1:
 			return (HELTTEXT_AREA_X_MARGIN, max(4, yRes - SADDLE_HEIGHT - iHeight))
 		if self.isPopupWidgetTip():
+			# the popup of the production of a city (1440p only; the popup is about 400 pixels wide, its left edge about 175 pixels left of the middle of the
+			# screen, measured at 2560 x 1440): the tooltip stands right beside it, on its left
+			try:
+				if yRes == 1440 and self.iLastWidgetType in (int(WidgetTypes.WIDGET_TRAIN), int(WidgetTypes.WIDGET_CONSTRUCT)):
+					return (max(4, xRes / 2 - 175 - 12 - iWidth), max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2)))
+			except:
+				pass
 			# (the popup stands in the middle of the screen, about half of its width: the left edge is free)
 			return (max(4, int(xRes * 0.01)), max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2)))
 		iGap = max(48, int(yRes * 0.04))
