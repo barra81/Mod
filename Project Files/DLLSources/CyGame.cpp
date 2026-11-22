@@ -827,7 +827,7 @@ bool CyGame::isChurchPlayer(int /*PlayerTypes*/ ePlayer)
 }
 // R&R, ray, the Church - END
 
-// WTP: the mouse wheel for the amount dialog: the window procedure of the game window is replaced while the dialog is open,
+// WTP: the mouse wheel for the python windows (import / export, amount dialog, nested tooltips): the window procedure of the game window is replaced while the window is open,
 // the wheel messages are counted (and not passed on: the map does not zoom), everything else goes to the original procedure
 #ifndef WM_MOUSEWHEEL
 #define WM_MOUSEWHEEL 0x020A
@@ -895,6 +895,37 @@ bool CyGame::isCtrlKeyPressed() const
 	return (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
 }
 
+bool CyGame::isShiftKeyPressed() const
+{
+	return (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+}
+
+// WTP: the mouse position in the game window (the window is moved with the mouse)
+static bool wtpGetCursor(POINT& pt)
+{
+	if (!GetCursorPos(&pt)) return false;
+	HWND hWnd = GetForegroundWindow();
+	if (hWnd == NULL || !ScreenToClient(hWnd, &pt)) return false;
+	return true;
+}
+
+int CyGame::getCursorClientX() const
+{
+	POINT pt;
+	return wtpGetCursor(pt) ? (int)pt.x : -1;
+}
+
+int CyGame::getCursorClientY() const
+{
+	POINT pt;
+	return wtpGetCursor(pt) ? (int)pt.y : -1;
+}
+
+
+
+
+
+
 // WTP: the amount dialog (python, CvYieldAmountScreen) replaces the spin box popup of the transfer with the shift key: the same actions
 // as CvDLLButtonPopup::handleSelectYieldAmountPopup (iData3: the command, or the player action in Europe / Africa / Port Royal)
 void CyGame::sendYieldTransfer(int iUnitID, int iData3, int iYield, int iAmount, bool bPlayerAction) const
@@ -948,23 +979,5 @@ void CyGame::sendDiploYieldAmount(int iYield, int iAmount, int iFromPlayer) cons
 	gDLL->updateDiplomacyAttitude(true);
 }
 
-// WTP: the mouse position in the game window (the amount dialog is moved with the mouse)
-static bool wtpGetCursor(POINT& pt)
-{
-	if (!GetCursorPos(&pt)) return false;
-	HWND hWnd = GetForegroundWindow();
-	if (hWnd == NULL || !ScreenToClient(hWnd, &pt)) return false;
-	return true;
-}
 
-int CyGame::getCursorClientX() const
-{
-	POINT pt;
-	return wtpGetCursor(pt) ? (int)pt.x : -1;
-}
 
-int CyGame::getCursorClientY() const
-{
-	POINT pt;
-	return wtpGetCursor(pt) ? (int)pt.y : -1;
-}
