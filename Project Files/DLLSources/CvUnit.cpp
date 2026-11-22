@@ -12497,15 +12497,16 @@ static int wtpTransportPlace(const CvUnit* pShip)
 
 // WTP: where the goods of a transport go and how far that is: a ship on its way to Europe, Africa or Port Royal goes there; an automated transport
 // goes to the destination of the trade order for the good; otherwise the target of the move order of the group. No distance off the map.
-static void wtpTransportDestination(const CvUnit* pShip, YieldTypes eYield, int& iPlace, int& iDistance)
+static void wtpTransportDestination(const CvUnit* pShip, YieldTypes eYield, int& iPlace, int& iDistance, int& iTurns)
 {
 	iPlace = 0;
 	iDistance = -1;
+	iTurns = -1;
 	switch (pShip->getUnitTravelState())
 	{
-	case UNIT_TRAVEL_STATE_TO_EUROPE: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_EUROPE) << 12); return;
-	case UNIT_TRAVEL_STATE_TO_AFRICA: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_AFRICA) << 12); return;
-	case UNIT_TRAVEL_STATE_TO_PORT_ROYAL: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_PORT_ROYAL) << 12); return;
+	case UNIT_TRAVEL_STATE_TO_EUROPE: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_EUROPE) << 12); iTurns = pShip->getUnitTravelTimer(); return;
+	case UNIT_TRAVEL_STATE_TO_AFRICA: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_AFRICA) << 12); iTurns = pShip->getUnitTravelTimer(); return;
+	case UNIT_TRAVEL_STATE_TO_PORT_ROYAL: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_PORT_ROYAL) << 12); iTurns = pShip->getUnitTravelTimer(); return;
 	default: break;
 	}
 	const CvSelectionGroup* pGroup = pShip->getGroup();
@@ -12539,6 +12540,13 @@ static void wtpTransportDestination(const CvUnit* pShip, YieldTypes eYield, int&
 	{
 		iPlace = (pTarget->getX_INLINE() + 2) | ((pTarget->getY_INLINE() + 2) << 12);
 		iDistance = plotDistance(pShip->getX_INLINE(), pShip->getY_INLINE(), pTarget->getX_INLINE(), pTarget->getY_INLINE());
+		// the turns the way to it takes from here, with the full moves of the group (the log is written at the turn change, when the transport has
+		// used its moves: with the moves it has then, every way took one turn more than it really takes: nearly always "2")
+		int iPathTurns = 0;
+		if (pGroup->generatePath(pShip->plot(), pTarget, MOVE_MAX_MOVES, true, &iPathTurns))
+		{
+			iTurns = iPathTurns;
+		}
 	}
 }
 
@@ -12630,7 +12638,8 @@ void CvUnit::doTransportStats()
 		{
 			int iDestination = 0;
 			int iDistance = -1;
-			wtpTransportDestination(this, eYield, iDestination, iDistance);
+			int iTurnsToGo = -1;
+			wtpTransportDestination(this, eYield, iDestination, iDistance, iTurnsToGo);
 			int* piPair = &aiRecord[4 + TS_LOG_PAIR_SIZE * iPairs];
 			piPair[0] = (int)eYield;
 			piPair[1] = aiAmount[eYield];
@@ -12638,6 +12647,7 @@ void CvUnit::doTransportStats()
 			piPair[3] = m_em_iTransportLoadPlace.get(eYield);
 			piPair[4] = iDestination;
 			piPair[5] = iDistance;
+			piPair[6] = iTurnsToGo;
 			++iPairs;
 		}
 	}

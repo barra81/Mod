@@ -736,6 +736,23 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 			if (pUnit->getTeam() == GC.getGameINLINE().getActiveTeam())
 			{
 				szTempBuffer = NEWLINE + gDLL->getText("TXT_KEY_UNIT_HELP_CARGO_SPACE", pUnit->getCargo(), pUnit->cargoSpace());
+				// WTP: the filling of all slots in percent (goods count with their amount against the capacity of a slot, units with a whole slot)
+				if (pUnit->getCargo() > 0 && pUnit->plot() != NULL)
+				{
+					const int iSlotCapacity = std::max(1, GC.getGameINLINE().getCargoYieldCapacity());
+					int iFilled = 0;
+					CvPlot* pCargoPlot = pUnit->plot();
+					for (CLLNode<IDInfo>* pFillNode = pCargoPlot->headUnitNode(); pFillNode != NULL; pFillNode = pCargoPlot->nextUnitNode(pFillNode))
+					{
+						const CvUnit* pFillUnit = ::getUnit(pFillNode->m_data);
+						if (pFillUnit != NULL && pFillUnit->getTransportUnit() == pUnit)
+						{
+							iFilled += (pFillUnit->getYield() != NO_YIELD) ? std::min(iSlotCapacity, pFillUnit->getYieldStored()) : iSlotCapacity;
+						}
+					}
+					szTempBuffer.append(L" ");
+					szTempBuffer.append(gDLL->getText("TXT_KEY_WTP_CARGO_FILL", iFilled * 100 / (iSlotCapacity * std::max(1, (int)pUnit->cargoSpace()))));
+				}
 			}
 			else
 			{
@@ -796,8 +813,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					const std::vector<int>& aiYieldLog = pUnit->getTransportLog();
 					std::vector<int> aiYieldAmounts(NUM_YIELD_TYPES, 0);
 					int iAllAmounts = 0;
-					const int iYieldRecords = (int)aiYieldLog.size() / CvUnit::TS_LOG_RECORD;
-					for (int iRec = 0; iRec < iYieldRecords; ++iRec)
+					const int iYieldRecords = std::min((int)aiYieldLog.size() / CvUnit::TS_LOG_RECORD, (int)CvUnit::TS_LOG_ENTRIES);
+					for (int iRec = (int)aiYieldLog.size() / CvUnit::TS_LOG_RECORD - iYieldRecords; iRec < (int)aiYieldLog.size() / CvUnit::TS_LOG_RECORD; ++iRec)
 					{
 						const int* piRec = &aiYieldLog[iRec * CvUnit::TS_LOG_RECORD];
 						for (int iPair = 0; iPair < piRec[3]; ++iPair)
@@ -829,8 +846,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				{
 					const std::vector<int>& aiDestLog = pUnit->getTransportLog();
 					std::map<int, int> aiDestTurns;
-					const int iDestRecords = (int)aiDestLog.size() / CvUnit::TS_LOG_RECORD;
-					for (int iRec = 0; iRec < iDestRecords; ++iRec)
+					const int iDestRecords = std::min((int)aiDestLog.size() / CvUnit::TS_LOG_RECORD, (int)CvUnit::TS_LOG_ENTRIES);
+					for (int iRec = (int)aiDestLog.size() / CvUnit::TS_LOG_RECORD - iDestRecords; iRec < (int)aiDestLog.size() / CvUnit::TS_LOG_RECORD; ++iRec)
 					{
 						const int* piRec = &aiDestLog[iRec * CvUnit::TS_LOG_RECORD];
 						std::set<int> aiPlaces;
@@ -867,7 +884,9 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				// (cyan header with the turn and the brackets, the place of the ship inside of them and the turn of the loading (T469) in a paler yellow (240,225,130), the separators ;; in the plain yellow, green amounts; the symbols are glyphs of the game font; the place of every
 				// number: see CvUnit::m_aiTransportLog)
 				const std::vector<int>& aiLog = pUnit->getTransportLog();
-				for (int iRec = (int)aiLog.size() / CvUnit::TS_LOG_RECORD - 1; iRec >= 0; --iRec)
+				// the symbol of the distance in plots (number 15 of the symbols of the game font)
+				const int iTilesChar = GC.getSymbolID((FontSymbols)15);
+				for (int iRec = (int)aiLog.size() / CvUnit::TS_LOG_RECORD - 1; iRec >= 0 && iRec >= (int)aiLog.size() / CvUnit::TS_LOG_RECORD - CvUnit::TS_LOG_ENTRIES; --iRec)
 				{
 					const int* piRec = &aiLog[iRec * CvUnit::TS_LOG_RECORD];
 					CvWString szGoods;
@@ -890,9 +909,20 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 							{
 								szDetails.append(L"; ");
 							}
-							if (piPair[5] >= 0)
+							if (piPair[5] >= 0 && piPair[6] >= 0)
 							{
-								szDetails.append(CvWString::format(L"%c %s, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[5], GC.getSymbolID(MOVES_CHAR)));
+								// (the distance in plots, then the turns that it took at that time to go: the moves symbol belongs to the turns)
+								szDetails.append(CvWString::format(L"%c %s, %d%c, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[5], iTilesChar, piPair[6], GC.getSymbolID(MOVES_CHAR)));
+							}
+							else if (piPair[6] >= 0)
+							{
+								// (to Europe, Africa or Port Royal: only the turns)
+								szDetails.append(CvWString::format(L"%c %s, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[6], GC.getSymbolID(MOVES_CHAR)));
+							}
+							else if (piPair[5] >= 0)
+							{
+								// (old log entries: no turns known)
+								szDetails.append(CvWString::format(L"%c %s, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[5], iTilesChar));
 							}
 							else
 							{
@@ -917,6 +947,12 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					CvWString szLogPlaceOpen = (szLogPlace.length() > 0) ? L"(" : L"";
 					CvWString szLogPlaceClose = (szLogPlace.length() > 0) ? L")" : L"";
 					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s" ENDCOLR SETCOLR L"%s" ENDCOLR SETCOLR L"%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0], szLogPlaceOpen.GetCString(), 240, 225, 130, 255, szLogPlace.GetCString(), TEXT_COLOR("COLOR_CYAN"), szLogPlaceClose.GetCString(), szGoods.GetCString()));
+				}
+				// the last line of the log window: "Legend" (marked with \x00AA), its child window is the explanation of the symbols (the line marked with \x00BA)
+				if (!aiLog.empty())
+				{
+					szString.append(CvWString::format(L"\n\x00AA%s", gDLL->getText("TXT_KEY_WTP_TS_LEGEND_TITLE").GetCString()));
+					szString.append(CvWString::format(L"\n\x00BA%s", gDLL->getText("TXT_KEY_WTP_TS_LOG_LEGEND", CvWString::format(L"%c", GC.getSymbolID(EXPORT_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MAP_CHAR)).GetCString(), CvWString::format(L"%c", iTilesChar).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MOVES_CHAR)).GetCString()).GetCString()));
 				}
 			}
 			szString.append(szTempBuffer);

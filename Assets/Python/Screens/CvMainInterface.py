@@ -4305,18 +4305,27 @@ class CvMainInterface:
 					while j < len(aFinal) and aFinal[j][1] is None and self.normTipText(aFinal[j][0]).find(u"\u00ab") == 0:
 						aRows.append(aFinal[j][0].replace(u"\u00ab", u"", 1))
 						j += 1
-					# the log lines (marked with \u00aa): the child window of the first row (Logs)
+					# the log lines (marked with \u00aa): the child window of the first row (Logs); the legend (\u00ba): the child window of the last line of the log window
 					aLog = []
 					while j < len(aFinal) and aFinal[j][1] is None and self.normTipText(aFinal[j][0]).find(u"\u00aa") == 0:
 						aLog.append(aFinal[j][0].replace(u"\u00aa", u"", 1))
 						j += 1
+					# the legend of the log (marked with \u00ba): the child window of the last line of the log window (Legend)
+					aLegend = []
+					while j < len(aFinal) and aFinal[j][1] is None and self.normTipText(aFinal[j][0]).find(u"\u00ba") == 0:
+						aLegend.append(aFinal[j][0].replace(u"\u00ba", u"", 1))
+						j += 1
 					if len(aRows) > 0:
 						szRows = u"\n".join(aRows)
-						if len(aLog) > 0:
+						if len(aLog) > 0 or len(aLegend) > 0:
 							if len(self.dNestedDetails) > 200:
 								self.dNestedDetails = {}
-							szLogText = u"\n".join(aLog)
-							self.dNestedDetails[szRows] = {0: szLogText}
+							dRowDetails = {}
+							if len(aLog) > 0:
+								dRowDetails[0] = u"\n".join(aLog)
+							if len(aLegend) > 0 and len(aLog) > 0:
+								self.dNestedDetails[dRowDetails[0]] = {len(aLog) - 1: u"\n".join(aLegend)}
+							self.dNestedDetails[szRows] = dRowDetails
 						aNewFinal.append([aFinal[k][0], szRows])
 						k = j
 						continue

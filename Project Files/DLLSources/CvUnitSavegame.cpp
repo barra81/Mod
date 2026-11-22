@@ -170,6 +170,7 @@ enum SavegameVariableTypes
 	UnitSave_TransportLoadPlace,
 	UnitSave_TransportLog2,
 	UnitSave_TransportStat14,
+	UnitSave_TransportLog3, // (the log with the turns to the destination per good; UnitSave_TransportLog2 is read and converted)
 
 	NUM_SAVE_ENUM_VALUES,
 };
@@ -268,6 +269,7 @@ const char* getSavedEnumNameUnit(SavegameVariableTypes eType)
 	case UnitSave_TransportLoadTurn: return "UnitSave_TransportLoadTurn";
 	case UnitSave_TransportLoadPlace: return "UnitSave_TransportLoadPlace";
 	case UnitSave_TransportLog2: return "UnitSave_TransportLog2";
+	case UnitSave_TransportLog3: return "UnitSave_TransportLog3";
 	case UnitSave_TransportStat14: return "UnitSave_TransportStat14";
 	}
 	FAssertMsg(0, "Missing case");
@@ -492,7 +494,32 @@ void CvUnit::read(CvSavegameReader reader)
 			break;
 		case UnitSave_TransportLoadTurn: reader.Read(m_em_iTransportLoadTurn); break;
 		case UnitSave_TransportLoadPlace: reader.Read(m_em_iTransportLoadPlace); break;
-		case UnitSave_TransportLog2: reader.Read(m_aiTransportLog); break;
+		case UnitSave_TransportLog2:
+			{
+				// the old log has six numbers per good (no turns to the destination): converted, the turns are unknown (-1)
+				std::vector<int> aiOldLog;
+				reader.Read(aiOldLog);
+				const int iOldPairSize = 6;
+				const int iOldRecord = 4 + iOldPairSize * TS_LOG_PAIRS;
+				m_aiTransportLog.clear();
+				for (int iStart = 0; iStart + iOldRecord <= (int)aiOldLog.size(); iStart += iOldRecord)
+				{
+					for (int i = 0; i < 4; ++i)
+					{
+						m_aiTransportLog.push_back(aiOldLog[iStart + i]);
+					}
+					for (int iPair = 0; iPair < TS_LOG_PAIRS; ++iPair)
+					{
+						for (int i = 0; i < iOldPairSize; ++i)
+						{
+							m_aiTransportLog.push_back(aiOldLog[iStart + 4 + iPair * iOldPairSize + i]);
+						}
+						m_aiTransportLog.push_back(-1);
+					}
+				}
+			}
+			break;
+		case UnitSave_TransportLog3: reader.Read(m_aiTransportLog); break;
 		}
 	}
 
@@ -620,7 +647,7 @@ void CvUnit::write(CvSavegameWriter writer)
 	writer.Write(UnitSave_TransportYieldTurns, m_em_iTransportYieldTurns);
 	if (!m_aiTransportLog.empty())
 	{
-		writer.Write(UnitSave_TransportLog2, m_aiTransportLog);
+		writer.Write(UnitSave_TransportLog3, m_aiTransportLog);
 		writer.Write(UnitSave_TransportLoadTurn, m_em_iTransportLoadTurn);
 		writer.Write(UnitSave_TransportLoadPlace, m_em_iTransportLoadPlace);
 	}

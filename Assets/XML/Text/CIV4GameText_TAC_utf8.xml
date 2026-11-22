@@ -3978,6 +3978,12 @@
 		<Russian>Чаще всего перевозилось (всего): %s1 (%d2%% мест)</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_CARGO_FILL</Tag>
+		<English>(%d1%% loaded)</English>
+		<German>(%d1%% beladen)</German>
+		<Russian>(загружено на %d1%%)</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_TOP_YIELD_LOG</Tag>
 		<English>Most carried good (last %d3 turns in service): %s1 (%d2%% of the amount)</English>
 		<German>Am meisten transportierte Ware (letzte %d3 Runden im Dienst): %s1 (%d2%% der Menge)</German>
@@ -3990,10 +3996,22 @@
 		<Russian>Чаще всего пункт назначения: %s1 (%d2 из последних %d3 ходов на службе)</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_LOG_LEGEND</Tag>
+		<English>[COLOR_GREY]%s1 loaded at (turn of the loading), %s2 destination, %s3 plots to the destination, %s4 turns to the destination at that time; ;; next good[COLOR_REVERT]</English>
+		<German>[COLOR_GREY]%s1 geladen in (Runde des Beladens), %s2 Ziel, %s3 Felder bis zum Ziel, %s4 Runden bis zum Ziel zu diesem Zeitpunkt; ;; nächste Ware[COLOR_REVERT]</German>
+		<Russian>[COLOR_GREY]%s1 загружено в (ход погрузки), %s2 цель, %s3 клеток до цели, %s4 ходов до цели на тот момент; ;; следующий товар[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_NOTE</Tag>
 		<English>[COLOR_GREY]Counted at each turn change (turns in service: loaded or automated). Unloaded: the cargo is less than at the last turn change.[COLOR_REVERT]</English>
 		<German>[COLOR_GREY]Gezählt bei jedem Rundenwechsel (im Dienst: beladen oder automatisiert). Entladen: weniger Fracht als beim letzten Rundenwechsel.[COLOR_REVERT]</German>
 		<Russian>[COLOR_GREY]Считается при каждой смене хода (на службе: загружен или автоматизирован). Выгружено: груза меньше, чем при прошлой смене хода.[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_LEGEND_TITLE</Tag>
+		<English>[COLOR_CAT_TERRAIN]Legend[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_TERRAIN]Legende[COLOR_REVERT]</German>
+		<Russian>[COLOR_CAT_TERRAIN]Легенда[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_LOGS</Tag>
