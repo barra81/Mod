@@ -1970,4 +1970,10 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_84</Tag>
+		<English>Pioneer plan: in the pioneer plan mode choose an improvement and its priority, left click marks a plot, right click removes the mark. Pioneers with the automation "Work the Pioneer Plan" build the marked plots, priority 1 first, each by the nearest pioneer. Private pioneer: choose an improvement and click a plot of your land near a colony with a town market or better; for gold a private pioneer builds it and leaves.</English>
+		<German>Pionier-Plan: Im Pionier-Plan-Modus eine Verbesserung und ihre Priorität wählen, Linksklick markiert ein Feld, Rechtsklick entfernt die Markierung. Pioniere mit der Automatik "Pionier-Plan abarbeiten" bauen die markierten Felder, Priorität 1 zuerst, jedes vom nächsten Pionier. Privater Pionier: Verbesserung wählen und ein Feld des eigenen Landes in der Nähe einer Kolonie mit Städtischem Markt oder besser anklicken; gegen Gold baut ein privater Pionier sie und geht wieder.</German>
+		<Russian>План пионеров: в режиме плана выберите улучшение и приоритет, левый щелчок отмечает клетку, правый снимает отметку. Пионеры с автоматизацией «Работать по плану пионеров» строят отмеченные клетки, сначала приоритет 1, каждую — ближайший пионер. Частный пионер: выберите улучшение и щёлкните по клетке своей земли рядом с колонией с городским рынком или лучше; за золото частный пионер построит его и уйдёт.</Russian>
+	</TEXT>
 </Civ4GameText>
