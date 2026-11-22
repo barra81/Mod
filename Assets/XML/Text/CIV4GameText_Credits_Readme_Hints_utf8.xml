@@ -1970,4 +1970,10 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_85</Tag>
+		<English>Auto Assign Job: choose this automation for a colonist and it picks one of the 12 best free jobs in your colonies, goes there on foot or by an automated transport and joins the colony in that job. Regular colonists go at most 12 turns far; the colony must keep 2 food to spare unless the job produces food.</English>
+		<German>Arbeit automatisch zuweisen: Wählen Sie diese Automatik für einen Kolonisten, dann sucht er sich eine der 12 besten freien Arbeiten in Ihren Kolonien, geht zu Fuß oder mit einem automatisierten Transporter dorthin und schließt sich der Kolonie in dieser Arbeit an. Normale Kolonisten gehen höchstens 12 Runden weit; die Kolonie muss 2 Nahrung übrig behalten, außer die Arbeit erzeugt Nahrung.</German>
+		<Russian>Автоназначение работы: выберите эту автоматизацию для колониста, и он выберет одну из 12 лучших свободных работ в ваших колониях, дойдёт туда пешком или на автоматическом транспорте и присоединится к колонии на этой работе. Обычные колонисты идут не дальше 12 ходов; колония должна сохранить запас в 2 еды, если работа не производит еду.</Russian>
+	</TEXT>
 </Civ4GameText>
