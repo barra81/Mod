@@ -9986,7 +9986,7 @@ void CvGameTextMgr::setCitizenHelp(CvWStringBuffer &szString, const CvCity& kCit
 						szString.append(NEWLINE);
 						szString.append(gDLL->getText("TXT_KEY_MISC_HELP_STUDENT", iTurns));
 					}
-					// WTP: the professions that can be learned, alphabetical
+					// WTP: the professions that can be learned, alphabetical (the Veteran Infantry first)
 					std::vector<WtpEducationEntry> aEducationEntries;
 					for (int iUnit = 0; iUnit < GC.getNumUnitInfos(); ++iUnit)
 					{

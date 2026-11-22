@@ -2533,8 +2533,20 @@ namespace WtpBuyMaterialsPanel
 	}
 }
 
+// the one exception of the alphabetical order: the Veteran Infantry is always the first entry (if it is in the list)
+static bool wtpIsVeteranInfantry(UnitTypes eUnit)
+{
+	return eUnit != NO_UNIT && strcmp(GC.getUnitInfo(eUnit).getType(), "UNIT_VETERAN_INFANTRY") == 0;
+}
+
 static bool wtpEducationEntryLess(const WtpEducationEntry& kA, const WtpEducationEntry& kB)
 {
+	const bool bVeteranA = wtpIsVeteranInfantry(kA.eUnit);
+	const bool bVeteranB = wtpIsVeteranInfantry(kB.eUnit);
+	if (bVeteranA != bVeteranB)
+	{
+		return bVeteranA; // the Veteran Infantry before everything, also before a student
+	}
 	if (kA.bStudent != kB.bStudent)
 	{
 		return kA.bStudent; // a student first
@@ -2568,7 +2580,7 @@ bool CvDLLButtonPopup::launchEducationPopup(CvPopup* pPopup, CvPopupInfo &info)
 
 	int iNumUnits = 0;
 	UnitTypes eLastUnit = NO_UNIT;
-	// WTP: alphabetical, a student always first
+	// WTP: alphabetical, the Veteran Infantry first of all, then a student (see wtpEducationEntryLess)
 	std::vector<WtpEducationEntry> aSortedUnits;
 	for (UnitTypes eUnitType = FIRST_UNIT; eUnitType < NUM_UNIT_TYPES; ++eUnitType)
 	{
