@@ -999,7 +999,6 @@ def _dispatchWarEnemy(player):
 
 def _dispatchCanTrigger(argsList, bWar):
 	ePlayer = argsList[1]
-	iCity = argsList[2]
 	player = gc.getPlayer(ePlayer)
 	if player.isNone() or not player.isPlayable() or player.isNative() or not player.isHuman():
 		return False
@@ -1007,12 +1006,14 @@ def _dispatchCanTrigger(argsList, bWar):
 		return False
 	if not gc.getPlayer(player.getParent()).isEurope():
 		return False
-	city = player.getCity(iCity)
-	if city is None or city.isNone():
-		return False
 	capital = player.getCapitalCity()
-	if capital is None or capital.isNone() or capital.getID() != city.getID():
+	if capital is None or capital.isNone():
 		return False
+	# the callback may come with a city (argsList[2]) or without one (player trigger): then the capital is meant
+	if len(argsList) > 2:
+		city = player.getCity(argsList[2])
+		if city is None or city.isNone() or capital.getID() != city.getID():
+			return False
 	if player.NBMOD_GetMaxTaxRate() >= player.getTaxRate():
 		return False
 	return _dispatchWarEnemy(player) == bWar
