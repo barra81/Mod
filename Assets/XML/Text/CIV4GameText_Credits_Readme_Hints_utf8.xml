@@ -1970,4 +1970,10 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_87</Tag>
+		<English>City screen: a click on a building opens a panel at the mouse cursor with the buildings it can be upgraded to; choose one to upgrade it.</English>
+		<German>Stadtbildschirm: Ein Klick auf ein Gebäude öffnet am Mauszeiger ein Panel mit den Gebäuden, zu denen es ausgebaut werden kann; wählen Sie eines, um es auszubauen.</German>
+		<Russian>Экран города: щелчок по зданию открывает у курсора панель со зданиями, до которых его можно улучшить; выберите одно, чтобы улучшить.</Russian>
+	</TEXT>
 </Civ4GameText>
