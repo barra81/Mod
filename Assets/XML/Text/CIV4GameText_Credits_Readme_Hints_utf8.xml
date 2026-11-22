@@ -1970,4 +1970,10 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_82</Tag>
+		<English>Patrol: choose Patrol for a military unit or warship and it patrols within 10 plots of where it is. It hunts runaway and revolting slaves, criminals, hostile natives, wild animals, pirates and enemies at war outside their borders, but only attacks with less than 5%% risk of being destroyed. Below 95%% strength it heals first in the nearest colony.</English>
+		<German>Patrouille: Wählen Sie Patrouille für eine Militäreinheit oder ein Kriegsschiff, dann patrouilliert sie im Umkreis von 10 Feldern um ihren jetzigen Standort. Sie jagt entlaufene und rebellierende Sklaven, Kriminelle, feindliche Eingeborene, wilde Tiere, Piraten und Feinde im Krieg außerhalb ihrer Grenzen, greift aber nur an, wenn das Risiko, vernichtet zu werden, unter 5%% liegt. Unter 95%% Stärke heilt sie zuerst in der nächsten Kolonie.</German>
+		<Russian>Патруль: выберите «Патрулировать» для военного отряда или военного корабля, и он будет патрулировать в радиусе 10 клеток от текущего места. Он охотится на беглых и восставших рабов, преступников, враждебных туземцев, диких животных, пиратов и врагов, с которыми идёт война, вне их границ, но атакует, только если риск быть уничтоженным меньше 5%%. Если сила ниже 95%%, он сначала лечится в ближайшей колонии.</Russian>
+	</TEXT>
 </Civ4GameText>
