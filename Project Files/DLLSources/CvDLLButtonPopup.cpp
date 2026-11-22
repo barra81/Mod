@@ -502,6 +502,46 @@ void CvDLLButtonPopup::OnEscape(CvPopup& popup, CvPopupInfo &info)
 }
 
 
+// WTP: the other students of the colony of the popup that have finished their education and wait for a specialty (the popup of the specialty has not been
+// answered yet) get the specialty that was chosen with the shift key, as long as the gold of the player is enough (every price is taken from the gold that
+// is left); the popups of these students that are still waiting are closed without a question (CvDLLButtonPopup::launchEducationPopup: the student is gone then)
+static void wtpEducateWaitingStudents(int iChosenCityId, int iChosenUnitId, UnitTypes eUnit)
+{
+	CvPlayer& kPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
+	CvCity* pChosenCity = kPlayer.getCity(iChosenCityId);
+	if (pChosenCity == NULL)
+	{
+		return;
+	}
+	// (the first student pays its price already)
+	const int iPrice = pChosenCity->getSpecialistTuition(eUnit);
+	if (iPrice < 0)
+	{
+		return;
+	}
+	int iGold = kPlayer.getGold() - iPrice;
+	const int iThreshold = pChosenCity->educationThreshold();
+	// (the ids first: the units of the colony change when a student is educated)
+	std::vector<int> aiStudents;
+	for (int i = 0; i < pChosenCity->getPopulation(); ++i)
+	{
+		CvUnit* pStudent = pChosenCity->getPopulationUnitByIndex(i);
+		if (pStudent != NULL && pStudent->getYieldStored() >= iThreshold && pStudent->getID() != iChosenUnitId)
+		{
+			aiStudents.push_back(pStudent->getID());
+		}
+	}
+	for (size_t i = 0; i < aiStudents.size(); ++i)
+	{
+		if (iPrice > iGold)
+		{
+			return;
+		}
+		iGold -= iPrice;
+		gDLL->sendDoTask(pChosenCity->getID(), TASK_EDUCATE, aiStudents[i], eUnit, false, false, false, false);
+	}
+}
+
 void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, CvPopupInfo &info)
 {
 	CxDesyncMonitor StartAsyncExecution;
@@ -757,6 +797,11 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 		else if (pPopupReturn->getButtonClicked() >= 0)
 		{
 			gDLL->sendDoTask(info.getData1(), TASK_EDUCATE, info.getData2(), pPopupReturn->getButtonClicked(), false, false, false, false);
+			// WTP: with the shift key all the other students of this colony that are waiting for their specialty get the same specialty
+			if (gDLL->shiftKey())
+			{
+				wtpEducateWaitingStudents(info.getData1(), info.getData2(), (UnitTypes)pPopupReturn->getButtonClicked());
+			}
 		}
 		break;
 
