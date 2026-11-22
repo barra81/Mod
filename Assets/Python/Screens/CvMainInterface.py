@@ -390,6 +390,7 @@ class CvMainInterface:
 	aiTipIndent = []
 	dTipDetails = {}
 	dNestedDetails = {} # the text of a child window -> the lines of it that have a child window of their own (line -> text), e.g. Statistics -> Logs
+	dWideTips = {} # the text of a child window -> 1: the window gets the double maximum width (the log of a transport: long lines)
 	aiWrapIndent = []
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
 	bExplainShown = False # the window that explains the colored label of a folded line (Stored..., Produced...), on the other side of the parent
@@ -4323,6 +4324,9 @@ class CvMainInterface:
 							dRowDetails = {}
 							if len(aLog) > 0:
 								dRowDetails[0] = u"\n".join(aLog)
+								if len(self.dWideTips) > 200:
+									self.dWideTips = {}
+								self.dWideTips[dRowDetails[0]] = 1
 							if len(aLegend) > 0 and len(aLog) > 0:
 								self.dNestedDetails[dRowDetails[0]] = {len(aLog) - 1: u"\n".join(aLegend)}
 							self.dNestedDetails[szRows] = dRowDetails
@@ -7333,6 +7337,9 @@ class CvMainInterface:
 			yRes = screen.getYResolution()
 			iChar = iLine * 0.32
 			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
+			if self.dWideTips.has_key(szText):
+				# the log of a transport: double width (long lines), but not wider than the screen allows
+				iMaxWidth = min(iMaxWidth * 2, int((xRes - 40) / 1.15))
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = []

@@ -12568,6 +12568,7 @@ void CvUnit::doTransportStats()
 		m_aiTransportStat[TS_PREV_VALUE] = 0;
 		m_aiTransportStat[TS_LAST_X] = 0;
 		m_aiTransportStat[TS_LAST_Y] = 0;
+		m_aiTransportUnloaded.clear();
 		return;
 	}
 	int iValue = 0;
@@ -12632,6 +12633,20 @@ void CvUnit::doTransportStats()
 	aiRecord[0] = GC.getGameINLINE().getGameTurn();
 	aiRecord[1] = wtpTransportPlace(this);
 	int iPairs = 0;
+	// the goods unloaded in this turn first (the destination of such a pair is the place of the unloading, see m_aiTransportLog)
+	for (int iUnloaded = 0; iUnloaded + 5 <= (int)m_aiTransportUnloaded.size() && iPairs < TS_LOG_PAIRS; iUnloaded += 5)
+	{
+		int* piPair = &aiRecord[4 + TS_LOG_PAIR_SIZE * iPairs];
+		piPair[0] = m_aiTransportUnloaded[iUnloaded];
+		piPair[1] = m_aiTransportUnloaded[iUnloaded + 1];
+		piPair[2] = m_aiTransportUnloaded[iUnloaded + 2];
+		piPair[3] = m_aiTransportUnloaded[iUnloaded + 3];
+		piPair[4] = m_aiTransportUnloaded[iUnloaded + 4];
+		piPair[5] = TS_LOG_UNLOADED;
+		piPair[6] = -1;
+		++iPairs;
+	}
+	m_aiTransportUnloaded.clear();
 	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES && iPairs < TS_LOG_PAIRS; ++eYield)
 	{
 		if (aiAmount[eYield] > 0)
@@ -12668,6 +12683,31 @@ void CvUnit::noteTransportLoad(YieldTypes eYield)
 	}
 	m_em_iTransportLoadTurn.set(eYield, GC.getGameINLINE().getGameTurn());
 	m_em_iTransportLoadPlace.set(eYield, wtpTransportPlace(this));
+}
+
+// WTP: a good was unloaded from this transport (CvUnit::setTransportUnit): kept for the next line of the log (the same good unloaded at the same place and loaded at the same time is summed up)
+void CvUnit::noteTransportUnload(YieldTypes eYield, int iAmount)
+{
+	if (!isHuman() || eYield == NO_YIELD || iAmount <= 0)
+	{
+		return;
+	}
+	const int iLoadTurn = m_em_iTransportLoadTurn.get(eYield);
+	const int iLoadPlace = m_em_iTransportLoadPlace.get(eYield);
+	const int iPlace = wtpTransportPlace(this);
+	for (int i = 0; i + 5 <= (int)m_aiTransportUnloaded.size(); i += 5)
+	{
+		if (m_aiTransportUnloaded[i] == (int)eYield && m_aiTransportUnloaded[i + 2] == iLoadTurn && m_aiTransportUnloaded[i + 3] == iLoadPlace && m_aiTransportUnloaded[i + 4] == iPlace)
+		{
+			m_aiTransportUnloaded[i + 1] += iAmount;
+			return;
+		}
+	}
+	m_aiTransportUnloaded.push_back((int)eYield);
+	m_aiTransportUnloaded.push_back(iAmount);
+	m_aiTransportUnloaded.push_back(iLoadTurn);
+	m_aiTransportUnloaded.push_back(iLoadPlace);
+	m_aiTransportUnloaded.push_back(iPlace);
 }
 
 int CvUnit::getTransportStat(int iStat) const
@@ -14428,6 +14468,12 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 				{
 					getGroup()->setActivityType(ACTIVITY_AWAKE);
 				}
+			}
+
+			// WTP: statistics of the transport: the good that leaves the ship (for the log)
+			if (pOldTransportUnit != NULL && getYield() != NO_YIELD)
+			{
+				pOldTransportUnit->noteTransportUnload(getYield(), getYieldStored());
 			}
 
 			//place yields into city

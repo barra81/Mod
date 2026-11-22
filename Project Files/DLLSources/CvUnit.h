@@ -511,8 +511,9 @@ public:
 		TS_AMOUNT_SUM, // units of goods on board, summed over the turns
 		NUM_TRANSPORT_STATS
 	};
-	enum { TS_LOG_ENTRIES = 15, TS_LOG_PAIRS = 8, TS_LOG_PAIR_SIZE = 7, TS_LOG_RECORD = 4 + TS_LOG_PAIR_SIZE * TS_LOG_PAIRS };
+	enum { TS_LOG_ENTRIES = 15, TS_LOG_PAIRS = 8, TS_LOG_PAIR_SIZE = 7, TS_LOG_RECORD = 4 + TS_LOG_PAIR_SIZE * TS_LOG_PAIRS, TS_LOG_UNLOADED = -2 };
 	void noteTransportLoad(YieldTypes eYield);
+	void noteTransportUnload(YieldTypes eYield, int iAmount);
 	void doTransportStats();
 	const std::vector<int>& getTransportLog() const { return m_aiTransportLog; }
 	int getTransportStat(int iStat) const;
@@ -1059,7 +1060,11 @@ protected:
 	EnumMap<YieldTypes, int> m_em_iTransportLoadPlace; // per good: where it was loaded last (packed place, see doTransportStats)
 	// the last turns in service, TS_LOG_RECORD numbers each: turn, place (x + 2 | (y + 2) << 12; off the map: 1 | travel state << 12), number of goods, then per
 	// good (TS_LOG_PAIR_SIZE numbers): yield, amount, turn of the loading, place of the loading, place of the destination (0: none), distance to it (-1: unknown), turns it still takes at that time (-1: unknown)
+	// A good that was unloaded in that turn (first in the record, before the goods on board) has the same numbers, but: place of the destination = place of the unloading,
+	// distance = TS_LOG_UNLOADED (marks the pair), turns = -1
 	std::vector<int> m_aiTransportLog;
+	// the goods unloaded since the last turn change (not saved: a save game within a turn loses them), 5 numbers each: yield, amount, turn of the loading, place of the loading, place of the unloading
+	std::vector<int> m_aiTransportUnloaded;
 
 	UnitTravelStates m_eUnitTravelState;
 

@@ -3997,9 +3997,9 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_LOG_LEGEND</Tag>
-		<English>[COLOR_GREY]%s1 loaded at (turn of the loading), %s2 destination, %s3 plots to the destination, %s4 turns to the destination at that time; ;; next good[COLOR_REVERT]</English>
-		<German>[COLOR_GREY]%s1 geladen in (Runde des Beladens), %s2 Ziel, %s3 Felder bis zum Ziel, %s4 Runden bis zum Ziel zu diesem Zeitpunkt; ;; nächste Ware[COLOR_REVERT]</German>
-		<Russian>[COLOR_GREY]%s1 загружено в (ход погрузки), %s2 цель, %s3 клеток до цели, %s4 ходов до цели на тот момент; ;; следующий товар[COLOR_REVERT]</Russian>
+		<English>[COLOR_GREY]%s1 loaded at (turn of the loading), %s2 destination, %s3 plots to the destination, %s4 turns to the destination at that time, %s5 unloaded at (the line of a good that was unloaded in that turn); ;; next good[COLOR_REVERT]</English>
+		<German>[COLOR_GREY]%s1 geladen in (Runde des Beladens), %s2 Ziel, %s3 Felder bis zum Ziel, %s4 Runden bis zum Ziel zu diesem Zeitpunkt, %s5 entladen in (Zeile einer Ware, die in dieser Runde entladen wurde); ;; nächste Ware[COLOR_REVERT]</German>
+		<Russian>[COLOR_GREY]%s1 загружено в (ход погрузки), %s2 цель, %s3 клеток до цели, %s4 ходов до цели на тот момент, %s5 выгружено в (строка товара, выгруженного в этот ход); ;; следующий товар[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_NOTE</Tag>

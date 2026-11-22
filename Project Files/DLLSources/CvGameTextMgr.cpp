@@ -820,7 +820,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 						for (int iPair = 0; iPair < piRec[3]; ++iPair)
 						{
 							const int* piPair = &piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair];
-							if (piPair[0] >= 0 && piPair[0] < NUM_YIELD_TYPES && piPair[1] > 0)
+							// (a good unloaded in that turn is not counted: it was on board in the turns before)
+							if (piPair[0] >= 0 && piPair[0] < NUM_YIELD_TYPES && piPair[1] > 0 && piPair[5] != CvUnit::TS_LOG_UNLOADED)
 							{
 								aiYieldAmounts[piPair[0]] += piPair[1];
 								iAllAmounts += piPair[1];
@@ -854,7 +855,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 						for (int iPair = 0; iPair < piRec[3]; ++iPair)
 						{
 							const int iPlace = piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair + 4];
-							if (iPlace != 0)
+							// (the place of an unloaded good is no destination, see CvUnit::m_aiTransportLog)
+							if (iPlace != 0 && piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair + 5] != CvUnit::TS_LOG_UNLOADED)
 							{
 								aiPlaces.insert(iPlace);
 							}
@@ -880,7 +882,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					}
 				}
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_NOTE").GetCString()));
-				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 48[goods] [export] place of loading, T469; [map] destination, 6[moves];; 200[goods] ..." (the separator ;; between the goods is yellow)
+				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 48[goods] [export] place of loading, T469; [map] destination, 6[moves];; 200[goods] [export] place of loading, T470; [import] place of the unloading ..." (the separator ;; between the goods is yellow; the goods unloaded in that turn come first)
 				// (cyan header with the turn and the brackets, the place of the ship inside of them and the turn of the loading (T469) in a paler yellow (240,225,130), the separators ;; in the plain yellow, green amounts; the symbols are glyphs of the game font; the place of every
 				// number: see CvUnit::m_aiTransportLog)
 				const std::vector<int>& aiLog = pUnit->getTransportLog();
@@ -903,7 +905,16 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 						{
 							szDetails = CvWString::format(L"%c %s, " SETCOLR L"%s%d" ENDCOLR, GC.getSymbolID(EXPORT_CHAR), wtpTransportPlaceName(piPair[3]).GetCString(), 240, 225, 130, 255, gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piPair[2]);
 						}
-						if (piPair[4] != 0)
+						if (piPair[5] == CvUnit::TS_LOG_UNLOADED)
+						{
+							// a good that was unloaded in that turn: "[load symbol] place of the loading, T..; [unload symbol] place of the unloading"
+							if (szDetails.length() > 0)
+							{
+								szDetails.append(L"; ");
+							}
+							szDetails.append(CvWString::format(L"%c %s", GC.getSymbolID(IMPORT_CHAR), wtpTransportPlaceName(piPair[4]).GetCString()));
+						}
+						else if (piPair[4] != 0)
 						{
 							if (szDetails.length() > 0)
 							{
@@ -952,7 +963,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				if (!aiLog.empty())
 				{
 					szString.append(CvWString::format(L"\n\x00AA%s", gDLL->getText("TXT_KEY_WTP_TS_LEGEND_TITLE").GetCString()));
-					szString.append(CvWString::format(L"\n\x00BA%s", gDLL->getText("TXT_KEY_WTP_TS_LOG_LEGEND", CvWString::format(L"%c", GC.getSymbolID(EXPORT_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MAP_CHAR)).GetCString(), CvWString::format(L"%c", iTilesChar).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MOVES_CHAR)).GetCString()).GetCString()));
+					szString.append(CvWString::format(L"\n\x00BA%s", gDLL->getText("TXT_KEY_WTP_TS_LOG_LEGEND", CvWString::format(L"%c", GC.getSymbolID(EXPORT_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MAP_CHAR)).GetCString(), CvWString::format(L"%c", iTilesChar).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MOVES_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(IMPORT_CHAR)).GetCString()).GetCString()));
 				}
 			}
 			szString.append(szTempBuffer);

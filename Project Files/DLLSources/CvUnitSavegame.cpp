@@ -336,6 +336,7 @@ void CvUnit::resetSavedData(int iID, UnitTypes eUnit, PlayerTypes eOwner, bool b
 	}
 	m_em_iTransportYieldTurns.reset();
 	m_aiTransportLog.clear();
+	m_aiTransportUnloaded.clear();
 	m_em_iTransportLoadTurn.reset();
 	m_em_iTransportLoadPlace.reset();
 
