@@ -389,6 +389,7 @@ class CvMainInterface:
 	iTipMode = aiTipSettings[0] # Ctrl+Shift+T: 0 hover tooltip at the cursor, 1 own window at the place of the game tooltip, 2 off (the game tooltip)
 	aiTipIndent = []
 	dTipDetails = {}
+	dNestedDetails = {} # the text of a child window -> the lines of it that have a child window of their own (line -> text), e.g. Statistics -> Logs
 	aiWrapIndent = []
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
 	bExplainShown = False # the window that explains the colored label of a folded line (Stored..., Produced...), on the other side of the parent
@@ -4258,6 +4259,8 @@ class CvMainInterface:
 						szLastHeader = aEntry[0]
 					elif szLastHeader is not None and len(szCargo) > 3 and self.normTipText(aEntry[0]).find(szCargo) == 0:
 						aEntry[1] = self.getCargoRulesText(szLastHeader)
+			# the statistics of a transport: the rows marked with \u00ab are the child window of the line Statistics
+			aFinal = self.foldTransportStats(aFinal)
 			# the lines of the commands of a stack of units in one line
 			aCommands = []
 			iCmdAt = -1
@@ -4287,6 +4290,42 @@ class CvMainInterface:
 
 	# the sell prices of a cargo slot (the lines Europe / Africa / Port Royal and the line Total): only the line Total stays, the three markets are its
 	# the line "Total value" of a loaded sea transport: the lines of the goods on board (marked with >> by the DLL) become its child window
+	# the line "Statistics" of a transport of the player (DLL): the rows after it (marked with \u00ab) become its child window
+	def foldTransportStats( self, aFinal ):
+		try:
+			szPrefix = self.getTipPrefix("TXT_KEY_WTP_TRANSPORT_STATS", ())
+			if len(szPrefix) < 3:
+				return aFinal
+			aNewFinal = []
+			k = 0
+			while k < len(aFinal):
+				if aFinal[k][1] is None and self.normTipText(aFinal[k][0]).find(szPrefix) == 0:
+					aRows = []
+					j = k + 1
+					while j < len(aFinal) and aFinal[j][1] is None and self.normTipText(aFinal[j][0]).find(u"\u00ab") == 0:
+						aRows.append(aFinal[j][0].replace(u"\u00ab", u"", 1))
+						j += 1
+					# the log lines (marked with \u00aa): the child window of the first row (Logs)
+					aLog = []
+					while j < len(aFinal) and aFinal[j][1] is None and self.normTipText(aFinal[j][0]).find(u"\u00aa") == 0:
+						aLog.append(aFinal[j][0].replace(u"\u00aa", u"", 1))
+						j += 1
+					if len(aRows) > 0:
+						szRows = u"\n".join(aRows)
+						if len(aLog) > 0:
+							if len(self.dNestedDetails) > 200:
+								self.dNestedDetails = {}
+							szLogText = u"\n".join(aLog)
+							self.dNestedDetails[szRows] = {0: szLogText}
+						aNewFinal.append([aFinal[k][0], szRows])
+						k = j
+						continue
+				aNewFinal.append(aFinal[k])
+				k += 1
+			return aNewFinal
+		except:
+			return aFinal
+
 	def foldCargoValue( self, aFinal ):
 		try:
 			szPrefix = self.getTipPrefix("TXT_KEY_WTP_CARGO_VALUE_HELP", (u"",))
@@ -7771,6 +7810,8 @@ class CvMainInterface:
 								break
 						szDetail = u", ".join(aSegs)
 				self.showSecondTip(screen, szDetail, iCY, tTop, iFz)
+				if self.bSecondTipShown and self.dNestedDetails.has_key(szDetail):
+					self.tPreviewDetails = self.dNestedDetails[szDetail]
 				if tWp is not None and iPara == tWp["cmd"] and self.bSecondTipShown:
 					# the child window of the line "Commands" of a unit: its first line is "Set waypoint..."
 					self.tPreviewWp = {"unit": tWp["unit"], "sea": tWp["sea"], "paras": {0: "row"}, "cmd": -1, "marked": iMarkCmd, "markedText": szMarkOrig}
@@ -8363,6 +8404,18 @@ class CvMainInterface:
 			szUnit = self.stripCarries(CyGameTextMgr().getSpecificUnitHelp(pUnit, False, True)).strip()
 			if len(szUnit) == 0:
 				return False
+			# the statistics of a transport (rows marked by the DLL): the child window of the line Statistics, as in the tooltip of the unit alone
+			dStats = {}
+			try:
+				aStatFinal = self.foldTransportStats([[x, None] for x in szUnit.split(u"\n")])
+				aStatParas = []
+				for aStatEntry in aStatFinal:
+					if aStatEntry[1] is not None:
+						dStats[len(aStatParas)] = aStatEntry[1]
+					aStatParas.append(aStatEntry[0])
+				szUnit = u"\n".join(aStatParas)
+			except:
+				dStats = {}
 			aLines = [szUnit]
 			szSetRow = localText.getText("TXT_KEY_WTP_TIP_WAYPOINT_SET", ())
 			iSetSlot = -1
@@ -8420,6 +8473,14 @@ class CvMainInterface:
 					aUnitParas = list(aLines[0].split(u"\n"))
 					aUnitParas.insert(iSetSlot, localText.getText("TXT_KEY_WTP_TIP_WAYPOINT_SET_ROW", ()))
 					aLines[0] = u"\n".join(aUnitParas)
+					# (the paragraphs behind the new line move down by one)
+					dShiftStats = {}
+					for kStat in dStats.keys():
+						if kStat >= iSetSlot:
+							dShiftStats[kStat + 1] = dStats[kStat]
+						else:
+							dShiftStats[kStat] = dStats[kStat]
+					dStats = dShiftStats
 			elif iHead == 0:
 				eTalk = self.getTalkPlayer(aszParas, 0)
 				if eTalk >= 0:
@@ -8428,6 +8489,14 @@ class CvMainInterface:
 			if self.bSecondTipShown and tRowWp is not None:
 				self.tPreviewWp = tRowWp
 				self.tPreviewDetails = dDetails
+			if self.bSecondTipShown and len(dStats) > 0:
+				dAll = {}
+				for kStat in dStats.keys():
+					dAll[kStat] = dStats[kStat]
+				if self.tPreviewDetails is not None:
+					for kDet in self.tPreviewDetails.keys():
+						dAll[kDet] = self.tPreviewDetails[kDet]
+				self.tPreviewDetails = dAll
 			return self.bSecondTipShown
 		except:
 			pass

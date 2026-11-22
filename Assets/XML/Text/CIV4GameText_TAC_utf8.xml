@@ -3906,6 +3906,108 @@
 		<Russian>[COLOR:140:255:40:255]Задать путевую точку...[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TRANSPORT_STATS</Tag>
+		<English>[COLOR_CAT_TERRAIN]Statistics[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_TERRAIN]Statistik[COLOR_REVERT]</German>
+		<Russian>[COLOR_CAT_TERRAIN]Статистика[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_TURNS</Tag>
+		<English>Turns in service: %d1</English>
+		<German>Runden im Dienst: %d1</German>
+		<Russian>Ходов на службе: %d1</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_SLOTS</Tag>
+		<English>Average slots used: %s1 of %d2 (%d3%%)</English>
+		<German>Durchschnittlich belegte Slots: %s1 von %d2 (%d3%%)</German>
+		<Russian>В среднем занято мест: %s1 из %d2 (%d3%%)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_EMPTY</Tag>
+		<English>Empty runs: %d1 turns (%d2%%)</English>
+		<German>Leerfahrten: %d1 Runden (%d2%%)</German>
+		<Russian>Пустые рейсы: %d1 ходов (%d2%%)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_FULL</Tag>
+		<English>Fully loaded: %d1 turns (%d2%%)</English>
+		<German>Voll beladen: %d1 Runden (%d2%%)</German>
+		<Russian>Полная загрузка: %d1 ходов (%d2%%)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_HALF_OR_LESS</Tag>
+		<English>At most half loaded (incl. empty runs): %d1 turns (%d2%%)</English>
+		<German>Höchstens halb beladen (inkl. Leerfahrten): %d1 Runden (%d2%%)</German>
+		<Russian>Загружено не больше половины (включая пустые рейсы): %d1 ходов (%d2%%)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_AMOUNT</Tag>
+		<English>Average total amount on board: %d1</English>
+		<German>Durchschnittliche Gesamtmenge an Bord: %d1</German>
+		<Russian>Среднее общее количество груза на борту: %d1</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_VALUE</Tag>
+		<English>Average value on board: %d1[ICON_GOLD]</English>
+		<German>Durchschnittlicher Warenwert an Bord: %d1[ICON_GOLD]</German>
+		<Russian>Средняя стоимость груза на борту: %d1[ICON_GOLD]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_UNLOADED</Tag>
+		<English>Unloaded: %d1 slots (%s2 per turn)</English>
+		<German>Entladen: %d1 Slots (%s2 pro Runde)</German>
+		<Russian>Выгружено: %d1 мест (%s2 за ход)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_UNLOADED_VALUE</Tag>
+		<English>Unloaded value: %d1[ICON_GOLD] (%d2[ICON_GOLD] per turn)</English>
+		<German>Entladener Warenwert: %d1[ICON_GOLD] (%d2[ICON_GOLD] pro Runde)</German>
+		<Russian>Стоимость выгруженного: %d1[ICON_GOLD] (%d2[ICON_GOLD] за ход)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_IDLE</Tag>
+		<English>Standing still: %d1 turns (%d2%%)</English>
+		<German>Stillstand: %d1 Runden (%d2%%)</German>
+		<Russian>Простой: %d1 ходов (%d2%%)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_TOP_YIELD</Tag>
+		<English>Most carried good: %s1 (%d2%% of the slots)</English>
+		<German>Am meisten transportierte Ware: %s1 (%d2%% der Slots)</German>
+		<Russian>Чаще всего перевозилось: %s1 (%d2%% мест)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_NOTE</Tag>
+		<English>[COLOR_GREY]Counted at each turn change (turns in service: loaded or automated). Unloaded: the cargo is less than at the last turn change.[COLOR_REVERT]</English>
+		<German>[COLOR_GREY]Gezählt bei jedem Rundenwechsel (im Dienst: beladen oder automatisiert). Entladen: weniger Fracht als beim letzten Rundenwechsel.[COLOR_REVERT]</German>
+		<Russian>[COLOR_GREY]Считается при каждой смене хода (на службе: загружен или автоматизирован). Выгружено: груза меньше, чем при прошлой смене хода.[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_LOGS</Tag>
+		<English>[COLOR_CAT_TERRAIN]Logs[COLOR_REVERT]</English>
+		<German>[COLOR_CAT_TERRAIN]Logs[COLOR_REVERT]</German>
+		<Russian>[COLOR_CAT_TERRAIN]Журнал[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_LOG_TURN</Tag>
+		<English>T</English>
+		<German>R</German>
+		<Russian>Х</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_LOG_EMPTY</Tag>
+		<English>empty</English>
+		<German>leer</German>
+		<Russian>пусто</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TS_LOG_AT_SEA</Tag>
+		<English>on the way</English>
+		<German>unterwegs</German>
+		<Russian>в пути</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_WAYPOINT_SET_ROW</Tag>
 		<English>[COLOR_SELECTED_TEXT]Set waypoint...[COLOR_REVERT]</English>
 		<German>[COLOR_SELECTED_TEXT]Wegpunkt setzen...[COLOR_REVERT]</German>
@@ -4307,6 +4409,7 @@
 		<German>Feldkoordinaten: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</German>
 		<Russian>Координаты клетки: [COLOR_HIGHLIGHT_TEXT](%d1, %d2)[COLOR_REVERT]</Russian>
 	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_WAYPOINT_IS_SET</Tag>
 		<English>[COLOR_SELECTED_TEXT]Set as WP:[COLOR_REVERT] %s1</English>
 		<German>[COLOR_SELECTED_TEXT]Gesetzt als WP:[COLOR_REVERT] %s1</German>
@@ -4318,5 +4421,4 @@
 		<German>Strg + Rechtsklick: Wegpunkt löschen[NEWLINE]Umschalt + Rechtsklick: umbenennen</German>
 		<Russian>Ctrl + щелчок правой кнопкой: удалить путевую точку[NEWLINE]Shift + щелчок правой кнопкой: переименовать</Russian>
 	</TEXT>
-	<TEXT>
 </Civ4GameText>

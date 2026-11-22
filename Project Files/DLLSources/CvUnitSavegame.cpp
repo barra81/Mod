@@ -149,6 +149,28 @@ enum SavegameVariableTypes
 	// WTP, Attached Land Leader - Ready Turn
 	UnitSave_LeaderReadyTurn,
 
+	// WTP: statistics of the transports of a human player
+	UnitSave_TransportStat0,
+	UnitSave_TransportStat1,
+	UnitSave_TransportStat2,
+	UnitSave_TransportStat3,
+	UnitSave_TransportStat4,
+	UnitSave_TransportStat5,
+	UnitSave_TransportStat6,
+	UnitSave_TransportStat7,
+	UnitSave_TransportStat8,
+	UnitSave_TransportStat9,
+	UnitSave_TransportStat10,
+	UnitSave_TransportStat11,
+	UnitSave_TransportStat12,
+	UnitSave_TransportStat13,
+	UnitSave_TransportYieldTurns,
+	UnitSave_TransportLog, // (old format of a wip version, read and dropped)
+	UnitSave_TransportLoadTurn,
+	UnitSave_TransportLoadPlace,
+	UnitSave_TransportLog2,
+	UnitSave_TransportStat14,
+
 	NUM_SAVE_ENUM_VALUES,
 };
 
@@ -227,6 +249,26 @@ const char* getSavedEnumNameUnit(SavegameVariableTypes eType)
 	case UnitSave_LeaderInitialBonusGranted: return "UnitSave_LeaderInitialBonusGranted";
 	case UnitSave_AttachedLeaderInitialBonusGranted: return "UnitSave_AttachedLeaderInitialBonusGranted";
 	case UnitSave_LeaderReadyTurn: return "UnitSave_LeaderReadyTurn";
+	case UnitSave_TransportStat0: return "UnitSave_TransportStat0";
+	case UnitSave_TransportStat1: return "UnitSave_TransportStat1";
+	case UnitSave_TransportStat2: return "UnitSave_TransportStat2";
+	case UnitSave_TransportStat3: return "UnitSave_TransportStat3";
+	case UnitSave_TransportStat4: return "UnitSave_TransportStat4";
+	case UnitSave_TransportStat5: return "UnitSave_TransportStat5";
+	case UnitSave_TransportStat6: return "UnitSave_TransportStat6";
+	case UnitSave_TransportStat7: return "UnitSave_TransportStat7";
+	case UnitSave_TransportStat8: return "UnitSave_TransportStat8";
+	case UnitSave_TransportStat9: return "UnitSave_TransportStat9";
+	case UnitSave_TransportStat10: return "UnitSave_TransportStat10";
+	case UnitSave_TransportStat11: return "UnitSave_TransportStat11";
+	case UnitSave_TransportStat12: return "UnitSave_TransportStat12";
+	case UnitSave_TransportStat13: return "UnitSave_TransportStat13";
+	case UnitSave_TransportYieldTurns: return "UnitSave_TransportYieldTurns";
+	case UnitSave_TransportLog: return "UnitSave_TransportLog";
+	case UnitSave_TransportLoadTurn: return "UnitSave_TransportLoadTurn";
+	case UnitSave_TransportLoadPlace: return "UnitSave_TransportLoadPlace";
+	case UnitSave_TransportLog2: return "UnitSave_TransportLog2";
+	case UnitSave_TransportStat14: return "UnitSave_TransportStat14";
 	}
 	FAssertMsg(0, "Missing case");
 	return "";
@@ -286,6 +328,14 @@ void CvUnit::resetSavedData(int iID, UnitTypes eUnit, PlayerTypes eOwner, bool b
 	m_bIgnoreDanger = defaultIgnoreDanger;
 	m_bAllowDangerousPath = defaultAllowDangerousPath;
 	m_bAllowDirectPath = defaultAllowDirectPath;
+	for (int iStat = 0; iStat < NUM_TRANSPORT_STATS; ++iStat)
+	{
+		m_aiTransportStat[iStat] = 0;
+	}
+	m_em_iTransportYieldTurns.reset();
+	m_aiTransportLog.clear();
+	m_em_iTransportLoadTurn.reset();
+	m_em_iTransportLoadPlace.reset();
 
 	m_bBarbarian = defaultBarbarian;
 
@@ -418,6 +468,31 @@ void CvUnit::read(CvSavegameReader reader)
 
 		case UnitSave_AllowDangerousPath: reader.Read(m_bAllowDangerousPath); break;
 		case UnitSave_AllowDirectPath: reader.Read(m_bAllowDirectPath); break;
+		case UnitSave_TransportStat0: reader.Read(m_aiTransportStat[0]); break;
+		case UnitSave_TransportStat1: reader.Read(m_aiTransportStat[1]); break;
+		case UnitSave_TransportStat2: reader.Read(m_aiTransportStat[2]); break;
+		case UnitSave_TransportStat3: reader.Read(m_aiTransportStat[3]); break;
+		case UnitSave_TransportStat4: reader.Read(m_aiTransportStat[4]); break;
+		case UnitSave_TransportStat5: reader.Read(m_aiTransportStat[5]); break;
+		case UnitSave_TransportStat6: reader.Read(m_aiTransportStat[6]); break;
+		case UnitSave_TransportStat7: reader.Read(m_aiTransportStat[7]); break;
+		case UnitSave_TransportStat8: reader.Read(m_aiTransportStat[8]); break;
+		case UnitSave_TransportStat9: reader.Read(m_aiTransportStat[9]); break;
+		case UnitSave_TransportStat10: reader.Read(m_aiTransportStat[10]); break;
+		case UnitSave_TransportStat11: reader.Read(m_aiTransportStat[11]); break;
+		case UnitSave_TransportStat12: reader.Read(m_aiTransportStat[12]); break;
+		case UnitSave_TransportStat13: reader.Read(m_aiTransportStat[13]); break;
+		case UnitSave_TransportStat14: reader.Read(m_aiTransportStat[14]); break;
+		case UnitSave_TransportYieldTurns: reader.Read(m_em_iTransportYieldTurns); break;
+		case UnitSave_TransportLog:
+			{
+				std::vector<int> aiOldLog;
+				reader.Read(aiOldLog);
+			}
+			break;
+		case UnitSave_TransportLoadTurn: reader.Read(m_em_iTransportLoadTurn); break;
+		case UnitSave_TransportLoadPlace: reader.Read(m_em_iTransportLoadPlace); break;
+		case UnitSave_TransportLog2: reader.Read(m_aiTransportLog); break;
 		}
 	}
 
@@ -527,6 +602,28 @@ void CvUnit::write(CvSavegameWriter writer)
 	writer.Write(UnitSave_FreePromotionCount, m_ja_iFreePromotionCount);
 	writer.Write(UnitSave_AllowDangerousPath, m_bAllowDangerousPath, defaultAllowDangerousPath);
 	writer.Write(UnitSave_AllowDirectPath, m_bAllowDirectPath, defaultAllowDirectPath);
+	writer.Write(UnitSave_TransportStat0, m_aiTransportStat[0], 0);
+	writer.Write(UnitSave_TransportStat1, m_aiTransportStat[1], 0);
+	writer.Write(UnitSave_TransportStat2, m_aiTransportStat[2], 0);
+	writer.Write(UnitSave_TransportStat3, m_aiTransportStat[3], 0);
+	writer.Write(UnitSave_TransportStat4, m_aiTransportStat[4], 0);
+	writer.Write(UnitSave_TransportStat5, m_aiTransportStat[5], 0);
+	writer.Write(UnitSave_TransportStat6, m_aiTransportStat[6], 0);
+	writer.Write(UnitSave_TransportStat7, m_aiTransportStat[7], 0);
+	writer.Write(UnitSave_TransportStat8, m_aiTransportStat[8], 0);
+	writer.Write(UnitSave_TransportStat9, m_aiTransportStat[9], 0);
+	writer.Write(UnitSave_TransportStat10, m_aiTransportStat[10], 0);
+	writer.Write(UnitSave_TransportStat11, m_aiTransportStat[11], 0);
+	writer.Write(UnitSave_TransportStat12, m_aiTransportStat[12], 0);
+	writer.Write(UnitSave_TransportStat13, m_aiTransportStat[13], 0);
+	writer.Write(UnitSave_TransportStat14, m_aiTransportStat[14], 0);
+	writer.Write(UnitSave_TransportYieldTurns, m_em_iTransportYieldTurns);
+	if (!m_aiTransportLog.empty())
+	{
+		writer.Write(UnitSave_TransportLog2, m_aiTransportLog);
+		writer.Write(UnitSave_TransportLoadTurn, m_em_iTransportLoadTurn);
+		writer.Write(UnitSave_TransportLoadPlace, m_em_iTransportLoadPlace);
+	}
 
 	writer.Write(UnitSave_END);
 }

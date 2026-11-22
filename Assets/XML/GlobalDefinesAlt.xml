@@ -1808,6 +1808,7 @@
 		<!-- WTP: native supply automation: the ship brings its goods home this many turns after it left (also the longest trip to a village); the help text TXT_KEY_ACTION_AUTOMATE_NATIVE_SUPPLY_HELP names it -->
 		<DefineName>NATIVE_SUPPLY_TRIP_TURNS</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
+	</Define>
 	<!-- WTP: factor for the map scroll speed (edge scrolling) while the shift key is held. 1.0 = no change, 2.5 = two and a half times as fast -->
 	<Define>
 		<DefineName>SHIFT_SCROLL_SPEED_MULTIPLIER</DefineName>

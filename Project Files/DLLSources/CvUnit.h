@@ -490,6 +490,33 @@ public:
 	void setLevel(int iNewValue);
 	void changeLevel(int iChange);
 	int getCargo() const;
+
+	// WTP: statistics of a transport of a human player (shown in the tooltip, line "Statistics")
+	enum TransportStats
+	{
+		TS_TURNS, // turns in service (loaded or automated)
+		TS_SLOT_SUM, // slots used, summed over the turns
+		TS_CAPACITY_SUM, // cargo space, summed over the turns
+		TS_EMPTY, // turns without cargo
+		TS_FULL, // turns with all slots used
+		TS_HALF_OR_LESS, // turns with at most half of the slots used (empty runs included)
+		TS_VALUE_SUM, // value of the goods on board (Europe), summed over the turns
+		TS_DELIVERED_SLOTS, // slots less than at the last turn change, summed
+		TS_DELIVERED_VALUE, // value less than at the last turn change, summed
+		TS_IDLE, // turns at the same place as at the last turn change
+		TS_PREV_SLOTS,
+		TS_PREV_VALUE,
+		TS_LAST_X,
+		TS_LAST_Y,
+		TS_AMOUNT_SUM, // units of goods on board, summed over the turns
+		NUM_TRANSPORT_STATS
+	};
+	enum { TS_LOG_ENTRIES = 20, TS_LOG_PAIRS = 8, TS_LOG_PAIR_SIZE = 6, TS_LOG_RECORD = 4 + TS_LOG_PAIR_SIZE * TS_LOG_PAIRS };
+	void noteTransportLoad(YieldTypes eYield);
+	void doTransportStats();
+	const std::vector<int>& getTransportLog() const { return m_aiTransportLog; }
+	int getTransportStat(int iStat) const;
+	int getTransportYieldTurns(YieldTypes eYield) const;
 	void changeCargo(int iChange);
 
 	CvPlot* getAttackPlot() const;
@@ -1024,6 +1051,15 @@ protected:
 
 	bool m_bAllowDangerousPath;
 	bool m_bAllowDirectPath;
+
+	// WTP: statistics of the transports of a human player (see doTransportStats), sampled at every turn change
+	int m_aiTransportStat[15];
+	EnumMap<YieldTypes, int> m_em_iTransportYieldTurns; // slots of the goods on board, summed over the turns
+	EnumMap<YieldTypes, int> m_em_iTransportLoadTurn; // per good: the turn it was loaded last
+	EnumMap<YieldTypes, int> m_em_iTransportLoadPlace; // per good: where it was loaded last (packed place, see doTransportStats)
+	// the last turns in service, TS_LOG_RECORD numbers each: turn, place (x + 2 | (y + 2) << 12; off the map: 1 | travel state << 12), number of goods, then per
+	// good (TS_LOG_PAIR_SIZE numbers): yield, amount, turn of the loading, place of the loading, place of the destination (0: none), distance to it (-1: unknown)
+	std::vector<int> m_aiTransportLog;
 
 	UnitTravelStates m_eUnitTravelState;
 
