@@ -43,6 +43,9 @@ AFRICA_SCREEN = 32
 # RaR, ray, Port Royal
 PORT_ROYAL_SCREEN = 33
 
+# WTP: dialog for the amount of goods to transfer (shift + transfer)
+YIELD_AMOUNT = 35
+
 MAIN_INTERFACE = 99
 
 ### XML editor - start - Nightinggale

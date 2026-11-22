@@ -1274,6 +1274,14 @@ class CvMainInterface:
 	# Will redraw the interface
 	def redraw( self ):
 
+		# WTP: while the amount dialog is drawn on this screen the interface must not be redrawn: the redraw then treats the city
+		# screen like the map (minimap, date, money text, dark goods bar appear); the dirty bits stay set and are handled afterwards
+		try:
+			if CvScreensInterface.yieldAmountScreen.isHostMain():
+				return 0
+		except:
+			pass
+
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
 
 		if not INITIALIZED:
@@ -3796,6 +3804,10 @@ class CvMainInterface:
 	# Updates the Screen
 	def update( self, fDelta ):
 		self.updateTerritorialInfluenceEditor()
+		try:
+			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
+		except:
+			pass
 		return
 
 	# Adds Mouse Over Help to General Widgets

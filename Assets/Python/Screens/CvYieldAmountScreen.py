@@ -1,0 +1,589 @@
+## WTP: dialog to enter the amount of goods to transfer (shift + transfer). It replaces the spin box popup of the game, which
+## can neither be changed by Python nor gets mouse wheel or Page Up / Page Down: this one takes the keys and the mouse wheel.
+## The DLL (CvDLLButtonPopup::launchSelectYieldAmountPopup) calls askYieldAmount in CvScreensInterface, the amount is sent back
+## with CyGame().sendYieldTransfer.
+
+from CvPythonExtensions import *
+import CvUtil
+import CvScreenEnums
+
+gc = CyGlobalContext()
+localText = CyTranslator()
+
+BTN_MINUS = 40001
+BTN_PLUS = 40002
+BTN_MAX = 40003
+BTN_OK = 40004
+BTN_CANCEL = 40005
+BTN_MOVE = 40010 # +0 left, +1 right, +2 up, +3 down
+MOVE_STEP = 60
+MOVE_DELAY = 30 # frames until the held move button repeats
+MOVE_REPEAT = 5 # frames between the steps
+
+STEP = 25
+STEP_CTRL = 50
+
+class CvYieldAmountScreen:
+	"Amount of goods to transfer"
+
+	def __init__(self):
+		self.SCREEN_NAME = "YieldAmountScreen"
+		self.BACKGROUND_ID = "YAMBackground"
+		self.W = 380
+		self.H = 200
+		self.iYield = -1
+		self.iUnit = -1
+		self.iMax = 0
+		self.iData3 = -1
+		self.bPlayerAction = False
+		self.iFromPlayer = -1
+		self.szValue = u""
+		self.bSelected = True
+		self.bFinished = True
+		self.bHostMain = False
+		self.iRefresh = 0
+		self.pHost = None # the harbor screen (Europe / Africa / Port Royal) the dialog is drawn on, none: an own screen
+		self.OX = 0
+		self.OY = 0
+		self.dMove = {} # the window moved by the player, per place (diplomacy, city, harbor, map): [x, y]
+		self.szCtx = ""
+		self.iBaseX = 0
+		self.iBaseY = 0
+		self.iGX = 0 # the window on the screen
+		self.iGY = 0
+		self.iMoveDir = -1
+		self.iMoveWait = 0
+		self.aHeld = [] # the arrow keys that are down
+		self.iHoldWait = 0
+		self.bMouseWasDown = False
+		self.bRepeatDone = False
+		self.iPendX = 0
+		self.iPendY = 0
+		self.bCtrlDown = False # the state of Shift and Ctrl, noted from the key events (the interface does not give it in this dialog)
+		self.bShiftDown = False
+		self.tReopen = None # the dialog that Alt+Tab closed (it is opened again for the same transfer)
+		self.iReopenWait = 0
+		self.iReopenTries = 0
+
+	def getScreen(self):
+		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.YIELD_AMOUNT)
+
+	def getKeyId(self, szName):
+		iKey = getattr(InputTypes, szName, None)
+		if iKey == None:
+			return -12345
+		return int(iKey)
+
+	def getNotifyId(self, szName):
+		iCode = getattr(NotifyCode, szName, None)
+		if iCode == None:
+			return -12345
+		return int(iCode)
+
+	# opens the dialog (1: it is open, 0: the DLL shows its own popup instead)
+	def open(self, iYield, iUnit, iMax, iData3, bPlayerAction, iFromPlayer):
+		screen = self.getScreen()
+		if screen.isActive():
+			return 0
+		self.iYield = iYield
+		self.iUnit = iUnit
+		self.iMax = iMax
+		self.iData3 = iData3
+		self.bPlayerAction = bPlayerAction
+		self.iFromPlayer = iFromPlayer # diplomacy: the player whose goods are traded, otherwise -1
+		self.szValue = unicode(iMax)
+		self.bSelected = True
+		self.bFinished = False
+		self.tReopen = None
+
+		# a harbor screen (Europe / Africa / Port Royal) that is open would be closed by the game when another screen opens: the
+		# dialog is drawn on that screen then (a screen of its own is used everywhere else)
+		self.pHost = None
+		try:
+			import CvScreensInterface
+			if CvScreensInterface.europeScreen.getScreen().isActive():
+				self.pHost = CvScreensInterface.europeScreen.getScreen()
+			elif CvScreensInterface.africaScreen.getScreen().isActive():
+				self.pHost = CvScreensInterface.africaScreen.getScreen()
+			elif CvScreensInterface.portroyalScreen.getScreen().isActive():
+				self.pHost = CvScreensInterface.portroyalScreen.getScreen()
+		except:
+			self.pHost = None
+		# everywhere else (the cities, the map) the dialog is drawn on the main interface: a screen of its own makes the city screen
+		# show things that do not belong there (the minimap, the yellow ovals); the diplomacy has an own screen
+		self.bHostMain = False
+		if self.pHost == None and iFromPlayer < 0:
+			self.pHost = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			self.bHostMain = True
+			self.iRefresh = 0
+
+		self.dDigits = {}
+		for i in range(10):
+			self.dDigits[self.getKeyId("KB_" + str(i))] = i
+			self.dDigits[self.getKeyId("KB_NUMPAD" + str(i))] = i
+		self.iKeyBack = self.getKeyId("KB_BACKSPACE")
+		self.aKeyOk = [self.getKeyId("KB_RETURN"), self.getKeyId("KB_NUMPADENTER")]
+		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
+		self.aKeyShift = [self.getKeyId("KB_LSHIFT"), self.getKeyId("KB_RSHIFT")]
+		self.aKeyCtrl = [self.getKeyId("KB_LCONTROL"), self.getKeyId("KB_RCONTROL")]
+		self.iKeyUp = self.getKeyId("KB_PGUP")
+		self.iKeyDown = self.getKeyId("KB_PGDN")
+		self.aKeyArrows = [self.getKeyId("KB_LEFT"), self.getKeyId("KB_RIGHT"), self.getKeyId("KB_UP"), self.getKeyId("KB_DOWN")] # (move the window)
+		self.iWheelUp = self.getNotifyId("NOTIFY_MOUSEWHEELUP")
+		self.iWheelDown = self.getNotifyId("NOTIFY_MOUSEWHEELDOWN")
+		self.aWheelUp = [self.iWheelUp, self.getNotifyId("NOTIFY_SCROLL_UP")]
+		self.aWheelDown = [self.iWheelDown, self.getNotifyId("NOTIFY_SCROLL_DOWN")]
+
+		iXRes = screen.getXResolution()
+		iYRes = screen.getYResolution()
+		iX = (iXRes - self.W) / 2
+		iY = (iYRes - self.H) / 2
+		# where the dialog is drawn: in the diplomacy its bottom is at the lower edge of the portrait, in the cities (and on the map)
+		# just above the goods bar, in the harbors it is moved up by more than its height
+		if iFromPlayer >= 0:
+			iY = int(iYRes * 0.597) - self.H
+		self.iMoveDir = -1
+		self.aHeld = []
+		self.iPendX = 0
+		self.iPendY = 0
+		self.bMouseWasDown = False
+		self.bRepeatDone = False
+		if self.pHost == None:
+			self.szCtx = "diplomacy"
+			self.iBaseX = iX
+			self.iBaseY = iY
+			self.OX = 0
+			self.OY = 0
+			# (no setRenderInterfaceOnly: it would switch off the 3d views of the city screen; the keys come from CvEventManager.onKbdEvent)
+			screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
+			self.applyPosition(screen)
+			screen.showWindowBackground(False)
+		else:
+			screen = self.pHost
+			self.OX = (screen.getXResolution() - self.W) / 2
+			self.szCtx = "harbor"
+			if self.bHostMain:
+				# just above the goods bar; in the city screen at the right, up to the golden frame of the panels there
+				self.OY = int(screen.getYResolution() * 0.84) - self.H
+				self.szCtx = "map"
+				if CyInterface().isCityScreenUp():
+					self.OX = int(screen.getXResolution() * 0.592) - self.W
+					self.szCtx = "city"
+			else:
+				self.OY = int(screen.getYResolution() * 0.305) # the harbors: a little above the landing stage
+			self.iBaseX = self.OX
+			self.iBaseY = self.OY
+			self.applyPosition(screen)
+		self.drawLayout(screen)
+		try:
+			CyGame().setWheelCapture(True)
+		except:
+			pass
+		return 1
+
+	# the place of the window: the base place plus what the player moved it (stays on the screen)
+	def applyPosition(self, screen):
+		aMove = self.dMove.get(self.szCtx, [0, 0])
+		iXRes = screen.getXResolution()
+		iYRes = screen.getYResolution()
+		iX = max(0, min(iXRes - self.W, self.iBaseX + aMove[0]))
+		iY = max(0, min(iYRes - self.H, self.iBaseY + aMove[1]))
+		self.dMove[self.szCtx] = [iX - self.iBaseX, iY - self.iBaseY]
+		self.iGX = iX
+		self.iGY = iY
+		if self.pHost == None:
+			screen.setDimensions(iX, iY, self.W, self.H) # (the widgets of the own screen stay at 0, 0)
+		else:
+			self.OX = iX
+			self.OY = iY
+
+	# the widgets of the dialog
+	def drawLayout(self, screen):
+		screen.addPanel(self.BACKGROUND_ID, u"", u"", True, False, self.OX, self.OY, self.W, self.H, PanelStyles.PANEL_STYLE_MAIN, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+		szTitle = localText.getText("TXT_KEY_SELECT_YIELD_POPUP", (gc.getYieldInfo(self.iYield).getDescription(),))
+		screen.setLabelAt("YAMTitle", self.BACKGROUND_ID, u"<font=3>" + szTitle + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 24, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.addPanel("YAMValueBG", u"", u"", False, False, self.OX + self.W / 2 - 70, self.OY + 44, 140, 36, PanelStyles.PANEL_STYLE_IN, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+		iButtonW = 86
+		iGap = 10
+		iRowX = (self.W - 3 * iButtonW - 2 * iGap) / 2
+		screen.setButtonGFC("YAMMinus", u"<font=2>-" + unicode(STEP) + u"</font>", "", self.OX + iRowX, self.OY + 92, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_MINUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMPlus", u"<font=2>+" + unicode(STEP) + u"</font>", "", self.OX + iRowX + iButtonW + iGap, self.OY + 92, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_PLUS, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMMax", u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_MAX", ()) + u"</font>", "", self.OX + iRowX + 2 * (iButtonW + iGap), self.OY + 92, iButtonW, 26, WidgetTypes.WIDGET_GENERAL, BTN_MAX, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+
+		screen.setLabelAt("YAMHintA", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_HINT1", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 130, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabelAt("YAMHintB", self.BACKGROUND_ID, u"<font=2>" + localText.getText("TXT_KEY_WTP_YIELD_AMOUNT_HINT2", ()) + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 148, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+		screen.setButtonGFC("YAMOk", u"<font=2>" + localText.getText("TXT_KEY_MAIN_MENU_OK", ()) + u"</font>", "", self.OX + self.W / 2 - 105, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_OK, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		screen.setButtonGFC("YAMCancel", u"<font=2>" + localText.getText("TXT_KEY_POPUP_CANCEL", ()) + u"</font>", "", self.OX + self.W / 2 + 5, self.OY + self.H - 36, 100, 28, WidgetTypes.WIDGET_GENERAL, BTN_CANCEL, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		# moves the window (the arrow keys do the same)
+		iMX = self.W - 8 - 4 * 28
+		for i in range(4):
+			screen.setButtonGFC("YAMMove" + str(i), u"<font=2>" + [u"\u00ab", u"\u00bb", u"^", u"v"][i] + u"</font>", "", self.OX + iMX + [0, 84, 28, 56][i], self.OY + 4, 26, 18, WidgetTypes.WIDGET_GENERAL, BTN_MOVE + i, -1, ButtonStyles.BUTTON_STYLE_STANDARD)
+		self.drawValue()
+
+	# the pixels of a step: normal, with Shift twice as far, with Ctrl half, with both a third
+	def getMoveStep(self, bCtrl, bShift):
+		if bCtrl and bShift:
+			return MOVE_STEP / 3
+		if bShift:
+			return MOVE_STEP * 2
+		if bCtrl:
+			return MOVE_STEP / 2
+		return MOVE_STEP
+
+	# Ctrl and Shift for the move buttons and the held keys: Ctrl from the game window (as the mouse wheel), Shift from the key events
+	def getModifiers(self):
+		bCtrl = self.bCtrlDown
+		bShift = self.bShiftDown
+		try:
+			bCtrl = bCtrl or CyGame().isCtrlKeyPressed()
+		except:
+			pass
+		try:
+			bShift = bShift or CyInterface().shiftKey()
+		except:
+			pass
+		return (bCtrl, bShift)
+
+	# a step is only noted here, the window is moved once per frame
+	def queueMove(self, iDir, iStep):
+		self.iPendX += [-iStep, iStep, 0, 0][iDir]
+		self.iPendY += [0, 0, -iStep, iStep][iDir]
+		if self.pHost == None:
+			# an own screen (diplomacy): moved at once, it does not depend on the update calls of the screen
+			self.applyPending()
+
+	def applyPending(self):
+		if self.iPendX != 0 or self.iPendY != 0:
+			iX = self.iPendX
+			iY = self.iPendY
+			self.iPendX = 0
+			self.iPendY = 0
+			try:
+				self.moveWindow(iX, iY)
+			except:
+				pass
+
+	def moveWindow(self, iDX, iDY):
+		aMove = self.dMove.get(self.szCtx, [0, 0])
+		self.dMove[self.szCtx] = [aMove[0] + iDX, aMove[1] + iDY]
+		if self.pHost == None:
+			self.applyPosition(self.getScreen())
+			return
+		# drawn on another screen: the widgets are built again at the new place
+		screen = self.pHost
+		self.dropWidgets()
+		self.applyPosition(screen)
+		self.drawLayout(screen)
+
+	# an arrow key goes down (the repeats of the keyboard are ignored: the held keys are handled in updateMove)
+	def pressArrow(self, iDir, bCtrl, bShift):
+		if iDir in self.aHeld:
+			return
+		self.aHeld.append(iDir)
+		self.iHoldWait = MOVE_DELAY
+		self.queueMove(iDir, self.getMoveStep(bCtrl, bShift))
+
+	# Ctrl + Shift + Q: back to the default place
+	def resetPosition(self):
+		self.iPendX = 0
+		self.iPendY = 0
+		self.dMove[self.szCtx] = [0, 0]
+		if self.pHost == None:
+			self.applyPosition(self.getScreen())
+			return
+		screen = self.pHost
+		self.dropWidgets()
+		self.applyPosition(screen)
+		self.drawLayout(screen)
+
+	def handleKeyUp(self, iKey):
+		if iKey in self.aKeyShift:
+			self.bShiftDown = False
+		if iKey in self.aKeyCtrl:
+			self.bCtrlDown = False
+		if iKey in self.aKeyArrows:
+			iDir = self.aKeyArrows.index(iKey)
+			if iDir in self.aHeld:
+				self.aHeld.remove(iDir)
+
+	# the move buttons held down: the steps go on until the mouse button is released (the first step is the click itself)
+	def updateMove(self):
+		try:
+			bDown = CyInterface().isLeftMouseDown()
+		except:
+			bDown = False
+		if not bDown:
+			self.iMoveDir = -1
+			self.bMouseWasDown = False
+		elif self.iMoveDir == -1:
+			if not self.bMouseWasDown:
+				self.bMouseWasDown = True
+				self.bRepeatDone = False
+				iX = CyGame().getCursorClientX() - self.iGX
+				iY = CyGame().getCursorClientY() - self.iGY
+				iMX = self.W - 8 - 4 * 28
+				for i in range(4):
+					iBX = iMX + [0, 84, 28, 56][i]
+					if iX >= iBX and iX < iBX + 26 and iY >= 4 and iY < 22:
+						self.iMoveDir = i
+						self.iMoveWait = MOVE_DELAY
+						break
+		else:
+			self.iMoveWait -= 1
+			if self.iMoveWait <= 0:
+				self.iMoveWait = MOVE_REPEAT
+				self.bRepeatDone = True
+				aMod = self.getModifiers()
+				self.queueMove(self.iMoveDir, self.getMoveStep(aMod[0], aMod[1]))
+		# drawn on a harbor screen (Europe / Africa / Port Royal): the screen does not pass the arrow keys on to the key event, they are
+		# asked from the keyboard directly
+		if self.pHost != None and not self.bHostMain:
+			aMod = self.getModifiers()
+			for iDir in range(4):
+				try:
+					bKey = CyGame().isArrowKeyPressed(iDir)
+				except:
+					bKey = False
+				if bKey:
+					self.pressArrow(iDir, aMod[0], aMod[1])
+				elif iDir in self.aHeld:
+					self.aHeld.remove(iDir)
+		# the arrow keys held: the window goes on moving, two keys at once move it diagonally
+		if len(self.aHeld) > 0:
+			self.iHoldWait -= 1
+			if self.iHoldWait <= 0:
+				self.iHoldWait = MOVE_REPEAT
+				aMod = self.getModifiers()
+				for iHeld in self.aHeld:
+					self.queueMove(iHeld, self.getMoveStep(aMod[0], aMod[1]))
+		self.applyPending()
+
+	def dropWidgets(self):
+		try:
+			aNames = ["YAMValue", "YAMTitle", "YAMHintA", "YAMHintB", "YAMValueBG", "YAMMinus", "YAMPlus", "YAMMax", "YAMOk", "YAMCancel", "YAMMove0", "YAMMove1", "YAMMove2", "YAMMove3", self.BACKGROUND_ID]
+			for szName in aNames:
+				self.pHost.deleteWidget(szName)
+		except:
+			pass
+
+	def isHostMain(self):
+		return self.bHostMain and not self.bFinished
+
+	# the game window was activated again (Alt+Tab): the city screen is not drawn again while the dialog is on this screen (the redraw
+	# is blocked then). The dialog is closed for a few frames (the city is drawn) and opened again with the same transfer, value and place.
+	def windowActivated(self):
+		if self.bFinished or not self.bHostMain:
+			return
+		self.tReopen = (self.iYield, self.iUnit, self.iMax, self.iData3, self.bPlayerAction, self.iFromPlayer, self.szValue, self.bSelected, CyInterface().isCityScreenUp())
+		self.iReopenWait = 4
+		self.iReopenTries = 0
+		self.finish(False)
+
+	def checkReopen(self):
+		if self.iReopenWait > 0:
+			self.iReopenWait -= 1
+			return
+		try:
+			tState = self.tReopen
+			if CyInterface().isCityScreenUp() != tState[8]:
+				# (the screen is not there yet; the dialog is not opened for ever)
+				self.iReopenTries += 1
+				if self.iReopenTries > 240:
+					self.tReopen = None
+				return
+			self.tReopen = None
+			if self.open(tState[0], tState[1], tState[2], tState[3], tState[4], tState[5]) != 0:
+				self.szValue = tState[6]
+				self.bSelected = tState[7]
+				self.drawValue()
+		except:
+			self.tReopen = None
+
+	def refreshView(self):
+		# ask the interface to redraw the parts that show artifacts (minimap, ovals) in the city screen
+		if not self.bHostMain:
+			return
+		# (while the dialog is open CvMainInterface.redraw does nothing; afterwards the interface is redrawn completely)
+		for szBit in ("MiscButtons_DIRTY_BIT", "GameData_DIRTY_BIT", "ResourceTable_DIRTY_BIT", "Minimap_Section_DIRTY_BIT", "Help_DIRTY_BIT", "InfoPane_DIRTY_BIT", "SelectionButtons_DIRTY_BIT", "CityScreen_DIRTY_BIT"):
+			try:
+				CyInterface().setDirty(getattr(InterfaceDirtyBits, szBit), True)
+			except:
+				pass
+
+	def getDrawScreen(self):
+		if self.pHost != None:
+			return self.pHost
+		return self.getScreen()
+
+	def isEmbedded(self):
+		return self.pHost != None
+
+	def drawValue(self):
+		screen = self.getDrawScreen()
+		if self.bSelected:
+			szText = u"<color=255,220,100>" + self.szValue + u"</color>"
+		else:
+			szText = u"<color=255,255,255>" + self.szValue + u"</color><color=255,220,100>|</color>"
+		screen.setLabelAt("YAMValue", self.BACKGROUND_ID, u"<font=3b>" + szText + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.W / 2, 50, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.show("YAMValue")
+
+	def getValue(self):
+		if len(self.szValue) == 0:
+			return 0
+		return int(self.szValue)
+
+	def setValue(self, iValue):
+		iValue = max(1, min(self.iMax, iValue))
+		self.szValue = unicode(iValue)
+		self.bSelected = False
+		self.drawValue()
+
+	def step(self, iDirection, bCtrl):
+		iStep = STEP
+		if bCtrl:
+			iStep = STEP_CTRL
+		self.setValue(self.getValue() + iDirection * iStep)
+
+	def isOpen(self):
+		return not self.bFinished
+
+	def releaseWheel(self):
+		try:
+			CyGame().setWheelCapture(False)
+		except:
+			pass
+
+	def finish(self, bOk):
+		if self.bFinished:
+			return
+		self.bFinished = True
+		self.releaseWheel()
+		if bOk:
+			iAmount = max(1, min(self.iMax, self.getValue()))
+			try:
+				if self.iFromPlayer >= 0:
+					gc.getPlayer(self.iFromPlayer).setDiploYieldAmount(self.iYield, iAmount) # (as the popup of the diplomacy did)
+				else:
+					CyGame().sendYieldTransfer(self.iUnit, self.iData3, self.iYield, iAmount, self.bPlayerAction)
+			except:
+				pass
+		if self.pHost == None:
+			self.getScreen().hideScreen()
+		else:
+			# drawn on a harbor screen: the widgets are removed again
+			self.dropWidgets()
+			self.refreshView()
+			self.bHostMain = False
+			self.pHost = None
+
+	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
+	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False):
+		self.bCtrlDown = bCtrl or iKey in self.aKeyCtrl
+		self.bShiftDown = bShift or iKey in self.aKeyShift
+		if bCtrl and bShift and iKey == self.getKeyId("KB_Q"):
+			self.resetPosition()
+		elif iKey in self.aKeyArrows:
+			self.pressArrow(self.aKeyArrows.index(iKey), bCtrl, bShift)
+		elif self.dDigits.has_key(iKey):
+			if self.bSelected:
+				self.szValue = u""
+			self.bSelected = False
+			self.szValue = self.szValue + unicode(self.dDigits[iKey])
+			if self.getValue() > self.iMax:
+				self.szValue = unicode(self.iMax)
+			self.szValue = unicode(self.getValue())
+			if self.szValue == u"0":
+				self.szValue = u""
+			self.drawValue()
+		elif iKey == self.iKeyBack:
+			if self.bSelected:
+				self.szValue = u""
+			else:
+				self.szValue = self.szValue[:-1]
+			self.bSelected = False
+			self.drawValue()
+		elif iKey == self.iKeyUp:
+			self.step(1, bCtrl)
+		elif iKey == self.iKeyDown:
+			self.step(-1, bCtrl)
+		elif iKey in self.aKeyOk:
+			if len(self.szValue) > 0:
+				self.finish(True)
+		elif iKey == self.iKeyEsc:
+			self.finish(False)
+
+	# the clicks on the buttons of the dialog when it is drawn on a harbor screen (CvScreensInterface.handleInput gives them here);
+	# returns 1 if the event was for the dialog
+	def handleEmbeddedInput(self, inputClass):
+		if int(inputClass.getNotifyCode()) != int(NotifyCode.NOTIFY_CLICKED) or inputClass.getButtonType() != WidgetTypes.WIDGET_GENERAL:
+			return 0
+		iData = inputClass.getData1()
+		if iData < BTN_MINUS or iData >= BTN_MOVE + 4 or (iData > BTN_CANCEL and iData < BTN_MOVE):
+			return 0
+		self.handleInput(inputClass)
+		return 1
+
+	def handleInput(self, inputClass):
+		iCode = int(inputClass.getNotifyCode())
+		if iCode == int(NotifyCode.NOTIFY_CHARACTER):
+			return 0 # (the keys are handled in CvEventManager.onKbdEvent)
+		if iCode in self.aWheelUp:
+			self.step(1, inputClass.isCtrlKeyDown())
+			return 0
+		if iCode in self.aWheelDown:
+			self.step(-1, inputClass.isCtrlKeyDown())
+			return 0
+		if iCode == int(NotifyCode.NOTIFY_CLICKED):
+			if inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL:
+				iData = inputClass.getData1()
+				if iData == BTN_MINUS:
+					self.step(-1, inputClass.isCtrlKeyDown())
+				elif iData == BTN_PLUS:
+					self.step(1, inputClass.isCtrlKeyDown())
+				elif iData == BTN_MAX:
+					self.setValue(self.iMax)
+				elif iData == BTN_OK:
+					if len(self.szValue) > 0:
+						self.finish(True)
+				elif iData == BTN_CANCEL:
+					self.finish(False)
+				elif iData >= BTN_MOVE and iData < BTN_MOVE + 4:
+					if self.bRepeatDone:
+						self.bRepeatDone = False # (the release after the window was moved by holding the button)
+					else:
+						aMod = self.getModifiers()
+						self.queueMove(iData - BTN_MOVE, self.getMoveStep(aMod[0], aMod[1]))
+			return 0
+		return 0
+
+	# the mouse wheel (collected by the DLL while the dialog is open)
+	def update(self, fDelta):
+		if self.tReopen != None:
+			self.checkReopen()
+			return 0
+		if self.bFinished:
+			return 0
+		try:
+			if self.pHost != None and not self.bHostMain and not self.pHost.isActive():
+				self.finish(False) # the harbor screen was closed meanwhile
+				return 0
+			self.updateMove()
+			iNotches = CyGame().takeWheelNotches()
+			if iNotches != 0:
+				bCtrl = CyGame().isCtrlKeyPressed()
+				for i in range(abs(iNotches)):
+					if iNotches > 0:
+						self.step(1, bCtrl)
+					else:
+						self.step(-1, bCtrl)
+		except:
+			pass
+		return 0
+
+	def onClose(self):
+		self.bFinished = True
+		self.releaseWheel()
+		return 0

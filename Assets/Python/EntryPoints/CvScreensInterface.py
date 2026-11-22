@@ -11,6 +11,7 @@ import CvAchieveAdvisor
 # TAC - Trade Route Advisor - koma13 - START
 import CvTradeRoutesAdvisor
 # TAC - Trade Route Advisor - koma13 - END
+import CvYieldAmountScreen
 
 import CvRevolutionAdvisor
 import CvMilitaryAdvisor
@@ -110,6 +111,15 @@ def showAchieveAdvisorScreen():
 	if (-1 != CyGame().getActivePlayer()):
 		achieveAdvisor.interfaceScreen()
 # Achievements END
+
+# WTP: the DLL asks for the amount of goods to transfer (instead of the spin box popup of the game); returns 1 if the dialog is open
+yieldAmountScreen = CvYieldAmountScreen.CvYieldAmountScreen()
+def askYieldAmount(argsList):
+	try:
+		return yieldAmountScreen.open(argsList[0], argsList[1], argsList[2], argsList[3], argsList[4] != 0, argsList[5])
+	except:
+		pass
+		return 0
 
 # TAC - Trade Routes Advisor - koma13 - START
 tradeRoutesAdvisor = CvTradeRoutesAdvisor.CvTradeRoutesAdvisor()
@@ -581,6 +591,11 @@ def handleInput (argsList):
 	' handle input is called when a screen is up '
 	inputClass = PyScreenInput.ScreenInput(argsList)
 
+	# WTP: the buttons of the amount dialog when it is drawn on a harbor screen
+	if (yieldAmountScreen.isOpen() and yieldAmountScreen.isEmbedded()):
+		if (yieldAmountScreen.handleEmbeddedInput(inputClass)):
+			return 0
+
 	# allows overides for mods
 	ret = CvScreenUtilsInterface.getScreenUtils().handleInput( (inputClass.getPythonFile(),inputClass) )
 
@@ -600,6 +615,10 @@ def update (argsList):
 	if (HandleInputMap.has_key(argsList[0])):
 		screen = HandleInputMap.get(argsList[0])
 		screen.update(argsList[1])
+
+	# WTP: the mouse wheel of the amount dialog when it is drawn on a harbor screen
+	if (yieldAmountScreen.isOpen() and yieldAmountScreen.isEmbedded() and argsList[0] != YIELD_AMOUNT and not yieldAmountScreen.isHostMain()): # (on the main interface its own update does it: not twice per frame)
+		yieldAmountScreen.update(argsList[1])
 
 def onClose (argsList):
 	# allows overides for mods
@@ -668,6 +687,11 @@ def handleForward(screens):
 
 def getWidgetHelp(argsList):
 	iScreen = argsList[0]
+	# WTP: the move buttons of the amount dialog
+	if (yieldAmountScreen.isOpen() and argsList[1] == WidgetTypes.WIDGET_GENERAL and argsList[2] >= 40010 and argsList[2] < 40014):
+		if (yieldAmountScreen.iFromPlayer >= 0):
+			return CyTranslator().getText("TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP", (yieldAmountScreen.iGX, yieldAmountScreen.iGY)) # (the diplomacy gets no keys)
+		return CyTranslator().getText("TXT_KEY_WTP_YIELD_AMOUNT_MOVE_HELP_KEYS", (yieldAmountScreen.iGX, yieldAmountScreen.iGY))
 	if (HandleMouseoverMap.has_key(iScreen)):
 		screen = HandleMouseoverMap.get(iScreen)
 		return screen.getWidgetHelp(argsList)
@@ -778,6 +802,7 @@ HandleCloseMap = {  DAWN_OF_MAN : dawnOfMan,
 				# add new screens here
 				# TAC - Trade Routes Advisor - koma13 - START
 					TRADE_ROUTES_ADVISOR : tradeRoutesAdvisor,
+					YIELD_AMOUNT : yieldAmountScreen,
 				# TAC - Trade Routes Advisor - koma13 - END
 				}
 #######################################################################################
@@ -852,6 +877,7 @@ HandleInputMap = {  MAIN_INTERFACE : mainInterface,
 # Achievements END
 				# TAC - Trade Routes Advisor - koma13 - START
 					TRADE_ROUTES_ADVISOR : tradeRoutesAdvisor,
+					YIELD_AMOUNT : yieldAmountScreen,
 				# TAC - Trade Routes Advisor - koma13 - END
 					XML_EDITOR : xmlEditor,
 				}
