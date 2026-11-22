@@ -138,6 +138,8 @@ public:
 	bool m_bTooltipWaiting;
 	std::vector<int> m_aiTooltipStopYields;
 	int m_iPriorityDetour; // turns of detour already used by the pick-up stops on the way to this target
+	// WTP: the game turn since which an automated transport of a human player stands in a colony with cargo and finds no destination for it (-1: none; not saved)
+	int m_iNoDestinationSince;
 
 private:
 	// R&R mod, vetiarvind, max yield import limit - start

@@ -132,13 +132,33 @@
 //     per call to plots with a revealed goody in the water, nearly all without result: the waters are enemy territory in the wars). Fix: a
 //     plot that a unit could not reach is not searched again this turn for another unit of the same owner and type from the same water (or
 //     the same plot); the counters CNT_GOODY_* show calls, searches, failed searches and memory hits.
-//     In addition a unit (ship or land unit) searches for a goody only every second turn (unit id + turn even), so the other half is skipped. Other items: AI_tradeRoutes 2.5-10 s,
+//     In addition a unit (ship or land unit) searched for a goody only every second turn (unit id + turn even); since note 15 only with 1500 or more units. Other items: AI_tradeRoutes 2.5-10 s,
 //     UNITAI_TRANSPORT_SEA 354,000 tiny searches (2.7 s), UNITAI_TRANSPORT_COAST 2 s (22 calls), AI_doTurnPost of France 4.4 s once (turn 482).
 // 13. Workforce plan, second step of the classes (note 11 skipped only 0.4% of the pairs: the classes held the home colony and the job held
 //     exactly, so nearly every colonist was a class of its own). A scan of a colony only needs to know whether the home colony is another
 //     one and whether the held job is a job of this colony (the values depend on nothing else), so the classes are made from the unit type,
 //     the travel time, that "moves" flag and the held job of this colony. The pairs chosen stay the same. The counters "pairs looked at" and
 //     "colonist visits skipped" show the effect: the pairs (242 million per turn change before) must fall by the skipped share.
+// 14. Turns 486-490 (version with notes 12 and 13; 5,200 units): AI_goodyRange 6.0 s -> 0.4-0.5 s (note 12 works, UNITAI_COMBAT_SEA 10 s -> 2.8-4.4 s).
+//     The workforce plan step 3 stays at 4.9-5.5 s: the pairs looked at fell from 242 to 159 million, the colonist visits skipped are only 2.4
+//     million (note 13 helped a third, not more). New biggest item: AI_tradeRoutes 9.8-21.8 s, of it the wagons (UNITAI_WAGON 6-12.6 s for 54-72
+//     calls; one wagon 3 s with 982 path searches, six wagons at the same spot 295 searches each, 600-700 ms each): the check of the maximum trip
+//     of land transports (10 turns) searched position -> source city and source -> destination city again for every route (the other blocks keep
+//     their paths). Fix: source -> destination goes through the cache of the turn (WTP_getRoutePathCached), position -> source is kept once per
+//     source city of the call. The results stay the same. Open: the pair scan of the workforce plan (step 3).
+// 15. The halving of the goody searches (note 12: unit id + turn even) only starts with 1500 or more units that looked for a goody in the last turn change.
+//     Measured at turns 486-490 (805-1062 units per turn, 398-552 skipped by the halving): AI_goodyRange 0.29-0.61 s, about 2 ms per searching call, so the
+//     halving saved only about 0.2-0.3 s; the 5-6 s of turns 477-482 (477-613 calls, 10-12 ms each) were saved by the memory of the unreachable goodies.
+// 16. Turns 492-509 (versions dd848162 to cc619563; 5,300-5,660 units, 286 cities): the wagons fell from 6-12.6 s to 1.8-3.3 s (note 14 works); the goody
+//     searches stay at 0.4-0.6 s. New: the workforce plan grew to 11.7-12.9 s (step 3: 8.5 s, 265 million pairs, 4,840 free colonists, 13,570 jobs; France
+//     9.7 s), AI_tradeRoutes 5.6-22 s of which only about 3 s are in the path slots, UNITAI_COLONIST 3.0 -> 7.5 s (calls 864 -> 1,385, 5.4 ms each, only 0.4 s
+//     of it paths), UNITAI_TRANSPORT_SEA 10 s with 433,000 tiny searches (8.3 s, caller unknown), TRANSPORT_COAST 5.2 s (141 searches of 5 ms per ship).
+//     Changes: (a) the scan of a colony in step 3 works out the part of a pair that does not depend on the single colonist (input of the job, the job
+//     value with the lumber and mine adjustments, food) once per colonist type and job (WfPairBase), and skips dead pairs (no input, value 0 or less that no
+//     must rule can lift) before the eta tests; the pairs chosen stay the same. The counters "pairs looked at" and "can do the job and reaches it in time" now
+//     count fewer pairs (the dead ones are no longer counted as free). (b) New timing slots, no change of behavior: the parts of AI_tradeRoutes (set-up, unloading,
+//     values, main loop, best destination, pick-up/filling, orders, final move), the colonist AI (AI_hasSuitableJob, AI_doWfTask, AI_betterJob, AI_joinCity,
+//     AI_learn) and in the ship AIs AI_continueMission, AI_retreatToCity, AI_safety.
 //  7. The long times matter more with more AI players (the tester plays with only 3 opponents because of the turn time): the plan
 //     scales about linearly with the number of European AIs, so the per player table is there to measure that.
 //
@@ -221,6 +241,22 @@ namespace WtpTiming
 		SLOT_CS_ADJACENT,
 		SLOT_CS_SIEGE,
 		SLOT_CS_OCEAN,
+		SLOT_TR_SETUP,
+		SLOT_TR_UNLOAD,
+		SLOT_TR_VALUES,
+		SLOT_TR_MAINLOOP,
+		SLOT_TR_BEST,
+		SLOT_TR_PICKUP,
+		SLOT_TR_ORDERS,
+		SLOT_TR_PUSH,
+		SLOT_COL_HASJOB,
+		SLOT_COL_WFTASK,
+		SLOT_COL_BETTERJOB,
+		SLOT_COL_JOIN,
+		SLOT_COL_LEARN,
+		SLOT_SHIP_CONTINUE,
+		SLOT_SHIP_RETREATCITY,
+		SLOT_SHIP_SAFETY,
 		SLOT_COUNT
 	};
 
@@ -283,7 +319,7 @@ namespace WtpTiming
 		"AI_goodyRange: path searches to a goody plot",
 		"  of these: no path found (the search went through all water that can be reached)",
 		"AI_goodyRange: goody plots without a search, another unit of the same owner and type had no path to it from the same water this turn",
-		"AI_goodyRange: calls that skipped the search because it is the other half of the units' turn (every second turn)"
+		"AI_goodyRange: calls that skipped the search because it is the other half of the units' turn (every second turn, only with 1500 or more units)"
 	};
 
 	// buckets of the single updateMoves calls (ms, upper limits)
@@ -351,7 +387,23 @@ namespace WtpTiming
 		"  in the unit AIs (warships and others, all callers): AI_anyAttack",
 		"  in the unit AIs (warships and others, all callers): AI_adjacentSeaAttack",
 		"  in the unit AIs (warships and others, all callers): AI_siegeBlockade",
-		"  in the unit AIs (warships and others, all callers): AI_moveTowardsOcean"
+		"  in the unit AIs (warships and others, all callers): AI_moveTowardsOcean",
+		"    in AI_tradeRoutes: set-up (the routes of the owner, one pass over all of them)",
+		"    in AI_tradeRoutes: unloading in the colony the transport stands in",
+		"    in AI_tradeRoutes: values of the cargo for the destinations",
+		"    in AI_tradeRoutes: the loop over the source colonies and routes (incl. the max-trip check)",
+		"    in AI_tradeRoutes: choosing the best destination",
+		"    in AI_tradeRoutes: pick-up stop, filling the hold, waiting",
+		"    in AI_tradeRoutes: the orders for the tooltip (updateTradeOrders)",
+		"    in AI_tradeRoutes: the final loading and the move order",
+		"  in the colonist AI (all callers): AI_hasSuitableJob of the colony",
+		"  in the colonist AI (all callers): AI_doWfTask",
+		"  in the colonist AI (all callers): AI_betterJob",
+		"  in the colonist AI (all callers): AI_joinCity / AI_joinOptimalCity",
+		"  in the colonist AI (all callers): AI_learn",
+		"  in the unit AIs (ships and others, all callers): AI_continueMission",
+		"  in the unit AIs (ships and others, all callers): AI_retreatToCity",
+		"  in the unit AIs (ships and others, all callers): AI_safety"
 	};
 
 	struct Data

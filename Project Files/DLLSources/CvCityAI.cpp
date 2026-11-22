@@ -1,6 +1,7 @@
 // cityAI.cpp
 
 #include "CvGameCoreDLL.h"
+#include "WtpTiming.h"
 #include "CvGlobals.h"
 #include "CvGameCoreUtils.h"
 #include "CvCityAI.h"
@@ -3650,6 +3651,7 @@ BestJob AI_findBestJob(const CvCityAI& kCity, ProfessionTypes eProfession, const
 // WTP, Slave AI - START
 bool CvCityAI::AI_hasSuitableJob(const CvUnit& kUnit, bool bIndoorOnly) const
 {
+	WtpTiming::Scope wtpColTimer(WtpTiming::SLOT_COL_HASJOB); // WTP: timing log
 	const std::vector<std::vector<ProfessionTypes> >& groups =
 		GET_PLAYER(getOwnerINLINE()).m_professionGroups;
 
