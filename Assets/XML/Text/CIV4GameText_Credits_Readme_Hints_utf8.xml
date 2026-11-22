@@ -1970,4 +1970,10 @@ Viel Spass![NEWLINE]
 		<Russian>Нажмите [COLOR:140:255:40:255]CTRL + H[COLOR_REVERT], чтобы выбрать все раненые отряды на клетке.</Russian>
 		<Hungarian>A [COLOR:140:255:40:255]&lt; CTRL + H &gt;[COLOR_REVERT] billentyűkombinációval kiválaszthatod az összes sebesült egységet egy mezőn.</Hungarian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HINT_INTERFACE_88</Tag>
+		<English>Change profession with several units selected: the chosen profession goes to as many of them as the colony has free places for. The window only asks again for the rest of the units.</English>
+		<German>Beruf ändern mit mehreren markierten Einheiten: Der gewählte Beruf geht an so viele von ihnen, wie die Kolonie freie Plätze dafür hat. Das Fenster fragt nur für die übrigen Einheiten noch einmal nach.</German>
+		<Russian>Смена профессии при нескольких выбранных отрядах: выбранная профессия достанется стольким из них, на сколько у колонии есть свободных мест. Окно спросит снова только про остальные отряды.</Russian>
+	</TEXT>
 </Civ4GameText>
