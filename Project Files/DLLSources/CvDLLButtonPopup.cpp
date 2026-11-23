@@ -2,6 +2,10 @@
 
 #include "CvGameCoreDLL.h"
 #include "CvDLLButtonPopup.h"
+#include <algorithm>
+#include <ctime>
+#include <set>
+#include <utility>
 #include "CvGlobals.h"
 #include "CvPlayerAI.h"
 #include "CvGameAI.h"
@@ -502,6 +506,10 @@ void CvDLLButtonPopup::OnEscape(CvPopup& popup, CvPopupInfo &info)
 }
 
 
+// WTP: the students that got their specialty with the shift key (city id, unit id): the task is only sent (the game executes it a moment later), the popups of these
+// students are queued already and must not appear (CvDLLButtonPopup::launchEducationPopup takes a student out of the list when its popup comes)
+static std::set<std::pair<int, int> > s_aEducatedByShift;
+
 // WTP: the other students of the colony of the popup that have finished their education and wait for a specialty (the popup of the specialty has not been
 // answered yet) get the specialty that was chosen with the shift key, as long as the gold of the player is enough (every price is taken from the gold that
 // is left); the popups of these students that are still waiting are closed without a question (CvDLLButtonPopup::launchEducationPopup: the student is gone then)
@@ -538,6 +546,7 @@ static void wtpEducateWaitingStudents(int iChosenCityId, int iChosenUnitId, Unit
 			return;
 		}
 		iGold -= iPrice;
+		s_aEducatedByShift.insert(std::make_pair(pChosenCity->getID(), aiStudents[i]));
 		gDLL->sendDoTask(pChosenCity->getID(), TASK_EDUCATE, aiStudents[i], eUnit, false, false, false, false);
 	}
 }
@@ -798,7 +807,8 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 		{
 			gDLL->sendDoTask(info.getData1(), TASK_EDUCATE, info.getData2(), pPopupReturn->getButtonClicked(), false, false, false, false);
 			// WTP: with the shift key all the other students of this colony that are waiting for their specialty get the same specialty
-			if (gDLL->shiftKey())
+			// (a popup of the game does not pass the shift key on to gDLL->shiftKey(): the state of the key is asked from Windows)
+			if (gDLL->shiftKey() || (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0)
 			{
 				wtpEducateWaitingStudents(info.getData1(), info.getData2(), (UnitTypes)pPopupReturn->getButtonClicked());
 			}
@@ -2380,6 +2390,11 @@ bool CvDLLButtonPopup::launchEducationPopup(CvPopup* pPopup, CvPopupInfo &info)
 
 	CvUnit* pUnit = pCity->getPopulationUnitById(info.getData2());
 	if (pUnit == NULL)
+	{
+		return false;
+	}
+	// WTP: this student got its specialty with the shift key at another popup (its task is not executed yet): no question
+	if (s_aEducatedByShift.erase(std::make_pair(info.getData1(), info.getData2())) > 0)
 	{
 		return false;
 	}
