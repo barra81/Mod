@@ -212,6 +212,41 @@
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
+			<Type>GAMEOPTION_MAX_EUROPEAN_AI_2</Type>
+			<Description>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_2</Description>
+			<Help>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_HELP</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_MAX_EUROPEAN_AI_3</Type>
+			<Description>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_3</Description>
+			<Help>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_HELP</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_MAX_EUROPEAN_AI_4</Type>
+			<Description>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_4</Description>
+			<Help>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_HELP</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_MAX_EUROPEAN_AI_6</Type>
+			<Description>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_6</Description>
+			<Help>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_HELP</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_MAX_EUROPEAN_AI_8</Type>
+			<Description>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_8</Description>
+			<Help>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_HELP</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
 			<Type>GAMEOPTION_RANDOM_FOUNDING_FATHERS</Type>
 			<Description>TXT_KEY_GAMEOPTION_RANDOM_FOUNDING_FATHERS</Description>
 			<Help>TXT_KEY_GAMEOPTION_RANDOM_FOUNDING_FATHERS_HELP</Help>
