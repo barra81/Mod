@@ -3721,6 +3721,8 @@ class CvMainInterface:
 			screen.overlayButtonGFC("TerritorialInfluenceButton", None)
 			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER)
 			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_REVEALED_PLOTS)
+		# (the message panel is hidden while the choice is there, and comes back with it gone)
+		self.updateMessagePanel()
 
 	# Will handle the input for this screen...
 	def handleInput ( self, inputClass ):
@@ -3888,7 +3890,7 @@ class CvMainInterface:
 		iWidth = 0
 		for szChar in szText:
 			if ord(szChar) >= 0x2000:
-				iWidth += 3.4
+				iWidth += self.fMsgIconWidth
 			else:
 				iWidth += self.dMessageCharWidths.get(szChar, 556) / 450.0
 		return iWidth
@@ -4201,8 +4203,10 @@ class CvMainInterface:
 			else:
 				iNum = iNumCurrent
 			# (MESSAGE_PANEL_ENABLED = 0: the DLL collects no messages, so there is nothing to show)
+			# (the choice buttons of the pioneer plan and of the private pioneer take its place: it is hidden as long as they are there)
 			bShow = ((iNumCurrent > 0 or self.bMsgWpView) and self.isMessagePanelOption()
-				and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW and not CyInterface().isCityScreenUp())
+				and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW and not CyInterface().isCityScreenUp()
+				and not (self.bPioneerPlanMode or self.bPrivateBuildMode))
 			if iNumCurrent == 0:
 				self.bMessageTurnPending = True
 				self.bMessagePanelExpanded = False
@@ -4241,11 +4245,11 @@ class CvMainInterface:
 			iX = (xRes - iWidth) / 2
 			# just below the round buttons of the top HUD (their size depends on the resolution class, not on the screen height: 83 pixels with 36)
 			iY = max(int(yRes * 0.058), int(83 * SMALL_BUTTON_SIZE / 36.0))
-			# moved by the player (stays on the screen)
+			# moved by the player (stays on the screen, and never higher than the default place: there it would cover the round buttons of the top HUD)
 			iBaseX = iX
 			iBaseY = iY
 			iX = max(0, min(xRes - iWidth, iX + self.iMsgMoveX))
-			iY = max(0, min(yRes - 120, iY + self.iMsgMoveY))
+			iY = max(iBaseY, min(yRes - 120, iY + self.iMsgMoveY))
 			self.iMsgMoveX = iX - iBaseX
 			self.iMsgMoveY = iY - iBaseY
 			self.iMsgX = iX
@@ -4272,7 +4276,12 @@ class CvMainInterface:
 					aszMessages.append(game.getHudMessageText(i))
 					aiX.append(game.getHudMessageX(i))
 					aiY.append(game.getHudMessageY(i))
-			aatLines = [self.wrapMessage(szMessage, iCharsPerLine) for szMessage in aszMessages]
+			# (measured in the panel: a symbol is 3.1 characters wide, 22 of them in a row left room for two more)
+			self.fMsgIconWidth = 3.1
+			try:
+				aatLines = [self.wrapMessage(szMessage, iCharsPerLine) for szMessage in aszMessages]
+			finally:
+				self.fMsgIconWidth = 3.4
 			atTargets = self.getMessageTargets(aszMessages, aiX, aiY)
 			self.aszMessageTexts = aszMessages
 			self.atMessageTargets = atTargets
@@ -4438,6 +4447,7 @@ class CvMainInterface:
 			screen.show("HudMsgAuto")
 			screen.moveToFront("HudMsgAuto")
 			self.drawMsgWpToggle(screen, iX, iY, iPad)
+			self.liftPioneerPlanWidgets(screen)
 		except:
 			# the panel must never break the main interface
 			self.tMessagePanelKey = None
@@ -4602,6 +4612,7 @@ class CvMainInterface:
 		screen.show("HudMsgAuto")
 		screen.moveToFront("HudMsgAuto")
 		self.drawMsgWpToggle(screen, iX, iY, iPad)
+		self.liftPioneerPlanWidgets(screen)
 
 	# a text with tags (<color=...>, <font=...>) cut to the width of iMax average letters (by the real width of its visible letters, narrow letters
 	# take less room; the tags have no width); a cut text ends with "..", the tags that are open are closed
