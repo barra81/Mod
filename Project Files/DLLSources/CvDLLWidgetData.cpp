@@ -233,7 +233,8 @@ CvWString wtpGetWidgetHelpText() { return g_szWtpWidgetHelp; }
 int wtpGetWidgetHelpCount() { return g_iWtpWidgetHelpCount; }
 int wtpGetWidgetHelpType() { return g_iWtpWidgetHelpType; }
 // WTP: with the diplomacy screen open the game shows the help of the HUD elements itself, python cannot clear it there. While the own
-// tooltip is on (set from python) the DLL gives the game an empty text then; the text for python is kept
+// tooltip is on (set from python) the DLL gives the game an empty text then; the text for python is kept. Exception: the items of the
+// trade window (WIDGET_TRADE_ITEM) keep the game tooltip
 static bool g_bWtpHideGameHelp = false;
 static bool g_bWtpInternalHelp = false;
 void wtpSetHideGameHelp(bool b) { g_bWtpHideGameHelp = b; }
@@ -250,7 +251,9 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, const CvWidgetDataStr
 	g_szWtpWidgetHelp = szBuffer.getCString();
 	g_iWtpWidgetHelpType = (int)widgetDataStruct.m_eWidgetType;
 	g_iWtpWidgetHelpCount++;
-	if (g_bWtpHideGameHelp && !g_bWtpInternalHelp && (gDLL->isDiplomacy() || gDLL->isMPDiplomacyScreenUp()))
+	// (not the items of the trade window: their help (price of a good, why the other side refuses) is shown by the game itself, in front
+	// of the diplomacy window; python only moves the help area of the game into view for that, see CvMainInterface.setGameHelpArea)
+	if (g_bWtpHideGameHelp && !g_bWtpInternalHelp && (gDLL->isDiplomacy() || gDLL->isMPDiplomacyScreenUp()) && widgetDataStruct.m_eWidgetType != WIDGET_TRADE_ITEM)
 	{
 		szBuffer.clear();
 	}

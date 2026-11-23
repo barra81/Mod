@@ -9353,10 +9353,12 @@ class CvMainInterface:
 		return aszNames
 
 	# the help area of the game tooltip: while the own tooltip is on it is put far outside of the screen (the game still shows its tooltip of a
-	# HUD element for a moment before our window takes over)
+	# HUD element for a moment before our window takes over). Not with a diplomacy screen open: the tooltips of the items of the trade window
+	# (WIDGET_TRADE_ITEM) are the game tooltips there (the own tooltip would stand behind the dialog), the DLL empties all other help then
+	bDiploHelpArea = False
 	def setGameHelpArea( self, screen, iY ):
 		iX = HELTTEXT_AREA_X_MARGIN
-		if self.bHoverTip:
+		if self.bHoverTip and not self.bDiploHelpArea:
 			iX = -5000
 		screen.setHelpTextArea( HELPTEXT_AREA_MAX_WIDTH, FontTypes.SMALL_FONT, iX, iY, -0.1, False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, HELPTEXT_AREA_MIN_WIDTH )
 
@@ -9423,6 +9425,9 @@ class CvMainInterface:
 
 	def widgetHelpSeen( self, szText, eWidgetType ):
 		if not self.bHoverTip:
+			return
+		if int(eWidgetType) == int(getattr(WidgetTypes, "WIDGET_TRADE_ITEM", -2)):
+			# the items of the trade window of the diplomacy screen: the game tooltip (in front of the dialog) is the one that counts
 			return
 		self.iLastWidgetType = int(eWidgetType)
 		try:
@@ -10145,6 +10150,15 @@ class CvMainInterface:
 
 	def updateCursorTooltip( self ):
 		# called every frame: the window goes away when the cursor has left its place (the game does not always say that a tooltip is gone)
+		# the help area of the game moves into view while a diplomacy screen is open (tooltips of the trade items) and back out afterwards
+		try:
+			bDiplo = gc.getGame().isDiplomacyUp()
+			if bDiplo != self.bDiploHelpArea:
+				self.bDiploHelpArea = bDiplo
+				scrArea = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+				self.setGameHelpArea(scrArea, scrArea.getYResolution() - SADDLE_HEIGHT)
+		except:
+			pass
 		# the pictures of the goods of the import / export window in the city screen: the game gives no help text of its own there (the DLL
 		# empties it; python cannot clear the help of the city screen). It is on as long as the window is open: a flag that follows the cursor
 		# comes too late when the cursor moves fast from one picture to the next (the game tooltip showed up for a moment then)
