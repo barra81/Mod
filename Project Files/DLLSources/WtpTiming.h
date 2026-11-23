@@ -532,8 +532,8 @@ namespace WtpTiming
 			kData.iLastTurn = -1;
 			kData.iPathfinderParallel = 0; // measured: serial is about 25-30% faster in the late game
 			kData.iPathfinderMinChildren = 0;
-			kData.iBrakeFloor = 12;
-			kData.iBrakePlotsPerCity = 30;
+			kData.iBrakeFloor = 10;
+			kData.iBrakePlotsPerCity = 50;
 			kData.iBrakeHumanPct = 150;
 			kData.iBrakeHumanWeight = 25;
 			kData.iBrakeLeaderPct = 130;
