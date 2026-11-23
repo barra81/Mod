@@ -22,7 +22,7 @@ Copy the generated `.ColonizationWBSave` to `PrivateMaps/` and restart Colonizat
 8. Features: forests by biome density, hardwood clusters (dense forest / ancient forest, not in jungle or savanna), a cluster of city ruins with fragments of winding, overgrown roads in the southern jungle (plus single ruins on the altiplano and in the isthmus), special features, meteor crater in the isthmus jungle, volcanoes, reefs, currents; Europe plots: Atlantic (EUROPE_EAST) and Pacific (EUROPE_WEST), both at least 5 tiles from land.
 9. Southern extension: ten extra rows appended at the end (so the rest of the map is unaffected) - a cape behind a dense coastal cordillera with a coastal desert in front, a few islands, the tip of a polar continent (taiga and forest on its northern shore, room for two towns) reaching in from the bottom edge and an open southern passage to the Pacific between them.
 9b. Caribbean revision (late, own random stream): the westernmost gulf island is replaced by a narrow strip of five Atlantic Europe plots, about three quarters of the rock reefs (FEATURE_STONE_REEF) of the island sea are removed (coral and pearl reefs stay), a narrow interrupted ocean current runs as a half circle from the east ocean through the island sea to the strip (arrows only on open ocean; plain deep coast without features is opened up where the arc crosses it), and about 30 % of the shrubland in the southern continent turns into desert, nearest to existing desert first (oases, river valleys and the cape in the far south are left alone).
-10. Landmark names: map signs with realistic-sounding names (visible to all players, ASCII captions) for set pieces, highest summits, mountain chains, large rivers, lakes and large flat woodland regions (one sign per feature, at least 5 tiles apart); white dots in the preview.
+10. Landmark names: map signs with realistic-sounding names drawn per seed from patterns and word lists (`place_names.py`, own random stream) (visible to all players, ASCII captions) for set pieces, highest summits, mountain chains, large rivers, lakes and large flat woodland regions (one sign per feature, at least 5 tiles apart); white dots in the preview.
 11. Checks that every set piece has a usable city site (>= 6 workable land tiles in the 3x3 ring, >= 10 in 5x5 without corners).
 
 ## Engine notes
@@ -74,13 +74,39 @@ Writes `Random New World Massive.ColonizationWBSave`, `preview.png`, `heightmap.
 - More random ranges: up to 26 small massifs and 13 old worn chains (4-9 tiles long) away from the young ranges. Barrier islands (sand banks) are 6-8 rows long.
 - Resources are set by the generator (`Randomize Resources=false`), with the method of `gen_eporue.py`: rules and amounts from `CIV4BonusInfos.xml`, a shared rich/poor noise (`RICHNESS`), a rich/poor noise per resource (`PROVINCE`), small groups (`GROUP_CHANCE` times `GROUP_SCALE`, plantation goods side by side), about 10 % may touch another resource. Instead of real deposits the mountains draw ores, coal, salt and stone (`MOUNTAIN_GOODS`); gold, silver and gems are fewer (`PRECIOUS`) and seldom on peaks.
 - East coast foreland: no peak may have sea within two plots to the east (straight or diagonal); such peaks are worn down to hills, before the features and once more after the late coves.
-- Europe plots (`europe_plots`): all open sea at least `EUROPE_DIST` = 7 tiles from the nearest land that is joined to a map edge through such sea, flooded from the east edge (Atlantic, `EUROPE_EAST`) and the west edge (Pacific, `EUROPE_WEST`) at once; each plot goes to the nearer edge. The access follows the coast, an island only pushes it back around itself.
+- Europe plots (`europe_plots`): all open sea at least `EUROPE_DIST` = 7 tiles from the nearest land that is joined to a map edge through such sea, flooded from the east edge (Atlantic, `EUROPE_EAST`) and the west edge (Pacific, `EUROPE_WEST`) at once; each plot goes to the nearer edge. The access follows the coast, an island only pushes it back around itself. On the Atlantic side small islands (fewer than `ISLE_MAX_TILES` = 60 land tiles) keep Europe only `ISLE_EUROPE_DIST` = 3 tiles away, so an island in front of the coast does not push the Atlantic far from the mainland.
 - Final checks: features that a late carving put onto a new coast or a changed terrain, or that lost their river, are fixed (rules from `CIV4FeatureInfos.xml`); small water bodies cut off from the sea become lakes.
 
-Two worlds are playable: `PrivateMaps/Random New World Massive.ColonizationWBSave` is seed 1, `PrivateMaps/Random New World 2 Massive.ColonizationWBSave` is seed 2; the map text key is `TXT_KEY_WORLDBUILDER_RANDOM_NEW_WORLD_DESC`. After each change to the generator, regenerate both with
+The game plays this generator through the map script `PrivateMaps/Random_New_World.py` (below). The fixed Worldbuilder worlds of seeds 1-6 are no longer part of the mod (user 2026-11-23; the last ones are kept outside the mod in `Old mods/Random New World maps 2026-11-23`). After each change to the generator run
 
 ```
-python Tools/MapGenerator/publish_random.py     # runs gen_random.py and validate.py for seeds 1 and 2, copies both to PrivateMaps/
+python Tools/MapGenerator/publish_random.py     # gen_random.py and validate.py for seeds 1 to 6 into out_random/seed<N>, then make_mapscript.py
 ```
 
-The previews of each seed are in `Tools/MapGenerator/out_random/seed1` and `seed2`. For another world, run the generator with a different seed and copy the file to `PrivateMaps/`.
+The world and the previews of each seed are in `Tools/MapGenerator/out_random/seed<N>`.
+
+- Coasts: the continental shelf is read at a warped position and the edge of the open sea in the east and west bends and falls off gently, so the continents get no straight west or east coasts (user 2026-11-23).
+- Southern sea route: besides the northern strait there is always a way from the Atlantic to the Pacific south of latitude 20 (between the continents or south of the southern one). If the land closes every way, the cheapest crossing is drowned into a strait three plots wide; shallow coast on that way becomes coast for large ships (`south_route`, `SOUTH_PASSAGE`).
+
+### In-game map script (`make_mapscript.py`)
+
+`PrivateMaps/Random_New_World.py` makes a new world with this generator in every game (map script list in Custom Game, always 85x137, two plot colony radius). The game runs Python 2.4, so `make_mapscript.py` rewrites `noise.py`, `place_names.py` and `gen_random.py` (without its output part) into Python 2.4 code with the `ast` module and packs it, with `CIV4FeatureInfos.xml` and `CIV4BonusInfos.xml`, into the map script built from `mapscript_template.py`:
+
+```
+python Tools/MapGenerator/make_mapscript.py [--test=1,2,3] [--dump]   # --test: the rewritten code must give the same map as gen_random.py; --dump: out_random/mapscript_code.py
+```
+
+Rewrites: conditional expressions, set literals, set/dict comprehensions, `math.floor`/`ceil`, `print`, `rng.choices`, reading the XML; `any`, `all`, `next`, `round`, `max`/`min` with `key` and `Counter` come from the map script; a check refuses constructs newer than Python 2.4. The map script hands plot types, terrain, rivers, features, Europe plots, resources, ruins and roads to the game; goodies and natives are placed by the game. Landmark signs can only be set once the game runs: `CvEventManager.onGameStart` calls `placeMapSigns` of the map script (only if the map is still the generated one). The seed comes from the game's map random numbers. `publish_random.py` rebuilds the map script after the maps.
+
+### Testing the map script with the game's Python 2.4 (`py24/`)
+
+`py24/pyhost.c` is a tiny 32-bit host that runs the game's `python24.dll` as a console interpreter. Build it once with the compiler of the DLL build (in a folder with copies of `python24.dll` and `msvcr71.dll` of the game):
+
+```
+cl /O2 pyhost.c /link kernel32.lib      (INCLUDE/LIB: the Toolkit 2003 and the Windows SDK v6.0 in Mods/Compiler)
+set PYTHONPATH=<Civ4Colonization>/Assets/Python/System
+pyhost.exe run24.py "<Mod>/PrivateMaps/Random_New_World.py" 1 2 3
+```
+
+`run24.py` runs the generator of the map script like the game does and prints the progress with times; a seed that never finishes shows an endless loop (for example 2026-11-23: the pass carving looped when two parts of a landmass only touched at a corner).
+

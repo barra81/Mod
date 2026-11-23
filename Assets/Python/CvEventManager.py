@@ -638,6 +638,12 @@ class CvEventManager:
 
 		CvMarketBoom.checkMarketBoom()
 
+		# WTP: the landmark signs of a map made by the Random New World map script (signs can only be set once the game runs)
+		placeMapSigns = getattr(CvUtil, "placePendingMapSigns", None)
+		if placeMapSigns is not None:
+			CvUtil.placePendingMapSigns = None
+			placeMapSigns()
+
 	def onGameEnd(self, argsList):
 		'Called at the End of the game'
 		print("Game is ending")
