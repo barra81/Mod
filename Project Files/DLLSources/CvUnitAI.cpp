@@ -1635,7 +1635,7 @@ void CvUnitAI::AI_colonistMove()
 		{
 			return;
 		}
-		if (AI_changeUnitAIType(99) || AI_changeUnitAIType(49))
+		if (AI_changeUnitAIType(99, 49))
 		{
 			return;
 		}
@@ -10201,6 +10201,7 @@ bool CvUnitAI::AI_isSoldier() const
 
 bool CvUnitAI::AI_betterJob()
 {
+	WtpTiming::Scope wtpColTimer(WtpTiming::SLOT_COL_BETTERJOB); // WTP: timing log
 	MOD_PROFILE("CvUnitAI::AI_betterJob");
 	if (AI_isSoldier())
 	{
@@ -10429,7 +10430,9 @@ bool CvUnitAI::AI_upgradeProfession()
 	return true;
 }
 
-bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
+// WTP: iFallbackMinMultiplier >= 0 (lower than iMinMultiplier) is the second try of the callers that asked twice (first with the high, then with the low
+// limit): one pass over the professions finds the best of both, so the result is the same as for two calls but the work is done only once
+bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier, int iFallbackMinMultiplier)
 {
 	CvCity* pCity = plot()->getPlotCity();
 	if (pCity == NULL || pCity->getOwnerINLINE() != getOwnerINLINE())
@@ -10437,9 +10440,16 @@ bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
 		return false;
 	}
 
+	// (iLowLimit: what a candidate needs at least; the best of those that also pass the high limit wins over the best of all)
+	const int iLowLimit = (iFallbackMinMultiplier >= 0 && iFallbackMinMultiplier < iMinMultiplier) ? iFallbackMinMultiplier : iMinMultiplier;
 	int iBestValue = 0;
 	ProfessionTypes eBestProfession = NO_PROFESSION;
 	UnitAITypes eBestUnitAI = NO_UNITAI;
+	int iBestHighValue = 0;
+	ProfessionTypes eBestHighProfession = NO_PROFESSION;
+	UnitAITypes eBestHighUnitAI = NO_UNITAI;
+	// (whether the unit can have the profession here does not depend on the unit AI: asked once per profession)
+	std::vector<signed char> aiCanHave(GC.getNumProfessionInfos(), -1);
 
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 
@@ -10452,20 +10462,24 @@ bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
 
 			int iMultiplier = kOwner.AI_unitAIValueMultipler(eLoopUnitAI);
 
-			if (iMultiplier > iMinMultiplier)
+			if (iMultiplier > iLowLimit)
 			{
 				for (int iProfession = 0; iProfession < GC.getNumProfessionInfos(); ++iProfession)
 				{
 					ProfessionTypes eLoopProfession = (ProfessionTypes)iProfession;
 
-					if (canHaveProfession(eLoopProfession, false, plot()))
+					if (aiCanHave[iProfession] < 0)
+					{
+						aiCanHave[iProfession] = canHaveProfession(eLoopProfession, false, plot()) ? 1 : 0;
+					}
+					if (aiCanHave[iProfession] > 0)
 					{
 						int iProfessionValue = kOwner.AI_professionValue(eLoopProfession, eLoopUnitAI);
 						if (iProfessionValue > 0)
 						{
 							iProfessionValue = kOwner.AI_professionSuitability(this, eLoopProfession, plot(), eLoopUnitAI);
 							iProfessionValue /= 100;
-							if (iProfessionValue > iMinMultiplier)
+							if (iProfessionValue > iLowLimit)
 							{
 								int iValue = iProfessionValue * iMultiplier;
 								// WTP: experts for bells, crosses and hammers become settlers only if nothing else is left
@@ -10480,6 +10494,12 @@ bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
 									eBestProfession = eLoopProfession;
 									eBestUnitAI = eLoopUnitAI;
 								}
+								if (iMultiplier > iMinMultiplier && iProfessionValue > iMinMultiplier && iValue > iBestHighValue)
+								{
+									iBestHighValue = iValue;
+									eBestHighProfession = eLoopProfession;
+									eBestHighUnitAI = eLoopUnitAI;
+								}
 							}
 						}
 					}
@@ -10488,6 +10508,11 @@ bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
 		}
 	}
 
+	if (eBestHighUnitAI != NO_UNITAI)
+	{
+		eBestProfession = eBestHighProfession;
+		eBestUnitAI = eBestHighUnitAI;
+	}
 	if (eBestUnitAI != NO_UNITAI)
 	{
 		setProfession(eBestProfession);
@@ -11342,6 +11367,7 @@ bool CvUnitAI::AI_tradePostVoyage()
 
 bool CvUnitAI::AI_learn(int iRange)
 {
+	WtpTiming::Scope wtpColTimer(WtpTiming::SLOT_COL_LEARN); // WTP: timing log
 	FAssert(getUnitInfo().getLearnTime() >= 0);
 
 	CvCity* pCity = plot()->getPlotCity();
@@ -11848,6 +11874,7 @@ bool CvUnitAI::AI_pickupAdjacantUnits()
 
 bool CvUnitAI::AI_continueMission(int iAbortDistance, MissionAITypes eValidMissionAI, int iFlags, bool bStepwise)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_CONTINUE); // WTP: timing log
 	CvPlot* pMissionPlot = getGroup()->AI_getMissionAIPlot();
 	MissionAITypes eMissionAI = getGroup()->AI_getMissionAIType();
 	if (pMissionPlot == NULL || eMissionAI == NO_MISSIONAI)
@@ -13490,6 +13517,7 @@ bool CvUnitAI::AI_defend()
 // Returns true if a mission was pushed...
 bool CvUnitAI::AI_safety()
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_SAFETY); // WTP: timing log
 	PROFILE_FUNC();
 
 	CLLNode<IDInfo>* pUnitNode;
@@ -13821,11 +13849,24 @@ bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 	static std::map<int, __int64> aiNoGoodyKey;
 	const int iNoGoodyUnit = (int)getOwnerINLINE() * 1000000 + getID();
 	const __int64 iNoGoodyKey = (((__int64)getX_INLINE() * 1000 + getY_INLINE()) * 64 + iRange) * 2 + (bIgnoreCity ? 1 : 0) + (__int64)iMaxPathTurns * 100000000;
+	// WTP: a goody plot that a unit could not reach this turn is not searched again for another unit of the same owner and type that starts in
+	// the same water (area) or on the same plot: the search of a plot that cannot be reached goes through all of the water that can be reached (about
+	// 1 ms on a big map) and ten of them per ship and turn, for all warships, were 6 s per turn change (turns 480-482, wars of the kings)
+	static std::set<__int64> asUnreachableGoody;
+	// WTP: the units that looked for a goody in the last turn change (ships and land units of all AI players) and in this one so far
+	static int iGoodyCallsLastTurn = 0;
+	static int iGoodyCallsThisTurn = 0;
 	if (iNoGoodyTurn != GC.getGameINLINE().getGameTurn())
 	{
 		iNoGoodyTurn = GC.getGameINLINE().getGameTurn();
 		aiNoGoodyKey.clear();
+		asUnreachableGoody.clear();
+		iGoodyCallsLastTurn = iGoodyCallsThisTurn;
+		iGoodyCallsThisTurn = 0;
 	}
+	++iGoodyCallsThisTurn;
+	const __int64 iGoodyStart = (plot()->isWater() ? (__int64)plot()->getArea() : (__int64)1000000 + (__int64)getX_INLINE() * 1000 + getY_INLINE());
+	const __int64 iGoodyUnitKey = ((__int64)getOwnerINLINE() * 1000 + (__int64)getUnitType()) * 4000000 + iGoodyStart;
 	{
 		const std::map<int, __int64>::const_iterator itNoGoody = aiNoGoodyKey.find(iNoGoodyUnit);
 		if (itNoGoody != aiNoGoodyKey.end() && itNoGoody->second == iNoGoodyKey)
@@ -13833,6 +13874,19 @@ bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 			return false;
 		}
 	}
+
+	// WTP: with many units (WTP_GOODY_HALF_MIN_UNITS and more looked for a goody in the last turn change) a unit looks for a goody only every second
+	// turn (half of the units in one turn, the other half in the next: unit id + turn is even). Collecting a goody is of little weight for the AI.
+	// With the memory of the unreachable goodies above the searches cost 0.3-0.6 s per turn change at about 1000 units (halving saves 0.2-0.3 s of it;
+	// the 5-6 s before were saved by the memory), so the halving only starts with many more units.
+	static const int WTP_GOODY_HALF_MIN_UNITS = 1500;
+	if (iGoodyCallsLastTurn >= WTP_GOODY_HALF_MIN_UNITS && ((getID() + GC.getGameINLINE().getGameTurn()) % 2) != 0)
+	{
+		WtpTiming::count(WtpTiming::CNT_GOODY_HALF_SKIPPED, 1);
+		return false;
+	}
+
+	WtpTiming::count(WtpTiming::CNT_GOODY_CALLS, 1);
 
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
@@ -13871,7 +13925,26 @@ bool CvUnitAI::AI_goodyRange(int iRange, bool bIgnoreCity, int iMaxPathTurns)
 						if (GET_PLAYER(getOwnerINLINE()).AI_plotTargetMissionAIs(pLoopPlot, MISSIONAI_EXPLORE, getGroup(), 1) == 0)
 						{
 							int iPathTurns = 0;
-							if (!atPlot(pLoopPlot) && generatePath(pLoopPlot, MOVE_NO_ENEMY_TERRITORY, true, &iPathTurns) && iPathTurns <= iMaxPathTurns)
+							const __int64 iGoodyFailKey = iGoodyUnitKey * 1000000 + (__int64)pLoopPlot->getX_INLINE() * 1000 + pLoopPlot->getY_INLINE();
+							bool bGoodyPath = false;
+							if (!atPlot(pLoopPlot))
+							{
+								if (asUnreachableGoody.find(iGoodyFailKey) != asUnreachableGoody.end())
+								{
+									WtpTiming::count(WtpTiming::CNT_GOODY_MEMO_HITS, 1);
+								}
+								else
+								{
+									WtpTiming::count(WtpTiming::CNT_GOODY_SEARCHES, 1);
+									bGoodyPath = generatePath(pLoopPlot, MOVE_NO_ENEMY_TERRITORY, true, &iPathTurns);
+									if (!bGoodyPath)
+									{
+										asUnreachableGoody.insert(iGoodyFailKey);
+										WtpTiming::count(WtpTiming::CNT_GOODY_SEARCHES_FAILED, 1);
+									}
+								}
+							}
+							if (bGoodyPath && iPathTurns <= iMaxPathTurns)
 							{
 								iValue += GC.getGameINLINE().getSorenRandNum(250 * abs(xDistance(getX_INLINE(), pLoopPlot->getX_INLINE())) + abs(yDistance(getY_INLINE(), pLoopPlot->getY_INLINE())), "AI explore");
 
@@ -18224,6 +18297,7 @@ bool CvUnitAI::AI_joinCityBrave()
 // Determine if we should join any city in this area where we can be employed
 bool CvUnitAI::AI_joinCity(int iMaxPath)
 {
+	WtpTiming::Scope wtpColTimer(WtpTiming::SLOT_COL_JOIN); // WTP: timing log
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 
 	CvUnit* pTransportUnit = getTransportUnit();
@@ -18393,6 +18467,7 @@ bool CvUnitAI::AI_joinCity(int iMaxPath)
 
 bool CvUnitAI::AI_joinOptimalCity()
 {
+	WtpTiming::Scope wtpColTimer(WtpTiming::SLOT_COL_JOIN); // WTP: timing log
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 
 	CvUnit* pTransportUnit = getTransportUnit();
@@ -22011,6 +22086,7 @@ bool CvUnitAI::AI_travelToUpgradeCity()
 // Returns true if a mission was pushed...
 bool CvUnitAI::AI_retreatToCity(bool bPrimary, int iMaxPath, bool bAvoidDanger)
 {
+	WtpTiming::Scope wtpShipTimer(WtpTiming::SLOT_SHIP_RETREATCITY); // WTP: timing log
 	PROFILE_FUNC();
 
 	CvCity* pCity;
@@ -25644,6 +25720,7 @@ bool CvUnitAI::AI_doAutoAssign()
 
 bool CvUnitAI::AI_doWfTask()
 {
+	WtpTiming::Scope wtpColTimer(WtpTiming::SLOT_COL_WFTASK); // WTP: timing log
 	MOD_PROFILE("CvUnitAI::AI_doWfTask");
 	if (m_iWfTask == WF_NONE)
 	{
@@ -25733,9 +25810,19 @@ bool CvUnitAI::AI_doWfTask()
 		}
 		// WTP: a colonist moving for food checks its target on the way and on arrival: if the colony has no food to
 		// spare any more (it would lose food after he joined), he looks for another one or is free again
-		if (m_iWfTask == WF_JOIN_CITY && kOwner.AI_foodSurplusForNewcomer(*pCity, getID()) < 0)
+		bool bNoFood = false;
+		CvCity* pNew = NULL;
+		if (m_iWfTask == WF_JOIN_CITY)
 		{
-			CvCity* const pNew = kOwner.AI_bestFoodSurplusCity(*pCity, pCity, getID());
+			WtpTiming::Scope wtpFoodTimer(WtpTiming::SLOT_COL_FOOD); // WTP: timing log
+			bNoFood = kOwner.AI_foodSurplusForNewcomer(*pCity, getID()) < 0;
+			if (bNoFood)
+			{
+				pNew = kOwner.AI_bestFoodSurplusCity(*pCity, pCity, getID());
+			}
+		}
+		if (bNoFood)
+		{
 			if (gUnitLogLevel >= 1) logWTPCity(*pCity, "WTP food: %S does not join %S (food %+d), %s %S", getName().GetCString(), pCity->getName().GetCString(),
 				pCity->foodDifference(), pNew != NULL ? "goes to" : "finds no other colony with food to spare", pNew != NULL ? pNew->getName().GetCString() : L"");
 			if (pNew == NULL)
@@ -25754,10 +25841,34 @@ bool CvUnitAI::AI_doWfTask()
 			if (m_iWfTask == WF_EXPERT_JOB || m_iWfTask == WF_WAIT)
 			{
 				// a colonist without a job becomes a soldier, pioneer, ... if the AI needs one
-				if (m_iWfTask == WF_WAIT && (AI_changeUnitAIType(99) || AI_changeUnitAIType(49)))
+				if (m_iWfTask == WF_WAIT)
 				{
-					AI_clearWfTask();
-					return true;
+					// WTP: with many waiting colonists (WTP_CHANGEAI_HALF_MIN_UNITS and more asked in the last turn change) a colonist looks for a new profession only every
+					// second turn (half of them in one turn, the other half in the next: unit id + turn is even); one that waits changes its profession a turn later at most
+					static const int WTP_CHANGEAI_HALF_MIN_UNITS = 500;
+					static int iChangeAiTurn = -1;
+					static int iChangeAiCallsLastTurn = 0;
+					static int iChangeAiCallsThisTurn = 0;
+					if (iChangeAiTurn != GC.getGameINLINE().getGameTurn())
+					{
+						iChangeAiTurn = GC.getGameINLINE().getGameTurn();
+						iChangeAiCallsLastTurn = iChangeAiCallsThisTurn;
+						iChangeAiCallsThisTurn = 0;
+					}
+					++iChangeAiCallsThisTurn;
+					if (iChangeAiCallsLastTurn >= WTP_CHANGEAI_HALF_MIN_UNITS && ((getID() + GC.getGameINLINE().getGameTurn()) % 2) != 0)
+					{
+						WtpTiming::count(WtpTiming::CNT_CHANGEAI_HALF_SKIPPED, 1);
+					}
+					else
+					{
+						WtpTiming::Scope wtpChangeTimer(WtpTiming::SLOT_COL_CHANGEAI); // WTP: timing log
+						if (AI_changeUnitAIType(99, 49))
+						{
+							AI_clearWfTask();
+							return true;
+						}
+					}
 				}
 				getGroup()->pushMission(MISSION_SKIP);
 				return true;
@@ -25784,6 +25895,7 @@ bool CvUnitAI::AI_doWfTask()
 		}
 		// WTP: the faster way of the plan's travel times: over land, or walking to a port and taking a ship there (a colonist
 		// that waited too long for a ship walks if it can)
+		WtpTiming::Scope wtpTravelTimer(WtpTiming::SLOT_COL_TRAVEL); // WTP: timing log (the whole way of the colonist)
 		int iPortID = -1;
 		kOwner.AI_wfTravelTurns(*plot(), *pCity, &iPortID);
 		CvCity* const pPort = (iPortID >= 0) ? kOwner.getCity(iPortID) : NULL;

@@ -226,9 +226,39 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_WAYPOINT_HEADER</Tag>
-		<English>Waypoint for units from %s1_Village: choose the destination city</English>
-		<German>Wegpunkt für Einheiten aus %s1_Village: Zielstadt wählen</German>
-		<Russian>Путевая точка для юнитов из %s1_Village: выберите город назначения</Russian>
+		<English>Waypoint for units from %s1_Village: choose the destination</English>
+		<German>Wegpunkt für Einheiten aus %s1_Village: Ziel wählen</German>
+		<Russian>Путевая точка для юнитов из %s1_Village: выберите место назначения</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TURNTIME_TEXT</Tag>
+		<English>ttm: %s1</English>
+		<German>ttm: %s1</German>
+		<Russian>ttm: %s1</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TURNTIME_HELP</Tag>
+		<English>ttm (turn time measured): the time the last turn change took (the AI players move, cities and units are processed): %s1[NEWLINE]Average since the start of this game: %s2 (%d3 measured turn changes, the last one at turn %d4)[NEWLINE][NEWLINE]Animated fights are not counted, neither is the time you need for your own turn.</English>
+		<German>ttm (Turn Time Measured, gemessene Rundenzeit): Zeit, die der letzte Rundenwechsel gebraucht hat (die KI-Spieler ziehen, Städte und Einheiten werden verarbeitet): %s1[NEWLINE]Durchschnitt seit Beginn dieses Spiels: %s2 (%d3 gemessene Rundenwechsel, der letzte in Runde %d4)[NEWLINE][NEWLINE]Kampfanimationen werden nicht mitgerechnet, ebenso nicht die Zeit, die Sie für Ihren eigenen Zug brauchen.</German>
+		<Russian>ttm (Turn Time Measured, измеренное время хода): время последней смены хода (ходят ИИ-игроки, обрабатываются города и юниты): %s1[NEWLINE]В среднем с начала этой игры: %s2 (измерено смен хода: %d3, последняя на ходу %d4)[NEWLINE][NEWLINE]Анимация боёв не учитывается, как и время, которое вы тратите на собственный ход.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TURNTIME_HELP_NONE</Tag>
+		<English>ttm (turn time measured): the time the last turn change took (the AI players move, cities and units are processed). Nothing has been measured yet: it shows after the next turn change.[NEWLINE]The tooltip then also shows the average since the start of this game. Animated fights are not counted, neither is the time you need for your own turn.</English>
+		<German>ttm (Turn Time Measured, gemessene Rundenzeit): Zeit, die der letzte Rundenwechsel gebraucht hat (die KI-Spieler ziehen, Städte und Einheiten werden verarbeitet). Es ist noch nichts gemessen: Die Anzeige erscheint nach dem nächsten Rundenwechsel.[NEWLINE]Der Tooltip zeigt dann auch den Durchschnitt seit Beginn dieses Spiels. Kampfanimationen werden nicht mitgerechnet, ebenso nicht die Zeit, die Sie für Ihren eigenen Zug brauchen.</German>
+		<Russian>ttm (Turn Time Measured, измеренное время хода): время последней смены хода (ходят ИИ-игроки, обрабатываются города и юниты). Измерений пока нет: значение появится после следующей смены хода.[NEWLINE]Затем во всплывающей подсказке будет и среднее с начала этой игры. Анимация боёв не учитывается, как и время, которое вы тратите на собственный ход.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_CONFIRM</Tag>
+		<English>%s1_Unit in %s2_City: go to the waypoint %s3_Target?</English>
+		<German>%s1_Unit in %s2_City: zum Wegpunkt %s3_Target schicken?</German>
+		<Russian>%s1_Unit в %s2_City: отправить к путевой точке %s3_Target?</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_WAYPOINT_HEADER_CITY</Tag>
+		<English>Waypoint for colonists born in %s1_City: choose the destination</English>
+		<German>Wegpunkt für in %s1_City geborene Siedler: Ziel wählen</German>
+		<Russian>Путевая точка для колонистов, рождённых в %s1_City: выберите место назначения</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_WAYPOINT_REMOVE</Tag>

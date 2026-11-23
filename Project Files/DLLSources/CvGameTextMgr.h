@@ -57,6 +57,7 @@ public:
 	DllExport void setUnitPromotionHelp(CvWStringBuffer &szString, const CvUnit* pUnit);
 	DllExport void setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPlot, bool bOneLine, bool bShort);
 	DllExport bool setCombatPlotHelp(CvWStringBuffer &szString, CvPlot* pPlot);
+	void setPlotHelpAlone(CvWStringBuffer& szString, CvPlot* pPlot, const CvUnit* pUnit); // WTP: the plot help as if only this unit stood on the plot
 	DllExport void setPlotHelp(CvWStringBuffer &szString, CvPlot* pPlot);
 	void setCityPlotHelp(CvWStringBuffer &szString, CvPlot* pPlot); // city plot mouse over help - inaiwae
 	DllExport void setCityBarHelp(CvWStringBuffer &szString, CvCity* pCity);

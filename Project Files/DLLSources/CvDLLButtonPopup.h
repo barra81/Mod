@@ -31,6 +31,21 @@ namespace WtpDeferredEducation
 	bool relaunch();
 }
 
+// WTP: Change profession with several selected units in a colony: the profession that is chosen goes to as many of the selected units as the colony has free
+// places for it, and the popup asks again only for the units that are left (once per group of them)
+namespace WtpProfessionBatch
+{
+	// a new group: the selected units besides the one that the popup is asked for
+	void begin(const std::vector<int>& aOtherUnits);
+	// true if the unit belongs to the group that is being asked for: its own Change profession command opens no popup of its own
+	bool isWaiting(int iUnitId);
+	// the profession was chosen for the unit of the popup: the other units of the group get it, as far as there are free places; for the rest the popup opens again
+	// bShift (the profession was chosen with the shift key) and only one unit was selected: the group are all colonists of the plot (profession Colonist) of the same unit type
+	void apply(int iCityId, int iPopupUnitId, ProfessionTypes eProfession, int iFlag, bool bShift = false);
+	// the group is over (popup closed, cancelled or not launched)
+	void end();
+}
+
 // WTP: the units of the education lists: alphabetical, a student first
 struct WtpEducationEntry
 {

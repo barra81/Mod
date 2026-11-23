@@ -63,6 +63,9 @@ public:
 	void reviveActivePlayer();
 	int getNumHumanPlayers();
 	int getGameTurn();
+	int getWtpTurnBlocks() const; // WTP: finished measurements of the turn change time (this run of the game)
+	int getWtpLastTurnMs() const; // WTP: time of the last turn change without animated fights (ms)
+	int getWtpLastTurnNo() const; // WTP: game turn of that measurement
 	void setGameTurn(int iNewValue);
 	int getTurnYear(int iGameTurn);
 	int getGameTurnYear();

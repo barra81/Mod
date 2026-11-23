@@ -7,6 +7,7 @@
 #include "CyCity.h"
 #include "CyDeal.h"
 #include "CyUnit.h"
+#include "CyPlot.h"
 CyGameTextMgr::CyGameTextMgr() :
 m_pGameTextMgr(NULL)
 {
@@ -67,6 +68,24 @@ std::wstring CyGameTextMgr::getSpecificUnitHelp(CyUnit* pUnit, bool bOneLine, bo
 	if (pUnit && pUnit->getUnit())
 	{
 		GAMETEXT.setUnitHelp(szBuffer, pUnit->getUnit(), bOneLine, bShort);
+	}
+	return szBuffer.getCString();
+}
+std::wstring CyGameTextMgr::getPlotHelpAlone(CyPlot* pPlot, CyUnit* pUnit)
+{
+	CvWStringBuffer szBuffer;
+	if (pPlot && pPlot->getPlot() && pUnit && pUnit->getUnit())
+	{
+		GAMETEXT.setPlotHelpAlone(szBuffer, pPlot->getPlot(), pUnit->getUnit());
+	}
+	return szBuffer.getCString();
+}
+std::wstring CyGameTextMgr::getPlotHelp(CyPlot* pPlot)
+{
+	CvWStringBuffer szBuffer;
+	if (pPlot && pPlot->getPlot())
+	{
+		GAMETEXT.setPlotHelp(szBuffer, pPlot->getPlot());
 	}
 	return szBuffer.getCString();
 }

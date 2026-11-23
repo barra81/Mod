@@ -27,6 +27,7 @@
 #include "CvInfos.h"
 #include "FProfiler.h"
 #include "CvPopupInfo.h"
+#include "CvDLLButtonPopup.h"
 #include "CvArtFileMgr.h"
 #include "CvDiploParameters.h"
 #include "CvTradeRoute.h"
@@ -1503,6 +1504,7 @@ void CvUnit::updateCombat(bool bQuick)
 			if (bVisible)
 			{
 				WtpTiming::fightBegin(); // WTP: timing log: an animated fight with a human player starts
+				WtpTurnClock::fightBegin(); // WTP: interface: the turn time without fights
 			}
 
 			pDefender->getGroup()->clearMissionQueue();
@@ -3341,6 +3343,14 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			{
 				// WTP: fill all free cargo slots (Shift + click on the button)
 				loadAllYieldsByValue();
+				// WTP: the tooltip of the ship opens frozen as if it stood alone on its plot, it closes with the next order of the ship or at the turn
+				// change (python: CvMainInterface.showLoadedUnitTip)
+				if (getOwnerINLINE() == GC.getGameINLINE().getActivePlayer())
+				{
+					CyArgsList argsListTip;
+					argsListTip.add(getID());
+					gDLL->getPythonIFace()->callFunction(PYScreensModule, "wtpShowLoadedUnitTip", argsListTip.makeFunctionArgs());
+				}
 			}
 			else
 			{
@@ -3427,7 +3437,8 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 		case COMMAND_PROFESSION:
 			if (iData1 == -1)
 			{
-				if (gDLL->getInterfaceIFace()->getHeadSelectedUnit() == this)
+				// WTP: a unit that belongs to the group of selected units that is already being asked for opens no popup of its own (CvDLLButtonPopup.cpp, WtpProfessionBatch)
+				if (gDLL->getInterfaceIFace()->getHeadSelectedUnit() == this && !WtpProfessionBatch::isWaiting(getID()))
 				{
 					CvPlot* pPlot = plot();
 					if (pPlot != NULL)
@@ -3435,6 +3446,19 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 						CvCity* pCity = pPlot->getPlotCity();
 						if (pCity != NULL)
 						{
+							// the other selected units in the colony: they get the profession that is chosen, as far as the colony has free places for it
+							std::vector<int> aOtherSelected;
+							CLLNode<IDInfo>* pSelectedNode = gDLL->getInterfaceIFace()->headSelectionListNode();
+							while (pSelectedNode != NULL)
+							{
+								CvUnit* const pSelected = ::getUnit(pSelectedNode->m_data);
+								pSelectedNode = gDLL->getInterfaceIFace()->nextSelectionListNode(pSelectedNode);
+								if (pSelected != NULL && pSelected != this && pSelected->getOwnerINLINE() == getOwnerINLINE() && pSelected->plot() == pPlot && pSelected->getProfession() != NO_PROFESSION)
+								{
+									aOtherSelected.push_back(pSelected->getID());
+								}
+							}
+							WtpProfessionBatch::begin(aOtherSelected);
 							CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSE_PROFESSION, pCity->getID(), getID());
 							gDLL->getInterfaceIFace()->addPopup(pInfo, getOwnerINLINE(), true, true);
 						}
@@ -6555,6 +6579,11 @@ void CvUnit::doUnloadYield(int iAmount)
 	CvCity* pCity = plot()->getPlotCity();
 	if (pCity != NULL)
 	{
+		// WTP: statistics of the transport: a part of its cargo goes into the city (the complete unloading by setTransportUnit is noted there, the ship is no longer set here)
+		if (getTransportUnit() != NULL)
+		{
+			getTransportUnit()->noteTransportUnload(eYield, iAmount);
+		}
 		// R&R mod, vetiarvind, max yield import limit - start (bug fix of native code)
 		//pCity->changeYieldStored(eYield, pUnloadingUnit->getYieldStored());
 		pCity->changeYieldStored(eYield, iAmount);
@@ -13293,15 +13322,16 @@ static int wtpTransportPlace(const CvUnit* pShip)
 
 // WTP: where the goods of a transport go and how far that is: a ship on its way to Europe, Africa or Port Royal goes there; an automated transport
 // goes to the destination of the trade order for the good; otherwise the target of the move order of the group. No distance off the map.
-static void wtpTransportDestination(const CvUnit* pShip, YieldTypes eYield, int& iPlace, int& iDistance)
+static void wtpTransportDestination(const CvUnit* pShip, YieldTypes eYield, int& iPlace, int& iDistance, int& iTurns)
 {
 	iPlace = 0;
 	iDistance = -1;
+	iTurns = -1;
 	switch (pShip->getUnitTravelState())
 	{
-	case UNIT_TRAVEL_STATE_TO_EUROPE: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_EUROPE) << 12); return;
-	case UNIT_TRAVEL_STATE_TO_AFRICA: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_AFRICA) << 12); return;
-	case UNIT_TRAVEL_STATE_TO_PORT_ROYAL: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_PORT_ROYAL) << 12); return;
+	case UNIT_TRAVEL_STATE_TO_EUROPE: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_EUROPE) << 12); iTurns = pShip->getUnitTravelTimer(); return;
+	case UNIT_TRAVEL_STATE_TO_AFRICA: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_AFRICA) << 12); iTurns = pShip->getUnitTravelTimer(); return;
+	case UNIT_TRAVEL_STATE_TO_PORT_ROYAL: iPlace = 1 | (((int)UNIT_TRAVEL_STATE_IN_PORT_ROYAL) << 12); iTurns = pShip->getUnitTravelTimer(); return;
 	default: break;
 	}
 	const CvSelectionGroup* pGroup = pShip->getGroup();
@@ -13335,6 +13365,13 @@ static void wtpTransportDestination(const CvUnit* pShip, YieldTypes eYield, int&
 	{
 		iPlace = (pTarget->getX_INLINE() + 2) | ((pTarget->getY_INLINE() + 2) << 12);
 		iDistance = plotDistance(pShip->getX_INLINE(), pShip->getY_INLINE(), pTarget->getX_INLINE(), pTarget->getY_INLINE());
+		// the turns the way to it takes from here, with the full moves of the group (the log is written at the turn change, when the transport has
+		// used its moves: with the moves it has then, every way took one turn more than it really takes: nearly always "2")
+		int iPathTurns = 0;
+		if (pGroup->generatePath(pShip->plot(), pTarget, MOVE_MAX_MOVES, true, &iPathTurns))
+		{
+			iTurns = iPathTurns;
+		}
 	}
 }
 
@@ -13356,6 +13393,8 @@ void CvUnit::doTransportStats()
 		m_aiTransportStat[TS_PREV_VALUE] = 0;
 		m_aiTransportStat[TS_LAST_X] = 0;
 		m_aiTransportStat[TS_LAST_Y] = 0;
+		m_aiTransportUnloaded.clear();
+		m_aiTransportBatches.clear();
 		return;
 	}
 	int iValue = 0;
@@ -13416,25 +13455,88 @@ void CvUnit::doTransportStats()
 
 	// the log of the last turns: where the transport was, which goods (and amounts) were on board, where they were loaded, where they go and how far
 	// that was
+	// (the goods on board by load: made to fit the cargo that is really on board; what left the ship in another way than noted - sold, killed - leaves
+	// the oldest entry first, a good that came on board unseen is an entry without turn and place)
+	for (YieldTypes eBatchYield = FIRST_YIELD; eBatchYield < NUM_YIELD_TYPES; ++eBatchYield)
+	{
+		int iBatchSum = 0;
+		for (int i = 0; i + 4 <= (int)m_aiTransportBatches.size(); i += 4)
+		{
+			if (m_aiTransportBatches[i] == (int)eBatchYield)
+			{
+				iBatchSum += m_aiTransportBatches[i + 1];
+			}
+		}
+		if (iBatchSum < aiAmount[eBatchYield])
+		{
+			m_aiTransportBatches.push_back((int)eBatchYield);
+			m_aiTransportBatches.push_back(aiAmount[eBatchYield] - iBatchSum);
+			m_aiTransportBatches.push_back(0);
+			m_aiTransportBatches.push_back(0);
+		}
+		else if (iBatchSum > aiAmount[eBatchYield])
+		{
+			int iSurplus = iBatchSum - aiAmount[eBatchYield];
+			for (int i = 0; i + 4 <= (int)m_aiTransportBatches.size() && iSurplus > 0;)
+			{
+				if (m_aiTransportBatches[i] == (int)eBatchYield)
+				{
+					const int iTake = std::min(iSurplus, m_aiTransportBatches[i + 1]);
+					m_aiTransportBatches[i + 1] -= iTake;
+					iSurplus -= iTake;
+					if (m_aiTransportBatches[i + 1] <= 0)
+					{
+						m_aiTransportBatches.erase(m_aiTransportBatches.begin() + i, m_aiTransportBatches.begin() + i + 4);
+						continue;
+					}
+				}
+				i += 4;
+			}
+		}
+	}
 	std::vector<int> aiRecord(TS_LOG_RECORD, 0);
 	aiRecord[0] = GC.getGameINLINE().getGameTurn();
 	aiRecord[1] = wtpTransportPlace(this);
 	int iPairs = 0;
+	// the goods unloaded in this turn first (the destination of such a pair is the place of the unloading, see m_aiTransportLog)
+	for (int iUnloaded = 0; iUnloaded + 5 <= (int)m_aiTransportUnloaded.size() && iPairs < TS_LOG_PAIRS; iUnloaded += 5)
+	{
+		int* piPair = &aiRecord[4 + TS_LOG_PAIR_SIZE * iPairs];
+		piPair[0] = m_aiTransportUnloaded[iUnloaded];
+		piPair[1] = m_aiTransportUnloaded[iUnloaded + 1];
+		piPair[2] = m_aiTransportUnloaded[iUnloaded + 2];
+		piPair[3] = m_aiTransportUnloaded[iUnloaded + 3];
+		piPair[4] = m_aiTransportUnloaded[iUnloaded + 4];
+		piPair[5] = TS_LOG_UNLOADED;
+		piPair[6] = -1;
+		++iPairs;
+	}
+	m_aiTransportUnloaded.clear();
+	// then the goods on board, one pair per load (the same good loaded in another turn or place is another pair)
 	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES && iPairs < TS_LOG_PAIRS; ++eYield)
 	{
 		if (aiAmount[eYield] > 0)
 		{
 			int iDestination = 0;
 			int iDistance = -1;
-			wtpTransportDestination(this, eYield, iDestination, iDistance);
-			int* piPair = &aiRecord[4 + TS_LOG_PAIR_SIZE * iPairs];
-			piPair[0] = (int)eYield;
-			piPair[1] = aiAmount[eYield];
-			piPair[2] = m_em_iTransportLoadTurn.get(eYield);
-			piPair[3] = m_em_iTransportLoadPlace.get(eYield);
-			piPair[4] = iDestination;
-			piPair[5] = iDistance;
-			++iPairs;
+			int iTurnsToGo = -1;
+			wtpTransportDestination(this, eYield, iDestination, iDistance, iTurnsToGo);
+			for (int iBatch = 0; iBatch + 4 <= (int)m_aiTransportBatches.size() && iPairs < TS_LOG_PAIRS; iBatch += 4)
+			{
+				if (m_aiTransportBatches[iBatch] != (int)eYield || m_aiTransportBatches[iBatch + 1] <= 0)
+				{
+					continue;
+				}
+				int* piPair = &aiRecord[4 + TS_LOG_PAIR_SIZE * iPairs];
+				piPair[0] = (int)eYield;
+				piPair[1] = m_aiTransportBatches[iBatch + 1];
+				piPair[2] = m_aiTransportBatches[iBatch + 2];
+				piPair[3] = m_aiTransportBatches[iBatch + 3];
+				piPair[4] = iDestination;
+				piPair[5] = iDistance;
+				piPair[6] = iTurnsToGo;
+				++iPairs;
+			}
 		}
 	}
 	aiRecord[3] = iPairs;
@@ -13445,15 +13547,81 @@ void CvUnit::doTransportStats()
 	}
 }
 
-// WTP: a good was loaded onto this transport (CvUnit::setTransportUnit): the turn and the place are kept for the log
-void CvUnit::noteTransportLoad(YieldTypes eYield)
+// WTP: a good was loaded onto this transport (CvUnit::setTransportUnit): the amount, the turn and the place are kept for the log (the same good loaded in the same place in the same turn is one entry)
+void CvUnit::noteTransportLoad(YieldTypes eYield, int iAmount)
 {
-	if (!isHuman() || eYield == NO_YIELD)
+	if (!isHuman() || eYield == NO_YIELD || iAmount <= 0)
 	{
 		return;
 	}
-	m_em_iTransportLoadTurn.set(eYield, GC.getGameINLINE().getGameTurn());
-	m_em_iTransportLoadPlace.set(eYield, wtpTransportPlace(this));
+	const int iTurn = GC.getGameINLINE().getGameTurn();
+	const int iPlace = wtpTransportPlace(this);
+	for (int i = (int)m_aiTransportBatches.size() - 4; i >= 0; i -= 4)
+	{
+		if (m_aiTransportBatches[i] == (int)eYield && m_aiTransportBatches[i + 2] == iTurn && m_aiTransportBatches[i + 3] == iPlace)
+		{
+			m_aiTransportBatches[i + 1] += iAmount;
+			return;
+		}
+	}
+	m_aiTransportBatches.push_back((int)eYield);
+	m_aiTransportBatches.push_back(iAmount);
+	m_aiTransportBatches.push_back(iTurn);
+	m_aiTransportBatches.push_back(iPlace);
+	if ((int)m_aiTransportBatches.size() > 4 * 64)
+	{
+		m_aiTransportBatches.erase(m_aiTransportBatches.begin(), m_aiTransportBatches.begin() + 4);
+	}
+}
+
+// WTP: a good was unloaded from this transport (CvUnit::setTransportUnit, CvUnit::doUnloadYield): kept for the next line of the log. It comes from the oldest loads of that good
+// on board; the same good unloaded at the same place from the same load is summed up.
+void CvUnit::noteTransportUnload(YieldTypes eYield, int iAmount)
+{
+	if (!isHuman() || eYield == NO_YIELD || iAmount <= 0)
+	{
+		return;
+	}
+	const int iPlace = wtpTransportPlace(this);
+	int iLeft = iAmount;
+	for (int iBatch = 0; iBatch + 4 <= (int)m_aiTransportBatches.size() && iLeft > 0;)
+	{
+		if (m_aiTransportBatches[iBatch] == (int)eYield && m_aiTransportBatches[iBatch + 1] > 0)
+		{
+			const int iTake = std::min(iLeft, m_aiTransportBatches[iBatch + 1]);
+			addTransportUnloaded(eYield, iTake, m_aiTransportBatches[iBatch + 2], m_aiTransportBatches[iBatch + 3], iPlace);
+			iLeft -= iTake;
+			m_aiTransportBatches[iBatch + 1] -= iTake;
+			if (m_aiTransportBatches[iBatch + 1] <= 0)
+			{
+				m_aiTransportBatches.erase(m_aiTransportBatches.begin() + iBatch, m_aiTransportBatches.begin() + iBatch + 4);
+				continue;
+			}
+		}
+		iBatch += 4;
+	}
+	if (iLeft > 0)
+	{
+		// (a good of an unknown load)
+		addTransportUnloaded(eYield, iLeft, 0, 0, iPlace);
+	}
+}
+
+void CvUnit::addTransportUnloaded(YieldTypes eYield, int iAmount, int iLoadTurn, int iLoadPlace, int iPlace)
+{
+	for (int i = 0; i + 5 <= (int)m_aiTransportUnloaded.size(); i += 5)
+	{
+		if (m_aiTransportUnloaded[i] == (int)eYield && m_aiTransportUnloaded[i + 2] == iLoadTurn && m_aiTransportUnloaded[i + 3] == iLoadPlace && m_aiTransportUnloaded[i + 4] == iPlace)
+		{
+			m_aiTransportUnloaded[i + 1] += iAmount;
+			return;
+		}
+	}
+	m_aiTransportUnloaded.push_back((int)eYield);
+	m_aiTransportUnloaded.push_back(iAmount);
+	m_aiTransportUnloaded.push_back(iLoadTurn);
+	m_aiTransportUnloaded.push_back(iLoadPlace);
+	m_aiTransportUnloaded.push_back(iPlace);
 }
 
 int CvUnit::getTransportStat(int iStat) const
@@ -14989,6 +15157,7 @@ void CvUnit::setCombatUnit(CvUnit* pCombatUnit, bool bAttacking)
 	if (pCombatUnit == NULL)
 	{
 		WtpTiming::fightEnd(); // WTP: timing log: the fight is over (no effect when no animated fight with a human runs)
+		WtpTurnClock::fightEnd();
 	}
 
 	if (isCombatFocus())
@@ -15118,11 +15287,8 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 		{
 			FAssertMsg(pTransportUnit->cargoSpaceAvailable(getSpecialUnitType(), getDomainType()) > 0 || getYield() != NO_YIELD, "Cargo space is expected to be available");
 
-			// WTP: statistics of the transport: where and when this good was loaded
-			if (getYield() != NO_YIELD)
-			{
-				pTransportUnit->noteTransportLoad(getYield());
-			}
+			// WTP: statistics of the transport: the amount that comes on board (kept for the log where and when this good was loaded, see the exits below)
+			const int iLoadedAmount = (getYield() != NO_YIELD) ? getYieldStored() : 0;
 
 			setUnitTravelState(pTransportUnit->getUnitTravelState(), false);
 
@@ -15152,6 +15318,7 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 									//all yields have been transferred to another unit
 									if (getYieldStored() == 0)
 									{
+										pTransportUnit->noteTransportLoad(eYield, iLoadedAmount);
 										kill(true);
 										return false;
 									}
@@ -15159,6 +15326,8 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 									//check if load anymore of this cargo
 									if (pTransportUnit->getLoadYieldAmount(eYield) == 0)
 									{
+										// (what is left stays off the ship)
+										pTransportUnit->noteTransportLoad(eYield, iLoadedAmount - getYieldStored());
 										return true;
 									}
 								}
@@ -15194,6 +15363,11 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 			//pTransportUnit->changeCargo(1);
 			// PatchMod: Berth Size END
 			pTransportUnit->getGroup()->setActivityType(ACTIVITY_AWAKE);
+			if (getYield() != NO_YIELD)
+			{
+				// WTP: statistics of the transport: what came on board (the rest of a good that was merged is on board in this unit)
+				pTransportUnit->noteTransportLoad(getYield(), iLoadedAmount);
+			}
 		}
 		else //dropped off of vehicle
 		{
@@ -15210,6 +15384,12 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 				{
 					getGroup()->setActivityType(ACTIVITY_AWAKE);
 				}
+			}
+
+			// WTP: statistics of the transport: the good that leaves the ship (for the log)
+			if (pOldTransportUnit != NULL && getYield() != NO_YIELD)
+			{
+				pOldTransportUnit->noteTransportUnload(getYield(), getYieldStored());
 			}
 
 			//place yields into city

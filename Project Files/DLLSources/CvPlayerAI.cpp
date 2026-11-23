@@ -18966,6 +18966,16 @@ CvCity* CvPlayerAI::AI_bestFoodSurplusCity(const CvCity& kFrom, const CvCity* pE
 	CvCity* pBest = NULL;
 	int iBestSurplus = 1;
 	int iLoop;
+	// WTP: the colonists on their way are counted once for all colonies (not one scan of all units per colony)
+	std::map<int, int> mapIncoming;
+	for (CvUnit* pLoopUnit = firstUnit(&iLoop); pLoopUnit != NULL; pLoopUnit = nextUnit(&iLoop))
+	{
+		const CvUnitAI& kLoopAI = static_cast<const CvUnitAI&>(*pLoopUnit);
+		if (kLoopAI.AI_getWfTask() == CvUnitAI::WF_JOIN_CITY && pLoopUnit->getID() != iSkipUnitID)
+		{
+			++mapIncoming[kLoopAI.AI_getWfCityID()];
+		}
+	}
 	for (CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 	{
 		if (pLoopCity == pExclude)
@@ -18974,7 +18984,13 @@ CvCity* CvPlayerAI::AI_bestFoodSurplusCity(const CvCity& kFrom, const CvCity* pE
 		}
 		const bool bReachable = pLoopCity->area() == kFrom.area()
 			|| (pLoopCity->isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()) && kFrom.isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()));
-		const int iSurplus = AI_foodSurplusForNewcomer(*pLoopCity, iSkipUnitID);
+		if (!bReachable)
+		{
+			continue;
+		}
+		const std::map<int, int>::const_iterator itIncoming = mapIncoming.find(pLoopCity->getID());
+		const int iSurplus = pLoopCity->foodDifference() - 2 * (itIncoming != mapIncoming.end() ? itIncoming->second : 0)
+			- GLOBAL_DEFINE_FOOD_CONSUMPTION_PER_POPULATION;
 		if (bReachable && iSurplus >= 2 && iSurplus > iBestSurplus)
 		{
 			iBestSurplus = iSurplus;
@@ -19457,6 +19473,18 @@ namespace
 		int iWorker;
 		int iJob;
 		int iValue;
+		int iFoodDelta;
+	};
+
+	// the part of the value of a pair (colonist type, job) that does not depend on the single colonist (the same for all colonists of a type in one scan of a
+	// colony: the stock and the plan of the colony do not change during the scan): kept per scan, so the 100+ colonists of a colony do not work it out again
+	struct WfPairBase
+	{
+		int iStamp; // the scan this was worked out in
+		bool bDead; // no colonist of the type can have a candidate for the job (a job without input, a value of 0 or less that no must rule can change)
+		bool bInput;
+		int iOutput;
+		int iJobGold;
 		int iFoodDelta;
 	};
 
@@ -20542,8 +20570,10 @@ void CvPlayerAI::AI_doWorkforcePlan()
 		}
 	}
 	// WTP performance: classes of identical regular colonists. The value of a pair of a regular (not expert) colonist and a job of the
-	// colony depends only on its unit type, its home colony, the job it holds now and the travel time to the colony (an expert is
-	// never in a class: wfIsExpertFor is only true for an expert). Each list a scan keeps changes only for a strictly higher value
+	// colony depends only on its unit type, the travel time to the colony, whether its home colony is another one (the x2/3 for a
+	// colonist that would move), and whether it holds a job of this colony now (the x1.2 for exactly that job); the home colony itself
+	// and a job of another colony do not matter for the scan of this colony, so colonists that differ only there are one class (an
+	// expert is never in a class: wfIsExpertFor is only true for an expert). Each list a scan keeps changes only for a strictly higher value
 	// and holds at most three entries (two distinct workers in the food and lumber lists), so the fourth identical colonist
 	// of a scan offers what the first ones have offered already and changes no list: a scan looks at three of them at most. The
 	// chosen pairs stay the same (tie breaks included: an equal value never replaces a kept candidate).
@@ -20562,8 +20592,10 @@ void CvPlayerAI::AI_doWorkforcePlan()
 				{
 					continue;
 				}
+				const int iCurrentJobHere = (aWorkers[w].iCurrentJob >= 0 && aJobs[aWorkers[w].iCurrentJob].iCity == c) ? aWorkers[w].iCurrentJob : -1;
+				const int iMoves = (aiHomeCity[w] >= 0 && aiHomeCity[w] != c) ? 1 : 0;
 				const std::pair<std::pair<int, int>, std::pair<int, int> > kKey(
-					std::make_pair(c * 10000 + aWorkers[w].iTypeIdx, aiHomeCity[w]), std::make_pair(aWorkers[w].iCurrentJob, aiEta[w * iNumCities + c]));
+					std::make_pair(c * 10000 + aWorkers[w].iTypeIdx, iMoves), std::make_pair(iCurrentJobHere, aiEta[w * iNumCities + c]));
 				std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, int>::iterator it = mapClasses.find(kKey);
 				if (it == mapClasses.end())
 				{
@@ -20613,6 +20645,15 @@ void CvPlayerAI::AI_doWorkforcePlan()
 			} \
 		} \
 	}
+	// the worker independent part of the pairs of a scan (see WfPairBase)
+	size_t iWtpMaxCityJobs = 0;
+	for (int iBaseCity = 0; iBaseCity < iNumCities; ++iBaseCity)
+	{
+		iWtpMaxCityJobs = std::max(iWtpMaxCityJobs, aaiCityJobs[iBaseCity].size());
+	}
+	WfPairBase kPairBaseInit = { -1, false, false, 0, 0, 0 };
+	std::vector<WfPairBase> aPairBase((iNumTypes + 1) * iWtpMaxCityJobs, kPairBaseInit);
+	int iPairBaseStamp = 0;
 	int iWtpRounds = 0; // (counters of the timing report)
 	int iWtpScans = 0;
 	int iWtpPairsLooked = 0;
@@ -20630,6 +20671,7 @@ void CvPlayerAI::AI_doWorkforcePlan()
 				continue;
 			}
 			++iWtpScans;
+			++iPairBaseStamp;
 			abWfDirty[iScanCity] = false;
 			aCities[iScanCity].iBlockedValue = 0;
 			aCities[iScanCity].iBlockedJob = -1;
@@ -20706,7 +20748,64 @@ void CvPlayerAI::AI_doWorkforcePlan()
 					++iWtpPairsLooked;
 					const int iT = WF_TYPE(w, j);
 					const int iGold = aiGold[iT * iNumJobs + j];
-					if (iGold <= -1000000 || aiEta[w * iNumCities + kJob.iCity] >= 1000)
+					if (iGold <= -1000000)
+					{
+						continue;
+					}
+					// the part of the pair that is the same for all colonists of the type (once per scan, type and job)
+					WfPairBase& kBase = aPairBase[(size_t)iT * iWtpMaxCityJobs + iCityJob];
+					if (kBase.iStamp != iPairBaseStamp)
+					{
+						kBase.iStamp = iPairBaseStamp;
+						WfCity& kBaseCity = aCities[kJob.iCity];
+						kBase.iOutput = aiOutput[iT * iNumJobs + j];
+						const bool bBaseCarpenter = kJob.eYield == YIELD_HAMMERS;
+						const CvProfessionInfo& kBaseProfession = GC.getProfessionInfo(kJob.eProfession);
+						WF_JOB_HAS_INPUT(kBaseCity, kBaseProfession, kBase.iOutput, kBase.bInput);
+						kBase.iFoodDelta = aiFood[iT * iNumJobs + j] - iConsumption;
+						kBase.iJobGold = iGold;
+						const int iBaseOutput = kBase.iOutput;
+						// lumber the carpenters need (planned ones, or the first one still to come) is worth WF_LUMBER_SHORT_GOLD
+						if (kJob.eYield == YIELD_LUMBER && kJob.pPlot != NULL)
+						{
+							const int iUse = kBaseCity.aiUse[YIELD_LUMBER];
+							const int iNeed = iUse + ((iUse == 0 && abHammerJob[kJob.iCity]) ? 3 : 0) - kBaseCity.aiRaw[YIELD_LUMBER];
+							if (iNeed > 0 && iBaseOutput > 0)
+							{
+								const int iForCarpenters = std::min(iNeed, iBaseOutput);
+								kBase.iJobGold = std::max(iGold, iGold * (iBaseOutput - iForCarpenters) / iBaseOutput + iForCarpenters * WF_LUMBER_SHORT_GOLD);
+							}
+						}
+						// WTP (user 2026-10-31): a mine good the smiths lack (planned ones, or a free slot of theirs) is worth what they make of it
+						else if (kJob.pPlot != NULL && wfIsMineGood(kJob.eYield) && iBaseOutput > 0)
+						{
+							const int iMaterialIndex = kJob.iCity * NUM_YIELD_TYPES + kJob.eYield;
+							if (aiMaterialGold[iMaterialIndex] > 0)
+							{
+								const int iNeed = kBaseCity.aiUse[kJob.eYield] + (abMaterialSlot[iMaterialIndex] ? 3 : 0) - kBaseCity.aiRaw[kJob.eYield];
+								if (iNeed > 0)
+								{
+									const int iForSmiths = std::min(iNeed, iBaseOutput);
+									kBase.iJobGold = std::max(iGold, iGold * (iBaseOutput - iForSmiths) / iBaseOutput + iForSmiths * aiMaterialGold[iMaterialIndex]);
+								}
+							}
+						}
+						// a dead pair: no input (and not a carpenter), or a value of 0 or less that none of the rules of a must job can lift
+						kBase.bDead = false;
+						if (!kBase.bInput && !bBaseCarpenter)
+						{
+							kBase.bDead = true;
+						}
+						else if (kBase.iJobGold + wfFoodGold(kBaseCity.iSurplus, kBase.iFoodDelta) <= 0)
+						{
+							const bool bMustPossible = (bBaseCarpenter && kJob.iSlot == 0)
+								|| (!kBaseProfession.isWorkPlot() && (kJob.eYield == YIELD_HAMMERS || kJob.eYield == YIELD_BELLS || kJob.eYield == YIELD_CROSSES))
+								|| (kJob.bFood && kJob.pPlot != NULL && kBaseProfession.isWorkPlot())
+								|| (kBaseProfession.isWorkPlot() && wfIsPreciousJob(kJob));
+							kBase.bDead = !bMustPossible;
+						}
+					}
+					if (kBase.bDead || aiEta[w * iNumCities + kJob.iCity] >= 1000)
 					{
 						continue;
 					}
@@ -20718,44 +20817,15 @@ void CvPlayerAI::AI_doWorkforcePlan()
 					}
 					++iWtpPairsFree;
 					WfCity& kCity = aCities[kJob.iCity];
-					const int iOutput = aiOutput[iT * iNumJobs + j];
+					const int iOutput = kBase.iOutput;
 					const bool bCarpenter = kJob.eYield == YIELD_HAMMERS;
 					// a building job needs its input (stock, center plot or planned production); a carpenter without lumber may
 					// still be planned together with a lumberjack
 					const CvProfessionInfo& kProfession = GC.getProfessionInfo(kJob.eProfession);
-					bool bInput;
-					WF_JOB_HAS_INPUT(kCity, kProfession, iOutput, bInput);
-					if (!bInput && !bCarpenter)
-					{
-						continue;
-					}
-					const int iFoodDelta = aiFood[iT * iNumJobs + j] - iConsumption;
-					int iJobGold = iGold;
-					// lumber the carpenters need (planned ones, or the first one still to come) is worth WF_LUMBER_SHORT_GOLD
-					if (kJob.eYield == YIELD_LUMBER && kJob.pPlot != NULL)
-					{
-						const int iUse = kCity.aiUse[YIELD_LUMBER];
-						const int iNeed = iUse + ((iUse == 0 && abHammerJob[kJob.iCity]) ? 3 : 0) - kCity.aiRaw[YIELD_LUMBER];
-						if (iNeed > 0 && iOutput > 0)
-						{
-							const int iForCarpenters = std::min(iNeed, iOutput);
-							iJobGold = std::max(iGold, iGold * (iOutput - iForCarpenters) / iOutput + iForCarpenters * WF_LUMBER_SHORT_GOLD);
-						}
-					}
-					// WTP (user 2026-10-31): a mine good the smiths lack (planned ones, or a free slot of theirs) is worth what they make of it
-					else if (kJob.pPlot != NULL && wfIsMineGood(kJob.eYield) && iOutput > 0)
-					{
-						const int iMaterialIndex = kJob.iCity * NUM_YIELD_TYPES + kJob.eYield;
-						if (aiMaterialGold[iMaterialIndex] > 0)
-						{
-							const int iNeed = kCity.aiUse[kJob.eYield] + (abMaterialSlot[iMaterialIndex] ? 3 : 0) - kCity.aiRaw[kJob.eYield];
-							if (iNeed > 0)
-							{
-								const int iForSmiths = std::min(iNeed, iOutput);
-								iJobGold = std::max(iGold, iGold * (iOutput - iForSmiths) / iOutput + iForSmiths * aiMaterialGold[iMaterialIndex]);
-							}
-						}
-					}
+					const bool bInput = kBase.bInput;
+					const int iFoodDelta = kBase.iFoodDelta;
+					// (the job value with the adjustments for lumber (carpenters) and mine goods (smiths) was worked out once per scan: WfPairBase above)
+					const int iJobGold = kBase.iJobGold;
 					// the first carpenter of a colony is a must; expert carpenters, statesmen and preachers always work in their
 					// trade (other experts get their job by value like everybody else)
 					const bool bExpertBuilding = !kProfession.isWorkPlot() && wfIsExpertFor(*kWorker.pUnit, kJob.eProfession)

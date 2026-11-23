@@ -220,6 +220,9 @@ VET_NEW_CAPACITY = 4201
 # R&R, Robert Surcouf VET NewCapacity Help - End
 
 TIMETEXT_ID = 4202
+TURNTIME_ID = 4203 # WTP: the time of the last turn change below the clock (tooltip: average)
+WTP_TURNTIME_CACHE = None # (time of the reading, values)
+WTP_TURNTIME_SEEN = 0 # (the number of measurements of the DLL that are in the sum already)
 
 # CITY HAPPINESS vs UNHAPPINESS - START
 HELP_TOTAL_HAPPINESS_POSITIVE = 4301
@@ -375,6 +378,7 @@ class CvMainInterface:
 	szSuppressHelp = u"" # the text of the window that was just frozen: the tooltip of the same thing does not appear again at once
 	iTipSelLevel = -1
 	iPreviewParent = -1
+	bPreviewDark = False # the window of the preview is the darker variant (the log of a transport)
 	tScoreRect = None
 	tPreviewLayout = None # the window beside the top frozen window (it can be frozen too): layout, paragraphs, widget name prefix
 	aszPreviewParas = []
@@ -395,6 +399,7 @@ class CvMainInterface:
 	aiTipIndent = []
 	dTipDetails = {}
 	dNestedDetails = {} # the text of a child window -> the lines of it that have a child window of their own (line -> text), e.g. Statistics -> Logs
+	dWideTips = {} # the text of a child window -> 1: the window gets the double maximum width (the log of a transport: long lines)
 	aiWrapIndent = []
 	bSecondTipShown = False # the window with the Colopedia hint of the line under the cursor in the frozen tooltip
 	bExplainShown = False # the window that explains the colored label of a folded line (Stored..., Produced...), on the other side of the parent
@@ -467,6 +472,8 @@ class CvMainInterface:
 	szLastTipError = u""
 	dHeaderUnits = {} # frozen window (prefix) -> {paragraph of the name of a unit: (owner, id)} as it was when the window was frozen
 	tAutoSelUnit = None # (owner, id) of the unit that the frozen tooltips of szAutoSelPrefix belong to
+	tForceAnchor = None # (x, y) of the plot that a tooltip opened by showLoadedUnitTip belongs to (makeAnchor)
+	tLoadTip = None # (x, y, turn, window, owner, id) of the unit whose tooltip showLoadedUnitTip opened: it closes when the unit has moved or the turn changed
 	fCursorTipShownAt = 0.0 # when the tooltip of the cursor was built (ms)
 	iSecondTipLines = 0
 	aszTipParas = []
@@ -1609,14 +1616,19 @@ class CvMainInterface:
 		if (CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_HIDE_ALL and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_ADVANCED_START):
 			if (CyInterface().isCityScreenUp()):
 				screen.hide("ClockText")
+				screen.hide("TurnTimeText")
 			else:
 				if (CyUserProfile().isClockOn()):
-					screen.setLabel("ClockText", "Background", self.setFontSize(getClockText(), 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, 42, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel("ClockText", "Background", self.setFontSize(getClockText(), 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, 62, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 					screen.show("ClockText")
+					self.drawTurnTimeText(screen, xResolution, True)
 				else:
 					screen.hide("ClockText")
+					screen.hide("TurnTimeText")
+					self.drawTurnTimeText(screen, xResolution, False)
 		else:
 			screen.hide("ClockText")
+			screen.hide("TurnTimeText")
 
 		return 0
 
@@ -2998,6 +3010,7 @@ class CvMainInterface:
 
 		screen = CyGInterfaceScreen( "MainInterface", CvScreenEnums.MAIN_INTERFACE )
 		screen.hide("ClockText")
+		screen.hide("TurnTimeText")
 		bShift = CyInterface().shiftKey()
 
 		xResolution = screen.getXResolution()
@@ -3016,8 +3029,9 @@ class CvMainInterface:
 			szTimeText = unicode(CyGameTextMgr().getInterfaceTimeStr(gc.getGame().getActivePlayer()))
 			screen.setLabel("TimeText", "Background", self.setFontSize(szTimeText, 1), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 17, 17, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TIMETEXT_ID, -1 )
 			if (CyUserProfile().isClockOn()):
-				screen.setLabel("ClockText", "Background", self.setFontSize(getClockText(), 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, 42, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+				screen.setLabel("ClockText", "Background", self.setFontSize(getClockText(), 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, 62, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 				screen.show("ClockText")
+			self.drawTurnTimeText(screen, xResolution, CyUserProfile().isClockOn())
 
 			if (gc.getPlayer(ePlayer).isAlive()):
 				szText = CyGameTextMgr().getGoldStr(ePlayer)
@@ -3114,6 +3128,7 @@ class CvMainInterface:
 		CyCamera().SetCityViewPortCenter(x, y)
 
 		screen.hide("ClockText")
+		screen.hide("TurnTimeText")
 		screen.hide("DefenseText")
 		screen.hide("LibertyText")
 		screen.hide("HammerText")
@@ -4094,18 +4109,19 @@ class CvMainInterface:
 
 	# WTP: own tooltip window at the mouse cursor (the tooltip of the game stays at its place). It shows the same text, is vertically
 	# centered on the cursor, right of it (left if there is no room) and lies in front of the HUD elements.
-	def showCursorTooltip( self, screen, szHelp, bWidget = False, bFromPending = False ):
+	# tForce = (x, y): the window is built at that place of the screen whatever the cursor does (showLoadedUnitTip)
+	def showCursorTooltip( self, screen, szHelp, bWidget = False, bFromPending = False, tForce = None ):
 		if not self.bHoverTip:
 			return
 		# (the cursor on a frozen window: its lines have tooltips of their own, the plot under the window is not interesting)
-		if self.bTipFrozen and self.getFrozenAt(gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()) >= 0:
+		if tForce is None and self.bTipFrozen and self.getFrozenAt(gc.getGame().getCursorClientX(), gc.getGame().getCursorClientY()) >= 0:
 			return
 		try:
 			# the help of the map plot is not shown while the cursor is on a HUD element (the game reports the plot behind it)
-			if not bWidget and self.isHudHover():
+			if tForce is None and not bWidget and self.isHudHover():
 				return
 			# the same on the own panels of the HUD: no plot help while the cursor is on them (a shown one goes away)
-			if not bWidget and self.isCursorOnOwnPanel():
+			if tForce is None and not bWidget and self.isCursorOnOwnPanel():
 				self.szSuppressHelp = u""
 				self.hideCursorTooltip(screen)
 				return
@@ -4114,18 +4130,21 @@ class CvMainInterface:
 				self.hideCursorTooltip(screen)
 				return
 			# the tooltip of the thing that was just frozen does not appear a second time at once
-			if szHelp == self.szSuppressHelp:
+			if tForce is None and szHelp == self.szSuppressHelp:
 				return
 			self.szSuppressHelp = u""
 			iCursorX = gc.getGame().getCursorClientX()
 			iCursorY = gc.getGame().getCursorClientY()
+			if tForce is not None:
+				iCursorX = tForce[0]
+				iCursorY = tForce[1]
 			# the same text again with the cursor near the last place: the window stays as it is (no flicker)
-			if self.bCursorTipShown and szHelp == self.szCursorTipText and abs(iCursorX - self.tCursorTipAt[0]) < 80 and abs(iCursorY - self.tCursorTipAt[1]) < 80:
+			if tForce is None and self.bCursorTipShown and szHelp == self.szCursorTipText and abs(iCursorX - self.tCursorTipAt[0]) < 80 and abs(iCursorY - self.tCursorTipAt[1]) < 80:
 				return
 			# tooltip delay: a tooltip waits until the cursor has rested for the time of the option. Another text (the cursor has gone from one
 			# thing to the next) removes the tooltip that is shown and starts the time again
 			# (in the import / export window the tooltips come at once, whatever the delay is)
-			if self.iTipDelay != 0 and not bFromPending and not self.isCursorInTradeWindow() and (not self.bCursorTipShown or (szHelp != self.szCursorTipText and not self.bTipQuick)):
+			if tForce is None and self.iTipDelay != 0 and not bFromPending and not self.isCursorInTradeWindow() and (not self.bCursorTipShown or (szHelp != self.szCursorTipText and not self.bTipQuick)):
 				if self.bCursorTipShown:
 					self.hideCursorTooltip(screen)
 				if self.szPendingHelp is None:
@@ -4178,7 +4197,7 @@ class CvMainInterface:
 					self.tTipWp = None
 			# a plot that is saved as a waypoint says so in its last line (above the hint of the freezing)
 			try:
-				if not bWidget and not self.bHudHover and self.getTerrainLineIndex(aszParas) >= 0:
+				if tForce is None and not bWidget and not self.bHudHover and self.getTerrainLineIndex(aszParas) >= 0:
 					pPlotWp = CyInterface().getMouseOverPlot()
 					if pPlotWp is not None and not pPlotWp.isNone():
 						szWp = self.getWaypointPlotLine(pPlotWp.getX(), pPlotWp.getY())
@@ -4486,18 +4505,30 @@ class CvMainInterface:
 					while j < len(aFinal) and aFinal[j][1] is None and self.normTipText(aFinal[j][0]).find(u"\u00ab") == 0:
 						aRows.append(aFinal[j][0].replace(u"\u00ab", u"", 1))
 						j += 1
-					# the log lines (marked with \u00aa): the child window of the first row (Logs)
+					# the log lines (marked with \u00aa): the child window of the first row (Logs); the legend (\u00ba): the child window of the last line of the log window
 					aLog = []
 					while j < len(aFinal) and aFinal[j][1] is None and self.normTipText(aFinal[j][0]).find(u"\u00aa") == 0:
 						aLog.append(aFinal[j][0].replace(u"\u00aa", u"", 1))
 						j += 1
+					# the legend of the log (marked with \u00ba): the child window of the last line of the log window (Legend)
+					aLegend = []
+					while j < len(aFinal) and aFinal[j][1] is None and self.normTipText(aFinal[j][0]).find(u"\u00ba") == 0:
+						aLegend.append(aFinal[j][0].replace(u"\u00ba", u"", 1))
+						j += 1
 					if len(aRows) > 0:
 						szRows = u"\n".join(aRows)
-						if len(aLog) > 0:
+						if len(aLog) > 0 or len(aLegend) > 0:
 							if len(self.dNestedDetails) > 200:
 								self.dNestedDetails = {}
-							szLogText = u"\n".join(aLog)
-							self.dNestedDetails[szRows] = {0: szLogText}
+							dRowDetails = {}
+							if len(aLog) > 0:
+								dRowDetails[0] = u"\n".join(aLog)
+								if len(self.dWideTips) > 200:
+									self.dWideTips = {}
+								self.dWideTips[dRowDetails[0]] = 1
+							if len(aLegend) > 0 and len(aLog) > 0:
+								self.dNestedDetails[dRowDetails[0]] = {len(aLog) - 1: u"\n".join(aLegend)}
+							self.dNestedDetails[szRows] = dRowDetails
 						aNewFinal.append([aFinal[k][0], szRows])
 						k = j
 						continue
@@ -6507,6 +6538,63 @@ class CvMainInterface:
 		except:
 			self.tipError("onUnitActivated")
 
+	# Shift + click on the button "Load cargo" (the DLL calls this after the goods are loaded): the tooltip of the ship opens frozen, as if the
+	# ship stood alone on its plot (its own help text, then the lines of the plot). It closes with the next order of the ship (onWaypointMission,
+	# as the tooltip of a unit that was selected from a stack), when the ship has moved away or the turn has changed (updateLoadTip).
+	def showLoadedUnitTip( self, iUnitId ):
+		try:
+			if not self.bHoverTip or self.isPediaActive() or CyInterface().isCityScreenUp():
+				return
+			ePlayer = gc.getGame().getActivePlayer()
+			pUnit = gc.getPlayer(ePlayer).getUnit(iUnitId)
+			if pUnit is None or pUnit.isNone():
+				return
+			pPlot = pUnit.plot()
+			if pPlot is None or pPlot.isNone():
+				return
+			# the help text of the plot as the game shows it when only this ship stood on it (the DLL lists only this unit): the full
+			# help of the unit with its statistics and the lines of the plot
+			szHelp = self.stripCarries(CyGameTextMgr().getPlotHelpAlone(pPlot, pUnit)).strip()
+			if len(szHelp) == 0:
+				return
+			if len(self.szAutoSelPrefix) > 0:
+				self.closeAutoSelWindows()
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			self.tForceAnchor = (pPlot.getX(), pPlot.getY())
+			try:
+				self.showCursorTooltip(screen, szHelp, False, True, self.getPlotScreen(pPlot.getX(), pPlot.getY()))
+				if self.bCursorTipShown and self.szCursorTipText == szHelp and self.freezeCursorTooltip() and len(self.aFrozen) > 0:
+					self.szAutoSelPrefix = self.aFrozen[-1][0]
+					self.tAutoSelUnit = (pUnit.getOwner(), pUnit.getID())
+					self.tLoadTip = (pPlot.getX(), pPlot.getY(), gc.getGame().getGameTurn(), self.aFrozen[-1][0], pUnit.getOwner(), pUnit.getID())
+			finally:
+				self.tForceAnchor = None
+		except:
+			self.tipError("showLoadedUnitTip")
+
+	# every frame: the tooltip of showLoadedUnitTip closes when the ship has left its plot or the turn has changed
+	def updateLoadTip( self ):
+		try:
+			tLoad = self.tLoadTip
+			if tLoad is None:
+				return
+			bOpen = False
+			for tFz in self.aFrozen:
+				if tFz[0] == tLoad[3]:
+					bOpen = True
+					break
+			if not bOpen:
+				self.tLoadTip = None
+				return
+			pUnit = gc.getPlayer(tLoad[4]).getUnit(tLoad[5])
+			if pUnit is None or pUnit.isNone() or pUnit.getX() != tLoad[0] or pUnit.getY() != tLoad[1] or gc.getGame().getGameTurn() != tLoad[2]:
+				self.tLoadTip = None
+				if self.szAutoSelPrefix == tLoad[3]:
+					self.closeAutoSelWindows()
+		except:
+			self.tLoadTip = None
+			self.tipError("updateLoadTip")
+
 	# the window that the choice is for: the tooltip of the cursor (-2), a frozen tooltip of the good under the cursor (its index; after a jump
 	# the tooltip of the good is frozen), -1: none
 	def getTradeTipTarget( self ):
@@ -7119,6 +7207,9 @@ class CvMainInterface:
 	# plot under the cursor and the distance of the window to the place of that plot on the screen. None: the window stays on the screen.
 	def makeAnchor( self, tLayout, tPlot = None ):
 		try:
+			if tPlot is None and self.tForceAnchor is not None:
+				# (the tooltip that was opened by the game for a unit: it belongs to the plot of the unit, the cursor is somewhere else)
+				tPlot = self.tForceAnchor
 			if tPlot is None:
 				if self.bHudHover:
 					return None
@@ -7352,7 +7443,7 @@ class CvMainInterface:
 			self.tPreviewWp = None
 			self.tPreviewUnit = None
 			self.tPreviewDetails = None
-			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, dict(dPreviewDetails), None, iParent)
+			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, dict(dPreviewDetails), None, iParent, self.bPreviewDark)
 			try:
 				# (the child window of the line "all colonies, net per turn" in the tooltip of a good: its lines of colonies can be clicked, the jump)
 				if iParent >= 0 and self.dTraderWin.has_key(self.aFrozen[iParent][0]):
@@ -7505,6 +7596,9 @@ class CvMainInterface:
 			yRes = screen.getYResolution()
 			iChar = iLine * 0.32
 			iMaxWidth = self.getTipMaxWidth(xRes, iChar, False)
+			if self.dWideTips.has_key(szText):
+				# the log of a transport: double width (long lines), but not wider than the screen allows
+				iMaxWidth = min(iMaxWidth * 2, int((xRes - 40) / 1.15))
 			iCharsPerLine = max(20, int((iMaxWidth - 2 * iPad) / iChar))
 			aszLines = []
 			aiPara = []
@@ -7576,7 +7670,9 @@ class CvMainInterface:
 			self.iPreviewParent = iParent
 			self.aszPreviewParas = aszParas
 			self.iSecondTipLines = len(aszLines)
-			self.drawTipWindow(screen, self.szPreviewPrefix, self.tPreviewLayout, False, 0, [])
+			# (the log of a transport always opens in the darker variant, also over the map)
+			self.bPreviewDark = self.dWideTips.has_key(szText)
+			self.drawTipWindow(screen, self.szPreviewPrefix, self.tPreviewLayout, False, 0, [], self.bPreviewDark)
 			self.bSecondTipShown = True
 		except:
 			self.bSecondTipShown = False
@@ -10056,6 +10152,7 @@ class CvMainInterface:
 			pass
 		self.updateEscHold()
 		self.updateAutoFreeze()
+		self.updateLoadTip()
 		self.updateTradeTipSelect()
 		if self.bXHeld and not self.bXHoldDone and self.getTipNow() - self.fXStart >= 600:
 			# X held: all frozen windows are closed; with stacked import / export windows (jumps) all of them and back to the start of the first jump
@@ -10512,6 +10609,8 @@ class CvMainInterface:
 				screen.hide(szName)
 			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER)
 			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_REVEALED_PLOTS)
+		# (the message panel is hidden while the choice is there, and comes back with it gone)
+		self.updateMessagePanel()
 
 	# WTP: the choice of the pioneer plan below the top bar: a button per improvement (the pioneers' build buttons, the name
 	# in the help), the chosen one highlighted; the two priorities; the plan of the plot under the mouse
@@ -10550,6 +10649,7 @@ class CvMainInterface:
 			screen.show("PrivateBuildCost")
 			self.aszPioneerPlanWidgets.append("PrivateBuildCost")
 			self.iPioneerPlanHoverY = iY + 24
+			self.liftPioneerPlanWidgets(screen)
 			return
 		for iPriority in range(1, 3):
 			szName = "PioneerPlanPriority" + str(iPriority)
@@ -10561,6 +10661,18 @@ class CvMainInterface:
 			self.aszPioneerPlanWidgets.append(szName)
 		self.iPioneerPlanHoverY = iY + 24
 		self.aszPioneerPlanWidgets.append("PioneerPlanHover")
+		self.liftPioneerPlanWidgets(screen)
+
+	# WTP: the choice buttons of the pioneer plan and of the private pioneer are in front of everything else (the message panel is hidden while they are
+	# there, see updateMessagePanel; a window of the panel that is open anyway, e.g. the text of a message, stays below them)
+	def liftPioneerPlanWidgets(self, screen):
+		if not (self.bPioneerPlanMode or self.bPrivateBuildMode):
+			return
+		for szName in self.aszPioneerPlanWidgets:
+			try:
+				screen.moveToFront(szName)
+			except:
+				pass
 
 	# WTP: private pioneer mode: choose an improvement (the buttons of the pioneer plan), a left click on a plot of our land
 	# pays a private pioneer for it (CvPlayer::startPrivateBuild)
@@ -10584,6 +10696,8 @@ class CvMainInterface:
 			for szName in self.aszPioneerPlanWidgets:
 				screen.hide(szName)
 			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER)
+		# (the message panel is hidden while the choice is there, and comes back with it gone)
+		self.updateMessagePanel()
 
 	def updatePioneerPlanEditor(self):
 
@@ -10829,7 +10943,7 @@ class CvMainInterface:
 		szText = szText.replace(u"&lt;", u"<").replace(u"&gt;", u">").replace(u"&amp;", u"&")
 		for szChar in szText:
 			if ord(szChar) >= 0x2000:
-				iWidth += 3.4
+				iWidth += self.fMsgIconWidth
 			else:
 				iWidth += self.dMessageCharWidths.get(szChar, 556) / 450.0
 		return iWidth
@@ -10904,6 +11018,16 @@ class CvMainInterface:
 					aszWords += self.splitIconRow(szWord)
 				else:
 					aszWords.append(szWord)
+			if not bIconIndent:
+				# a symbol of the game font that stands alone ("[symbol] place") stays with the word behind it: no line break between them
+				iWordNo = 0
+				while iWordNo < len(aszWords) - 1:
+					szLone = aszWords[iWordNo].rstrip()
+					if len(szLone) == 1 and ord(szLone) >= 0x2000:
+						aszWords[iWordNo] = aszWords[iWordNo] + aszWords[iWordNo + 1]
+						del aszWords[iWordNo + 1]
+					else:
+						iWordNo += 1
 			for szWord in aszWords:
 				szCore = szWord.rstrip()
 				iWord = self.getMessageWidth(szCore)
@@ -11153,6 +11277,36 @@ class CvMainInterface:
 			self.iMsgHoldWait = 3
 			self.moveMessagePanel(list(self.aMsgHeld))
 
+	# WTP: the collapsed panel is paler and less dense as long as the mouse is not over it (the colors of the texts get this alpha at most)
+	MESSAGE_IDLE_ALPHA = 150
+
+	def isMessagePanelIdle(self):
+		return (not self.bMessagePanelExpanded) and (not getattr(self, "bMsgHover", False))
+
+	def fadeMessageText(self, szText, bIdle):
+		if not bIdle:
+			return szText
+		try:
+			iAlpha = self.MESSAGE_IDLE_ALPHA
+			szFaded = re.sub(u"<color=(\\d+),(\\d+),(\\d+),(\\d+)>", lambda m: u"<color=%s,%s,%s,%d>" % (m.group(1), m.group(2), m.group(3), min(int(m.group(4)), iAlpha)), szText)
+			return u"<color=235,230,215,%d>%s</color>" % (iAlpha, szFaded)
+		except:
+			return szText
+
+	# every frame: the collapsed panel takes its full look while the mouse is over it and goes pale again when the mouse leaves
+	def updateMessageHover(self):
+		try:
+			if self.tMessagePanelKey is None:
+				return
+			bOver = False
+			if not self.bMessagePanelExpanded:
+				bOver = self.isCursorOnOwnPanel()
+			if bOver != getattr(self, "bMsgHover", False):
+				self.bMsgHover = bOver
+				self.updateMessagePanel()
+		except:
+			pass
+
 	def hideMessagePanel(self, screen):
 		for szName in self.aszMessageLines:
 			screen.hide(szName)
@@ -11188,8 +11342,10 @@ class CvMainInterface:
 			else:
 				iNum = iNumCurrent
 			# (MESSAGE_PANEL_ENABLED = 0: the DLL collects no messages, so there is nothing to show)
+			# (the choice buttons of the pioneer plan and of the private pioneer take its place: it is hidden as long as they are there)
 			bShow = ((iNumCurrent > 0 or self.bMsgWpView) and self.isMessagePanelOption()
-				and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW and not CyInterface().isCityScreenUp())
+				and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW and not CyInterface().isCityScreenUp()
+				and not (self.bPioneerPlanMode or self.bPrivateBuildMode))
 			if iNumCurrent == 0:
 				self.bMessageTurnPending = True
 				self.bMessagePanelExpanded = False
@@ -11214,7 +11370,7 @@ class CvMainInterface:
 			if self.bMsgWpView:
 				aWpEntries = self.getMsgWaypointEntries()
 				tWpKey = (self.iMsgWpPage, tuple([t[5] for t in aWpEntries]))
-			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes, self.bMsgWpView, self.bMsgWpSea, tWpKey)
+			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes, self.bMsgWpView, self.bMsgWpSea, tWpKey, self.isMessagePanelIdle())
 			if tKey == self.tMessagePanelKey:
 				return
 			self.tMessagePanelKey = tKey
@@ -11228,11 +11384,11 @@ class CvMainInterface:
 			iX = (xRes - iWidth) / 2
 			# just below the round buttons of the top HUD (their size depends on the resolution class, not on the screen height: 83 pixels with 36)
 			iY = max(int(yRes * 0.058), int(83 * SMALL_BUTTON_SIZE / 36.0))
-			# moved by the player (stays on the screen)
+			# moved by the player (stays on the screen, and never higher than the default place: there it would cover the round buttons of the top HUD)
 			iBaseX = iX
 			iBaseY = iY
 			iX = max(0, min(xRes - iWidth, iX + self.iMsgMoveX))
-			iY = max(0, min(yRes - 120, iY + self.iMsgMoveY))
+			iY = max(iBaseY, min(yRes - 120, iY + self.iMsgMoveY))
 			self.iMsgMoveX = iX - iBaseX
 			self.iMsgMoveY = iY - iBaseY
 			self.iMsgX = iX
@@ -11259,7 +11415,12 @@ class CvMainInterface:
 					aszMessages.append(game.getHudMessageText(i))
 					aiX.append(game.getHudMessageX(i))
 					aiY.append(game.getHudMessageY(i))
-			aatLines = [self.wrapMessage(szMessage, iCharsPerLine) for szMessage in aszMessages]
+			# (measured in the panel: a symbol is 3.1 characters wide, 22 of them in a row left room for two more)
+			self.fMsgIconWidth = 3.1
+			try:
+				aatLines = [self.wrapMessage(szMessage, iCharsPerLine) for szMessage in aszMessages]
+			finally:
+				self.fMsgIconWidth = 3.4
 			atTargets = self.getMessageTargets(aszMessages, aiX, aiY)
 			self.aszMessageTexts = aszMessages
 			self.atMessageTargets = atTargets
@@ -11350,9 +11511,12 @@ class CvMainInterface:
 			screen.deleteWidget("HudMsgPanel")
 			screen.deleteWidget("HudMsgPanelBack1")
 			screen.deleteWidget("HudMsgPanelBack2")
-			screen.addPanel("HudMsgPanelBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			screen.show("HudMsgPanelBack1")
-			screen.moveToFront("HudMsgPanelBack1")
+			bIdle = self.isMessagePanelIdle()
+			if not bIdle:
+				# (collapsed and not under the mouse: only the one layer of the panel itself, paler text, so that the panel is less in the way)
+				screen.addPanel("HudMsgPanelBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
+				screen.show("HudMsgPanelBack1")
+				screen.moveToFront("HudMsgPanelBack1")
 			if self.bMessagePanelExpanded:
 				screen.addPanel("HudMsgPanelBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 				screen.show("HudMsgPanelBack2")
@@ -11380,7 +11544,7 @@ class CvMainInterface:
 					eWidget = WidgetTypes.WIDGET_GENERAL
 					iData1 = self.BUTTON_MESSAGE_LINE
 					iData2 = i
-					screen.setText(szName, "Background", self.setFontSize(szLine, -1), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
+					screen.setText(szName, "Background", self.fadeMessageText(self.setFontSize(szLine, -1), bIdle), CvUtil.FONT_LEFT_JUSTIFY, iLineX, iTextY + int(fRow * iLine), -0.3, FontTypes.SMALL_FONT, eWidget, iData1, iData2)
 					self.dMessageLineIndex[szName] = i
 					screen.show(szName)
 					screen.moveToFront(szName)
@@ -11408,7 +11572,7 @@ class CvMainInterface:
 				screen.show("HudMsgFooterPrevious")
 				screen.moveToFront("HudMsgFooterPrevious")
 
-			screen.setText("HudMsgHeader", "Background", self.setFontSize(szHeader, -1), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
+			screen.setText("HudMsgHeader", "Background", self.fadeMessageText(self.setFontSize(szHeader, -1), bIdle), CvUtil.FONT_CENTER_JUSTIFY, iX + iWidth / 2, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_PANEL, -1)
 			screen.show("HudMsgHeader")
 			screen.moveToFront("HudMsgHeader")
 			# the option at the top right corner
@@ -11418,10 +11582,11 @@ class CvMainInterface:
 				szAuto = localText.getText("TXT_KEY_WTP_MESSAGE_PANEL_AUTO_OFF", ())
 			iAutoWidth = int(len(re.sub(u"<[^>]*>", u"", szAuto)) * iLine * 0.32) + iPad
 			self.tMsgAutoRect = (iX + iWidth - iPad - iAutoWidth, iY, iAutoWidth + iPad, iHeaderHeight + iPad)
-			screen.setText("HudMsgAuto", "Background", self.setFontSize(szAuto, -1), CvUtil.FONT_RIGHT_JUSTIFY, iX + iWidth - iPad, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_AUTO, -1)
+			screen.setText("HudMsgAuto", "Background", self.fadeMessageText(self.setFontSize(szAuto, -1), bIdle), CvUtil.FONT_RIGHT_JUSTIFY, iX + iWidth - iPad, iY + iPad / 2, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, self.BUTTON_MESSAGE_AUTO, -1)
 			screen.show("HudMsgAuto")
 			screen.moveToFront("HudMsgAuto")
 			self.drawMsgWpToggle(screen, iX, iY, iPad)
+			self.liftPioneerPlanWidgets(screen)
 		except:
 			# the panel must never break the main interface
 			self.tMessagePanelKey = None
@@ -11586,6 +11751,7 @@ class CvMainInterface:
 		screen.show("HudMsgAuto")
 		screen.moveToFront("HudMsgAuto")
 		self.drawMsgWpToggle(screen, iX, iY, iPad)
+		self.liftPioneerPlanWidgets(screen)
 
 	# a text with tags (<color=...>, <font=...>) cut to the width of iMax average letters (by the real width of its visible letters, narrow letters
 	# take less room; the tags have no width); a cut text ends with "..", the tags that are open are closed
@@ -11816,6 +11982,7 @@ class CvMainInterface:
 			return [szWord[:iStart], szWord[iStart:]]
 		return [szWord]
 
+	fMsgIconWidth = 3.4 # width of a symbol of the game font in characters (the message panel measures 3.1: its rows of goods symbols are as wide as the panel allows)
 	fImgWidth = 3.6 # width of a picture (<img=...>) in characters
 
 	# visible width of a line in characters (pictures and icons of the game font count more than a letter)
@@ -12380,6 +12547,7 @@ class CvMainInterface:
 		self.checkTradeReturnPending()
 		self.updateCityJump()
 		self.updateMessageMove()
+		self.updateMessageHover()
 		try:
 			self.updateMessageScroll()
 		except:
@@ -12523,8 +12691,74 @@ class CvMainInterface:
 				return localText.getText("TXT_KEY_TOTAL_LAW_ZERO_EFFECTS", ());
 			elif iData1 == TIMETEXT_ID:
 				return self.timeTextHelp()
+			elif iData1 == TURNTIME_ID:
+				return self.turnTimeHelp()
 
 		return u""
+
+	# WTP: the time the turn change took (the DLL measures it: CyGame.getWtpLastTurnMs, without animated fights) and its average since the start of this game. The sum is kept
+	# in the savegame (sdToolKit 'WTPTurnTime'), the DLL only knows the time since the start of the program.
+	def getTurnTimeStats( self ):
+		# (last ms, average ms, number of turn changes, game turn of the last); (-1, -1, 0, -1) if nothing was measured yet
+		global WTP_TURNTIME_SEEN, WTP_TURNTIME_CACHE
+		try:
+			game = CyGame()
+			iBlocks = game.getWtpTurnBlocks()
+			# (the interface asks very often: the saved values are read again after 2 seconds at the earliest, or when the DLL has a new measurement)
+			fNow = time.time()
+			if WTP_TURNTIME_CACHE is not None and iBlocks == WTP_TURNTIME_SEEN and fNow - WTP_TURNTIME_CACHE[0] < 2.0:
+				return WTP_TURNTIME_CACHE[1]
+			if iBlocks > 0 and iBlocks != WTP_TURNTIME_SEEN:
+				WTP_TURNTIME_SEEN = iBlocks
+				iMs = game.getWtpLastTurnMs()
+				iTurn = game.getWtpLastTurnNo()
+				if sdToolKit.sdEntityExists('WTPTurnTime', 0):
+					iSum = sdToolKit.sdGetVal('WTPTurnTime', 0, 'Sum')
+					iN = sdToolKit.sdGetVal('WTPTurnTime', 0, 'N')
+					if sdToolKit.sdGetVal('WTPTurnTime', 0, 'LastTurn') == iTurn:
+						# (the same turn played again after a load: it replaces the earlier time)
+						iSum -= sdToolKit.sdGetVal('WTPTurnTime', 0, 'Last')
+						iN -= 1
+				else:
+					iSum = 0
+					iN = 0
+				iSum += iMs
+				iN += 1
+				sdToolKit.sdEntityInit('WTPTurnTime', 0, {'Sum': iSum, 'N': iN, 'Last': iMs, 'LastTurn': iTurn})
+			if sdToolKit.sdEntityExists('WTPTurnTime', 0):
+				iN = sdToolKit.sdGetVal('WTPTurnTime', 0, 'N')
+				if iN > 0:
+					tResult = (sdToolKit.sdGetVal('WTPTurnTime', 0, 'Last'), sdToolKit.sdGetVal('WTPTurnTime', 0, 'Sum') / iN, iN, sdToolKit.sdGetVal('WTPTurnTime', 0, 'LastTurn'))
+					WTP_TURNTIME_CACHE = (fNow, tResult)
+					return tResult
+			WTP_TURNTIME_CACHE = (fNow, (-1, -1, 0, -1))
+		except:
+			pass
+		return (-1, -1, 0, -1)
+
+	def formatTurnTime( self, iMs ):
+		if iMs < 0:
+			return u"-"
+		return u"%d s" % ((iMs + 500) / 1000) # (always in whole seconds, rounded)
+
+	def drawTurnTimeText( self, screen, xResolution, bClockOn ):
+		# (between the date and the clock, right aligned with the clock, 1440p; without the clock at its place)
+		try:
+			tStats = self.getTurnTimeStats()
+			szText = localText.getText("TXT_KEY_WTP_TURNTIME_TEXT", (self.formatTurnTime(tStats[0]),))
+			iY = 42 # (without the clock: where the clock would be)
+			if bClockOn:
+				iY = 40 # (between the date at y 17 and the clock, which is at y 62 (42 before the ttm was there))
+			screen.setLabel("TurnTimeText", "Background", self.setFontSize(szText, 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TURNTIME_ID, -1 )
+			screen.show("TurnTimeText")
+		except:
+			pass
+
+	def turnTimeHelp( self ):
+		tStats = self.getTurnTimeStats()
+		if tStats[2] <= 0:
+			return localText.getText("TXT_KEY_WTP_TURNTIME_HELP_NONE", ())
+		return localText.getText("TXT_KEY_WTP_TURNTIME_HELP", (self.formatTurnTime(tStats[0]), self.formatTurnTime(tStats[1]), tStats[2], tStats[3]))
 
 	def timeTextHelp(self):
 		player = gc.getPlayer(gc.getGame().getActivePlayer())

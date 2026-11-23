@@ -7,6 +7,7 @@
 class CvGameTextMgr;
 class CyCity;
 class CyUnit;
+class CyPlot;
 class CyDeal;
 struct TradeData;
 class CyGameTextMgr
@@ -24,6 +25,8 @@ public:
 	std::wstring getNetStats(int /*PlayerTypes*/ iPlayer);
 	std::wstring getUnitHelp(int iUnit, bool bCivilopediaText, bool bStrategyText, CyCity* pCity);
 	std::wstring getSpecificUnitHelp(CyUnit* pUnit, bool bOneLine, bool bShort);
+	std::wstring getPlotHelpAlone(CyPlot* pPlot, CyUnit* pUnit); // WTP: the same as if only this unit stood on the plot (tooltip after loading a ship)
+	std::wstring getPlotHelp(CyPlot* pPlot); // WTP: the help text of a plot (as the tooltip of the game shows it), for the tooltip windows of python
 	std::wstring getBuildingHelp(int iBuilding, bool bCivilopediaText, bool bStrategyText, CyCity* pCity);
 	std::wstring getPromotionHelp(int iPromotion, bool bCivilopediaText);
 	std::wstring getProfessionHelp(int iProfession, bool bCivilopediaText);

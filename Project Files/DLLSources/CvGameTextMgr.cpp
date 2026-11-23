@@ -738,6 +738,23 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 			if (pUnit->getTeam() == GC.getGameINLINE().getActiveTeam())
 			{
 				szTempBuffer = NEWLINE + gDLL->getText("TXT_KEY_UNIT_HELP_CARGO_SPACE", pUnit->getCargo(), pUnit->cargoSpace());
+				// WTP: the filling of all slots in percent (goods count with their amount against the capacity of a slot, units with a whole slot)
+				if (pUnit->getCargo() > 0 && pUnit->plot() != NULL)
+				{
+					const int iSlotCapacity = std::max(1, GC.getGameINLINE().getCargoYieldCapacity());
+					int iFilled = 0;
+					CvPlot* pCargoPlot = pUnit->plot();
+					for (CLLNode<IDInfo>* pFillNode = pCargoPlot->headUnitNode(); pFillNode != NULL; pFillNode = pCargoPlot->nextUnitNode(pFillNode))
+					{
+						const CvUnit* pFillUnit = ::getUnit(pFillNode->m_data);
+						if (pFillUnit != NULL && pFillUnit->getTransportUnit() == pUnit)
+						{
+							iFilled += (pFillUnit->getYield() != NO_YIELD) ? std::min(iSlotCapacity, pFillUnit->getYieldStored()) : iSlotCapacity;
+						}
+					}
+					szTempBuffer.append(L" ");
+					szTempBuffer.append(gDLL->getText("TXT_KEY_WTP_CARGO_FILL", iFilled * 100 / (iSlotCapacity * std::max(1, (int)pUnit->cargoSpace()))));
+				}
 			}
 			else
 			{
@@ -775,7 +792,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED", iDelSlots, CvWString::format(L"%d.%d", iDelSlots10 / 10, iDelSlots10 % 10).GetCString()).GetCString()));
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED_VALUE", iDelValue, iDelValue / iTurns).GetCString()));
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_IDLE", iIdle, iIdle * 100 / iTurns).GetCString()));
-				// the good that was on board most (slots summed over the turns)
+				// the good that was on board most in all turns (slots summed over the turns, saved with the unit)
 				YieldTypes eTopYield = NO_YIELD;
 				int iTopTurns = 0;
 				int iAllYieldTurns = 0;
@@ -793,58 +810,199 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				{
 					szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD", CvWString::format(L"%c %s", GC.getYieldInfo(eTopYield).getChar(), GC.getYieldInfo(eTopYield).getDescription()).GetCString(), iTopTurns * 100 / iAllYieldTurns).GetCString()));
 				}
+				// the good that was carried most in the logged turns (the amounts of the last turns in service; the row above counts all turns)
+				{
+					const std::vector<int>& aiYieldLog = pUnit->getTransportLog();
+					std::vector<int> aiYieldAmounts(NUM_YIELD_TYPES, 0);
+					int iAllAmounts = 0;
+					const int iYieldRecords = std::min((int)aiYieldLog.size() / CvUnit::TS_LOG_RECORD, (int)CvUnit::TS_LOG_ENTRIES);
+					for (int iRec = (int)aiYieldLog.size() / CvUnit::TS_LOG_RECORD - iYieldRecords; iRec < (int)aiYieldLog.size() / CvUnit::TS_LOG_RECORD; ++iRec)
+					{
+						const int* piRec = &aiYieldLog[iRec * CvUnit::TS_LOG_RECORD];
+						for (int iPair = 0; iPair < piRec[3]; ++iPair)
+						{
+							const int* piPair = &piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair];
+							// (a good unloaded in that turn is not counted: it was on board in the turns before)
+							if (piPair[0] >= 0 && piPair[0] < NUM_YIELD_TYPES && piPair[1] > 0 && piPair[5] != CvUnit::TS_LOG_UNLOADED)
+							{
+								aiYieldAmounts[piPair[0]] += piPair[1];
+								iAllAmounts += piPair[1];
+							}
+						}
+					}
+					YieldTypes eLogYield = NO_YIELD;
+					int iLogAmount = 0;
+					for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+					{
+						if (aiYieldAmounts[eYield] > iLogAmount)
+						{
+							iLogAmount = aiYieldAmounts[eYield];
+							eLogYield = eYield;
+						}
+					}
+					if (eLogYield != NO_YIELD && iAllAmounts > 0)
+					{
+						szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD_LOG", CvWString::format(L"%c %s", GC.getYieldInfo(eLogYield).getChar(), GC.getYieldInfo(eLogYield).getDescription()).GetCString(), iLogAmount * 100 / iAllAmounts, iYieldRecords).GetCString()));
+					}
+				}
+				// the destination that the goods of the logged turns went to most often (the turns of the log: every turn counts once for a place)
+				{
+					const std::vector<int>& aiDestLog = pUnit->getTransportLog();
+					std::map<int, int> aiDestTurns;
+					const int iDestRecords = std::min((int)aiDestLog.size() / CvUnit::TS_LOG_RECORD, (int)CvUnit::TS_LOG_ENTRIES);
+					for (int iRec = (int)aiDestLog.size() / CvUnit::TS_LOG_RECORD - iDestRecords; iRec < (int)aiDestLog.size() / CvUnit::TS_LOG_RECORD; ++iRec)
+					{
+						const int* piRec = &aiDestLog[iRec * CvUnit::TS_LOG_RECORD];
+						std::set<int> aiPlaces;
+						for (int iPair = 0; iPair < piRec[3]; ++iPair)
+						{
+							const int iPlace = piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair + 4];
+							// (the place of an unloaded good is no destination, see CvUnit::m_aiTransportLog)
+							if (iPlace != 0 && piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair + 5] != CvUnit::TS_LOG_UNLOADED)
+							{
+								aiPlaces.insert(iPlace);
+							}
+						}
+						for (std::set<int>::const_iterator it = aiPlaces.begin(); it != aiPlaces.end(); ++it)
+						{
+							++aiDestTurns[*it];
+						}
+					}
+					int iTopPlace = 0;
+					int iTopTurns = 0;
+					for (std::map<int, int>::const_iterator it = aiDestTurns.begin(); it != aiDestTurns.end(); ++it)
+					{
+						if (it->second > iTopTurns)
+						{
+							iTopTurns = it->second;
+							iTopPlace = it->first;
+						}
+					}
+					if (iTopPlace != 0)
+					{
+						szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_DEST", wtpTransportPlaceName(iTopPlace).GetCString(), iTopTurns, iDestRecords).GetCString()));
+					}
+				}
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_NOTE").GetCString()));
-				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 48[goods] [export] place of loading, T469, [map] destination, 6[moves]"
-				// (cyan header with the turn and the place of the ship, green amounts; the symbols are glyphs of the game font; the place of every
-				// number: see CvUnit::m_aiTransportLog)
+				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 100[goods] [import] place of the unloading; [export] place of loading, T469;; 48[goods] [export] place of loading, T470; [map] destination, 6[moves] ..." (the separator between the goods is yellow, ;; and between the unloaded and the loaded goods ||; the goods unloaded in that turn come first)
+				// (T471 is the turn that the line describes - the turn in which the goods were loaded and unloaded: the record is written at the turn change and holds the next turn, so it is shown minus one; the place of the ship and the goods on board are as at the end of that turn)
+				// (cyan header with the turn and the brackets, the place of the ship inside of them and the turn of the loading (T469) in a paler yellow (240,225,130), the separators ;; in the plain yellow, green amounts; the symbols are glyphs of the game font; the place of every
+				// number: see CvUnit::m_aiTransportLog; goods with the same details are one entry: "124[goods] 42[goods] details")
 				const std::vector<int>& aiLog = pUnit->getTransportLog();
-				for (int iRec = (int)aiLog.size() / CvUnit::TS_LOG_RECORD - 1; iRec >= 0; --iRec)
+				// the symbol of the distance in plots (number 15 of the symbols of the game font)
+				const int iTilesChar = GC.getSymbolID((FontSymbols)15);
+				for (int iRec = (int)aiLog.size() / CvUnit::TS_LOG_RECORD - 1; iRec >= 0 && iRec >= (int)aiLog.size() / CvUnit::TS_LOG_RECORD - CvUnit::TS_LOG_ENTRIES; --iRec)
 				{
 					const int* piRec = &aiLog[iRec * CvUnit::TS_LOG_RECORD];
 					CvWString szGoods;
+					// (goods with the same details, i.e. the same place of loading or unloading and the same destination, are one entry: "124[tobacco] 42[grapes] details")
+					std::vector<bool> aGroupUnloaded;
+					std::vector<CvWString> aGroupGoods;
+					std::vector<CvWString> aGroupDetails;
 					for (int iPair = 0; iPair < piRec[3]; ++iPair)
 					{
 						const int* piPair = &piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair];
-						if (iPair > 0)
-						{
-							szGoods.append(L"; ");
-						}
-						szGoods.append(CvWString::format(SETCOLR L"%d" ENDCOLR L"%c", TEXT_COLOR("COLOR_POSITIVE_TEXT"), piPair[1], GC.getYieldInfo((YieldTypes)piPair[0]).getChar()));
+						const CvWString szGood = CvWString::format(SETCOLR L"%d" ENDCOLR L"%c", TEXT_COLOR("COLOR_POSITIVE_TEXT"), piPair[1], GC.getYieldInfo((YieldTypes)piPair[0]).getChar());
 						CvWString szDetails;
+						// (where and when the good was loaded: the turn is in the paler yellow and ends the entry of the good, the yellow ;; follows)
+						CvWString szLoaded;
 						if (piPair[3] != 0 && piPair[2] > 0)
 						{
-							szDetails = CvWString::format(L"%c %s, %s%d", GC.getSymbolID(EXPORT_CHAR), wtpTransportPlaceName(piPair[3]).GetCString(), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piPair[2]);
+							szLoaded = CvWString::format(L"%c %s, " SETCOLR L"%s%d" ENDCOLR, GC.getSymbolID(EXPORT_CHAR), wtpTransportPlaceName(piPair[3]).GetCString(), 240, 225, 130, 255, gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piPair[2]);
 						}
-						if (piPair[4] != 0)
+						if (piPair[5] == CvUnit::TS_LOG_UNLOADED)
+						{
+							// a good that was unloaded in that turn: "[unload symbol] place of the unloading; [load symbol] place of the loading, T.."
+							szDetails = CvWString::format(L"%c %s", GC.getSymbolID(IMPORT_CHAR), wtpTransportPlaceName(piPair[4]).GetCString());
+							if (szLoaded.length() > 0)
+							{
+								szDetails.append(L"; ");
+								szDetails.append(szLoaded);
+							}
+						}
+						else
+						{
+							// a good on board: "[load symbol] place of the loading, T..; [map symbol] destination, plots, turns"
+							szDetails = szLoaded;
+						}
+						if (piPair[5] != CvUnit::TS_LOG_UNLOADED && piPair[4] != 0)
 						{
 							if (szDetails.length() > 0)
 							{
-								szDetails.append(L", ");
+								szDetails.append(L"; ");
 							}
-							if (piPair[5] >= 0)
+							if (piPair[5] >= 0 && piPair[6] >= 0)
 							{
-								szDetails.append(CvWString::format(L"%c %s, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[5], GC.getSymbolID(MOVES_CHAR)));
+								// (the distance in plots, then the turns that it took at that time to go: the moves symbol belongs to the turns)
+								szDetails.append(CvWString::format(L"%c %s, %d%c, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[5], iTilesChar, piPair[6], GC.getSymbolID(MOVES_CHAR)));
+							}
+							else if (piPair[6] >= 0)
+							{
+								// (to Europe, Africa or Port Royal: only the turns)
+								szDetails.append(CvWString::format(L"%c %s, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[6], GC.getSymbolID(MOVES_CHAR)));
+							}
+							else if (piPair[5] >= 0)
+							{
+								// (old log entries: no turns known)
+								szDetails.append(CvWString::format(L"%c %s, %d%c", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString(), piPair[5], iTilesChar));
 							}
 							else
 							{
 								szDetails.append(CvWString::format(L"%c %s", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString()));
 							}
 						}
-						if (szDetails.length() > 0)
+						const bool bUnloadedPair = piPair[5] == CvUnit::TS_LOG_UNLOADED;
+						bool bGrouped = false;
+						for (uint iGroup = 0; iGroup < aGroupGoods.size(); ++iGroup)
 						{
-							szGoods.append(CvWString::format(L" %s", szDetails.GetCString()));
+							if (aGroupUnloaded[iGroup] == bUnloadedPair && aGroupDetails[iGroup] == szDetails)
+							{
+								aGroupGoods[iGroup].append(L" ");
+								aGroupGoods[iGroup].append(szGood);
+								bGrouped = true;
+								break;
+							}
+						}
+						if (!bGrouped)
+						{
+							aGroupUnloaded.push_back(bUnloadedPair);
+							aGroupGoods.push_back(szGood);
+							aGroupDetails.push_back(szDetails);
+						}
+					}
+					for (uint iGroup = 0; iGroup < aGroupGoods.size(); ++iGroup)
+					{
+						if (iGroup > 0)
+						{
+							// (two pipes where the unloadings end and the loadings begin, otherwise ;;)
+							const bool bUnloadsEnd = !aGroupUnloaded[iGroup] && aGroupUnloaded[iGroup - 1];
+							szGoods.append(CvWString::format(SETCOLR L"%s" ENDCOLR L" ", TEXT_COLOR("COLOR_YELLOW"), bUnloadsEnd ? L"||" : L";;"));
+						}
+						szGoods.append(aGroupGoods[iGroup]);
+						if (aGroupDetails[iGroup].length() > 0)
+						{
+							szGoods.append(CvWString::format(L" %s", aGroupDetails[iGroup].GetCString()));
 						}
 					}
 					if (piRec[3] == 0)
 					{
 						szGoods = gDLL->getText("TXT_KEY_WTP_TS_LOG_EMPTY");
 					}
+					// the place without brackets (a place off the colonies is already "(x/y)"): the brackets are cyan, the place yellow
 					CvWString szLogPlace = wtpTransportPlaceName(piRec[1]);
-					if (szLogPlace.length() > 0 && szLogPlace[0] != L'(')
+					if (szLogPlace.length() > 2 && szLogPlace[0] == L'(' && szLogPlace[szLogPlace.length() - 1] == L')')
 					{
-						szLogPlace = L"(" + szLogPlace + L")";
+						szLogPlace = szLogPlace.substr(1, szLogPlace.length() - 2);
 					}
-					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0], szLogPlace.GetCString(), szGoods.GetCString()));
+					CvWString szLogPlaceOpen = (szLogPlace.length() > 0) ? L"(" : L"";
+					CvWString szLogPlaceClose = (szLogPlace.length() > 0) ? L")" : L"";
+					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s" ENDCOLR SETCOLR L"%s" ENDCOLR SETCOLR L"%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0] - 1, szLogPlaceOpen.GetCString(), 240, 225, 130, 255, szLogPlace.GetCString(), TEXT_COLOR("COLOR_CYAN"), szLogPlaceClose.GetCString(), szGoods.GetCString()));
+				}
+				// the last line of the log window: "Legend" (marked with \x00AA), its child window is the explanation of the symbols (the line marked with \x00BA)
+				if (!aiLog.empty())
+				{
+					szString.append(CvWString::format(L"\n\x00AA%s", gDLL->getText("TXT_KEY_WTP_TS_LEGEND_TITLE").GetCString()));
+					szString.append(CvWString::format(L"\n\x00BA%s", gDLL->getText("TXT_KEY_WTP_TS_LOG_LEGEND", CvWString::format(L"%c", GC.getSymbolID(EXPORT_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MAP_CHAR)).GetCString(), CvWString::format(L"%c", iTilesChar).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MOVES_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(IMPORT_CHAR)).GetCString()).GetCString()));
 				}
 			}
 			szString.append(szTempBuffer);
@@ -1860,6 +2018,26 @@ void CvGameTextMgr::setProfessionHelp(CvWStringBuffer &szBuffer, ProfessionTypes
 	}
 }
 
+// WTP: set while setPlotHelpAlone builds the list of the units: setPlotListHelp then lists only this unit and its cargo
+static const CvUnit* g_pWtpAloneUnit = NULL;
+
+// WTP: the help text of a plot as the game shows it when only this unit stood on the plot (the tooltip window that opens after loading a ship
+// with Shift + click on Load goods): the full help of the unit (statistics included) and the lines of the plot
+void CvGameTextMgr::setPlotHelpAlone(CvWStringBuffer& szString, CvPlot* pPlot, const CvUnit* pUnit)
+{
+	// (the game puts the list of the units and the help of the plot together: the units come from setPlotListHelp, the lines of the plot from setPlotHelp)
+	g_pWtpAloneUnit = pUnit;
+	setPlotListHelp(szString, pPlot, false, false);
+	g_pWtpAloneUnit = NULL;
+	CvWStringBuffer szPlotLines;
+	setPlotHelp(szPlotLines, pPlot);
+	if (!szPlotLines.isEmpty())
+	{
+		szString.append(NEWLINE);
+		szString.append(szPlotLines.getCString());
+	}
+}
+
 void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPlot, bool bOneLine, bool bShort)
 {
 	CxDesyncMonitor StartAsyncExecution;
@@ -2154,6 +2332,24 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 
 	GC.getGame().getPlotUnits(pPlot, plotUnits);
 
+	// WTP: the tooltip window after loading a ship (see wtpGetPlotHelpAlone): the plot is shown as if only this unit (with its cargo) stood on it
+	CvUnit* pCenterUnit = pPlot->getCenterUnit();
+	if (g_pWtpAloneUnit != NULL)
+	{
+		// (the unit and its cargo: the goods on board are listed below the ship as they are in the tooltip of the plot)
+		std::vector<CvUnit*> apAloneUnits;
+		apAloneUnits.push_back(const_cast<CvUnit*>(g_pWtpAloneUnit));
+		for (uint iU = 0; iU < plotUnits.size(); ++iU)
+		{
+			if (plotUnits[iU] != g_pWtpAloneUnit && plotUnits[iU]->getTransportUnit() == g_pWtpAloneUnit)
+			{
+				apAloneUnits.push_back(plotUnits[iU]);
+			}
+		}
+		plotUnits = apAloneUnits;
+		pCenterUnit = const_cast<CvUnit*>(g_pWtpAloneUnit);
+	}
+
 	int iNumVisibleUnits = 0;
 	if (pPlot->isVisible(GC.getGameINLINE().getActiveTeam(), GC.getGameINLINE().isDebugMode()))
 	{
@@ -2166,6 +2362,10 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 			{
 				++iNumVisibleUnits;
 			}
+		}
+		if (g_pWtpAloneUnit != NULL && iNumVisibleUnits > 0)
+		{
+			iNumVisibleUnits = (int)plotUnits.size();
 		}
 	}
 
@@ -2202,7 +2402,7 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 	{
 		pLoopUnit = plotUnits[iI];
 
-		if (pLoopUnit != NULL && pLoopUnit != pPlot->getCenterUnit())
+		if (pLoopUnit != NULL && pLoopUnit != pCenterUnit)
 		{
 			apUnits.push_back(pLoopUnit);
 
@@ -2247,17 +2447,17 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 			}
 		}
 
-		if (pPlot->getCenterUnit())
+		if (pCenterUnit)
 		{
-			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
+			if (pCenterUnit->getYield() != NO_YIELD)
 			{
-				m_iYieldTotalForHelp = aiYieldTotal[pPlot->getCenterUnit()->getYield()];
+				m_iYieldTotalForHelp = aiYieldTotal[pCenterUnit->getYield()];
 			}
-			setUnitHelp(szString, pPlot->getCenterUnit(), iNumVisibleUnits > iMaxNumUnits, true);
+			setUnitHelp(szString, pCenterUnit, iNumVisibleUnits > iMaxNumUnits, true);
 			m_iYieldTotalForHelp = 0;
-			if (pPlot->getCenterUnit()->getYield() != NO_YIELD)
+			if (pCenterUnit->getYield() != NO_YIELD)
 			{
-				abYieldPricesShown[pPlot->getCenterUnit()->getYield()] = true;
+				abYieldPricesShown[pCenterUnit->getYield()] = true;
 			}
 		}
 
@@ -2265,7 +2465,7 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, const CvPlot* pPl
 		for (uint iI = 0; iI < iNumShown && iI < (int) plotUnits.size(); ++iI)
 		{
 			CvUnit* pLoopUnit = plotUnits[iI];
-			if (pLoopUnit != pPlot->getCenterUnit())
+			if (pLoopUnit != pCenterUnit)
 			{
 				szString.append(NEWLINE);
 				YieldTypes eLoopYield = pLoopUnit->getYield();
@@ -10414,7 +10614,7 @@ void CvGameTextMgr::setCitizenHelp(CvWStringBuffer &szString, const CvCity& kCit
 						szString.append(NEWLINE);
 						szString.append(gDLL->getText("TXT_KEY_MISC_HELP_STUDENT", iTurns));
 					}
-					// WTP: the professions that can be learned, alphabetical
+					// WTP: the professions that can be learned, alphabetical (the Veteran Infantry first)
 					std::vector<WtpEducationEntry> aEducationEntries;
 					for (int iUnit = 0; iUnit < GC.getNumUnitInfos(); ++iUnit)
 					{

@@ -185,6 +185,7 @@ std::string GetDLLPath(bool bLoadDLLPath = true);
 #include "CvSelectionGroupAI.h"
 #include "CvUnitAI.h"
 #include "WtpTiming.h" // WTP: turn timing and runtime settings
+#include "WtpTurnClock.h" // WTP: the time of the last turn change for the interface
 
 // ScaledNum port from AdvCiv
 #include "IntegerConversion.h" // advc

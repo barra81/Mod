@@ -276,7 +276,7 @@ public:
 	// R&R, Robert Surcouf, No More Variables Hidden game option START
 	int getMissionaryPoints(int /*PlayerTypes*/ ePlayer) const;
 	int getNativeWaypoint(int iPlotIndex) const; // WTP
-	void setNativeWaypoint(int iPlotIndex, int iCityId); // WTP
+	void setNativeWaypoint(int iPlotIndex, int iTarget); // WTP
 	int missionaryThreshold(int /*PlayerTypes*/  ePlayer) const;
 	int getMissionaryRateModifier() const;
 	// R&R, Robert Surcouf, No More Variables Hidden game option END

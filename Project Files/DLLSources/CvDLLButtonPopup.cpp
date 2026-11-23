@@ -3,6 +3,8 @@
 #include "CvGameCoreDLL.h"
 #include "CvDLLButtonPopup.h"
 #include <algorithm>
+#include <ctime>
+#include <set>
 #include <utility>
 #include "CvGlobals.h"
 #include "CvPlayerAI.h"
@@ -469,6 +471,10 @@ void CvDLLButtonPopup::OnEscape(CvPopup& popup, CvPopupInfo &info)
 		return;
 	}
 
+	if (info.getButtonPopupType() == BUTTONPOPUP_CHOOSE_PROFESSION)
+	{
+		WtpProfessionBatch::end();
+	}
 	switch (info.getButtonPopupType())
 	{
 	case BUTTONPOPUP_CHOOSE_PROFESSION:
@@ -503,6 +509,51 @@ void CvDLLButtonPopup::OnEscape(CvPopup& popup, CvPopupInfo &info)
 	}
 }
 
+
+// WTP: the students that got their specialty with the shift key (city id, unit id): the task is only sent (the game executes it a moment later), the popups of these
+// students are queued already and must not appear (CvDLLButtonPopup::launchEducationPopup takes a student out of the list when its popup comes)
+static std::set<std::pair<int, int> > s_aEducatedByShift;
+
+// WTP: the other students of the colony of the popup that have finished their education and wait for a specialty (the popup of the specialty has not been
+// answered yet) get the specialty that was chosen with the shift key, as long as the gold of the player is enough (every price is taken from the gold that
+// is left); the popups of these students that are still waiting are closed without a question (CvDLLButtonPopup::launchEducationPopup: the student is gone then)
+static void wtpEducateWaitingStudents(int iChosenCityId, int iChosenUnitId, UnitTypes eUnit)
+{
+	CvPlayer& kPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
+	CvCity* pChosenCity = kPlayer.getCity(iChosenCityId);
+	if (pChosenCity == NULL)
+	{
+		return;
+	}
+	// (the first student pays its price already)
+	const int iPrice = pChosenCity->getSpecialistTuition(eUnit);
+	if (iPrice < 0)
+	{
+		return;
+	}
+	int iGold = kPlayer.getGold() - iPrice;
+	const int iThreshold = pChosenCity->educationThreshold();
+	// (the ids first: the units of the colony change when a student is educated)
+	std::vector<int> aiStudents;
+	for (int i = 0; i < pChosenCity->getPopulation(); ++i)
+	{
+		CvUnit* pStudent = pChosenCity->getPopulationUnitByIndex(i);
+		if (pStudent != NULL && pStudent->getYieldStored() >= iThreshold && pStudent->getID() != iChosenUnitId)
+		{
+			aiStudents.push_back(pStudent->getID());
+		}
+	}
+	for (size_t i = 0; i < aiStudents.size(); ++i)
+	{
+		if (iPrice > iGold)
+		{
+			return;
+		}
+		iGold -= iPrice;
+		s_aEducatedByShift.insert(std::make_pair(pChosenCity->getID(), aiStudents[i]));
+		gDLL->sendDoTask(pChosenCity->getID(), TASK_EDUCATE, aiStudents[i], eUnit, false, false, false, false);
+	}
+}
 
 void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, CvPopupInfo &info)
 {
@@ -719,6 +770,18 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 			}
 			break;
 		}
+		if (info.getData2() == WTP_UNIT_WAYPOINT_POPUP)
+		{
+			// WTP: a unit that was created in a colony with a waypoint: 0 = it goes there
+			CvPlayer& kUnitWpPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
+			CvUnit* pWpUnit = kUnitWpPlayer.getUnit(info.getData1());
+			const CvPlot* pWpTarget = kUnitWpPlayer.getNativeWaypointPlot(info.getData3());
+			if (pPopupReturn->getButtonClicked() == 0 && pWpUnit != NULL && pWpTarget != NULL)
+			{
+				gDLL->sendPushMission(pWpUnit->getID(), MISSION_MOVE_TO, pWpTarget->getX_INLINE(), pWpTarget->getY_INLINE(), 0, false);
+			}
+			break;
+		}
 		if (info.getData2() == WTP_NATIVE_WAYPOINT_POPUP)
 		{
 			// WTP: waypoint of a native settlement: button = id of the city, WTP_NATIVE_WAYPOINT_REMOVE = remove, -1 = cancel
@@ -728,11 +791,20 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 			{
 				kWpPlayer.setNativeWaypoint(info.getData1(), -1);
 			}
+			else if (iButton >= 100000)
+			{
+				// a waypoint of the player on the map: 100000 + x * 1000 + y
+				const CvPlot* pWpPlot = GC.getMap().plotINLINE((iButton - 100000) / 1000, (iButton - 100000) % 1000);
+				if (pWpPlot != NULL)
+				{
+					kWpPlayer.setNativeWaypoint(info.getData1(), CvPlayer::WAYPOINT_PLOT_BASE + GC.getMap().plotNumINLINE(pWpPlot->getX_INLINE(), pWpPlot->getY_INLINE()));
+				}
+			}
 			else if (iButton >= 0 && kWpPlayer.getCity(iButton) != NULL)
 			{
 				kWpPlayer.setNativeWaypoint(info.getData1(), iButton);
 			}
-			// back to the advisor (native tab)
+			// back to the advisor (the tab it came from: natives or general)
 			CvPopupInfo* pAdvisor = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
 			pAdvisor->setText(L"showDomesticAdvisor");
 			gDLL->getInterfaceIFace()->addPopup(pAdvisor, GC.getGameINLINE().getActivePlayer(), true);
@@ -821,6 +893,12 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 		else if (pPopupReturn->getButtonClicked() >= 0)
 		{
 			gDLL->sendDoTask(info.getData1(), TASK_EDUCATE, info.getData2(), pPopupReturn->getButtonClicked(), false, false, false, false);
+			// WTP: with the shift key all the other students of this colony that are waiting for their specialty get the same specialty
+			// (a popup of the game does not pass the shift key on to gDLL->shiftKey(): the state of the key is asked from Windows)
+			if (gDLL->shiftKey() || (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0)
+			{
+				wtpEducateWaitingStudents(info.getData1(), info.getData2(), (UnitTypes)pPopupReturn->getButtonClicked());
+			}
 		}
 		break;
 
@@ -1086,6 +1164,10 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 		break;
 
 	case BUTTONPOPUP_CHOOSE_PROFESSION:
+		if (pPopupReturn->getButtonClicked() == -1 || pPopupReturn->getButtonClicked() == -2 || pPopupReturn->getButtonClicked() >= GC.getNumProfessionInfos())
+		{
+			WtpProfessionBatch::end(); // (no profession was chosen: the group of selected units is over)
+		}
 		if (pPopupReturn->getButtonClicked() == -1)
 		{
 			gDLL->sendDoTask(info.getData1(), TASK_SET_CITIZEN_AUTOMATED, info.getData2(), pPopupReturn->getButtonClicked(), false, false, false, false);
@@ -1101,6 +1183,11 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 			if (GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getUnit(info.getData2()) != NULL)
 			{
 				gDLL->sendDoCommand(info.getData2(), COMMAND_PROFESSION, pPopupReturn->getButtonClicked(), -1, false);
+				// WTP: several selected units: the others get the same profession as far as the colony has free places for it
+				// (with the shift key and only one selected unit: all units of the plot of the same kind, see WtpProfessionBatch::apply; a popup of the game does not pass
+				// the shift key on to gDLL->shiftKey())
+				WtpProfessionBatch::apply(info.getData1(), info.getData2(), (ProfessionTypes)pPopupReturn->getButtonClicked(), info.getData3(),
+					gDLL->shiftKey() || (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0);
 			}
 			else if (GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getEuropeUnitById(info.getData2()) != NULL)
 			{
@@ -1629,6 +1716,16 @@ void CvDLLButtonPopup::OnFocus(CvPopup* pPopup, CvPopupInfo &info)
 			}
 			break;
 		}
+		if (info.getData2() == WTP_UNIT_WAYPOINT_POPUP)
+		{
+			// WTP: the view jumps to the colony where the unit was born
+			const CvPlot* pBornPlot = GC.getMap().plotByIndexINLINE(info.getData3());
+			if (pBornPlot != NULL && pBornPlot->isCity())
+			{
+				gDLL->getInterfaceIFace()->lookAtCityOffset(pBornPlot->getPlotCity()->getID());
+			}
+			break;
+		}
 		if (info.getData2() == WTP_NATIVE_WAYPOINT_POPUP)
 		{
 			break; // WTP: the waypoint popup is wanted while the city is producing
@@ -1814,6 +1911,10 @@ bool CvDLLButtonPopup::launchButtonPopup(CvPopup* pPopup, CvPopupInfo &info)
 		break;
 	case BUTTONPOPUP_CHOOSE_PROFESSION:
 		bLaunched = launchChooseProfessionPopup(pPopup, info);
+		if (!bLaunched)
+		{
+			WtpProfessionBatch::end();
+		}
 		break;
 	case BUTTONPOPUP_PURCHASE_EUROPE_UNIT:
 		bLaunched = launchPurchaseEuropeUnitPopup(pPopup, info);
@@ -1979,12 +2080,17 @@ static bool launchNativeWaypointPopup(CvPopup* pPopup, CvPopupInfo& info)
 		return false;
 	}
 	CvCity* pNative = pPlot->getPlotCity();
-	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, gDLL->getText("TXT_KEY_WTP_WAYPOINT_HEADER", pNative->getNameKey()), DLL_FONT_LEFT_JUSTIFY);
+	// (a native settlement with a mission / trading post of the player, or one of his own colonies)
+	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, gDLL->getText(pNative->getOwnerINLINE() == kPlayer.getID() ? "TXT_KEY_WTP_WAYPOINT_HEADER_CITY" : "TXT_KEY_WTP_WAYPOINT_HEADER", pNative->getNameKey()), DLL_FONT_LEFT_JUSTIFY);
 
 	int iLoop;
 	const int iCurrent = kPlayer.getNativeWaypoint(info.getData1());
 	for (CvCity* pCity = kPlayer.firstCity(&iLoop); pCity != NULL; pCity = kPlayer.nextCity(&iLoop))
 	{
+		if (pCity == pNative)
+		{
+			continue; // (no waypoint to the colony itself)
+		}
 		CvWString szText = pCity->getName();
 		if (pCity->getID() == iCurrent)
 		{
@@ -1992,11 +2098,63 @@ static bool launchNativeWaypointPopup(CvPopup* pPopup, CvPopupInfo& info)
 		}
 		gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, szText.c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), pCity->getID(), WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
 	}
+	// the own waypoints on the map (from the Python tooltips, the same list as in the window "Select destination"; those at own colonies are left out, the colonies are listed above)
+	{
+		CvWString szWaypoints;
+		CyArgsList argsListWp;
+		argsListWp.add(-1); // (no unit: the waypoints of the land units)
+		if (gDLL->getPythonIFace()->callFunction(PYScreensModule, "getGotoWaypoints", argsListWp.makeFunctionArgs(), &szWaypoints) && !szWaypoints.empty())
+		{
+			size_t iPos = 0;
+			while (iPos < szWaypoints.length())
+			{
+				size_t iEnd = szWaypoints.find(L'\n', iPos);
+				if (iEnd == CvWString::npos)
+				{
+					iEnd = szWaypoints.length();
+				}
+				const CvWString szLine = szWaypoints.substr(iPos, iEnd - iPos);
+				iPos = iEnd + 1;
+				const size_t iTab1 = szLine.find(L'\t');
+				const size_t iTab2 = (iTab1 == CvWString::npos) ? CvWString::npos : szLine.find(L'\t', iTab1 + 1);
+				if (iTab2 == CvWString::npos)
+				{
+					continue;
+				}
+				const int iWpX = _wtoi(szLine.substr(0, iTab1).c_str());
+				const int iWpY = _wtoi(szLine.substr(iTab1 + 1, iTab2 - iTab1 - 1).c_str());
+				CvWString szText = szLine.substr(iTab2 + 1);
+				if (iCurrent == CvPlayer::WAYPOINT_PLOT_BASE + GC.getMap().plotNumINLINE(iWpX, iWpY))
+				{
+					szText += L" *";
+				}
+				// the button number: 100000 + x * 1000 + y (the colonies have their id)
+				gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, szText.c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), 100000 + iWpX * 1000 + iWpY, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+			}
+		}
+	}
 	if (iCurrent >= 0)
 	{
 		gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_WTP_WAYPOINT_REMOVE").c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL")->getPath(), WTP_NATIVE_WAYPOINT_REMOVE, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
 	}
 	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_NEVER_MIND"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL")->getPath(), -1, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+	gDLL->getInterfaceIFace()->popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
+	return true;
+}
+
+// WTP: a unit that was created in a colony with a waypoint (the colonist that was born there): does it go there?
+static bool launchUnitWaypointPopup(CvPopup* pPopup, CvPopupInfo& info)
+{
+	CvPlayer& kPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
+	CvUnit* pUnit = kPlayer.getUnit(info.getData1());
+	CvPlot* pSource = GC.getMap().plotByIndexINLINE(info.getData3());
+	if (pUnit == NULL || pSource == NULL || !pSource->isCity() || pUnit->plot() != pSource || kPlayer.getNativeWaypointPlot(info.getData3()) == NULL)
+	{
+		return false; // (it moved or the waypoint is gone)
+	}
+	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, gDLL->getText("TXT_KEY_WTP_WAYPOINT_CONFIRM", pUnit->getNameKey(), pSource->getPlotCity()->getNameKey(), kPlayer.getNativeWaypointTargetName(info.getData3()).GetCString()), DLL_FONT_LEFT_JUSTIFY);
+	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_YES"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), 0, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_NO"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL")->getPath(), -1, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
 	gDLL->getInterfaceIFace()->popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
 	return true;
 }
@@ -2012,6 +2170,10 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 	if (info.getData2() == WTP_NATIVE_WAYPOINT_POPUP)
 	{
 		return launchNativeWaypointPopup(pPopup, info);
+	}
+	if (info.getData2() == WTP_UNIT_WAYPOINT_POPUP)
+	{
+		return launchUnitWaypointPopup(pPopup, info);
 	}
 	CvWString szBuffer;
 	CvString szArtFilename;
@@ -2545,6 +2707,173 @@ static int countOpenProfessionSlots(const CvPlayer& kPlayer, ProfessionTypes ePr
 	return iOpen;
 }
 
+namespace WtpProfessionBatch
+{
+	// the profession Colonist (the plain colonist that has no specialty)
+	static bool wtpIsColonistProfession(ProfessionTypes eProfession)
+	{
+		return eProfession != NO_PROFESSION && strcmp(GC.getProfessionInfo(eProfession).getType(), "PROFESSION_COLONIST") == 0;
+	}
+
+	// the units that are still to be asked for
+	static std::vector<int> s_aRemaining;
+	// the units that were handled or are asked for just now: their own (queued) Change profession commands of the same click must not open popups
+	// (kept only for a few seconds, then a new click on the button works for them again)
+	static std::vector<int> s_aGuard;
+	static clock_t s_iGuardTime = 0;
+	static const clock_t GUARD_TICKS = 5 * CLOCKS_PER_SEC;
+
+	void begin(const std::vector<int>& aOtherUnits)
+	{
+		s_aRemaining = aOtherUnits;
+		s_aGuard.clear();
+		s_iGuardTime = clock();
+	}
+
+	bool isWaiting(int iUnitId)
+	{
+		if (std::find(s_aRemaining.begin(), s_aRemaining.end(), iUnitId) != s_aRemaining.end())
+		{
+			return true;
+		}
+		return (clock() - s_iGuardTime < GUARD_TICKS) && std::find(s_aGuard.begin(), s_aGuard.end(), iUnitId) != s_aGuard.end();
+	}
+
+	void end()
+	{
+		s_aRemaining.clear();
+		s_aGuard.clear();
+	}
+
+	void apply(int iCityId, int iPopupUnitId, ProfessionTypes eProfession, int iFlag, bool bShift)
+	{
+		const PlayerTypes ePlayer = GC.getGameINLINE().getActivePlayer();
+		std::vector<int> aRest;
+		aRest.swap(s_aRemaining);
+		CvCity* const pCity = (ePlayer != NO_PLAYER) ? GET_PLAYER(ePlayer).getCity(iCityId) : NULL;
+		bool bAllOfKind = false;
+		if (bShift && aRest.empty() && pCity != NULL)
+		{
+			bAllOfKind = true;
+			// only the unit of the popup was selected: with the shift key all units of the plot of the same kind follow it. Only colonists count (the profession
+			// Colonist, "Colonist (Free Colonist)"), and the unit type in the brackets (Free Colonist, Converted Native, ...) must be the same
+			const CvUnit* const pPopupUnit = GET_PLAYER(ePlayer).getUnit(iPopupUnitId);
+			CvPlot* const pPlot = pCity->plot();
+			if (pPopupUnit != NULL && pPopupUnit->plot() == pPlot && wtpIsColonistProfession(pPopupUnit->getProfession()))
+			{
+				CLLNode<IDInfo>* pNode = pPlot->headUnitNode();
+				while (pNode != NULL)
+				{
+					const CvUnit* const pLoop = ::getUnit(pNode->m_data);
+					pNode = pPlot->nextUnitNode(pNode);
+					if (pLoop != NULL && pLoop->getID() != iPopupUnitId && pLoop->getOwnerINLINE() == ePlayer && pLoop->getUnitType() == pPopupUnit->getUnitType()
+						&& wtpIsColonistProfession(pLoop->getProfession()))
+					{
+						aRest.push_back(pLoop->getID());
+					}
+				}
+			}
+		}
+		if (pCity == NULL || aRest.empty() || eProfession == NO_PROFESSION)
+		{
+			return;
+		}
+		const CvProfessionInfo& kProfession = GC.getProfessionInfo(eProfession);
+		// the free places of the colony for the profession (the commands of this group are not executed yet, so they are counted here)
+		const bool bLimited = kProfession.isCitizen();
+		int iFreePlots = 0;
+		int iFreeBuilding = 0;
+		if (bLimited)
+		{
+			if (kProfession.isWorkPlot())
+			{
+				iFreePlots = pCity->getNumAvailableWorkPlots();
+			}
+			else
+			{
+				for (BuildingTypes eBuilding = FIRST_BUILDING; eBuilding < NUM_BUILDING_TYPES; ++eBuilding)
+				{
+					if (GC.getBuildingInfo(eBuilding).getSpecialBuildingType() == kProfession.getSpecialBuilding() && pCity->isHasBuilding(eBuilding))
+					{
+						iFreeBuilding += GC.getBuildingInfo(eBuilding).getMaxWorkers();
+					}
+				}
+				for (int i = 0; i < pCity->getPopulation(); ++i)
+				{
+					const CvUnit* const pWorker = pCity->getPopulationUnitByIndex(i);
+					if (pWorker != NULL && pWorker->getProfession() != NO_PROFESSION && GC.getProfessionInfo(pWorker->getProfession()).getSpecialBuilding() == kProfession.getSpecialBuilding())
+					{
+						--iFreeBuilding;
+					}
+				}
+			}
+		}
+		// the unit of the popup takes its place first, the others follow in the order of the selection
+		std::vector<int> aOrder;
+		aOrder.push_back(iPopupUnitId);
+		aOrder.insert(aOrder.end(), aRest.begin(), aRest.end());
+		s_aGuard.insert(s_aGuard.end(), aOrder.begin(), aOrder.end());
+		s_iGuardTime = clock();
+		std::vector<int> aLeft;
+		for (size_t i = 0; i < aOrder.size(); ++i)
+		{
+			CvUnit* const pUnit = GET_PLAYER(ePlayer).getUnit(aOrder[i]);
+			if (pUnit == NULL || pUnit->getProfession() == NO_PROFESSION || pUnit->plot() != pCity->plot())
+			{
+				continue;
+			}
+			bool bTakesPlace = true;
+			if (bLimited)
+			{
+				if (kProfession.isWorkPlot())
+				{
+					if (!pCity->isUnitWorkingAnyPlot(pUnit))
+					{
+						bTakesPlace = (iFreePlots > 0);
+						if (bTakesPlace)
+						{
+							--iFreePlots;
+						}
+					}
+				}
+				else if (pUnit->getProfession() == NO_PROFESSION || GC.getProfessionInfo(pUnit->getProfession()).getSpecialBuilding() != kProfession.getSpecialBuilding())
+				{
+					bTakesPlace = (iFreeBuilding > 0);
+					if (bTakesPlace)
+					{
+						--iFreeBuilding;
+					}
+				}
+			}
+			if (i == 0)
+			{
+				continue; // (the command for the unit of the popup is sent by the caller)
+			}
+			if (pUnit->getProfession() == eProfession)
+			{
+				continue; // (already has it)
+			}
+			if (bTakesPlace && pUnit->canHaveProfession(eProfession, true, pCity->plot()))
+			{
+				gDLL->sendDoCommand(pUnit->getID(), COMMAND_PROFESSION, eProfession, -1, false);
+			}
+			else
+			{
+				aLeft.push_back(pUnit->getID());
+			}
+		}
+		if (!aLeft.empty() && !bAllOfKind)
+		{
+			// the profession is full (or not possible for them): the popup asks again for the rest (not for the units that the shift key took along: they just stay)
+			const int iNext = aLeft[0];
+			aLeft.erase(aLeft.begin());
+			s_aRemaining = aLeft;
+			CvPopupInfo* const pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSE_PROFESSION, iCityId, iNext, iFlag);
+			gDLL->getInterfaceIFace()->addPopup(pInfo, ePlayer, true, true);
+		}
+	}
+}
+
 namespace WtpDeferredEducation
 {
 	static std::vector<std::pair<int, int> >& pending()
@@ -2641,8 +2970,20 @@ namespace WtpBuyMaterialsPanel
 	}
 }
 
+// the one exception of the alphabetical order: the Veteran Infantry is always the first entry (if it is in the list)
+static bool wtpIsVeteranInfantry(UnitTypes eUnit)
+{
+	return eUnit != NO_UNIT && strcmp(GC.getUnitInfo(eUnit).getType(), "UNIT_VETERAN_INFANTRY") == 0;
+}
+
 static bool wtpEducationEntryLess(const WtpEducationEntry& kA, const WtpEducationEntry& kB)
 {
+	const bool bVeteranA = wtpIsVeteranInfantry(kA.eUnit);
+	const bool bVeteranB = wtpIsVeteranInfantry(kB.eUnit);
+	if (bVeteranA != bVeteranB)
+	{
+		return bVeteranA; // the Veteran Infantry before everything, also before a student
+	}
 	if (kA.bStudent != kB.bStudent)
 	{
 		return kA.bStudent; // a student first
@@ -2670,13 +3011,18 @@ bool CvDLLButtonPopup::launchEducationPopup(CvPopup* pPopup, CvPopupInfo &info)
 	{
 		return false;
 	}
+	// WTP: this student got its specialty with the shift key at another popup (its task is not executed yet): no question
+	if (s_aEducatedByShift.erase(std::make_pair(info.getData1(), info.getData2())) > 0)
+	{
+		return false;
+	}
 
 	CvWString szText = gDLL->getText("TXT_KEY_CHOOSE_SPECIALTY", pUnit->getNameOrProfessionKey(), pCity->getNameKey());
 	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, szText, DLL_FONT_LEFT_JUSTIFY);
 
 	int iNumUnits = 0;
 	UnitTypes eLastUnit = NO_UNIT;
-	// WTP: alphabetical, a student always first
+	// WTP: alphabetical, the Veteran Infantry first of all, then a student (see wtpEducationEntryLess)
 	std::vector<WtpEducationEntry> aSortedUnits;
 	for (UnitTypes eUnitType = FIRST_UNIT; eUnitType < NUM_UNIT_TYPES; ++eUnitType)
 	{

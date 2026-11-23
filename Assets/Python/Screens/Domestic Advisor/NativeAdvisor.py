@@ -142,9 +142,18 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 					aRest.append(pCity)
 			citylist = aSorted + aRest
 		
-		self.tableManager.setNumRows(len(citylist))
-		
 		player = gc.getPlayer(gc.getGame().getActivePlayer())
+		# WTP: the settlements with a mission or a trading post of the player are always on top when the tab is opened (the order within the two groups is kept)
+		aOwn = []
+		aOthers = []
+		for pCity in citylist:
+			if self.hasOwnPresence(pCity, player):
+				aOwn.append(pCity)
+			else:
+				aOthers.append(pCity)
+		citylist = aOwn + aOthers
+		
+		self.tableManager.setNumRows(len(citylist))
 		
 		for iNativeCity in range(len(citylist)):
 			pLoopCity = citylist[iNativeCity]
@@ -192,12 +201,10 @@ class NativeAdvisor(BaseAdvisorWindow.BaseAdvisorWindow):
 
 				# WTP: waypoint for units created here by a mission / trading post of the player (click to set / remove)
 				if self.hasOwnPresence(pLoopCity, player):
-					iWaypoint = player.getNativeWaypoint(pLoopCity.plot().getIndex())
-					pWaypointCity = None
-					if iWaypoint >= 0:
-						pWaypointCity = player.getCity(iWaypoint)
-					if pWaypointCity is not None and not pWaypointCity.isNone():
-						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.MOVES_CHAR) + pWaypointCity.getName(), pLoopCity.plot().getIndex())
+					import CvScreensInterface
+					szWaypointName = CvScreensInterface.getWaypointTargetName(player.getNativeWaypoint(pLoopCity.plot().getIndex()))
+					if len(szWaypointName) > 0:
+						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.MOVES_CHAR) + szWaypointName, pLoopCity.plot().getIndex())
 					else:
 						self.tableManager.addText(u"%c " % CyGame().getSymbolID(FontSymbols.OPEN_BORDERS_CHAR) + localText.getText("TXT_KEY_WTP_WAYPOINT_COLUMN", ()), pLoopCity.plot().getIndex())
 				else:

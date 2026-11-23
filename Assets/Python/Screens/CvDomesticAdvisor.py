@@ -5,6 +5,7 @@ import CvUtil
 import ScreenInput
 import CvScreenEnums
 import time
+import re
 
 import BuildingAdvisor
 import DomesticDemandAdvisor
@@ -205,29 +206,31 @@ class CvDomesticAdvisor:
 		#GeneralState Headers
 		szListName = self.StatePages[self.GENERAL_STATE][0] + "ListBackground"
 		# Population Column
-		screen.setTableColumnHeader( szListName, 2, "<font=2>" + localText.getText("TXT_KEY_POPULATION", ()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 2, "<font=2>" + localText.getText("TXT_KEY_POPULATION", ()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Liberty Column
-		screen.setTableColumnHeader( szListName, 3, "<font=2>" + (u" %c" %(CyGame().getSymbolID(FontSymbols.POWER_CHAR))) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 3, "<font=2>" + (u" %c" %(CyGame().getSymbolID(FontSymbols.POWER_CHAR))) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Food Column
-		screen.setTableColumnHeader( szListName, 5, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_FOOD).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 5, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_FOOD).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Hammers Column
-		screen.setTableColumnHeader( szListName, 6, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_HAMMERS).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 6, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_HAMMERS).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Bells Column
-		screen.setTableColumnHeader( szListName, 8, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_BELLS).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 8, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_BELLS).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Crosses Column
-		screen.setTableColumnHeader( szListName, 10, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_CROSSES).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 10, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_CROSSES).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Education Column
-		screen.setTableColumnHeader( szListName, 11, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_EDUCATION).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 11, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_EDUCATION).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Garrison Column
-		screen.setTableColumnHeader( szListName, 13, "<font=2>" + (u" %c" % CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR)) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 13, "<font=2>" + (u" %c" % CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR)) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Defense Column
-		screen.setTableColumnHeader( szListName, 14, "<font=2>" + (u" %c" % CyGame().getSymbolID(FontSymbols.DEFENSE_CHAR)) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 14, "<font=2>" + (u" %c" % CyGame().getSymbolID(FontSymbols.DEFENSE_CHAR)) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Happiness Column
-		screen.setTableColumnHeader( szListName, 15, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_HAPPINESS).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 15, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_HAPPINESS).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
 		# Health Column
-		screen.setTableColumnHeader( szListName, 16, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_HEALTH).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 13 )
+		screen.setTableColumnHeader( szListName, 16, "<font=2>" + (u" %c" % gc.getYieldInfo(YieldTypes.YIELD_HEALTH).getChar()) + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 15 )
+		# WTP: Waypoint Column (the colonists that are born in the colony go there)
+		screen.setTableColumnHeader( szListName, 17, "<font=2>" + localText.getText("TXT_KEY_WTP_WAYPOINT_COLUMN", ()).upper() + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 9 )
 		# Production Column
-		screen.setTableColumnHeader( szListName, 17, "<font=2>" + localText.getText("TXT_KEY_DOMESTIC_ADVISOR_PRODUCING", ()).upper() + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 4 )
+		screen.setTableColumnHeader( szListName, 18, "<font=2>" + localText.getText("TXT_KEY_DOMESTIC_ADVISOR_PRODUCING", ()).upper() + "</font>", (self.nTableWidth - self.CITY_NAME_COLUMN_WIDTH) / 5 )
 
 		## R&R, Robert Surcouf,  Domestic Advisor Screen START
 		szListName = self.StatePages[self.GENERAL_STATE][1] + "ListBackground"
@@ -494,7 +497,16 @@ class CvDomesticAdvisor:
 				if szText != "":
 					szText = szText + " "
 				szText = szText + "[" + u", ".join(aWaiting) + "]"
-			screen.setTableText(szState + "ListBackground", 17, i, "<font=2>" + szText + "</font>", "", WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY )
+			screen.setTableText(szState + "ListBackground", 18, i, "<font=2>" + szText + "</font>", "", WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY )
+			# WTP: waypoint of the colony (a click sets / removes it): the colonists that are born here go there
+			import CvScreensInterface
+			iWaypointPlot = pLoopCity.plot().getIndex()
+			szWaypointName = CvScreensInterface.getWaypointTargetName(gc.getPlayer(pLoopCity.getOwner()).getNativeWaypoint(iWaypointPlot))
+			if len(szWaypointName) > 0:
+				szWaypointText = u"%c " % CyGame().getSymbolID(FontSymbols.MOVES_CHAR) + szWaypointName
+			else:
+				szWaypointText = u"%c " % CyGame().getSymbolID(FontSymbols.OPEN_BORDERS_CHAR) + localText.getText("TXT_KEY_WTP_WAYPOINT_COLUMN", ())
+			screen.setTableText(szState + "ListBackground", 17, i, "<font=2>" + szWaypointText + "</font>", "", WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY )
 
 		elif(self.CurrentState == self.PRODUCTION_STATE):
 			start = self.YieldStart()
@@ -1004,6 +1016,9 @@ class CvDomesticAdvisor:
 				if self.CurrentState == self.TRADE_COUNT_STATE:
 					# WTP: exported goods: a click on the Europe / Africa / Port Royal row opens the trade screen
 					self.openTradeLocation(inputClass.getMouseY())
+				elif (self.CurrentState == self.GENERAL_STATE and self.CurrentPage == 0 and inputClass.getMouseX() == 17 and self.openCityWaypointPopup(inputClass.getMouseY())):
+					# WTP: a click on the waypoint column of a colony opens the choice of the waypoint
+					return 0
 				elif (inputClass.getMouseX() == 0):
 					if self.CurrentState == self.TOTAL_PRODUCTION_STATE:
 						# unchanged original behavior
@@ -1090,6 +1105,37 @@ class CvDomesticAdvisor:
 				CvScreensInterface.iReturnToDomesticScreen = tScreen[2]
 		except:
 			pass
+
+	# WTP: the choice of the waypoint of a colony (the window of the DLL: the other colonies and the own waypoints on the map): the colonists that are born in the colony go there
+	# (the city of the row: the table can be sorted, so the row is found by the name that is displayed in it)
+	def openCityWaypointPopup(self, iRow):
+		try:
+			pCity = None
+			screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+			szName = re.sub(u"<[^>]*>", u"", screen.getTableText(self.StatePages[self.CurrentState][self.CurrentPage] + "ListBackground", 1, iRow)).strip()
+			for pLoopCity in self.Cities:
+				if pLoopCity.getName() == szName:
+					pCity = pLoopCity
+					break
+			if pCity is None and iRow >= 0 and iRow < len(self.Cities):
+				pCity = self.Cities[iRow]
+			if pCity is None:
+				return False
+			iPlotIndex = pCity.plot().getIndex()
+			pPlot = gc.getMap().plotByIndex(iPlotIndex)
+			iPlayer = gc.getGame().getActivePlayer()
+			if pPlot is None or pPlot.isNone() or not pPlot.isCity() or pPlot.getPlotCity().getOwner() != iPlayer:
+				return False
+			screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
+			screen.hideScreen()
+			popupInfo = CyPopupInfo()
+			popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_CHOOSEPRODUCTION)
+			popupInfo.setData1(iPlotIndex)
+			popupInfo.setData2(1002)
+			popupInfo.addPopup(iPlayer)
+			return True
+		except:
+			return False
 
 	def openCity(self, pCity):
 		screen = CyGInterfaceScreen( "DomesticAdvisor", CvScreenEnums.DOMESTIC_ADVISOR )
