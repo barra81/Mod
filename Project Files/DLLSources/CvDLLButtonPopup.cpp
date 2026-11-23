@@ -1092,7 +1092,10 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 			{
 				gDLL->sendDoCommand(info.getData2(), COMMAND_PROFESSION, pPopupReturn->getButtonClicked(), -1, false);
 				// WTP: several selected units: the others get the same profession as far as the colony has free places for it
-				WtpProfessionBatch::apply(info.getData1(), info.getData2(), (ProfessionTypes)pPopupReturn->getButtonClicked(), info.getData3());
+				// (with the shift key and only one selected unit: all units of the plot of the same kind, see WtpProfessionBatch::apply; a popup of the game does not pass
+				// the shift key on to gDLL->shiftKey())
+				WtpProfessionBatch::apply(info.getData1(), info.getData2(), (ProfessionTypes)pPopupReturn->getButtonClicked(), info.getData3(),
+					gDLL->shiftKey() || (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0);
 			}
 			else if (GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getEuropeUnitById(info.getData2()) != NULL)
 			{
@@ -2454,6 +2457,12 @@ static int countOpenProfessionSlots(const CvPlayer& kPlayer, ProfessionTypes ePr
 
 namespace WtpProfessionBatch
 {
+	// the profession Colonist (the plain colonist that has no specialty)
+	static bool wtpIsColonistProfession(ProfessionTypes eProfession)
+	{
+		return eProfession != NO_PROFESSION && strcmp(GC.getProfessionInfo(eProfession).getType(), "PROFESSION_COLONIST") == 0;
+	}
+
 	// the units that are still to be asked for
 	static std::vector<int> s_aRemaining;
 	// the units that were handled or are asked for just now: their own (queued) Change profession commands of the same click must not open popups
@@ -2484,12 +2493,35 @@ namespace WtpProfessionBatch
 		s_aGuard.clear();
 	}
 
-	void apply(int iCityId, int iPopupUnitId, ProfessionTypes eProfession, int iFlag)
+	void apply(int iCityId, int iPopupUnitId, ProfessionTypes eProfession, int iFlag, bool bShift)
 	{
 		const PlayerTypes ePlayer = GC.getGameINLINE().getActivePlayer();
 		std::vector<int> aRest;
 		aRest.swap(s_aRemaining);
 		CvCity* const pCity = (ePlayer != NO_PLAYER) ? GET_PLAYER(ePlayer).getCity(iCityId) : NULL;
+		bool bAllOfKind = false;
+		if (bShift && aRest.empty() && pCity != NULL)
+		{
+			bAllOfKind = true;
+			// only the unit of the popup was selected: with the shift key all units of the plot of the same kind follow it. Only colonists count (the profession
+			// Colonist, "Colonist (Free Colonist)"), and the unit type in the brackets (Free Colonist, Converted Native, ...) must be the same
+			const CvUnit* const pPopupUnit = GET_PLAYER(ePlayer).getUnit(iPopupUnitId);
+			CvPlot* const pPlot = pCity->plot();
+			if (pPopupUnit != NULL && pPopupUnit->plot() == pPlot && wtpIsColonistProfession(pPopupUnit->getProfession()))
+			{
+				CLLNode<IDInfo>* pNode = pPlot->headUnitNode();
+				while (pNode != NULL)
+				{
+					const CvUnit* const pLoop = ::getUnit(pNode->m_data);
+					pNode = pPlot->nextUnitNode(pNode);
+					if (pLoop != NULL && pLoop->getID() != iPopupUnitId && pLoop->getOwnerINLINE() == ePlayer && pLoop->getUnitType() == pPopupUnit->getUnitType()
+						&& wtpIsColonistProfession(pLoop->getProfession()))
+					{
+						aRest.push_back(pLoop->getID());
+					}
+				}
+			}
+		}
 		if (pCity == NULL || aRest.empty() || eProfession == NO_PROFESSION)
 		{
 			return;
@@ -2578,9 +2610,9 @@ namespace WtpProfessionBatch
 				aLeft.push_back(pUnit->getID());
 			}
 		}
-		if (!aLeft.empty())
+		if (!aLeft.empty() && !bAllOfKind)
 		{
-			// the profession is full (or not possible for them): the popup asks again for the rest
+			// the profession is full (or not possible for them): the popup asks again for the rest (not for the units that the shift key took along: they just stay)
 			const int iNext = aLeft[0];
 			aLeft.erase(aLeft.begin());
 			s_aRemaining = aLeft;

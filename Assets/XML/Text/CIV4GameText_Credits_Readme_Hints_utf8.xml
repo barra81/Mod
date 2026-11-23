@@ -1972,8 +1972,8 @@ Viel Spass![NEWLINE]
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HINT_INTERFACE_88</Tag>
-		<English>Change profession with several units selected: the chosen profession goes to as many of them as the colony has free places for. The window only asks again for the rest of the units.</English>
-		<German>Beruf ändern mit mehreren markierten Einheiten: Der gewählte Beruf geht an so viele von ihnen, wie die Kolonie freie Plätze dafür hat. Das Fenster fragt nur für die übrigen Einheiten noch einmal nach.</German>
-		<Russian>Смена профессии при нескольких выбранных отрядах: выбранная профессия достанется стольким из них, на сколько у колонии есть свободных мест. Окно спросит снова только про остальные отряды.</Russian>
+		<English>Change profession with several units selected (of any kind): the chosen profession goes to as many of the selected units as can practise it and as the colony has free places for. The window only asks again for the rest of them. With only ONE unit selected, [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] + click on the profession takes all colonists of the same kind on the plot along (e.g. all Colonist (Free Colonist)) until the places are full; the others stay as they are.</English>
+		<German>Beruf ändern mit mehreren markierten Einheiten (beliebiger Art): Der gewählte Beruf geht an so viele der markierten Einheiten, wie ihn ausüben können und wie die Kolonie freie Plätze dafür hat. Das Fenster fragt nur für die übrigen noch einmal nach. Ist nur EINE Einheit markiert, nimmt [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] + Klick auf den Beruf alle Kolonisten derselben Art auf dem Feld mit (z. B. alle Colonist (Free Colonist)), bis die Plätze voll sind; die übrigen bleiben unverändert.</German>
+		<Russian>Смена профессии при нескольких выбранных отрядах (любого вида): выбранная профессия достанется стольким из выбранных отрядов, сколько могут её освоить и на сколько у колонии есть свободных мест. Окно спросит снова только про остальные. Если выбран только ОДИН отряд, [COLOR:140:255:40:255]&lt; SHIFT &gt;[COLOR_REVERT] + щелчок по профессии берёт с собой всех колонистов того же вида на клетке (например, всех Colonist (Free Colonist)), пока места не заполнятся; остальные остаются как есть.</Russian>
 	</TEXT>
 </Civ4GameText>
