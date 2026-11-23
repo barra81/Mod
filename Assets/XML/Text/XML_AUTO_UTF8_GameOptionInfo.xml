@@ -588,8 +588,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GAMEOPTION_MAX_EUROPEAN_AI_HELP</Tag>
-		<English>Limits the number of European AI players at the start of the game. Surplus European AI slots (e.g. slots left on Random) become native players instead. If several of these options are ticked, the smallest number counts. Human players are never changed.</English>
-		<German>Begrenzt die Zahl der europäischen KI-Spieler zum Spielstart. Überzählige europäische KI-Plätze (z. B. Plätze, die auf Zufall stehen) werden stattdessen zu Indianern. Sind mehrere dieser Optionen angehakt, gilt die kleinste Zahl. Menschliche Spieler werden nie verändert.</German>
-		<Russian>Ограничивает число европейских ИИ в начале игры. Лишние европейские слоты ИИ (например, оставленные на «Случайно») становятся индейцами. Если отмечено несколько таких опций, действует наименьшее число. Игроки-люди не меняются.</Russian>
+		<English>Limits the number of European AI players at the start of the game. Surplus European AI slots (e.g. slots left on Random) become native players if a native tribe is still free, otherwise they are removed. If several of these options are ticked, the smallest number counts. Human players are never changed.</English>
+		<German>Begrenzt die Zahl der europäischen KI-Spieler zum Spielstart. Überzählige europäische KI-Plätze (z. B. Plätze, die auf Zufall stehen) werden zu Indianern, falls noch ein Stamm frei ist, sonst entfernt. Sind mehrere dieser Optionen angehakt, gilt die kleinste Zahl. Menschliche Spieler werden nie verändert.</German>
+		<Russian>Ограничивает число европейских ИИ в начале игры. Лишние европейские слоты ИИ (например, оставленные на «Случайно») становятся индейцами, если есть свободное племя, иначе удаляются. Если отмечено несколько таких опций, действует наименьшее число. Игроки-люди не меняются.</Russian>
 	</TEXT>
 </Civ4GameText>

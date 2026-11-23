@@ -304,7 +304,9 @@ void CvGame::setInitialItems(bool bScenario)
 
 	// WTP: game options "Max. European AI players": surplus European AI players (highest player ids first) become native players, so that
 	// the slots of the start screen that are left on "Random" do not all turn into European powers. A native civ is only chosen if it
-	// is not placed yet (and, without random settlement areas, if it fits the region of the map). Human players are never touched.
+	// is not placed yet (and, without random settlement areas, if it fits the region of the map). If no such native civ is left (the
+	// maps with fixed natives already use all of them) the surplus European AI is removed from the game instead (no cities, no units yet).
+	// Human players are never touched.
 	{
 		const int iMaxEuropean = wtpMaxEuropeanAIs();
 		if (iMaxEuropean >= 0)
@@ -319,6 +321,7 @@ void CvGame::setInitialItems(bool bScenario)
 				}
 			}
 			int iConverted = 0;
+			int iRemoved = 0;
 			for (int iPlayer = (int)NUM_PLAYER_TYPES - 1; iPlayer >= (int)FIRST_PLAYER && iEuropean > iMaxEuropean; --iPlayer)
 			{
 				const PlayerTypes ePlayer = (PlayerTypes)iPlayer;
@@ -377,12 +380,18 @@ void CvGame::setInitialItems(bool bScenario)
 					iEuropean--;
 					iConverted++;
 				}
+				else
+				{
+					kPlayer.setAlive(false); // no message (kill() would announce the destruction of the civ)
+					iEuropean--;
+					iRemoved++;
+				}
 			}
 			// log: what the option did (same file as the settlement brake)
 			FILE* f = fopen((std::string(gDLL->getModName()) + "WTP_AiBrake.txt").c_str(), "a");
 			if (f != NULL)
 			{
-				fprintf(f, "max European AIs=%d | European AIs left=%d | converted to natives=%d\n", iMaxEuropean, iEuropean, iConverted);
+				fprintf(f, "max European AIs=%d | European AIs left=%d | converted to natives=%d | removed=%d\n", iMaxEuropean, iEuropean, iConverted, iRemoved);
 				fclose(f);
 			}
 		}
