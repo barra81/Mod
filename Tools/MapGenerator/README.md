@@ -86,7 +86,7 @@ python Tools/MapGenerator/publish_random.py     # gen_random.py and validate.py 
 The world and the previews of each seed are in `Tools/MapGenerator/out_random/seed<N>`.
 
 - Coasts: the continental shelf is read at a warped position and the edge of the open sea in the east and west bends and falls off gently, so the continents get no straight west or east coasts (user 2026-11-23).
-- Southern sea route: besides the northern strait there is always a way from the Atlantic to the Pacific south of latitude 50 (between the continents or south of the southern one). If the land closes every way, the cheapest crossing is drowned into a strait two plots wide; shallow coast on that way becomes coast for large ships (`south_route`, `SOUTH_PASSAGE`).
+- Southern sea route: besides the northern strait there is always a way from the Atlantic to the Pacific south of latitude 20 (between the continents or south of the southern one). If the land closes every way, the cheapest crossing is drowned into a strait three plots wide; shallow coast on that way becomes coast for large ships (`south_route`, `SOUTH_PASSAGE`).
 
 ### In-game map script (`make_mapscript.py`)
 

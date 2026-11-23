@@ -695,8 +695,8 @@ for comp in components(land):                    # no arctic specks
 
 # besides the northern strait at least one sea route from the Atlantic to the Pacific further south, between the
 # continents or south of the southern one (user 2026-11-23): if the land closes every way, the cheapest crossing
-# (low and narrow land) is drowned into a strait two plots wide
-SOUTH_ROUTE_LAT = 50
+# (low and narrow land) is drowned into a strait three plots wide
+SOUTH_ROUTE_LAT = 20                     # (the lower half of the map: 50 still let a way just below the northern lands count)
 SOUTH_PASSAGE = set()
 
 
@@ -733,10 +733,12 @@ def south_route_path(cost):
 
 
 if not south_route(lambda i: not land[i]):
-    for i in south_route_path(lambda j: 1.0 + 3.0 * max(0.0, HEIGHT0[j] - SEA_LEVEL) if land[j] else 0.01):
+    # (the atolls and the volcano isle are not drowned: their plot types are set again later)
+    _keep = set(I(x, y) for x, y in atolls) | set(I(x, y) for x, y in VOLCANO_ISLE)
+    for i in south_route_path(lambda j: None if j in _keep else (1.0 + 3.0 * max(0.0, HEIGHT0[j] - SEA_LEVEL) if land[j] else 0.01)):
         x, y = i % W, i // W
-        for j in (i, I(x, max(0, y - 1))):
-            if land[j]:
+        for j in (i, I(x, max(0, y - 1)), I(x, min(H - 1, y + 1))):
+            if land[j] and j not in _keep:
                 land[j] = False
                 SOUTH_PASSAGE.add(j)
     for comp in components(land):                # no specks left in the new strait
