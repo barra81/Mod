@@ -85,6 +85,9 @@ python Tools/MapGenerator/publish_random.py     # gen_random.py and validate.py 
 
 The world and the previews of each seed are in `Tools/MapGenerator/out_random/seed<N>`.
 
+- Coasts: the continental shelf is read at a warped position and the edge of the open sea in the east and west bends and falls off gently, so the continents get no straight west or east coasts (user 2026-11-23).
+- Southern sea route: besides the northern strait there is always a way from the Atlantic to the Pacific south of latitude 50 (between the continents or south of the southern one). If the land closes every way, the cheapest crossing is drowned into a strait two plots wide; shallow coast on that way becomes coast for large ships (`south_route`, `SOUTH_PASSAGE`).
+
 ### In-game map script (`make_mapscript.py`)
 
 `PrivateMaps/Random_New_World.py` makes a new world with this generator in every game (map script list in Custom Game, always 85x137, two plot colony radius). The game runs Python 2.4, so `make_mapscript.py` rewrites `noise.py`, `place_names.py` and `gen_random.py` (without its output part) into Python 2.4 code with the `ast` module and packs it, with `CIV4FeatureInfos.xml` and `CIV4BonusInfos.xml`, into the map script built from `mapscript_template.py`:
@@ -94,3 +97,16 @@ python Tools/MapGenerator/make_mapscript.py [--test=1,2,3] [--dump]   # --test: 
 ```
 
 Rewrites: conditional expressions, set literals, set/dict comprehensions, `math.floor`/`ceil`, `print`, `rng.choices`, reading the XML; `any`, `all`, `next`, `round`, `max`/`min` with `key` and `Counter` come from the map script; a check refuses constructs newer than Python 2.4. The map script hands plot types, terrain, rivers, features, Europe plots, resources, ruins and roads to the game; goodies and natives are placed by the game. Landmark signs can only be set once the game runs: `CvEventManager.onGameStart` calls `placeMapSigns` of the map script (only if the map is still the generated one). The seed comes from the game's map random numbers. `publish_random.py` rebuilds the map script after the maps.
+
+### Testing the map script with the game's Python 2.4 (`py24/`)
+
+`py24/pyhost.c` is a tiny 32-bit host that runs the game's `python24.dll` as a console interpreter. Build it once with the compiler of the DLL build (in a folder with copies of `python24.dll` and `msvcr71.dll` of the game):
+
+```
+cl /O2 pyhost.c /link kernel32.lib      (INCLUDE/LIB: the Toolkit 2003 and the Windows SDK v6.0 in Mods/Compiler)
+set PYTHONPATH=<Civ4Colonization>/Assets/Python/System
+pyhost.exe run24.py "<Mod>/PrivateMaps/Random_New_World.py" 1 2 3
+```
+
+`run24.py` runs the generator of the map script like the game does and prints the progress with times; a seed that never finishes shows an endless loop (for example 2026-11-23: the pass carving looped when two parts of a landmass only touched at a corner).
+

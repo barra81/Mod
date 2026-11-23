@@ -21,7 +21,7 @@ W, H = 85, 137
 SEED = int(sys.argv[1]) if len(sys.argv) > 1 else 1
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_random')
 rng = random.Random(SEED)
-NZ = [Noise(SEED * 1000 + i) for i in range(24)]
+NZ = [Noise(SEED * 1000 + i) for i in range(28)]
 
 N4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 N8 = N4 + [(1, 1), (1, -1), (-1, 1), (-1, -1)]
@@ -112,6 +112,23 @@ for k in order_pl:
     plates[k]['cont'] = True
     got += plate_area[k]
 crust = blur([1.0 if plates[plate[i]]['cont'] else -1.0 for i in range(W * H)], 4)     # continental shelf and slope
+
+
+def sample(a, fx, fy):
+    """Bilinear value of the map array a at a fractional position (clamped to the map)."""
+    fx, fy = min(max(fx, 0.0), W - 1.001), min(max(fy, 0.0), H - 1.001)
+    x0, y0 = int(fx), int(fy)
+    tx, ty = fx - x0, fy - y0
+    x1, y1 = min(x0 + 1, W - 1), min(y0 + 1, H - 1)
+    return ((a[I(x0, y0)] * (1 - tx) + a[I(x1, y0)] * tx) * (1 - ty)
+            + (a[I(x0, y1)] * (1 - tx) + a[I(x1, y1)] * tx) * ty)
+
+
+# no straight west and east coasts along the plate borders (user 2026-11-23): the shelf is read at a warped position,
+# finer than the warp of the plates, so the coast bends in bays and capes
+_crust0 = crust
+crust = [sample(_crust0, x + 6.0 * NZ[24].fbm(x, y, 3, 10) + 2.0 * NZ[24].fbm(x + 500.0, y, 2, 4),
+                 y + 3.0 * NZ[25].fbm(x, y, 3, 10)) for x, y in ALL]
 
 # plate boundaries: which way do the neighbours move relative to each other?
 border = {}                     # (a, b) -> boundary points on the side of plate a
@@ -232,10 +249,13 @@ for x, y in ALL:
     for pts, depth, wd in VALLEYS:
         d, _ = poly_dist(x, y, pts)
         b -= depth * math.exp(-(d / wd) ** 2)
-    if x > W - MARGIN_E - 3:
-        b -= (x - (W - MARGIN_E - 3)) * 0.25
-    if x < MARGIN_W + 2:
-        b -= (MARGIN_W + 2 - x) * 0.4
+    # (the edge of the open sea bends in and out and falls off gently, so the coasts do not follow it as a straight line)
+    m_e = W - MARGIN_E - 5 + 4.0 * NZ[26].fbm(0.5, y, 3, 6) + 1.5 * NZ[26].fbm(x * 0.7, y * 0.7 + 50.0, 2, 3)
+    if x > m_e:
+        b -= (x - m_e) * 0.16
+    m_w = MARGIN_W + 3 + 4.0 * NZ[27].fbm(3.5, y, 3, 5) + 1.5 * NZ[27].fbm(x * 0.7, y * 0.7 + 50.0, 2, 3)
+    if x < m_w:
+        b -= (m_w - x) * 0.2
     BASE[i] = b
     HEIGHT0[i] = b + 0.6 * ridge_of(x, y)
 SEA_LEVEL = sorted(HEIGHT0)[int((1 - LAND_SHARE) * W * H)]
@@ -672,6 +692,57 @@ for comp in components(land):                    # no arctic specks
     if len(comp) < 4 and all(y > strait_y(x) for x, y in comp):
         for x, y in comp:
             land[I(x, y)] = False
+
+# besides the northern strait at least one sea route from the Atlantic to the Pacific further south, between the
+# continents or south of the southern one (user 2026-11-23): if the land closes every way, the cheapest crossing
+# (low and narrow land) is drowned into a strait two plots wide
+SOUTH_ROUTE_LAT = 50
+SOUTH_PASSAGE = set()
+
+
+def south_route(sea):
+    """Is there an edge-connected way through the plots sea(i) from the west to the east edge south of SOUTH_ROUTE_LAT?"""
+    ys = lat_y(SOUTH_ROUTE_LAT)
+    for c in components([sea(i) and i // W <= ys for i in range(W * H)], N4):
+        if any(p[0] == 0 for p in c) and any(p[0] == W - 1 for p in c):
+            return True
+    return False
+
+
+def south_route_path(cost):
+    """Cheapest edge-connected way from the west to the east edge south of SOUTH_ROUTE_LAT; cost(i) None = blocked."""
+    ys = lat_y(SOUTH_ROUTE_LAT)
+    src = [I(0, y) for y in range(ys + 1) if cost(I(0, y)) is not None]
+    dist, prev, pq = dict((i, 0.0) for i in src), {}, [(0.0, i) for i in src]
+    while pq:
+        c, i = heapq.heappop(pq)
+        if i % W == W - 1:
+            path = [i]
+            while path[-1] in prev:
+                path.append(prev[path[-1]])
+            return path
+        if c > dist[i]:
+            continue
+        for nx, ny in nbrs(i % W, i // W, N4):
+            j = I(nx, ny)
+            step = cost(j) if ny <= ys else None
+            if step is not None and c + step < dist.get(j, 1e9):
+                dist[j], prev[j] = c + step, i
+                heapq.heappush(pq, (c + step, j))
+    return []
+
+
+if not south_route(lambda i: not land[i]):
+    for i in south_route_path(lambda j: 1.0 + 3.0 * max(0.0, HEIGHT0[j] - SEA_LEVEL) if land[j] else 0.01):
+        x, y = i % W, i // W
+        for j in (i, I(x, max(0, y - 1))):
+            if land[j]:
+                land[j] = False
+                SOUTH_PASSAGE.add(j)
+    for comp in components(land):                # no specks left in the new strait
+        if len(comp) < 3 and any(I(nx, ny) in SOUTH_PASSAGE for x, y in comp for nx, ny in nbrs(x, y)):
+            for x, y in comp:
+                land[I(x, y)] = False
 dcoast = bfs_dist([i for i in range(W * H) if not land[i]], lambda j: land[j])
 
 ridge = [0.0] * (W * H)
@@ -2110,9 +2181,12 @@ carved = 0
 for mass in components([land[i] or large[i] for i in range(W * H)]):
     if len(mass) < 6:
         continue
-    while True:
+    # (a part that only touches the rest at a corner has no edge path to it: it stays as it is, else this never ends)
+    isolated = set()
+    for _round_ in range(200):
         sub = set(I(x, y) for x, y in mass)
-        comps = [c for c in components([passable(i) and i in sub for i in range(W * H)]) if len(c) >= 3]
+        comps = [c for c in components([passable(i) and i in sub for i in range(W * H)]) if len(c) >= 3
+                 and I(*c[0]) not in isolated]
         if len(comps) <= 1:
             break
         comps.sort(key=len)
@@ -2136,6 +2210,9 @@ for mass in components([land[i] or large[i] for i in range(W * H)]):
                 if c + step < dist.get(j, 1e9):
                     dist[j], prev[j] = c + step, i
                     heapq.heappush(pq, (c + step, j))
+        if found is None:
+            isolated.add(I(*comps[0][0]))
+            continue
         i = found
         while i is not None and i in prev:
             if not passable(i):
@@ -2624,13 +2701,22 @@ while True:
             lanes += 1
         i = prev[i]
 
+# the southern sea route must be open for large ships too: shallow coast on its cheapest way becomes coast
+south_lanes = 0
+if not south_route(deep):
+    for i in south_route_path(lambda j: (0.01 if deep(j) else 1.0) if ocean[j] else None):
+        if not deep(i):
+            terrain[i] = 'COAST'
+            south_lanes += 1
+print('south route: strait', len(SOUTH_PASSAGE), 'deep lanes', south_lanes, 'open', south_route(deep))
+
 # water features
 for x, y in ALL:
     i = I(x, y)
     if land[i] or large[i] or feature[i] or i in HARBOUR_WATER:
         continue
     tr, la, r = terrain[i], lat(y), rng.random()
-    ice_ok = i not in PASSAGE
+    ice_ok = i not in PASSAGE and i not in SOUTH_PASSAGE
     if tr == 'OCEAN':
         if la > 65 and r < (la - 64) / 7.0 and ice_ok:
             feature[i] = 'ICE'
