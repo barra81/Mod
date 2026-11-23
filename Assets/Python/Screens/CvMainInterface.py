@@ -9331,6 +9331,7 @@ class CvMainInterface:
 		aRects.append(self.tMsgRect)
 		try:
 			if gc.getGame().isDiplomacyUp():
+				# (no own tooltips beside the diplomacy dialog any more, see widgetHelpSeen; the rectangles only keep other tooltips off it)
 				# the diplomacy window: in the middle of the screen, about 474 x 730 pixels (measured at 2560 x 1440; a little margin). The trade
 				# window (two lists beside it) is about 1005 x 735: the game does not tell which of both is open, so the wider rectangle is used
 				scrDiplo = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
@@ -9353,8 +9354,8 @@ class CvMainInterface:
 		return aszNames
 
 	# the help area of the game tooltip: while the own tooltip is on it is put far outside of the screen (the game still shows its tooltip of a
-	# HUD element for a moment before our window takes over). Not with a diplomacy screen open: the tooltips of the items of the trade window
-	# (WIDGET_TRADE_ITEM) are the game tooltips there (the own tooltip would stand behind the dialog), the DLL empties all other help then
+	# HUD element for a moment before our window takes over). Not with a diplomacy screen open: the tooltips of the portrait and of the items of
+	# the trade window are the game tooltips there (the own tooltip would stand behind the dialog); the DLL does not empty them any more
 	bDiploHelpArea = False
 	def setGameHelpArea( self, screen, iY ):
 		iX = HELTTEXT_AREA_X_MARGIN
@@ -9426,8 +9427,9 @@ class CvMainInterface:
 	def widgetHelpSeen( self, szText, eWidgetType ):
 		if not self.bHoverTip:
 			return
-		if int(eWidgetType) == int(getattr(WidgetTypes, "WIDGET_TRADE_ITEM", -2)):
-			# the items of the trade window of the diplomacy screen: the game tooltip (in front of the dialog) is the one that counts
+		if self.bDiploHelpArea:
+			# a diplomacy screen is open (portrait, items of the trade window): the game tooltip (in front of the dialog) is the one that counts,
+			# the own tooltip would stand behind the dialog
 			return
 		self.iLastWidgetType = int(eWidgetType)
 		try:
