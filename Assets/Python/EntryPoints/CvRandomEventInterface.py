@@ -998,7 +998,9 @@ def _dispatchWarEnemy(player):
 	return False
 
 def _dispatchCanTrigger(argsList, bWar):
-	ePlayer = argsList[1]
+	# (the callback PythonCanDo of a trigger gets only the triggered data: argsList[0])
+	kTriggeredData = argsList[0]
+	ePlayer = kTriggeredData.ePlayer
 	player = gc.getPlayer(ePlayer)
 	if player.isNone() or not player.isPlayable() or player.isNative() or not player.isHuman():
 		return False
@@ -1009,11 +1011,10 @@ def _dispatchCanTrigger(argsList, bWar):
 	capital = player.getCapitalCity()
 	if capital is None or capital.isNone():
 		return False
-	# the callback may come with a city (argsList[2]) or without one (player trigger): then the capital is meant
-	if len(argsList) > 2:
-		city = player.getCity(argsList[2])
-		if city is None or city.isNone() or capital.getID() != city.getID():
-			return False
+	# the event is about the capital: the trigger picked a city at random, so the capital is set as the city of the event (python may change the data)
+	kTriggeredData.iCityId = capital.getID()
+	kTriggeredData.iPlotX = capital.getX()
+	kTriggeredData.iPlotY = capital.getY()
 	if player.NBMOD_GetMaxTaxRate() >= player.getTaxRate():
 		return False
 	return _dispatchWarEnemy(player) == bWar
@@ -12827,10 +12828,12 @@ def _getInitialNativeTradeValidatedData(kTriggeredData, iRequiredTradeGoods):
 def canTriggerInitialNativeTrade(argsList):
 	kTriggeredData = argsList[0]
 
-	eEvent1 = gc.getInfoTypeForString("EVENT_INITIAL_TRADE_WITH_NATIVES_1")
-	event1 = gc.getEventInfo(eEvent1)
+	# The event only fires when the city holds the amount of the most expensive option (the third one), so that all
+	# options can be chosen (it used to fire with the amount of the first option, with the third one unavailable)
+	eEvent3 = gc.getInfoTypeForString("EVENT_INITIAL_TRADE_WITH_NATIVES_3")
+	event3 = gc.getEventInfo(eEvent3)
 
-	iRequiredTradeGoods = _getInitialNativeTradeScaledAmount(-event1.getGenericParameter(1))
+	iRequiredTradeGoods = _getInitialNativeTradeScaledAmount(-event3.getGenericParameter(1))
 
 	if _getInitialNativeTradeValidatedData(kTriggeredData, iRequiredTradeGoods) is None:
 		return False
