@@ -12883,7 +12883,103 @@ int CvPlayerAI::AI_desiredCityCount()
 		}
 	}
 
-	return std::max(1, iCount);
+	iCount = std::max(1, iCount);
+
+	// WTP: AI settlement brake (game option): above a soft limit only a part of the wish for further cities is kept
+	if (bColonial && GC.getGameINLINE().isOption(GAMEOPTION_AI_CITY_BRAKE))
+	{
+		const int iLimit = AI_getCityBrakeLimit();
+		if (iCount > iLimit)
+		{
+			iCount = iLimit + ((iCount - iLimit) * WtpTiming::data().iBrakeFalloff) / 100;
+		}
+	}
+
+	return iCount;
+}
+
+// WTP: soft limit of cities of the AI settlement brake. Computed once per player and turn (the settler gate asks for it very often).
+// map term:    land plots / (colonial powers * plots per city), scaled by the game speed (slower speed = more turns = higher limit)
+// human term:  the limit moves towards 150% of the biggest human city count (weak weight, so the map size stays the strongest term)
+// leader cap:  nobody gets bigger than 130% of the average of the other colonial AIs (plus 2), so no single AI runs away
+// the limit never falls below the floor
+int CvPlayerAI::AI_getCityBrakeLimit()
+{
+	static int aiTurn[MAX_PLAYERS];
+	static int aiLimit[MAX_PLAYERS];
+	static bool bInit = false;
+	if (!bInit)
+	{
+		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
+			aiTurn[i] = -1;
+			aiLimit[i] = 0;
+		}
+		bInit = true;
+	}
+
+	const int iTurn = GC.getGameINLINE().getGameTurn();
+	if (aiTurn[getID()] == iTurn)
+	{
+		return aiLimit[getID()];
+	}
+
+	const WtpTiming::Data& kSet = WtpTiming::data();
+
+	int iColonial = 0;
+	int iHumanMax = 0;
+	int iOtherAiCities = 0;
+	int iOtherAis = 0;
+	for (int iPlayer = 0; iPlayer < MAX_PLAYERS; iPlayer++)
+	{
+		const CvPlayerAI& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+		if (!kPlayer.isAlive() || kPlayer.isNative() || kPlayer.isEurope() || !kPlayer.is(CIV_CATEGORY_COLONIAL))
+		{
+			continue;
+		}
+		iColonial++;
+		if (kPlayer.isHuman())
+		{
+			iHumanMax = std::max(iHumanMax, kPlayer.getNumCities());
+		}
+		else if (iPlayer != getID())
+		{
+			iOtherAiCities += kPlayer.getNumCities();
+			iOtherAis++;
+		}
+	}
+	iColonial = std::max(1, iColonial);
+
+	// map term, game speed in percent (100 = normal, marathon is higher) within 50% .. 300%
+	const int iSpeed = std::min(300, std::max(50, GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getGrowthPercent()));
+	int iMapLimit = (GC.getMap().getLandPlots() * iSpeed) / (iColonial * kSet.iBrakePlotsPerCity * 100);
+
+	// human term, weak
+	int iLimit = iMapLimit;
+	if (iHumanMax > 0)
+	{
+		const int iHumanLimit = (iHumanMax * kSet.iBrakeHumanPct) / 100;
+		iLimit = (iMapLimit * (100 - kSet.iBrakeHumanWeight) + iHumanLimit * kSet.iBrakeHumanWeight) / 100;
+	}
+
+	// leader cap
+	if (iOtherAis > 0)
+	{
+		const int iCap = (iOtherAiCities * kSet.iBrakeLeaderPct) / (iOtherAis * 100) + 2;
+		iLimit = std::min(iLimit, iCap);
+	}
+
+	iLimit = std::max(kSet.iBrakeFloor, iLimit);
+
+	aiTurn[getID()] = iTurn;
+	aiLimit[getID()] = iLimit;
+
+	if (gPlayerLogLevel >= 1)
+	{
+		logBBAI("  Player %d (%S): city brake limit %d (map %d, speed %d%%, human max %d, other AIs %d with %d cities), cities %d",
+			getID(), getCivilizationDescription(0), iLimit, iMapLimit, iSpeed, iHumanMax, iOtherAis, iOtherAiCities, getNumCities());
+	}
+	return iLimit;
 }
 
 int CvPlayerAI::AI_professionBasicValue(ProfessionTypes eProfession, UnitTypes eUnit, CvCity* pCity)
