@@ -76,6 +76,38 @@ def showMainInterface():
 def numPlotListButtons():
 	return mainInterface.numPlotListButtons()
 
+# WTP: the name of a waypoint of the player on the map (for the DLL: a colonist that was born goes to a waypoint of his colony); empty if there is none at x, y
+def getWaypointNameAt(argsList):
+	try:
+		iX = argsList[0]
+		iY = argsList[1]
+		for tEntry in mainInterface.getWaypointView(False, gc.getGame().getActivePlayer()):
+			if tEntry[1] == iX and tEntry[2] == iY:
+				return tEntry[4]
+	except:
+		pass
+	return u""
+
+# WTP: the name of the target of the waypoint of a settlement (Player.getNativeWaypoint): a colony, or a waypoint on the map (1000000 + plot index); the
+# coordinates if the waypoint was deleted meanwhile, empty if there is no target
+def getWaypointTargetName(iTarget):
+	try:
+		if iTarget < 0:
+			return u""
+		pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+		if iTarget >= 1000000:
+			pPlot = gc.getMap().plotByIndex(iTarget - 1000000)
+			szName = getWaypointNameAt([pPlot.getX(), pPlot.getY()])
+			if len(szName) == 0:
+				szName = u"%d,%d" % (pPlot.getX(), pPlot.getY())
+			return szName
+		pCity = pPlayer.getCity(iTarget)
+		if pCity is not None and not pCity.isNone():
+			return pCity.getName()
+	except:
+		pass
+	return u""
+
 fatherScreen = CvFoundingFatherScreen.CvFoundingFatherScreen()
 def showFoundingFatherScreen(argsList):
 	DesyncDetectorInstance = gc.startDesyncMonitor()

@@ -700,6 +700,18 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 		break;
 
 	case BUTTONPOPUP_CHOOSEPRODUCTION:
+		if (info.getData2() == WTP_UNIT_WAYPOINT_POPUP)
+		{
+			// WTP: a unit that was created in a colony with a waypoint: 0 = it goes there
+			CvPlayer& kUnitWpPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
+			CvUnit* pWpUnit = kUnitWpPlayer.getUnit(info.getData1());
+			const CvPlot* pWpTarget = kUnitWpPlayer.getNativeWaypointPlot(info.getData3());
+			if (pPopupReturn->getButtonClicked() == 0 && pWpUnit != NULL && pWpTarget != NULL)
+			{
+				gDLL->sendPushMission(pWpUnit->getID(), MISSION_MOVE_TO, pWpTarget->getX_INLINE(), pWpTarget->getY_INLINE(), 0, false);
+			}
+			break;
+		}
 		if (info.getData2() == WTP_NATIVE_WAYPOINT_POPUP)
 		{
 			// WTP: waypoint of a native settlement: button = id of the city, WTP_NATIVE_WAYPOINT_REMOVE = remove, -1 = cancel
@@ -709,11 +721,20 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 			{
 				kWpPlayer.setNativeWaypoint(info.getData1(), -1);
 			}
+			else if (iButton >= 100000)
+			{
+				// a waypoint of the player on the map: 100000 + x * 1000 + y
+				const CvPlot* pWpPlot = GC.getMap().plotINLINE((iButton - 100000) / 1000, (iButton - 100000) % 1000);
+				if (pWpPlot != NULL)
+				{
+					kWpPlayer.setNativeWaypoint(info.getData1(), CvPlayer::WAYPOINT_PLOT_BASE + GC.getMap().plotNumINLINE(pWpPlot->getX_INLINE(), pWpPlot->getY_INLINE()));
+				}
+			}
 			else if (iButton >= 0 && kWpPlayer.getCity(iButton) != NULL)
 			{
 				kWpPlayer.setNativeWaypoint(info.getData1(), iButton);
 			}
-			// back to the advisor (native tab)
+			// back to the advisor (the tab it came from: natives or general)
 			CvPopupInfo* pAdvisor = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
 			pAdvisor->setText(L"showDomesticAdvisor");
 			gDLL->getInterfaceIFace()->addPopup(pAdvisor, GC.getGameINLINE().getActivePlayer(), true);
@@ -1555,6 +1576,16 @@ void CvDLLButtonPopup::OnFocus(CvPopup* pPopup, CvPopupInfo &info)
 	switch (info.getButtonPopupType())
 	{
 	case BUTTONPOPUP_CHOOSEPRODUCTION:
+		if (info.getData2() == WTP_UNIT_WAYPOINT_POPUP)
+		{
+			// WTP: the view jumps to the colony where the unit was born
+			const CvPlot* pBornPlot = GC.getMap().plotByIndexINLINE(info.getData3());
+			if (pBornPlot != NULL && pBornPlot->isCity())
+			{
+				gDLL->getInterfaceIFace()->lookAtCityOffset(pBornPlot->getPlotCity()->getID());
+			}
+			break;
+		}
 		if (info.getData2() == WTP_NATIVE_WAYPOINT_POPUP)
 		{
 			break; // WTP: the waypoint popup is wanted while the city is producing
@@ -1851,18 +1882,58 @@ static bool launchNativeWaypointPopup(CvPopup* pPopup, CvPopupInfo& info)
 		return false;
 	}
 	CvCity* pNative = pPlot->getPlotCity();
-	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, gDLL->getText("TXT_KEY_WTP_WAYPOINT_HEADER", pNative->getNameKey()), DLL_FONT_LEFT_JUSTIFY);
+	// (a native settlement with a mission / trading post of the player, or one of his own colonies)
+	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, gDLL->getText(pNative->getOwnerINLINE() == kPlayer.getID() ? "TXT_KEY_WTP_WAYPOINT_HEADER_CITY" : "TXT_KEY_WTP_WAYPOINT_HEADER", pNative->getNameKey()), DLL_FONT_LEFT_JUSTIFY);
 
 	int iLoop;
 	const int iCurrent = kPlayer.getNativeWaypoint(info.getData1());
 	for (CvCity* pCity = kPlayer.firstCity(&iLoop); pCity != NULL; pCity = kPlayer.nextCity(&iLoop))
 	{
+		if (pCity == pNative)
+		{
+			continue; // (no waypoint to the colony itself)
+		}
 		CvWString szText = pCity->getName();
 		if (pCity->getID() == iCurrent)
 		{
 			szText += L" *";
 		}
 		gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, szText.c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), pCity->getID(), WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+	}
+	// the own waypoints on the map (from the Python tooltips, the same list as in the window "Select destination"; those at own colonies are left out, the colonies are listed above)
+	{
+		CvWString szWaypoints;
+		CyArgsList argsListWp;
+		argsListWp.add(-1); // (no unit: the waypoints of the land units)
+		if (gDLL->getPythonIFace()->callFunction(PYScreensModule, "getGotoWaypoints", argsListWp.makeFunctionArgs(), &szWaypoints) && !szWaypoints.empty())
+		{
+			size_t iPos = 0;
+			while (iPos < szWaypoints.length())
+			{
+				size_t iEnd = szWaypoints.find(L'\n', iPos);
+				if (iEnd == CvWString::npos)
+				{
+					iEnd = szWaypoints.length();
+				}
+				const CvWString szLine = szWaypoints.substr(iPos, iEnd - iPos);
+				iPos = iEnd + 1;
+				const size_t iTab1 = szLine.find(L'\t');
+				const size_t iTab2 = (iTab1 == CvWString::npos) ? CvWString::npos : szLine.find(L'\t', iTab1 + 1);
+				if (iTab2 == CvWString::npos)
+				{
+					continue;
+				}
+				const int iWpX = _wtoi(szLine.substr(0, iTab1).c_str());
+				const int iWpY = _wtoi(szLine.substr(iTab1 + 1, iTab2 - iTab1 - 1).c_str());
+				CvWString szText = szLine.substr(iTab2 + 1);
+				if (iCurrent == CvPlayer::WAYPOINT_PLOT_BASE + GC.getMap().plotNumINLINE(iWpX, iWpY))
+				{
+					szText += L" *";
+				}
+				// the button number: 100000 + x * 1000 + y (the colonies have their id)
+				gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, szText.c_str(), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), 100000 + iWpX * 1000 + iWpY, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+			}
+		}
 	}
 	if (iCurrent >= 0)
 	{
@@ -1873,11 +1944,32 @@ static bool launchNativeWaypointPopup(CvPopup* pPopup, CvPopupInfo& info)
 	return true;
 }
 
+// WTP: a unit that was created in a colony with a waypoint (the colonist that was born there): does it go there?
+static bool launchUnitWaypointPopup(CvPopup* pPopup, CvPopupInfo& info)
+{
+	CvPlayer& kPlayer = GET_PLAYER(GC.getGameINLINE().getActivePlayer());
+	CvUnit* pUnit = kPlayer.getUnit(info.getData1());
+	CvPlot* pSource = GC.getMap().plotByIndexINLINE(info.getData3());
+	if (pUnit == NULL || pSource == NULL || !pSource->isCity() || pUnit->plot() != pSource || kPlayer.getNativeWaypointPlot(info.getData3()) == NULL)
+	{
+		return false; // (it moved or the waypoint is gone)
+	}
+	gDLL->getInterfaceIFace()->popupSetHeaderString(pPopup, gDLL->getText("TXT_KEY_WTP_WAYPOINT_CONFIRM", pUnit->getNameKey(), pSource->getPlotCity()->getNameKey(), kPlayer.getNativeWaypointTargetName(info.getData3()).GetCString()), DLL_FONT_LEFT_JUSTIFY);
+	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_YES"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath(), 0, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+	gDLL->getInterfaceIFace()->popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_POPUP_NO"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL")->getPath(), -1, WIDGET_GENERAL, -1, -1, true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
+	gDLL->getInterfaceIFace()->popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
+	return true;
+}
+
 bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 {
 	if (info.getData2() == WTP_NATIVE_WAYPOINT_POPUP)
 	{
 		return launchNativeWaypointPopup(pPopup, info);
+	}
+	if (info.getData2() == WTP_UNIT_WAYPOINT_POPUP)
+	{
+		return launchUnitWaypointPopup(pPopup, info);
 	}
 	CvWString szBuffer;
 	CvString szArtFilename;

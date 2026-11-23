@@ -862,11 +862,16 @@ public:
 	int missionaryThreshold(PlayerTypes ePlayer) const;
 	// WTP, Schmiddie, Trade Post Mestizo - START
 	void applyTradePostMestizoPoints(CvCity* pCity);
-	// WTP: waypoint of a native settlement: units that this player's mission / trading post creates there head for one of his cities
-	int getNativeWaypoint(int iPlotIndex) const; // id of the city, -1 if none
-	void setNativeWaypoint(int iPlotIndex, int iCityId); // -1 removes the waypoint
+	// WTP: waypoint of a settlement (key: the plot index of the settlement): the units that this player's mission / trading post creates in a native settlement and the
+	// colonists born in one of his own colonies head for the waypoint, which is one of his cities (the value is the id of the city) or a waypoint of his own
+	// on the map (the value is WAYPOINT_PLOT_BASE + the plot index; the waypoints are kept by Python)
+	static const int WAYPOINT_PLOT_BASE = 1000000;
+	int getNativeWaypoint(int iPlotIndex) const; // id of the city or WAYPOINT_PLOT_BASE + plot index, -1 if none
+	void setNativeWaypoint(int iPlotIndex, int iTarget); // -1 removes the waypoint
 	// sends the unit to the waypoint; returns the sentence about it for the message of the settlement (empty if there is no waypoint)
-	CvWString sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity);
+	CvWString sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pSourceCity);
+	CvPlot* getNativeWaypointPlot(int iSourcePlotIndex) const; // the plot of the target of the waypoint of the settlement, NULL if none
+	CvWString getNativeWaypointTargetName(int iSourcePlotIndex) const; // its name (the colony, the waypoint on the map or the coordinates), empty if none
 	int getTradePostMestizoPoints(PlayerTypes ePlayer) const;
 	void changeTradePostMestizoPoints(PlayerTypes ePlayer, int iChange);
 	int getTradePostMestizoThresholdMultiplier(PlayerTypes ePlayer) const;

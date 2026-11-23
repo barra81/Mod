@@ -6,6 +6,7 @@
 
 static const int WTP_NATIVE_WAYPOINT_POPUP = 1002; // data1 = plot index of the native settlement
 static const int WTP_NATIVE_WAYPOINT_REMOVE = 9999; // button id: remove the waypoint
+static const int WTP_UNIT_WAYPOINT_POPUP = 1003; // data1 = id of a unit that was born in a colony with a waypoint, data3 = plot index of the colony: does it go there? (button 0 = yes)
 class CvSavegameReader;
 class CvSavegameWriter;
 

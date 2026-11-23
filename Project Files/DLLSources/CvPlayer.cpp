@@ -19954,7 +19954,7 @@ bool CvPlayer::isIndependenceMilitaryUnit(const CvUnit& kUnit)
 	return kUnit.getDomainType() == DOMAIN_LAND && !kUnit.isOnlyDefensive() && !kUnit.isUnarmed();
 }
 
-// WTP: waypoint of a native settlement
+// WTP: waypoint of a settlement (native settlement with a mission / trading post of the player, or one of his own colonies)
 int CvPlayer::getNativeWaypoint(int iPlotIndex) const
 {
 	for (size_t i = 0; i + 1 < m_aiNativeWaypoints.size(); i += 2)
@@ -19967,7 +19967,7 @@ int CvPlayer::getNativeWaypoint(int iPlotIndex) const
 	return -1;
 }
 
-void CvPlayer::setNativeWaypoint(int iPlotIndex, int iCityId)
+void CvPlayer::setNativeWaypoint(int iPlotIndex, int iTarget)
 {
 	// the banner of the settlement shows the waypoint marker
 	CvPlot* pWpPlot = GC.getMap().plotByIndexINLINE(iPlotIndex);
@@ -19980,54 +19980,101 @@ void CvPlayer::setNativeWaypoint(int iPlotIndex, int iCityId)
 	{
 		if (m_aiNativeWaypoints[i] == iPlotIndex)
 		{
-			if (iCityId < 0)
+			if (iTarget < 0)
 			{
 				m_aiNativeWaypoints.erase(m_aiNativeWaypoints.begin() + i, m_aiNativeWaypoints.begin() + i + 2);
 			}
 			else
 			{
-				m_aiNativeWaypoints[i + 1] = iCityId;
+				m_aiNativeWaypoints[i + 1] = iTarget;
 			}
 			return;
 		}
 	}
-	if (iCityId >= 0)
+	if (iTarget >= 0)
 	{
 		m_aiNativeWaypoints.push_back(iPlotIndex);
-		m_aiNativeWaypoints.push_back(iCityId);
+		m_aiNativeWaypoints.push_back(iTarget);
 	}
 }
 
-// a unit that was just created in a native settlement of this player's mission / trading post: it goes to the waypoint. The returned sentence
-// is added to the message of the settlement (which centers on the settlement, where the unit is)
-CvWString CvPlayer::sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pNativeCity)
+// the name of a waypoint of the player on the map (kept by Python), the coordinates if there is none
+static CvWString wtpWaypointPlotName(const CvPlot* pPlot)
+{
+	CvWString szName;
+	CyArgsList argsList;
+	argsList.add(pPlot->getX_INLINE());
+	argsList.add(pPlot->getY_INLINE());
+	if (!gDLL->getPythonIFace()->callFunction(PYScreensModule, "getWaypointNameAt", argsList.makeFunctionArgs(), &szName) || szName.empty())
+	{
+		szName = CvWString::format(L"%d,%d", pPlot->getX_INLINE(), pPlot->getY_INLINE());
+	}
+	return szName;
+}
+
+CvPlot* CvPlayer::getNativeWaypointPlot(int iSourcePlotIndex) const
+{
+	const int iTarget = getNativeWaypoint(iSourcePlotIndex);
+	if (iTarget < 0)
+	{
+		return NULL;
+	}
+	if (iTarget >= WAYPOINT_PLOT_BASE)
+	{
+		return GC.getMap().plotByIndexINLINE(iTarget - WAYPOINT_PLOT_BASE);
+	}
+	CvCity* pTarget = getCity(iTarget);
+	return (pTarget != NULL) ? pTarget->plot() : NULL;
+}
+
+CvWString CvPlayer::getNativeWaypointTargetName(int iSourcePlotIndex) const
+{
+	const int iTarget = getNativeWaypoint(iSourcePlotIndex);
+	if (iTarget < 0)
+	{
+		return CvWString();
+	}
+	if (iTarget >= WAYPOINT_PLOT_BASE)
+	{
+		const CvPlot* pPlot = GC.getMap().plotByIndexINLINE(iTarget - WAYPOINT_PLOT_BASE);
+		return (pPlot != NULL) ? wtpWaypointPlotName(pPlot) : CvWString();
+	}
+	CvCity* pTarget = getCity(iTarget);
+	return (pTarget != NULL) ? CvWString(pTarget->getName()) : CvWString();
+}
+
+// a unit that was just created in a settlement with a waypoint of this player (a native settlement of his mission / trading post, or one of his own colonies: a colonist
+// that was born there): it goes to the waypoint. The returned sentence is added to the message of the settlement (which centers on the settlement, where the unit is)
+CvWString CvPlayer::sendUnitToNativeWaypoint(CvUnit* pUnit, const CvCity* pSourceCity)
 {
 	CvWString szResult;
-	if (pUnit == NULL || pNativeCity == NULL || !isHuman())
+	if (pUnit == NULL || pSourceCity == NULL || !isHuman())
 	{
 		return szResult;
 	}
-	const int iCityId = getNativeWaypoint(GC.getMap().plotNum(pNativeCity->getX_INLINE(), pNativeCity->getY_INLINE()));
-	if (iCityId < 0)
+	const int iTarget = getNativeWaypoint(GC.getMap().plotNum(pSourceCity->getX_INLINE(), pSourceCity->getY_INLINE()));
+	if (iTarget < 0)
 	{
 		return szResult;
 	}
-	CvCity* pTarget = getCity(iCityId);
+	const int iSourcePlot = GC.getMap().plotNum(pSourceCity->getX_INLINE(), pSourceCity->getY_INLINE());
+	CvPlot* pTargetPlot = getNativeWaypointPlot(iSourcePlot);
+	const CvWString szTargetName = getNativeWaypointTargetName(iSourcePlot);
 	CvSelectionGroup* pGroup = pUnit->getGroup();
-	if (pTarget == NULL || pGroup == NULL)
+	if (pTargetPlot == NULL || pGroup == NULL || pTargetPlot == pUnit->plot())
 	{
 		return szResult;
 	}
 	int iPathTurns = 0;
-	const bool bPath = pGroup->generatePath(pUnit->plot(), pTarget->plot(), 0, false, &iPathTurns);
-	pGroup->pushMission(MISSION_MOVE_TO, pTarget->getX_INLINE(), pTarget->getY_INLINE());
+	const bool bPath = pGroup->generatePath(pUnit->plot(), pTargetPlot, 0, false, &iPathTurns);
+	pGroup->pushMission(MISSION_MOVE_TO, pTargetPlot->getX_INLINE(), pTargetPlot->getY_INLINE());
 	if (bPath)
 	{
-		szResult = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT", pUnit->getNameKey(), pTarget->getNameKey(), std::max(1, iPathTurns));
+		szResult = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT", pUnit->getNameKey(), szTargetName.GetCString(), std::max(1, iPathTurns));
 	}
 	else
 	{
-		szResult = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT_NOPATH", pUnit->getNameKey(), pTarget->getNameKey());
+		szResult = gDLL->getText("TXT_KEY_WTP_WAYPOINT_UNIT_SENT_NOPATH", pUnit->getNameKey(), szTargetName.GetCString());
 	}
 	return szResult;
 }

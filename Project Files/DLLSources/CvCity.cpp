@@ -7652,6 +7652,15 @@ void CvCity::doGrowth()
 						getX_INLINE(),
 						getY_INLINE());
 
+				if (!isNative() && pGrowthUnit != NULL && GET_PLAYER(getOwnerINLINE()).isHuman())
+				{
+					if (GET_PLAYER(getOwnerINLINE()).getNativeWaypoint(GC.getMap().plotNum(getX_INLINE(), getY_INLINE())) >= 0)
+					{
+						// the new unit (the free colonist, or e.g. a refugee of the ethnically correct growth) goes to the waypoint only after the player confirmed it
+						gDLL->getInterfaceIFace()->addPopup(new CvPopupInfo(BUTTONPOPUP_CHOOSEPRODUCTION, pGrowthUnit->getID(), WTP_UNIT_WAYPOINT_POPUP, GC.getMap().plotNum(getX_INLINE(), getY_INLINE())), getOwnerINLINE(), false, false);
+					}
+				}
+
 				// WTP, Schmiddie, Native military unit cap START
 				if (isNative() && pGrowthUnit != NULL)
 				{
