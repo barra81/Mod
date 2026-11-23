@@ -23732,6 +23732,7 @@ def canTriggerMonasteryTradingFood(argsList):
 ECCENTRIC_ARCHITECT_COOLDOWN_TURNS = 40
 ECCENTRIC_ARCHITECT_COOLDOWN_PREFIX = "[[WTP_ECCENTRIC_ARCHITECT_READY_TURN="
 ECCENTRIC_ARCHITECT_COOLDOWN_SUFFIX = "]]"
+ECCENTRIC_ARCHITECT_AFTER_GOVERNOR_TURNS = 10
 
 
 def _getEccentricArchitectCooldown(player):
@@ -23809,7 +23810,25 @@ def canTriggerEccentricArchitect(argsList):
 	if CyGame().getGameTurn() < _getEccentricArchitectCooldown(player):
 		return False
 
+	# WTP (user 2026-11-23): both events need the same gold and came at the same time, so only one could be taken:
+	# the architect comes only after the governor event, at the earliest ECCENTRIC_ARCHITECT_AFTER_GOVERNOR_TURNS later
+	iGovernorTurn = _getGovernorEventTurn(player)
+	if iGovernorTurn < 0 or CyGame().getGameTurn() < iGovernorTurn + ECCENTRIC_ARCHITECT_AFTER_GOVERNOR_TURNS:
+		return False
+
 	return True
+
+# WTP: turn in which the player got the governor event (either answer), -1 if not yet
+def _getGovernorEventTurn(player):
+	iTurn = -1
+	for szEvent in ("EVENT_GOVERNOR_1", "EVENT_GOVERNOR_2"):
+		eEvent = gc.getInfoTypeForString(szEvent)
+		if eEvent < 0:
+			continue
+		kData = player.getEventOccured(eEvent)
+		if kData is not None and kData.iTurn > iTurn:
+			iTurn = kData.iTurn
+	return iTurn
 
 def _startEccentricArchitectCooldown(player):
 	if player.isNone():
