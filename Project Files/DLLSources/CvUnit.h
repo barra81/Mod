@@ -512,8 +512,9 @@ public:
 		NUM_TRANSPORT_STATS
 	};
 	enum { TS_LOG_ENTRIES = 15, TS_LOG_PAIRS = 8, TS_LOG_PAIR_SIZE = 7, TS_LOG_RECORD = 4 + TS_LOG_PAIR_SIZE * TS_LOG_PAIRS, TS_LOG_UNLOADED = -2 };
-	void noteTransportLoad(YieldTypes eYield);
+	void noteTransportLoad(YieldTypes eYield, int iAmount);
 	void noteTransportUnload(YieldTypes eYield, int iAmount);
+	void addTransportUnloaded(YieldTypes eYield, int iAmount, int iLoadTurn, int iLoadPlace, int iPlace);
 	void doTransportStats();
 	const std::vector<int>& getTransportLog() const { return m_aiTransportLog; }
 	int getTransportStat(int iStat) const;
@@ -1056,9 +1057,10 @@ protected:
 	// WTP: statistics of the transports of a human player (see doTransportStats), sampled at every turn change
 	int m_aiTransportStat[15];
 	EnumMap<YieldTypes, int> m_em_iTransportYieldTurns; // slots of the goods on board, summed over the turns
-	EnumMap<YieldTypes, int> m_em_iTransportLoadTurn; // per good: the turn it was loaded last
-	EnumMap<YieldTypes, int> m_em_iTransportLoadPlace; // per good: where it was loaded last (packed place, see doTransportStats)
-	// the last turns in service, TS_LOG_RECORD numbers each: turn, place (x + 2 | (y + 2) << 12; off the map: 1 | travel state << 12), number of goods, then per
+	// the goods on board by load: 4 numbers each (yield, amount, turn of the loading, place of the loading; packed place, see doTransportStats), the oldest first. A good that is
+	// loaded in the same place in the same turn is one entry; unloaded goods leave the oldest entry of their yield first (noteTransportUnload)
+	std::vector<int> m_aiTransportBatches;
+	// the last turns in service, TS_LOG_RECORD numbers each: turn (the turn after the one that the line describes: the record is written at the turn change), place (x + 2 | (y + 2) << 12; off the map: 1 | travel state << 12), number of goods, then per
 	// good (TS_LOG_PAIR_SIZE numbers): yield, amount, turn of the loading, place of the loading, place of the destination (0: none), distance to it (-1: unknown), turns it still takes at that time (-1: unknown)
 	// A good that was unloaded in that turn (first in the record, before the goods on board) has the same numbers, but: place of the destination = place of the unloading,
 	// distance = TS_LOG_UNLOADED (marks the pair), turns = -1

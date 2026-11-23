@@ -882,9 +882,10 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					}
 				}
 				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_NOTE").GetCString()));
-				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 48[goods] [export] place of loading, T469; [map] destination, 6[moves];; 200[goods] [export] place of loading, T470; [import] place of the unloading ..." (the separator ;; between the goods is yellow; the goods unloaded in that turn come first)
+				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 100[goods] [import] place of the unloading; [export] place of loading, T469;; 48[goods] [export] place of loading, T470; [map] destination, 6[moves] ..." (the separator between the goods is yellow, ;; and between the unloaded and the loaded goods ||; the goods unloaded in that turn come first)
+				// (T471 is the turn that the line describes - the turn in which the goods were loaded and unloaded: the record is written at the turn change and holds the next turn, so it is shown minus one; the place of the ship and the goods on board are as at the end of that turn)
 				// (cyan header with the turn and the brackets, the place of the ship inside of them and the turn of the loading (T469) in a paler yellow (240,225,130), the separators ;; in the plain yellow, green amounts; the symbols are glyphs of the game font; the place of every
-				// number: see CvUnit::m_aiTransportLog)
+				// number: see CvUnit::m_aiTransportLog; goods with the same details are one entry: "124[goods] 42[goods] details")
 				const std::vector<int>& aiLog = pUnit->getTransportLog();
 				// the symbol of the distance in plots (number 15 of the symbols of the game font)
 				const int iTilesChar = GC.getSymbolID((FontSymbols)15);
@@ -892,29 +893,37 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				{
 					const int* piRec = &aiLog[iRec * CvUnit::TS_LOG_RECORD];
 					CvWString szGoods;
+					// (goods with the same details, i.e. the same place of loading or unloading and the same destination, are one entry: "124[tobacco] 42[grapes] details")
+					std::vector<bool> aGroupUnloaded;
+					std::vector<CvWString> aGroupGoods;
+					std::vector<CvWString> aGroupDetails;
 					for (int iPair = 0; iPair < piRec[3]; ++iPair)
 					{
 						const int* piPair = &piRec[4 + CvUnit::TS_LOG_PAIR_SIZE * iPair];
-						if (iPair > 0)
-						{
-							szGoods.append(CvWString::format(SETCOLR L";;" ENDCOLR L" ", TEXT_COLOR("COLOR_YELLOW")));
-						}
-						szGoods.append(CvWString::format(SETCOLR L"%d" ENDCOLR L"%c", TEXT_COLOR("COLOR_POSITIVE_TEXT"), piPair[1], GC.getYieldInfo((YieldTypes)piPair[0]).getChar()));
+						const CvWString szGood = CvWString::format(SETCOLR L"%d" ENDCOLR L"%c", TEXT_COLOR("COLOR_POSITIVE_TEXT"), piPair[1], GC.getYieldInfo((YieldTypes)piPair[0]).getChar());
 						CvWString szDetails;
+						// (where and when the good was loaded: the turn is in the paler yellow and ends the entry of the good, the yellow ;; follows)
+						CvWString szLoaded;
 						if (piPair[3] != 0 && piPair[2] > 0)
 						{
-							szDetails = CvWString::format(L"%c %s, " SETCOLR L"%s%d" ENDCOLR, GC.getSymbolID(EXPORT_CHAR), wtpTransportPlaceName(piPair[3]).GetCString(), 240, 225, 130, 255, gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piPair[2]);
+							szLoaded = CvWString::format(L"%c %s, " SETCOLR L"%s%d" ENDCOLR, GC.getSymbolID(EXPORT_CHAR), wtpTransportPlaceName(piPair[3]).GetCString(), 240, 225, 130, 255, gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piPair[2]);
 						}
 						if (piPair[5] == CvUnit::TS_LOG_UNLOADED)
 						{
-							// a good that was unloaded in that turn: "[load symbol] place of the loading, T..; [unload symbol] place of the unloading"
-							if (szDetails.length() > 0)
+							// a good that was unloaded in that turn: "[unload symbol] place of the unloading; [load symbol] place of the loading, T.."
+							szDetails = CvWString::format(L"%c %s", GC.getSymbolID(IMPORT_CHAR), wtpTransportPlaceName(piPair[4]).GetCString());
+							if (szLoaded.length() > 0)
 							{
 								szDetails.append(L"; ");
+								szDetails.append(szLoaded);
 							}
-							szDetails.append(CvWString::format(L"%c %s", GC.getSymbolID(IMPORT_CHAR), wtpTransportPlaceName(piPair[4]).GetCString()));
 						}
-						else if (piPair[4] != 0)
+						else
+						{
+							// a good on board: "[load symbol] place of the loading, T..; [map symbol] destination, plots, turns"
+							szDetails = szLoaded;
+						}
+						if (piPair[5] != CvUnit::TS_LOG_UNLOADED && piPair[4] != 0)
 						{
 							if (szDetails.length() > 0)
 							{
@@ -940,9 +949,37 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 								szDetails.append(CvWString::format(L"%c %s", GC.getSymbolID(MAP_CHAR), wtpTransportPlaceName(piPair[4]).GetCString()));
 							}
 						}
-						if (szDetails.length() > 0)
+						const bool bUnloadedPair = piPair[5] == CvUnit::TS_LOG_UNLOADED;
+						bool bGrouped = false;
+						for (uint iGroup = 0; iGroup < aGroupGoods.size(); ++iGroup)
 						{
-							szGoods.append(CvWString::format(L" %s", szDetails.GetCString()));
+							if (aGroupUnloaded[iGroup] == bUnloadedPair && aGroupDetails[iGroup] == szDetails)
+							{
+								aGroupGoods[iGroup].append(L" ");
+								aGroupGoods[iGroup].append(szGood);
+								bGrouped = true;
+								break;
+							}
+						}
+						if (!bGrouped)
+						{
+							aGroupUnloaded.push_back(bUnloadedPair);
+							aGroupGoods.push_back(szGood);
+							aGroupDetails.push_back(szDetails);
+						}
+					}
+					for (uint iGroup = 0; iGroup < aGroupGoods.size(); ++iGroup)
+					{
+						if (iGroup > 0)
+						{
+							// (two pipes where the unloadings end and the loadings begin, otherwise ;;)
+							const bool bUnloadsEnd = !aGroupUnloaded[iGroup] && aGroupUnloaded[iGroup - 1];
+							szGoods.append(CvWString::format(SETCOLR L"%s" ENDCOLR L" ", TEXT_COLOR("COLOR_YELLOW"), bUnloadsEnd ? L"||" : L";;"));
+						}
+						szGoods.append(aGroupGoods[iGroup]);
+						if (aGroupDetails[iGroup].length() > 0)
+						{
+							szGoods.append(CvWString::format(L" %s", aGroupDetails[iGroup].GetCString()));
 						}
 					}
 					if (piRec[3] == 0)
@@ -957,7 +994,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					}
 					CvWString szLogPlaceOpen = (szLogPlace.length() > 0) ? L"(" : L"";
 					CvWString szLogPlaceClose = (szLogPlace.length() > 0) ? L")" : L"";
-					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s" ENDCOLR SETCOLR L"%s" ENDCOLR SETCOLR L"%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0], szLogPlaceOpen.GetCString(), 240, 225, 130, 255, szLogPlace.GetCString(), TEXT_COLOR("COLOR_CYAN"), szLogPlaceClose.GetCString(), szGoods.GetCString()));
+					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s" ENDCOLR SETCOLR L"%s" ENDCOLR SETCOLR L"%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0] - 1, szLogPlaceOpen.GetCString(), 240, 225, 130, 255, szLogPlace.GetCString(), TEXT_COLOR("COLOR_CYAN"), szLogPlaceClose.GetCString(), szGoods.GetCString()));
 				}
 				// the last line of the log window: "Legend" (marked with \x00AA), its child window is the explanation of the symbols (the line marked with \x00BA)
 				if (!aiLog.empty())

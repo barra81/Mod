@@ -171,6 +171,7 @@ enum SavegameVariableTypes
 	UnitSave_TransportLog2,
 	UnitSave_TransportStat14,
 	UnitSave_TransportLog3, // (the log with the turns to the destination per good; UnitSave_TransportLog2 is read and converted)
+	UnitSave_TransportBatches, // (the goods on board by load; UnitSave_TransportLoadTurn and UnitSave_TransportLoadPlace are read and dropped)
 
 	NUM_SAVE_ENUM_VALUES,
 };
@@ -271,6 +272,7 @@ const char* getSavedEnumNameUnit(SavegameVariableTypes eType)
 	case UnitSave_TransportLog2: return "UnitSave_TransportLog2";
 	case UnitSave_TransportLog3: return "UnitSave_TransportLog3";
 	case UnitSave_TransportStat14: return "UnitSave_TransportStat14";
+	case UnitSave_TransportBatches: return "UnitSave_TransportBatches";
 	}
 	FAssertMsg(0, "Missing case");
 	return "";
@@ -337,8 +339,7 @@ void CvUnit::resetSavedData(int iID, UnitTypes eUnit, PlayerTypes eOwner, bool b
 	m_em_iTransportYieldTurns.reset();
 	m_aiTransportLog.clear();
 	m_aiTransportUnloaded.clear();
-	m_em_iTransportLoadTurn.reset();
-	m_em_iTransportLoadPlace.reset();
+	m_aiTransportBatches.clear();
 
 	m_bBarbarian = defaultBarbarian;
 
@@ -493,8 +494,15 @@ void CvUnit::read(CvSavegameReader reader)
 				reader.Read(aiOldLog);
 			}
 			break;
-		case UnitSave_TransportLoadTurn: reader.Read(m_em_iTransportLoadTurn); break;
-		case UnitSave_TransportLoadPlace: reader.Read(m_em_iTransportLoadPlace); break;
+		case UnitSave_TransportLoadTurn:
+		case UnitSave_TransportLoadPlace:
+		{
+			// (old format of a wip version: one turn and place per good, read and dropped)
+			EnumMap<YieldTypes, int> em_iDropped;
+			reader.Read(em_iDropped);
+			break;
+		}
+		case UnitSave_TransportBatches: reader.Read(m_aiTransportBatches); break;
 		case UnitSave_TransportLog2:
 			{
 				// the old log has six numbers per good (no turns to the destination): converted, the turns are unknown (-1)
@@ -649,8 +657,10 @@ void CvUnit::write(CvSavegameWriter writer)
 	if (!m_aiTransportLog.empty())
 	{
 		writer.Write(UnitSave_TransportLog3, m_aiTransportLog);
-		writer.Write(UnitSave_TransportLoadTurn, m_em_iTransportLoadTurn);
-		writer.Write(UnitSave_TransportLoadPlace, m_em_iTransportLoadPlace);
+	}
+	if (!m_aiTransportBatches.empty())
+	{
+		writer.Write(UnitSave_TransportBatches, m_aiTransportBatches);
 	}
 
 	writer.Write(UnitSave_END);

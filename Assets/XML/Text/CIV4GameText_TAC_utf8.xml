@@ -3997,15 +3997,15 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_LOG_LEGEND</Tag>
-		<English>[COLOR_GREY]%s1 loaded at (turn of the loading), %s2 destination, %s3 plots to the destination, %s4 turns to the destination at that time, %s5 unloaded at (the line of a good that was unloaded in that turn); ;; next good[COLOR_REVERT]</English>
-		<German>[COLOR_GREY]%s1 geladen in (Runde des Beladens), %s2 Ziel, %s3 Felder bis zum Ziel, %s4 Runden bis zum Ziel zu diesem Zeitpunkt, %s5 entladen in (Zeile einer Ware, die in dieser Runde entladen wurde); ;; nächste Ware[COLOR_REVERT]</German>
-		<Russian>[COLOR_GREY]%s1 загружено в (ход погрузки), %s2 цель, %s3 клеток до цели, %s4 ходов до цели на тот момент, %s5 выгружено в (строка товара, выгруженного в этот ход); ;; следующий товар[COLOR_REVERT]</Russian>
+		<English>[COLOR_GREY]%s1 loaded at (turn of the loading), %s2 destination, %s3 plots to the destination, %s4 turns to the destination at that time, %s5 unloaded at (a good that was unloaded in that turn: unloaded at first, then loaded at); ;; next good[COLOR_REVERT]</English>
+		<German>[COLOR_GREY]%s1 geladen in (Runde des Beladens), %s2 Ziel, %s3 Felder bis zum Ziel, %s4 Runden bis zum Ziel zu diesem Zeitpunkt, %s5 entladen in (Ware, die in dieser Runde entladen wurde: zuerst entladen in, dann geladen in); ;; nächste Ware[COLOR_REVERT]</German>
+		<Russian>[COLOR_GREY]%s1 загружено в (ход погрузки), %s2 цель, %s3 клеток до цели, %s4 ходов до цели на тот момент, %s5 выгружено в (товар, выгруженный в этот ход: сначала выгружено в, затем загружено в); ;; следующий товар[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_NOTE</Tag>
-		<English>[COLOR_GREY]Counted at each turn change (turns in service: loaded or automated). Unloaded: the cargo is less than at the last turn change.[COLOR_REVERT]</English>
-		<German>[COLOR_GREY]Gezählt bei jedem Rundenwechsel (im Dienst: beladen oder automatisiert). Entladen: weniger Fracht als beim letzten Rundenwechsel.[COLOR_REVERT]</German>
-		<Russian>[COLOR_GREY]Считается при каждой смене хода (на службе: загружен или автоматизирован). Выгружено: груза меньше, чем при прошлой смене хода.[COLOR_REVERT]</Russian>
+		<English>[COLOR_GREY]Counted at each turn change (turns in service: loaded or automated). Every line of the log describes the turn named in it: what was unloaded and loaded in that turn, the place of the ship and the cargo as at the end of it.[COLOR_REVERT]</English>
+		<German>[COLOR_GREY]Gezählt bei jedem Rundenwechsel (im Dienst: beladen oder automatisiert). Jede Zeile des Logs beschreibt die darin genannte Runde: was in dieser Runde entladen und geladen wurde, der Ort des Schiffs und die Fracht am Ende der Runde.[COLOR_REVERT]</German>
+		<Russian>[COLOR_GREY]Считается при каждой смене хода (на службе: загружен или автоматизирован). Каждая строка журнала описывает указанный в ней ход: что в этот ход выгружено и загружено, место корабля и груз на конец хода.[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TS_LEGEND_TITLE</Tag>

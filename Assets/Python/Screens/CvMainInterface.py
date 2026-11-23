@@ -370,6 +370,7 @@ class CvMainInterface:
 	szSuppressHelp = u"" # the text of the window that was just frozen: the tooltip of the same thing does not appear again at once
 	iTipSelLevel = -1
 	iPreviewParent = -1
+	bPreviewDark = False # the window of the preview is the darker variant (the log of a transport)
 	tScoreRect = None
 	tPreviewLayout = None # the window beside the top frozen window (it can be frozen too): layout, paragraphs, widget name prefix
 	aszPreviewParas = []
@@ -7184,7 +7185,7 @@ class CvMainInterface:
 			self.tPreviewWp = None
 			self.tPreviewUnit = None
 			self.tPreviewDetails = None
-			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, dict(dPreviewDetails), None, iParent)
+			self.addFrozenWindow(screen, tLayout, self.aszPreviewParas, aiIndent, dict(dPreviewDetails), None, iParent, self.bPreviewDark)
 			try:
 				# (the child window of the line "all colonies, net per turn" in the tooltip of a good: its lines of colonies can be clicked, the jump)
 				if iParent >= 0 and self.dTraderWin.has_key(self.aFrozen[iParent][0]):
@@ -7411,7 +7412,9 @@ class CvMainInterface:
 			self.iPreviewParent = iParent
 			self.aszPreviewParas = aszParas
 			self.iSecondTipLines = len(aszLines)
-			self.drawTipWindow(screen, self.szPreviewPrefix, self.tPreviewLayout, False, 0, [])
+			# (the log of a transport always opens in the darker variant, also over the map)
+			self.bPreviewDark = self.dWideTips.has_key(szText)
+			self.drawTipWindow(screen, self.szPreviewPrefix, self.tPreviewLayout, False, 0, [], self.bPreviewDark)
 			self.bSecondTipShown = True
 		except:
 			self.bSecondTipShown = False

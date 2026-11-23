@@ -6241,6 +6241,11 @@ void CvUnit::doUnloadYield(int iAmount)
 	CvCity* pCity = plot()->getPlotCity();
 	if (pCity != NULL)
 	{
+		// WTP: statistics of the transport: a part of its cargo goes into the city (the complete unloading by setTransportUnit is noted there, the ship is no longer set here)
+		if (getTransportUnit() != NULL)
+		{
+			getTransportUnit()->noteTransportUnload(eYield, iAmount);
+		}
 		// R&R mod, vetiarvind, max yield import limit - start (bug fix of native code)
 		//pCity->changeYieldStored(eYield, pUnloadingUnit->getYieldStored());
 		pCity->changeYieldStored(eYield, iAmount);
@@ -12569,6 +12574,7 @@ void CvUnit::doTransportStats()
 		m_aiTransportStat[TS_LAST_X] = 0;
 		m_aiTransportStat[TS_LAST_Y] = 0;
 		m_aiTransportUnloaded.clear();
+		m_aiTransportBatches.clear();
 		return;
 	}
 	int iValue = 0;
@@ -12629,6 +12635,45 @@ void CvUnit::doTransportStats()
 
 	// the log of the last turns: where the transport was, which goods (and amounts) were on board, where they were loaded, where they go and how far
 	// that was
+	// (the goods on board by load: made to fit the cargo that is really on board; what left the ship in another way than noted - sold, killed - leaves
+	// the oldest entry first, a good that came on board unseen is an entry without turn and place)
+	for (YieldTypes eBatchYield = FIRST_YIELD; eBatchYield < NUM_YIELD_TYPES; ++eBatchYield)
+	{
+		int iBatchSum = 0;
+		for (int i = 0; i + 4 <= (int)m_aiTransportBatches.size(); i += 4)
+		{
+			if (m_aiTransportBatches[i] == (int)eBatchYield)
+			{
+				iBatchSum += m_aiTransportBatches[i + 1];
+			}
+		}
+		if (iBatchSum < aiAmount[eBatchYield])
+		{
+			m_aiTransportBatches.push_back((int)eBatchYield);
+			m_aiTransportBatches.push_back(aiAmount[eBatchYield] - iBatchSum);
+			m_aiTransportBatches.push_back(0);
+			m_aiTransportBatches.push_back(0);
+		}
+		else if (iBatchSum > aiAmount[eBatchYield])
+		{
+			int iSurplus = iBatchSum - aiAmount[eBatchYield];
+			for (int i = 0; i + 4 <= (int)m_aiTransportBatches.size() && iSurplus > 0;)
+			{
+				if (m_aiTransportBatches[i] == (int)eBatchYield)
+				{
+					const int iTake = std::min(iSurplus, m_aiTransportBatches[i + 1]);
+					m_aiTransportBatches[i + 1] -= iTake;
+					iSurplus -= iTake;
+					if (m_aiTransportBatches[i + 1] <= 0)
+					{
+						m_aiTransportBatches.erase(m_aiTransportBatches.begin() + i, m_aiTransportBatches.begin() + i + 4);
+						continue;
+					}
+				}
+				i += 4;
+			}
+		}
+	}
 	std::vector<int> aiRecord(TS_LOG_RECORD, 0);
 	aiRecord[0] = GC.getGameINLINE().getGameTurn();
 	aiRecord[1] = wtpTransportPlace(this);
@@ -12647,6 +12692,7 @@ void CvUnit::doTransportStats()
 		++iPairs;
 	}
 	m_aiTransportUnloaded.clear();
+	// then the goods on board, one pair per load (the same good loaded in another turn or place is another pair)
 	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES && iPairs < TS_LOG_PAIRS; ++eYield)
 	{
 		if (aiAmount[eYield] > 0)
@@ -12655,15 +12701,22 @@ void CvUnit::doTransportStats()
 			int iDistance = -1;
 			int iTurnsToGo = -1;
 			wtpTransportDestination(this, eYield, iDestination, iDistance, iTurnsToGo);
-			int* piPair = &aiRecord[4 + TS_LOG_PAIR_SIZE * iPairs];
-			piPair[0] = (int)eYield;
-			piPair[1] = aiAmount[eYield];
-			piPair[2] = m_em_iTransportLoadTurn.get(eYield);
-			piPair[3] = m_em_iTransportLoadPlace.get(eYield);
-			piPair[4] = iDestination;
-			piPair[5] = iDistance;
-			piPair[6] = iTurnsToGo;
-			++iPairs;
+			for (int iBatch = 0; iBatch + 4 <= (int)m_aiTransportBatches.size() && iPairs < TS_LOG_PAIRS; iBatch += 4)
+			{
+				if (m_aiTransportBatches[iBatch] != (int)eYield || m_aiTransportBatches[iBatch + 1] <= 0)
+				{
+					continue;
+				}
+				int* piPair = &aiRecord[4 + TS_LOG_PAIR_SIZE * iPairs];
+				piPair[0] = (int)eYield;
+				piPair[1] = m_aiTransportBatches[iBatch + 1];
+				piPair[2] = m_aiTransportBatches[iBatch + 2];
+				piPair[3] = m_aiTransportBatches[iBatch + 3];
+				piPair[4] = iDestination;
+				piPair[5] = iDistance;
+				piPair[6] = iTurnsToGo;
+				++iPairs;
+			}
 		}
 	}
 	aiRecord[3] = iPairs;
@@ -12674,27 +12727,68 @@ void CvUnit::doTransportStats()
 	}
 }
 
-// WTP: a good was loaded onto this transport (CvUnit::setTransportUnit): the turn and the place are kept for the log
-void CvUnit::noteTransportLoad(YieldTypes eYield)
+// WTP: a good was loaded onto this transport (CvUnit::setTransportUnit): the amount, the turn and the place are kept for the log (the same good loaded in the same place in the same turn is one entry)
+void CvUnit::noteTransportLoad(YieldTypes eYield, int iAmount)
 {
-	if (!isHuman() || eYield == NO_YIELD)
+	if (!isHuman() || eYield == NO_YIELD || iAmount <= 0)
 	{
 		return;
 	}
-	m_em_iTransportLoadTurn.set(eYield, GC.getGameINLINE().getGameTurn());
-	m_em_iTransportLoadPlace.set(eYield, wtpTransportPlace(this));
+	const int iTurn = GC.getGameINLINE().getGameTurn();
+	const int iPlace = wtpTransportPlace(this);
+	for (int i = (int)m_aiTransportBatches.size() - 4; i >= 0; i -= 4)
+	{
+		if (m_aiTransportBatches[i] == (int)eYield && m_aiTransportBatches[i + 2] == iTurn && m_aiTransportBatches[i + 3] == iPlace)
+		{
+			m_aiTransportBatches[i + 1] += iAmount;
+			return;
+		}
+	}
+	m_aiTransportBatches.push_back((int)eYield);
+	m_aiTransportBatches.push_back(iAmount);
+	m_aiTransportBatches.push_back(iTurn);
+	m_aiTransportBatches.push_back(iPlace);
+	if ((int)m_aiTransportBatches.size() > 4 * 64)
+	{
+		m_aiTransportBatches.erase(m_aiTransportBatches.begin(), m_aiTransportBatches.begin() + 4);
+	}
 }
 
-// WTP: a good was unloaded from this transport (CvUnit::setTransportUnit): kept for the next line of the log (the same good unloaded at the same place and loaded at the same time is summed up)
+// WTP: a good was unloaded from this transport (CvUnit::setTransportUnit, CvUnit::doUnloadYield): kept for the next line of the log. It comes from the oldest loads of that good
+// on board; the same good unloaded at the same place from the same load is summed up.
 void CvUnit::noteTransportUnload(YieldTypes eYield, int iAmount)
 {
 	if (!isHuman() || eYield == NO_YIELD || iAmount <= 0)
 	{
 		return;
 	}
-	const int iLoadTurn = m_em_iTransportLoadTurn.get(eYield);
-	const int iLoadPlace = m_em_iTransportLoadPlace.get(eYield);
 	const int iPlace = wtpTransportPlace(this);
+	int iLeft = iAmount;
+	for (int iBatch = 0; iBatch + 4 <= (int)m_aiTransportBatches.size() && iLeft > 0;)
+	{
+		if (m_aiTransportBatches[iBatch] == (int)eYield && m_aiTransportBatches[iBatch + 1] > 0)
+		{
+			const int iTake = std::min(iLeft, m_aiTransportBatches[iBatch + 1]);
+			addTransportUnloaded(eYield, iTake, m_aiTransportBatches[iBatch + 2], m_aiTransportBatches[iBatch + 3], iPlace);
+			iLeft -= iTake;
+			m_aiTransportBatches[iBatch + 1] -= iTake;
+			if (m_aiTransportBatches[iBatch + 1] <= 0)
+			{
+				m_aiTransportBatches.erase(m_aiTransportBatches.begin() + iBatch, m_aiTransportBatches.begin() + iBatch + 4);
+				continue;
+			}
+		}
+		iBatch += 4;
+	}
+	if (iLeft > 0)
+	{
+		// (a good of an unknown load)
+		addTransportUnloaded(eYield, iLeft, 0, 0, iPlace);
+	}
+}
+
+void CvUnit::addTransportUnloaded(YieldTypes eYield, int iAmount, int iLoadTurn, int iLoadPlace, int iPlace)
+{
 	for (int i = 0; i + 5 <= (int)m_aiTransportUnloaded.size(); i += 5)
 	{
 		if (m_aiTransportUnloaded[i] == (int)eYield && m_aiTransportUnloaded[i + 2] == iLoadTurn && m_aiTransportUnloaded[i + 3] == iLoadPlace && m_aiTransportUnloaded[i + 4] == iPlace)
@@ -14376,11 +14470,8 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 		{
 			FAssertMsg(pTransportUnit->cargoSpaceAvailable(getSpecialUnitType(), getDomainType()) > 0 || getYield() != NO_YIELD, "Cargo space is expected to be available");
 
-			// WTP: statistics of the transport: where and when this good was loaded
-			if (getYield() != NO_YIELD)
-			{
-				pTransportUnit->noteTransportLoad(getYield());
-			}
+			// WTP: statistics of the transport: the amount that comes on board (kept for the log where and when this good was loaded, see the exits below)
+			const int iLoadedAmount = (getYield() != NO_YIELD) ? getYieldStored() : 0;
 
 			setUnitTravelState(pTransportUnit->getUnitTravelState(), false);
 
@@ -14410,6 +14501,7 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 									//all yields have been transferred to another unit
 									if (getYieldStored() == 0)
 									{
+										pTransportUnit->noteTransportLoad(eYield, iLoadedAmount);
 										kill(true);
 										return false;
 									}
@@ -14417,6 +14509,8 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 									//check if load anymore of this cargo
 									if (pTransportUnit->getLoadYieldAmount(eYield) == 0)
 									{
+										// (what is left stays off the ship)
+										pTransportUnit->noteTransportLoad(eYield, iLoadedAmount - getYieldStored());
 										return true;
 									}
 								}
@@ -14452,6 +14546,11 @@ bool CvUnit::setTransportUnit(CvUnit* pTransportUnit, bool bUnload)
 			//pTransportUnit->changeCargo(1);
 			// PatchMod: Berth Size END
 			pTransportUnit->getGroup()->setActivityType(ACTIVITY_AWAKE);
+			if (getYield() != NO_YIELD)
+			{
+				// WTP: statistics of the transport: what came on board (the rest of a good that was merged is on board in this unit)
+				pTransportUnit->noteTransportLoad(getYield(), iLoadedAmount);
+			}
 		}
 		else //dropped off of vehicle
 		{
