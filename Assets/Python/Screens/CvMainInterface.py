@@ -3778,6 +3778,8 @@ class CvMainInterface:
 				screen.hide(szName)
 			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER)
 			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_REVEALED_PLOTS)
+		# (the message panel is hidden while the choice is there, and comes back with it gone)
+		self.updateMessagePanel()
 
 	# WTP: the choice of the pioneer plan below the top bar: a button per improvement (the pioneers' build buttons, the name
 	# in the help), the chosen one highlighted; the two priorities; the plan of the plot under the mouse
@@ -3816,6 +3818,7 @@ class CvMainInterface:
 			screen.show("PrivateBuildCost")
 			self.aszPioneerPlanWidgets.append("PrivateBuildCost")
 			self.iPioneerPlanHoverY = iY + 24
+			self.liftPioneerPlanWidgets(screen)
 			return
 		for iPriority in range(1, 3):
 			szName = "PioneerPlanPriority" + str(iPriority)
@@ -3827,6 +3830,18 @@ class CvMainInterface:
 			self.aszPioneerPlanWidgets.append(szName)
 		self.iPioneerPlanHoverY = iY + 24
 		self.aszPioneerPlanWidgets.append("PioneerPlanHover")
+		self.liftPioneerPlanWidgets(screen)
+
+	# WTP: the choice buttons of the pioneer plan and of the private pioneer are in front of everything else (the message panel is hidden while they are
+	# there, see updateMessagePanel; a window of the panel that is open anyway, e.g. the text of a message, stays below them)
+	def liftPioneerPlanWidgets(self, screen):
+		if not (self.bPioneerPlanMode or self.bPrivateBuildMode):
+			return
+		for szName in self.aszPioneerPlanWidgets:
+			try:
+				screen.moveToFront(szName)
+			except:
+				pass
 
 	# WTP: private pioneer mode: choose an improvement (the buttons of the pioneer plan), a left click on a plot of our land
 	# pays a private pioneer for it (CvPlayer::startPrivateBuild)
@@ -3850,6 +3865,8 @@ class CvMainInterface:
 			for szName in self.aszPioneerPlanWidgets:
 				screen.hide(szName)
 			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER)
+		# (the message panel is hidden while the choice is there, and comes back with it gone)
+		self.updateMessagePanel()
 
 	def updatePioneerPlanEditor(self):
 
