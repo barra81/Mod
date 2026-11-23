@@ -1023,6 +1023,139 @@ bool CvDLLWidgetData::executeDropOn(const CvWidgetDataStruct& destinationWidgetD
 }
 
 //	right clicking action
+// WTP: Shift + double click on a good in the harbour (Europe, Africa, Port Royal) or on a good of the city screen: the whole hold of the ship is filled with this good,
+// as far as the city has it / the gold of the player is enough. The ship is the selected one of the city screen, in a harbour the first one in port with a free
+// place. One order per free cargo slot (an order loads at most one slot): every order is carried out by the game with the state at that moment, so there is no harm
+// in sending too many, and the orders are the same as for a single load (multiplayer safe).
+static bool wtpFillShipWithYield(const CvWidgetDataStruct& widgetDataStruct)
+{
+	if (!gDLL->shiftKey())
+	{
+		return false;
+	}
+	const YieldTypes eYield = (YieldTypes)widgetDataStruct.m_iData1;
+	if (eYield < FIRST_YIELD || eYield >= NUM_YIELD_TYPES)
+	{
+		return false;
+	}
+	const PlayerTypes ePlayer = GC.getGameINLINE().getActivePlayer();
+	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
+	const bool bCityScreen = (widgetDataStruct.m_eWidgetType == WIDGET_MOVE_CARGO_TO_TRANSPORT && gDLL->getInterfaceIFace()->isCityScreenUp());
+
+	CvUnit* pShip = NULL;
+	UnitTravelStates eState = UNIT_TRAVEL_STATE_IN_EUROPE;
+	PlayerActionTypes eAction = PLAYER_ACTION_BUY_YIELD_UNIT;
+	if (widgetDataStruct.m_eWidgetType == WIDGET_MOVE_CARGO_TO_TRANSPORT_AFRICA)
+	{
+		eState = UNIT_TRAVEL_STATE_IN_AFRICA;
+		eAction = PLAYER_ACTION_BUY_YIELD_UNIT_AFRICA;
+	}
+	else if (widgetDataStruct.m_eWidgetType == WIDGET_MOVE_CARGO_TO_TRANSPORT_PORT_ROYAL)
+	{
+		eState = UNIT_TRAVEL_STATE_IN_PORT_ROYAL;
+		eAction = PLAYER_ACTION_BUY_YIELD_UNIT_PORT_ROYAL;
+	}
+
+	if (bCityScreen)
+	{
+		CvCity* pCity = gDLL->getInterfaceIFace()->getHeadSelectedCity();
+		if (pCity == NULL || pCity->getOwnerINLINE() != ePlayer)
+		{
+			return false;
+		}
+		CvUnit* pSelected = gDLL->getInterfaceIFace()->getHeadSelectedUnit();
+		if (pSelected != NULL && pSelected->getOwnerINLINE() == ePlayer && pSelected->plot() == pCity->plot() && pSelected->cargoSpace() > 0 && !pSelected->isCargo())
+		{
+			pShip = pSelected;
+		}
+		else
+		{
+			// (no ship selected: the first one in the city with a free place)
+			CLLNode<IDInfo>* pNode = pCity->plot()->headUnitNode();
+			while (pNode != NULL && pShip == NULL)
+			{
+				CvUnit* pLoop = ::getUnit(pNode->m_data);
+				pNode = pCity->plot()->nextUnitNode(pNode);
+				if (pLoop != NULL && pLoop->getOwnerINLINE() == ePlayer && !pLoop->isCargo() && pLoop->cargoSpace() > 0 && !pLoop->isFull())
+				{
+					pShip = pLoop;
+				}
+			}
+		}
+	}
+	else
+	{
+		int iLoop;
+		for (CvUnit* pLoop = kPlayer.firstUnit(&iLoop); pLoop != NULL && pShip == NULL; pLoop = kPlayer.nextUnit(&iLoop))
+		{
+			if (!pLoop->isCargo() && !pLoop->isDelayedDeath() && pLoop->getUnitTravelState() == eState && pLoop->getDomainType() == DOMAIN_SEA
+				&& pLoop->cargoSpace() > 0 && !pLoop->isFull())
+			{
+				pShip = pLoop;
+			}
+		}
+	}
+	if (pShip == NULL)
+	{
+		return true; // (handled: nothing to fill)
+	}
+
+	const int iFreeSlots = pShip->cargoSpace() - pShip->getCargo();
+	const int iSlotCapacity = GC.getGameINLINE().getCargoYieldCapacity();
+	if (iFreeSlots <= 0 || iSlotCapacity <= 0 || pShip->getLoadYieldAmount(eYield) <= 0)
+	{
+		return true;
+	}
+
+	if (bCityScreen)
+	{
+		CvCity* pCity = gDLL->getInterfaceIFace()->getHeadSelectedCity();
+		int iStored = pCity->getYieldStored(eYield);
+		for (int i = 0; i < iFreeSlots && iStored > 0; ++i)
+		{
+			gDLL->sendDoCommand(pShip->getID(), COMMAND_LOAD_YIELD, eYield, -1, false);
+			iStored -= iSlotCapacity;
+		}
+		return true;
+	}
+
+	// harbour: the goods are bought; the amount of every slot from the gold that is left (at the price of now)
+	if (kPlayer.getParent() == NO_PLAYER)
+	{
+		return true;
+	}
+	const CvPlayer& kEurope = GET_PLAYER(kPlayer.getParent());
+	int iPrice = 0;
+	if (eAction == PLAYER_ACTION_BUY_YIELD_UNIT_AFRICA)
+	{
+		iPrice = kEurope.getYieldAfricaSellPrice(eYield);
+	}
+	else if (eAction == PLAYER_ACTION_BUY_YIELD_UNIT_PORT_ROYAL)
+	{
+		iPrice = kEurope.getYieldPortRoyalSellPrice(eYield);
+	}
+	else
+	{
+		iPrice = kEurope.getYieldSellPrice(eYield);
+	}
+	if (iPrice <= 0)
+	{
+		return true;
+	}
+	int iGold = kPlayer.getGold();
+	for (int i = 0; i < iFreeSlots; ++i)
+	{
+		const int iAmount = std::min(iSlotCapacity, iGold / iPrice);
+		if (iAmount <= 0)
+		{
+			break;
+		}
+		gDLL->sendPlayerAction(ePlayer, eAction, eYield, iAmount, pShip->getID());
+		iGold -= iAmount * iPrice;
+	}
+	return true;
+}
+
 bool CvDLLWidgetData::executeDoubleClick(const CvWidgetDataStruct& widgetDataStruct)
 {
 	CxDesyncMonitor StartAsyncExecution;
@@ -1068,6 +1201,13 @@ bool CvDLLWidgetData::executeDoubleClick(const CvWidgetDataStruct& widgetDataStr
 
 	case WIDGET_DOCK:
 		doDoubleClickDock(widgetDataStruct);
+		break;
+
+	// WTP: Shift + double click on a good: the hold of the ship is filled with it
+	case WIDGET_MOVE_CARGO_TO_TRANSPORT:
+	case WIDGET_MOVE_CARGO_TO_TRANSPORT_AFRICA:
+	case WIDGET_MOVE_CARGO_TO_TRANSPORT_PORT_ROYAL:
+		bHandled = wtpFillShipWithYield(widgetDataStruct);
 		break;
 
 	/*** TRIANGLETRADE 10/28/08 by DPII ***/
