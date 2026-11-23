@@ -3300,7 +3300,7 @@ print('resources', len(BONUS), sorted(Counter(BONUS.values()).items(), key=lambd
 os.makedirs(OUT, exist_ok=True)
 wb = os.path.join(OUT, 'Random New World Massive.ColonizationWBSave')
 with open(wb, 'w', newline='\r\n') as f:
-    f.write('Version=11\nBeginGame\n\tDescription=TXT_KEY_WORLDBUILDER_RANDOM_NEW_WORLD_DESC\n\tModPath=\n\tOption=GAMEOPTION_TWO_PLOT_CITY_RADIUS\n')
+    f.write('Version=11\nBeginGame\n\tDescription=TXT_KEY_MAP_SCRIPT_RANDOM_NEW_WORLD_DESCR\n\tModPath=\n\tOption=GAMEOPTION_TWO_PLOT_CITY_RADIUS\n')
     f.write('\tWBNorthAmericanNative=1\n\tWBSouthAmericanNative=1\n\tWBCentralAmericanNative=1\nEndGame\n')
     for p in range(49):
         f.write('BeginPlayer\n\tTeam=%d\n\tLeaderType=NONE\n\tCivType=NONE\nEndPlayer\n' % p)
