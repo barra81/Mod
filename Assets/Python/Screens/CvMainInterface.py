@@ -10129,6 +10129,16 @@ class CvMainInterface:
 					aszWords += self.splitIconRow(szWord)
 				else:
 					aszWords.append(szWord)
+			if not bIconIndent:
+				# a symbol of the game font that stands alone ("[symbol] place") stays with the word behind it: no line break between them
+				iWordNo = 0
+				while iWordNo < len(aszWords) - 1:
+					szLone = aszWords[iWordNo].rstrip()
+					if len(szLone) == 1 and ord(szLone) >= 0x2000:
+						aszWords[iWordNo] = aszWords[iWordNo] + aszWords[iWordNo + 1]
+						del aszWords[iWordNo + 1]
+					else:
+						iWordNo += 1
 			for szWord in aszWords:
 				szCore = szWord.rstrip()
 				iWord = self.getMessageWidth(szCore)
@@ -11041,6 +11051,7 @@ class CvMainInterface:
 			return [szWord[:iStart], szWord[iStart:]]
 		return [szWord]
 
+	fMsgIconWidth = 3.4 # width of a symbol of the game font in characters (the message panel measures 3.1: its rows of goods symbols are as wide as the panel allows)
 	fImgWidth = 3.6 # width of a picture (<img=...>) in characters
 
 	# visible width of a line in characters (pictures and icons of the game font count more than a letter)
