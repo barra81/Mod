@@ -162,6 +162,15 @@
 // 17. Turns 511-532 (5,700+ units): UNITAI_COLONIST 7.7 -> 14.3 s (AI_doWfTask). Suspect: AI_foodSurplusForNewcomer scanned all units per call, and
 //     AI_bestFoodSurplusCity once per colony (286 x 5,700 units). Change: AI_bestFoodSurplusCity counts the colonists on their way once (a map city -> number).
 //     New slots inside AI_doWfTask: the food check and the way to the colony, to see which part really costs.
+// 18. Turn 529 (6,400 units): AI_doWfTask 12.4 s, but the food check never ran (no WF_JOIN_CITY) and the way to the colony is only 0.36 s. Suspect: the waiting colonists
+//     (WF_WAIT) in a colony call AI_changeUnitAIType twice per turn (all unit AIs x all professions: canHaveProfession, AI_professionSuitability). Change: one pass
+//     for both limits (99 and 49), canHaveProfession once per profession; same result. New slot SLOT_COL_CHANGEAI to confirm it.
+//     Measured (turns 531/532): AI_doWfTask 12.4 -> 4.9 s, of it the profession search 4.4 s (1,514 calls, 2.9 ms). Change (agreed with the tester): with 500 or more
+//     such calls in the last turn change only half of the waiting colonists look per turn (unit id + turn even), like the goodies; counter CNT_CHANGEAI_HALF_SKIPPED.
+// 19. Turn 532: AI_tradeRoutes 19.5 s, of it 8.2 s colony to colony path searches (1,384 cache misses, 6 ms; the first coastal transport of a nation pays all of them, one
+//     ship 6.2 s). Change (agreed with the tester, "spread over several turns"): AI players only, with 300 or more searches in the last turn: half of the pairs
+//     (source id + destination id + turn even) are searched per turn, for the others the result of an earlier turn (at most 4 turns old) is used; counter
+//     CNT_ROUTEPATH_STALE_USED.
 //  7. The long times matter more with more AI players (the tester plays with only 3 opponents because of the turn time): the plan
 //     scales about linearly with the number of European AIs, so the per player table is there to measure that.
 //
@@ -256,6 +265,7 @@ namespace WtpTiming
 		SLOT_COL_WFTASK,
 		SLOT_COL_FOOD,
 		SLOT_COL_TRAVEL,
+		SLOT_COL_CHANGEAI,
 		SLOT_COL_BETTERJOB,
 		SLOT_COL_JOIN,
 		SLOT_COL_LEARN,
@@ -304,6 +314,8 @@ namespace WtpTiming
 		CNT_GOODY_SEARCHES_FAILED,
 		CNT_GOODY_MEMO_HITS,
 		CNT_GOODY_HALF_SKIPPED,
+		CNT_CHANGEAI_HALF_SKIPPED,
+		CNT_ROUTEPATH_STALE_USED,
 		CNT_COUNT
 	};
 
@@ -324,7 +336,9 @@ namespace WtpTiming
 		"AI_goodyRange: path searches to a goody plot",
 		"  of these: no path found (the search went through all water that can be reached)",
 		"AI_goodyRange: goody plots without a search, another unit of the same owner and type had no path to it from the same water this turn",
-		"AI_goodyRange: calls that skipped the search because it is the other half of the units' turn (every second turn, only with 1500 or more units)"
+		"AI_goodyRange: calls that skipped the search because it is the other half of the units' turn (every second turn, only with 1500 or more units)",
+		"AI_doWfTask: waiting colonists that skipped the search for a new profession because it is the other half of the colonists' turn (only with 500 or more asked in the last turn)",
+		"AI_tradeRoutes: colony to colony paths taken from an earlier turn instead of a new search (other half of the pairs, only with 300 or more searches in the last turn)"
 	};
 
 	// buckets of the single updateMoves calls (ms, upper limits)
@@ -405,6 +419,7 @@ namespace WtpTiming
 		"  in the colonist AI (all callers): AI_doWfTask",
 		"    in AI_doWfTask: the food check of the target colony (AI_foodSurplusForNewcomer / AI_bestFoodSurplusCity)",
 		"    in AI_doWfTask: the way to the colony (travel times, ship, paths)",
+		"    in AI_doWfTask: a waiting colonist looks for a new profession (AI_changeUnitAIType)",
 		"  in the colonist AI (all callers): AI_betterJob",
 		"  in the colonist AI (all callers): AI_joinCity / AI_joinOptimalCity",
 		"  in the colonist AI (all callers): AI_learn",

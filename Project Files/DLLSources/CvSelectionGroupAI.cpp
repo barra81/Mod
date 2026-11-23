@@ -1024,8 +1024,38 @@ static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSo
 		*piTurns = itRoute->second.second;
 		return itRoute->second.first;
 	}
+	// WTP: with many searches (WTP_ROUTE_PATH_HALF_MIN_SEARCHES and more in the last turn change) the AI players' paths are made only every second turn: half of the
+	// pairs of source and destination colony (source id + destination id + turn is even) are searched in a turn, for the other half the result of the turn before
+	// (or of up to WTP_ROUTE_PATH_MAX_AGE turns before) is used. A coastal path of a colony pair hardly ever changes; the pairs are only used to estimate how much to load.
+	// The human player's transports always search.
+	static const int WTP_ROUTE_PATH_HALF_MIN_SEARCHES = 300;
+	static const int WTP_ROUTE_PATH_MAX_AGE = 4;
+	static int iSearchTurn = -1;
+	static int iSearchesLastTurn = 0;
+	static int iSearchesThisTurn = 0;
+	static std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<std::pair<bool, int>, int> > aLastPaths; // result, turn
+	const int iTurn = GC.getGameINLINE().getGameTurn();
+	if (iSearchTurn != iTurn)
+	{
+		iSearchTurn = iTurn;
+		iSearchesLastTurn = iSearchesThisTurn;
+		iSearchesThisTurn = 0;
+	}
+	if (!pGroup->isHuman() && iSearchesLastTurn >= WTP_ROUTE_PATH_HALF_MIN_SEARCHES && ((pSourceCity->getID() + pDestinationCity->getID() + iTurn) % 2) != 0)
+	{
+		std::map<std::pair<std::pair<int, int>, std::pair<int, int> >, std::pair<std::pair<bool, int>, int> >::const_iterator itLast = aLastPaths.find(kRouteKey);
+		if (itLast != aLastPaths.end() && iTurn - itLast->second.second <= WTP_ROUTE_PATH_MAX_AGE)
+		{
+			WtpTiming::count(WtpTiming::CNT_ROUTEPATH_STALE_USED, 1);
+			*piTurns = itLast->second.first.second;
+			aRoutePaths[kRouteKey] = itLast->second.first;
+			return itLast->second.first.first;
+		}
+	}
+	++iSearchesThisTurn;
 	const bool bOk = WTP_timedPath(pGroup, WtpTiming::SLOT_TR_PATH_ROUTE, pSourceCity->plot(), pDestinationCity->plot(), iFlags, true, piTurns);
 	aRoutePaths[kRouteKey] = std::make_pair(bOk, *piTurns);
+	aLastPaths[kRouteKey] = std::make_pair(std::make_pair(bOk, *piTurns), iTurn);
 	return bOk;
 }
 

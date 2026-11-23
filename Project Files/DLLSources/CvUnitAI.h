@@ -352,7 +352,7 @@ protected:
 
 	bool AI_betterJob();
 	bool AI_upgradeProfession();
-	bool AI_changeUnitAIType(int iMinMultiplier = 0);
+	bool AI_changeUnitAIType(int iMinMultiplier = 0, int iFallbackMinMultiplier = -1);
 
 	bool AI_advance(bool bAttack);
 	bool AI_loiter(int iMinDistance, int iMaxDistance, bool bAttack);

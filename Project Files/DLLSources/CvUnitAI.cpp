@@ -1616,7 +1616,7 @@ void CvUnitAI::AI_colonistMove()
 		{
 			return;
 		}
-		if (AI_changeUnitAIType(99) || AI_changeUnitAIType(49))
+		if (AI_changeUnitAIType(99, 49))
 		{
 			return;
 		}
@@ -10241,7 +10241,9 @@ bool CvUnitAI::AI_upgradeProfession()
 	return true;
 }
 
-bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
+// WTP: iFallbackMinMultiplier >= 0 (lower than iMinMultiplier) is the second try of the callers that asked twice (first with the high, then with the low
+// limit): one pass over the professions finds the best of both, so the result is the same as for two calls but the work is done only once
+bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier, int iFallbackMinMultiplier)
 {
 	CvCity* pCity = plot()->getPlotCity();
 	if (pCity == NULL || pCity->getOwnerINLINE() != getOwnerINLINE())
@@ -10249,9 +10251,16 @@ bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
 		return false;
 	}
 
+	// (iLowLimit: what a candidate needs at least; the best of those that also pass the high limit wins over the best of all)
+	const int iLowLimit = (iFallbackMinMultiplier >= 0 && iFallbackMinMultiplier < iMinMultiplier) ? iFallbackMinMultiplier : iMinMultiplier;
 	int iBestValue = 0;
 	ProfessionTypes eBestProfession = NO_PROFESSION;
 	UnitAITypes eBestUnitAI = NO_UNITAI;
+	int iBestHighValue = 0;
+	ProfessionTypes eBestHighProfession = NO_PROFESSION;
+	UnitAITypes eBestHighUnitAI = NO_UNITAI;
+	// (whether the unit can have the profession here does not depend on the unit AI: asked once per profession)
+	std::vector<signed char> aiCanHave(GC.getNumProfessionInfos(), -1);
 
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 
@@ -10264,20 +10273,24 @@ bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
 
 			int iMultiplier = kOwner.AI_unitAIValueMultipler(eLoopUnitAI);
 
-			if (iMultiplier > iMinMultiplier)
+			if (iMultiplier > iLowLimit)
 			{
 				for (int iProfession = 0; iProfession < GC.getNumProfessionInfos(); ++iProfession)
 				{
 					ProfessionTypes eLoopProfession = (ProfessionTypes)iProfession;
 
-					if (canHaveProfession(eLoopProfession, false, plot()))
+					if (aiCanHave[iProfession] < 0)
+					{
+						aiCanHave[iProfession] = canHaveProfession(eLoopProfession, false, plot()) ? 1 : 0;
+					}
+					if (aiCanHave[iProfession] > 0)
 					{
 						int iProfessionValue = kOwner.AI_professionValue(eLoopProfession, eLoopUnitAI);
 						if (iProfessionValue > 0)
 						{
 							iProfessionValue = kOwner.AI_professionSuitability(this, eLoopProfession, plot(), eLoopUnitAI);
 							iProfessionValue /= 100;
-							if (iProfessionValue > iMinMultiplier)
+							if (iProfessionValue > iLowLimit)
 							{
 								int iValue = iProfessionValue * iMultiplier;
 								// WTP: experts for bells, crosses and hammers become settlers only if nothing else is left
@@ -10292,6 +10305,12 @@ bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
 									eBestProfession = eLoopProfession;
 									eBestUnitAI = eLoopUnitAI;
 								}
+								if (iMultiplier > iMinMultiplier && iProfessionValue > iMinMultiplier && iValue > iBestHighValue)
+								{
+									iBestHighValue = iValue;
+									eBestHighProfession = eLoopProfession;
+									eBestHighUnitAI = eLoopUnitAI;
+								}
 							}
 						}
 					}
@@ -10300,6 +10319,11 @@ bool CvUnitAI::AI_changeUnitAIType(int iMinMultiplier)
 		}
 	}
 
+	if (eBestHighUnitAI != NO_UNITAI)
+	{
+		eBestProfession = eBestHighProfession;
+		eBestUnitAI = eBestHighUnitAI;
+	}
 	if (eBestUnitAI != NO_UNITAI)
 	{
 		setProfession(eBestProfession);
@@ -24716,10 +24740,34 @@ bool CvUnitAI::AI_doWfTask()
 			if (m_iWfTask == WF_EXPERT_JOB || m_iWfTask == WF_WAIT)
 			{
 				// a colonist without a job becomes a soldier, pioneer, ... if the AI needs one
-				if (m_iWfTask == WF_WAIT && (AI_changeUnitAIType(99) || AI_changeUnitAIType(49)))
+				if (m_iWfTask == WF_WAIT)
 				{
-					AI_clearWfTask();
-					return true;
+					// WTP: with many waiting colonists (WTP_CHANGEAI_HALF_MIN_UNITS and more asked in the last turn change) a colonist looks for a new profession only every
+					// second turn (half of them in one turn, the other half in the next: unit id + turn is even); one that waits changes its profession a turn later at most
+					static const int WTP_CHANGEAI_HALF_MIN_UNITS = 500;
+					static int iChangeAiTurn = -1;
+					static int iChangeAiCallsLastTurn = 0;
+					static int iChangeAiCallsThisTurn = 0;
+					if (iChangeAiTurn != GC.getGameINLINE().getGameTurn())
+					{
+						iChangeAiTurn = GC.getGameINLINE().getGameTurn();
+						iChangeAiCallsLastTurn = iChangeAiCallsThisTurn;
+						iChangeAiCallsThisTurn = 0;
+					}
+					++iChangeAiCallsThisTurn;
+					if (iChangeAiCallsLastTurn >= WTP_CHANGEAI_HALF_MIN_UNITS && ((getID() + GC.getGameINLINE().getGameTurn()) % 2) != 0)
+					{
+						WtpTiming::count(WtpTiming::CNT_CHANGEAI_HALF_SKIPPED, 1);
+					}
+					else
+					{
+						WtpTiming::Scope wtpChangeTimer(WtpTiming::SLOT_COL_CHANGEAI); // WTP: timing log
+						if (AI_changeUnitAIType(99, 49))
+						{
+							AI_clearWfTask();
+							return true;
+						}
+					}
 				}
 				getGroup()->pushMission(MISSION_SKIP);
 				return true;
