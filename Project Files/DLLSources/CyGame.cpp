@@ -173,6 +173,21 @@ int CyGame::getGameTurn()
 {
 	return m_pGame ? m_pGame->getGameTurn() : -1;
 }
+
+int CyGame::getWtpTurnBlocks() const
+{
+	return WtpTurnClock::data().iBlocks;
+}
+
+int CyGame::getWtpLastTurnMs() const
+{
+	return (int)WtpTurnClock::data().iLastMs;
+}
+
+int CyGame::getWtpLastTurnNo() const
+{
+	return WtpTurnClock::data().iLastTurn;
+}
 void CyGame::setGameTurn(int iNewValue)
 {
 	if (m_pGame)

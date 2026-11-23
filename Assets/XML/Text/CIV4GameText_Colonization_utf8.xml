@@ -5358,4 +5358,22 @@
 		<German>Produziert %d1 %s2</German>
 		<Russian>Произвести %d1 %s2</Russian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TURNTIME_TEXT</Tag>
+		<English>ttm: %s1</English>
+		<German>ttm: %s1</German>
+		<Russian>ttm: %s1</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TURNTIME_HELP</Tag>
+		<English>ttm (turn time measured): the time the last turn change took (the AI players move, cities and units are processed): %s1[NEWLINE]Average since the start of this game: %s2 (%d3 measured turn changes, the last one at turn %d4)[NEWLINE][NEWLINE]Animated fights are not counted, neither is the time you need for your own turn.</English>
+		<German>ttm (Turn Time Measured, gemessene Rundenzeit): Zeit, die der letzte Rundenwechsel gebraucht hat (die KI-Spieler ziehen, Städte und Einheiten werden verarbeitet): %s1[NEWLINE]Durchschnitt seit Beginn dieses Spiels: %s2 (%d3 gemessene Rundenwechsel, der letzte in Runde %d4)[NEWLINE][NEWLINE]Kampfanimationen werden nicht mitgerechnet, ebenso nicht die Zeit, die Sie für Ihren eigenen Zug brauchen.</German>
+		<Russian>ttm (Turn Time Measured, измеренное время хода): время последней смены хода (ходят ИИ-игроки, обрабатываются города и юниты): %s1[NEWLINE]В среднем с начала этой игры: %s2 (измерено смен хода: %d3, последняя на ходу %d4)[NEWLINE][NEWLINE]Анимация боёв не учитывается, как и время, которое вы тратите на собственный ход.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TURNTIME_HELP_NONE</Tag>
+		<English>ttm (turn time measured): the time the last turn change took (the AI players move, cities and units are processed). Nothing has been measured yet: it shows after the next turn change.[NEWLINE]The tooltip then also shows the average since the start of this game. Animated fights are not counted, neither is the time you need for your own turn.</English>
+		<German>ttm (Turn Time Measured, gemessene Rundenzeit): Zeit, die der letzte Rundenwechsel gebraucht hat (die KI-Spieler ziehen, Städte und Einheiten werden verarbeitet). Es ist noch nichts gemessen: Die Anzeige erscheint nach dem nächsten Rundenwechsel.[NEWLINE]Der Tooltip zeigt dann auch den Durchschnitt seit Beginn dieses Spiels. Kampfanimationen werden nicht mitgerechnet, ebenso nicht die Zeit, die Sie für Ihren eigenen Zug brauchen.</German>
+		<Russian>ttm (Turn Time Measured, измеренное время хода): время последней смены хода (ходят ИИ-игроки, обрабатываются города и юниты). Измерений пока нет: значение появится после следующей смены хода.[NEWLINE]Затем во всплывающей подсказке будет и среднее с начала этой игры. Анимация боёв не учитывается, как и время, которое вы тратите на собственный ход.</Russian>
+	</TEXT>
 </Civ4GameText>

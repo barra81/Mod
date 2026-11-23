@@ -214,6 +214,9 @@ VET_NEW_CAPACITY = 4201
 # R&R, Robert Surcouf VET NewCapacity Help - End
 
 TIMETEXT_ID = 4202
+TURNTIME_ID = 4203 # WTP: the time of the last turn change below the clock (tooltip: average)
+WTP_TURNTIME_CACHE = None # (time of the reading, values)
+WTP_TURNTIME_SEEN = 0 # (the number of measurements of the DLL that are in the sum already)
 
 # CITY HAPPINESS vs UNHAPPINESS - START
 HELP_TOTAL_HAPPINESS_POSITIVE = 4301
@@ -1265,14 +1268,19 @@ class CvMainInterface:
 		if (CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_HIDE_ALL and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_ADVANCED_START):
 			if (CyInterface().isCityScreenUp()):
 				screen.hide("ClockText")
+				screen.hide("TurnTimeText")
 			else:
 				if (CyUserProfile().isClockOn()):
-					screen.setLabel("ClockText", "Background", self.setFontSize(getClockText(), 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, 42, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+					screen.setLabel("ClockText", "Background", self.setFontSize(getClockText(), 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, 62, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 					screen.show("ClockText")
+					self.drawTurnTimeText(screen, xResolution, True)
 				else:
 					screen.hide("ClockText")
+					screen.hide("TurnTimeText")
+					self.drawTurnTimeText(screen, xResolution, False)
 		else:
 			screen.hide("ClockText")
+			screen.hide("TurnTimeText")
 
 		return 0
 
@@ -2452,6 +2460,7 @@ class CvMainInterface:
 
 		screen = CyGInterfaceScreen( "MainInterface", CvScreenEnums.MAIN_INTERFACE )
 		screen.hide("ClockText")
+		screen.hide("TurnTimeText")
 		bShift = CyInterface().shiftKey()
 
 		xResolution = screen.getXResolution()
@@ -2470,8 +2479,9 @@ class CvMainInterface:
 			szTimeText = unicode(CyGameTextMgr().getInterfaceTimeStr(gc.getGame().getActivePlayer()))
 			screen.setLabel("TimeText", "Background", self.setFontSize(szTimeText, 1), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 17, 17, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TIMETEXT_ID, -1 )
 			if (CyUserProfile().isClockOn()):
-				screen.setLabel("ClockText", "Background", self.setFontSize(getClockText(), 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, 42, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+				screen.setLabel("ClockText", "Background", self.setFontSize(getClockText(), 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, 62, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 				screen.show("ClockText")
+			self.drawTurnTimeText(screen, xResolution, CyUserProfile().isClockOn())
 
 			if (gc.getPlayer(ePlayer).isAlive()):
 				szText = CyGameTextMgr().getGoldStr(ePlayer)
@@ -2506,6 +2516,7 @@ class CvMainInterface:
 		CyCamera().SetCityViewPortCenter(x, y)
 
 		screen.hide("ClockText")
+		screen.hide("TurnTimeText")
 		screen.hide("DefenseText")
 		screen.hide("LibertyText")
 		screen.hide("HammerText")
@@ -3867,8 +3878,74 @@ class CvMainInterface:
 				return localText.getText("TXT_KEY_TOTAL_LAW_ZERO_EFFECTS", ());
 			elif iData1 == TIMETEXT_ID:
 				return self.timeTextHelp()
+			elif iData1 == TURNTIME_ID:
+				return self.turnTimeHelp()
 
 		return u""
+
+	# WTP: the time the turn change took (the DLL measures it: CyGame.getWtpLastTurnMs, without animated fights) and its average since the start of this game. The sum is kept
+	# in the savegame (sdToolKit 'WTPTurnTime'), the DLL only knows the time since the start of the program.
+	def getTurnTimeStats( self ):
+		# (last ms, average ms, number of turn changes, game turn of the last); (-1, -1, 0, -1) if nothing was measured yet
+		global WTP_TURNTIME_SEEN, WTP_TURNTIME_CACHE
+		try:
+			game = CyGame()
+			iBlocks = game.getWtpTurnBlocks()
+			# (the interface asks very often: the saved values are read again after 2 seconds at the earliest, or when the DLL has a new measurement)
+			fNow = time.time()
+			if WTP_TURNTIME_CACHE is not None and iBlocks == WTP_TURNTIME_SEEN and fNow - WTP_TURNTIME_CACHE[0] < 2.0:
+				return WTP_TURNTIME_CACHE[1]
+			if iBlocks > 0 and iBlocks != WTP_TURNTIME_SEEN:
+				WTP_TURNTIME_SEEN = iBlocks
+				iMs = game.getWtpLastTurnMs()
+				iTurn = game.getWtpLastTurnNo()
+				if sdToolKit.sdEntityExists('WTPTurnTime', 0):
+					iSum = sdToolKit.sdGetVal('WTPTurnTime', 0, 'Sum')
+					iN = sdToolKit.sdGetVal('WTPTurnTime', 0, 'N')
+					if sdToolKit.sdGetVal('WTPTurnTime', 0, 'LastTurn') == iTurn:
+						# (the same turn played again after a load: it replaces the earlier time)
+						iSum -= sdToolKit.sdGetVal('WTPTurnTime', 0, 'Last')
+						iN -= 1
+				else:
+					iSum = 0
+					iN = 0
+				iSum += iMs
+				iN += 1
+				sdToolKit.sdEntityInit('WTPTurnTime', 0, {'Sum': iSum, 'N': iN, 'Last': iMs, 'LastTurn': iTurn})
+			if sdToolKit.sdEntityExists('WTPTurnTime', 0):
+				iN = sdToolKit.sdGetVal('WTPTurnTime', 0, 'N')
+				if iN > 0:
+					tResult = (sdToolKit.sdGetVal('WTPTurnTime', 0, 'Last'), sdToolKit.sdGetVal('WTPTurnTime', 0, 'Sum') / iN, iN, sdToolKit.sdGetVal('WTPTurnTime', 0, 'LastTurn'))
+					WTP_TURNTIME_CACHE = (fNow, tResult)
+					return tResult
+			WTP_TURNTIME_CACHE = (fNow, (-1, -1, 0, -1))
+		except:
+			pass
+		return (-1, -1, 0, -1)
+
+	def formatTurnTime( self, iMs ):
+		if iMs < 0:
+			return u"-"
+		return u"%d s" % ((iMs + 500) / 1000) # (always in whole seconds, rounded)
+
+	def drawTurnTimeText( self, screen, xResolution, bClockOn ):
+		# (between the date and the clock, right aligned with the clock, 1440p; without the clock at its place)
+		try:
+			tStats = self.getTurnTimeStats()
+			szText = localText.getText("TXT_KEY_WTP_TURNTIME_TEXT", (self.formatTurnTime(tStats[0]),))
+			iY = 42 # (without the clock: where the clock would be)
+			if bClockOn:
+				iY = 40 # (between the date at y 17 and the clock, which is at y 62 (42 before the ttm was there))
+			screen.setLabel("TurnTimeText", "Background", self.setFontSize(szText, 0), CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 24, iY, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, TURNTIME_ID, -1 )
+			screen.show("TurnTimeText")
+		except:
+			pass
+
+	def turnTimeHelp( self ):
+		tStats = self.getTurnTimeStats()
+		if tStats[2] <= 0:
+			return localText.getText("TXT_KEY_WTP_TURNTIME_HELP_NONE", ())
+		return localText.getText("TXT_KEY_WTP_TURNTIME_HELP", (self.formatTurnTime(tStats[0]), self.formatTurnTime(tStats[1]), tStats[2], tStats[3]))
 
 	def timeTextHelp(self):
 		player = gc.getPlayer(gc.getGame().getActivePlayer())

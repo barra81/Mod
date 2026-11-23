@@ -5473,6 +5473,8 @@ void CvGame::doTurn()
 		}
 	}
 	WtpTiming::flush(getGameTurn());
+	WtpTurnClock::finishBlock(getGameTurn()); // WTP: the time of the last turn change (interface)
+	WtpTurnClock::Scope wtpClock;
 	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_GAME_DOTURN);
 	MOD_PROFILE("CvGame::doTurn");
 	PROFILE_FUNC();
@@ -6048,6 +6050,7 @@ void CvGame::updateWar()
 
 void CvGame::updateMoves()
 {
+	WtpTurnClock::Scope wtpClock;
 	WtpTiming::Scope wtpTimer(WtpTiming::SLOT_GAME_UPDATEMOVES);
 	MOD_PROFILE("CvGame::updateMoves");
 
@@ -7057,6 +7060,7 @@ uint CvGame::getNumReplayMessages() const
 void CvGame::read(FDataStreamBase* pStream)
 {
 	WtpTiming::noteSaveLoaded(); // WTP: timing log: a savegame is loaded, the next report starts new
+	WtpTurnClock::reset(); // WTP: interface: the turn time collected so far is incomplete
 	CvSavegameReaderBase readerbase(pStream);
 	CvSavegameReader reader(readerbase);
 

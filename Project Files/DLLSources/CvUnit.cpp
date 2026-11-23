@@ -1488,6 +1488,7 @@ void CvUnit::updateCombat(bool bQuick)
 			if (bVisible)
 			{
 				WtpTiming::fightBegin(); // WTP: timing log: an animated fight with a human player starts
+				WtpTurnClock::fightBegin(); // WTP: interface: the turn time without fights
 			}
 
 			pDefender->getGroup()->clearMissionQueue();
@@ -13954,6 +13955,7 @@ void CvUnit::setCombatUnit(CvUnit* pCombatUnit, bool bAttacking)
 	if (pCombatUnit == NULL)
 	{
 		WtpTiming::fightEnd(); // WTP: timing log: the fight is over (no effect when no animated fight with a human runs)
+		WtpTurnClock::fightEnd();
 	}
 
 	if (isCombatFocus())
