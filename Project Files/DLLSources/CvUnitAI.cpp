@@ -24685,9 +24685,19 @@ bool CvUnitAI::AI_doWfTask()
 		}
 		// WTP: a colonist moving for food checks its target on the way and on arrival: if the colony has no food to
 		// spare any more (it would lose food after he joined), he looks for another one or is free again
-		if (m_iWfTask == WF_JOIN_CITY && kOwner.AI_foodSurplusForNewcomer(*pCity, getID()) < 0)
+		bool bNoFood = false;
+		CvCity* pNew = NULL;
+		if (m_iWfTask == WF_JOIN_CITY)
 		{
-			CvCity* const pNew = kOwner.AI_bestFoodSurplusCity(*pCity, pCity, getID());
+			WtpTiming::Scope wtpFoodTimer(WtpTiming::SLOT_COL_FOOD); // WTP: timing log
+			bNoFood = kOwner.AI_foodSurplusForNewcomer(*pCity, getID()) < 0;
+			if (bNoFood)
+			{
+				pNew = kOwner.AI_bestFoodSurplusCity(*pCity, pCity, getID());
+			}
+		}
+		if (bNoFood)
+		{
 			if (gUnitLogLevel >= 1) logWTPCity(*pCity, "WTP food: %S does not join %S (food %+d), %s %S", getName().GetCString(), pCity->getName().GetCString(),
 				pCity->foodDifference(), pNew != NULL ? "goes to" : "finds no other colony with food to spare", pNew != NULL ? pNew->getName().GetCString() : L"");
 			if (pNew == NULL)
@@ -24736,6 +24746,7 @@ bool CvUnitAI::AI_doWfTask()
 		}
 		// WTP: the faster way of the plan's travel times: over land, or walking to a port and taking a ship there (a colonist
 		// that waited too long for a ship walks if it can)
+		WtpTiming::Scope wtpTravelTimer(WtpTiming::SLOT_COL_TRAVEL); // WTP: timing log (the whole way of the colonist)
 		int iPortID = -1;
 		kOwner.AI_wfTravelTurns(*plot(), *pCity, &iPortID);
 		CvCity* const pPort = (iPortID >= 0) ? kOwner.getCity(iPortID) : NULL;

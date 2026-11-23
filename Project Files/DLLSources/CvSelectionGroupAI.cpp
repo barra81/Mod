@@ -1029,9 +1029,371 @@ static bool WTP_getRoutePathCached(CvSelectionGroupAI* pGroup, const CvCity* pSo
 	return bOk;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------------
+// WTP: urgency of the trade routes of a human player's automated transports (Automate Transport and the assigned routes).
+// The next job of a transport is not the nearest one any more but the most urgent one, the way only decides between similar jobs:
+//  - a colony that needs a good and has none (its production stops) is served before one that imports the same good but has enough of it;
+//    of several colonies in need the one that loses the more valuable production (consumption of the raw material x value of what is made of it) comes first
+//  - imports count more than exports (3 : 1)
+//  - an export is the more urgent the fuller the store of the colony is and the more could be fetched; raw materials before finished goods
+//  - the transports know of each other: what another transport is bringing to a colony or is on its way to fetch (its orders) is subtracted
+//    A transport that is still on its way to fetch goods loses the job to one that gets there at least WTP_URGENCY_TAKEOVER_TURNS turns earlier (goods on board are never redistributed)
+// The AI players keep their old values.
+static const bool WTP_TRADE_ROUTE_URGENCY = true;
+// an empty transport does not set out for less than this part of a slot (of 200: 50), however urgent: a trip like that would not even cover what the colony
+// uses in a turn or two. A job that has waited for the aging time is served anyway, and a transport with cargo takes small amounts on its way.
+static const int WTP_URGENCY_MIN_TRIP_SLOT_DIVISOR = 4;
+static const int WTP_URGENCY_TIER = 100000; // one level of urgency (0..3)
+static const int WTP_URGENCY_MAGNITUDE = 39999; // the grading inside of a level (value of the goods, amount)
+static const int WTP_URGENCY_RAW_BONUS = 40000; // an exported raw material is graded above every finished good of the same level
+static const int WTP_URGENCY_DISTANCE_PERCENT = 8; // per turn of the way: the value is divided by 1 + 8% of the turns
+
+// Aging: a job that waits long gets more urgent, so that a colony that is always less urgent than the others is served in the end (with too few transports). The colonies are usually
+// 1-2 turns apart, so the levels rise fast: +1 level after WTP_URGENCY_AGING_TURNS turns without a delivery (import) or a pick-up (export) of the good, +2 after twice that.
+static const int WTP_URGENCY_AGING_TURNS = 3;
+
+// the turn of the last delivery (side 0) or pick-up (side 1) of a good at a colony by a transport of the player (not saved: after loading a savegame everything starts new)
+static std::map<std::pair<std::pair<int, int>, int>, int>& wtpServedTurns()
+{
+	static std::map<std::pair<std::pair<int, int>, int>, int> aiServed;
+	return aiServed;
+}
+
+static void wtpNoteServed(const CvCity* pCity, YieldTypes eYield, int iSide)
+{
+	if (pCity != NULL && eYield != NO_YIELD)
+	{
+		wtpServedTurns()[std::make_pair(std::make_pair((int)pCity->getOwnerINLINE(), pCity->getID()), (int)eYield * 2 + iSide)] = GC.getGameINLINE().getGameTurn();
+	}
+}
+
+// the levels that a job has gained by waiting (0..2); a job that is seen for the first time starts to wait now
+static int wtpAgingLevels(const CvCity* pCity, YieldTypes eYield, int iSide)
+{
+	std::map<std::pair<std::pair<int, int>, int>, int>& aiServed = wtpServedTurns();
+	const std::pair<std::pair<int, int>, int> kKey(std::make_pair((int)pCity->getOwnerINLINE(), pCity->getID()), (int)eYield * 2 + iSide);
+	std::map<std::pair<std::pair<int, int>, int>, int>::const_iterator it = aiServed.find(kKey);
+	if (it == aiServed.end())
+	{
+		aiServed[kKey] = GC.getGameINLINE().getGameTurn();
+		return 0;
+	}
+	return std::min(2, std::max(0, GC.getGameINLINE().getGameTurn() - it->second) / WTP_URGENCY_AGING_TURNS);
+}
+
+// a nearer transport takes over the job of one that is still on its way to fetch the goods if it arrives at least this many turns earlier
+static const int WTP_URGENCY_TAKEOVER_TURNS = 2;
+
+struct WtpTradeClaims
+{
+	struct Claim
+	{
+		IDInfo kCity;
+		int iYield;
+		int iAmount;
+		int iTurns; // 0: the goods are on board of the other transport (never taken over); otherwise its turns to the source colony
+	};
+	std::vector<Claim> aIncoming; // what other transports bring to a colony (loaded, or on their way to fetch it)
+	std::vector<Claim> aOutgoing; // what other transports are on their way to fetch in a colony
+	// the turns that the transport that asks needs to the source colony of the job it looks at: a claim of a transport that needs at least WTP_URGENCY_TAKEOVER_TURNS
+	// more is not counted (this transport would be there first). The default counts every claim.
+	int iMyTurns;
+
+	WtpTradeClaims() : iMyTurns(1000) {}
+
+	static int sum(const std::vector<Claim>& aClaims, const IDInfo& kCity, YieldTypes eYield, int iMyTurns)
+	{
+		int iSum = 0;
+		for (uint i = 0; i < aClaims.size(); ++i)
+		{
+			if (aClaims[i].kCity == kCity && aClaims[i].iYield == (int)eYield && (aClaims[i].iTurns <= 0 || aClaims[i].iTurns < iMyTurns + WTP_URGENCY_TAKEOVER_TURNS))
+			{
+				iSum += aClaims[i].iAmount;
+			}
+		}
+		return iSum;
+	}
+	int incoming(const IDInfo& kCity, YieldTypes eYield) const { return sum(aIncoming, kCity, eYield, iMyTurns); }
+	int outgoing(const IDInfo& kCity, YieldTypes eYield) const { return sum(aOutgoing, kCity, eYield, iMyTurns); }
+};
+
+// the orders of the other automated transports of the player (what they carry to which colony, what they will fetch where): rebuilt at every decision of a transport,
+// so that the transports that decide one after the other see each other
+static void wtpCollectTradeClaims(const CvSelectionGroupAI* pSelf, WtpTradeClaims& kClaims)
+{
+	const CvPlayer& kOwner = GET_PLAYER(pSelf->getOwnerINLINE());
+	const int iSlot = GC.getGameINLINE().getCargoYieldCapacity();
+	int iLoop;
+	for (CvSelectionGroup* pLoopGroup = kOwner.firstSelectionGroup(&iLoop); pLoopGroup != NULL; pLoopGroup = kOwner.nextSelectionGroup(&iLoop))
+	{
+		if (pLoopGroup == pSelf)
+		{
+			continue;
+		}
+		const CvSelectionGroupAI* pOther = static_cast<const CvSelectionGroupAI*>(pLoopGroup);
+		// (only transports that are still automated: the orders of a group that was taken over are not rebuilt any more)
+		if (pOther->getAutomateType() != AUTOMATE_TRANSPORT_FULL && pOther->getAutomateType() != AUTOMATE_TRANSPORT_ROUTES)
+		{
+			continue;
+		}
+		const std::vector<CvSelectionGroupAI::WtpTradeOrder>& aOrders = pOther->getTradeOrders();
+		if (aOrders.empty())
+		{
+			continue;
+		}
+		short aiLoaded[NUM_YIELD_TYPES];
+		std::fill(aiLoaded, aiLoaded + NUM_YIELD_TYPES, 0);
+		pOther->AI_getYieldsLoaded(aiLoaded);
+		for (uint i = 0; i < aOrders.size(); ++i)
+		{
+			const CvSelectionGroupAI::WtpTradeOrder& kOrder = aOrders[i];
+			if (kOrder.eYield < 0 || kOrder.eYield >= NUM_YIELD_TYPES)
+			{
+				continue;
+			}
+			int iAmount = 0;
+			if (kOrder.bLoaded)
+			{
+				iAmount = aiLoaded[kOrder.eYield];
+			}
+			else
+			{
+				// (a transport on its way to fetch: at most the load of a cargo slot of what the colony has to give)
+				const CvCity* pSource = ::getCity(kOrder.kSource);
+				if (pSource != NULL)
+				{
+					iAmount = std::min(iSlot, std::max(0, pSource->getYieldStored(kOrder.eYield) - pSource->getAutoMaintainThreshold(kOrder.eYield)));
+				}
+				if (iAmount > 0)
+				{
+					WtpTradeClaims::Claim kOut;
+					kOut.kCity = kOrder.kSource;
+					kOut.iYield = (int)kOrder.eYield;
+					kOut.iAmount = iAmount;
+					kOut.iTurns = std::max(1, kOrder.iTurns);
+					kClaims.aOutgoing.push_back(kOut);
+				}
+			}
+			if (iAmount > 0)
+			{
+				WtpTradeClaims::Claim kIn;
+				kIn.kCity = kOrder.kDestination;
+				kIn.iYield = (int)kOrder.eYield;
+				kIn.iAmount = iAmount;
+				kIn.iTurns = kOrder.bLoaded ? 0 : std::max(1, kOrder.iTurns);
+				kClaims.aIncoming.push_back(kIn);
+			}
+		}
+	}
+}
+
+// a raw material: no profession makes it from other goods (cached)
+static bool wtpIsRawYield(YieldTypes eYield)
+{
+	static std::vector<char> aiRaw; // 0: not known, 1: raw, 2: finished
+	if (aiRaw.empty())
+	{
+		aiRaw.assign(NUM_YIELD_TYPES, 1);
+		for (int iProfession = 0; iProfession < GC.getNumProfessionInfos(); ++iProfession)
+		{
+			const CvProfessionInfo& kProfession = GC.getProfessionInfo((ProfessionTypes)iProfession);
+			if (kProfession.getNumYieldsConsumed() > 0)
+			{
+				for (int j = 0; j < kProfession.getNumYieldsProduced(); ++j)
+				{
+					const int iProduced = kProfession.getYieldsProduced(j);
+					if (iProduced >= 0 && iProduced < NUM_YIELD_TYPES)
+					{
+						aiRaw[iProduced] = 2;
+					}
+				}
+			}
+		}
+	}
+	return aiRaw[eYield] == 1;
+}
+
+// what a unit of the good is worth (the price in Europe, 1 for goods that are not traded)
+static int wtpUrgencyYieldValue(const CvPlayerAI& kOwner, YieldTypes eYield)
+{
+	if (eYield < 0 || eYield >= NUM_YIELD_TYPES || !GC.getYieldInfo(eYield).isCargo() || kOwner.getParent() == NO_PLAYER)
+	{
+		return 1;
+	}
+	// (the price list of the king)
+	return std::max(1, GET_PLAYER(kOwner.getParent()).getYieldBuyPrice(eYield));
+}
+
+// what a colony makes of a unit of this raw material is worth (the best of the professions that consume it, cached per turn)
+static int wtpUrgencyProductValue(const CvPlayerAI& kOwner, YieldTypes eYield)
+{
+	static int iCacheTurn = -1;
+	static std::map<std::pair<int, int>, int> aiValues;
+	if (iCacheTurn != GC.getGameINLINE().getGameTurn())
+	{
+		iCacheTurn = GC.getGameINLINE().getGameTurn();
+		aiValues.clear();
+	}
+	const std::pair<int, int> kKey((int)kOwner.getID(), (int)eYield);
+	std::map<std::pair<int, int>, int>::const_iterator it = aiValues.find(kKey);
+	if (it != aiValues.end())
+	{
+		return it->second;
+	}
+	int iBest = 0;
+	for (int iProfession = 0; iProfession < GC.getNumProfessionInfos(); ++iProfession)
+	{
+		const CvProfessionInfo& kProfession = GC.getProfessionInfo((ProfessionTypes)iProfession);
+		bool bConsumes = false;
+		for (int j = 0; j < kProfession.getNumYieldsConsumed(); ++j)
+		{
+			if (kProfession.getYieldsConsumed(j) == eYield)
+			{
+				bConsumes = true;
+			}
+		}
+		if (bConsumes)
+		{
+			for (int j = 0; j < kProfession.getNumYieldsProduced(); ++j)
+			{
+				iBest = std::max(iBest, wtpUrgencyYieldValue(kOwner, (YieldTypes)kProfession.getYieldsProduced(j)));
+			}
+		}
+	}
+	if (iBest <= 0)
+	{
+		iBest = wtpUrgencyYieldValue(kOwner, eYield);
+	}
+	aiValues[kKey] = iBest;
+	return iBest;
+}
+
+// what the production of a colony consumes of a good per turn (cached per turn)
+static int wtpUrgencyConsumption(const CvCity* pCity, YieldTypes eYield)
+{
+	static int iCacheTurn = -1;
+	static std::map<std::pair<std::pair<int, int>, int>, int> aiConsumed;
+	if (iCacheTurn != GC.getGameINLINE().getGameTurn())
+	{
+		iCacheTurn = GC.getGameINLINE().getGameTurn();
+		aiConsumed.clear();
+	}
+	const std::pair<std::pair<int, int>, int> kKey(std::make_pair((int)pCity->getOwnerINLINE(), pCity->getID()), (int)eYield);
+	std::map<std::pair<std::pair<int, int>, int>, int>::const_iterator it = aiConsumed.find(kKey);
+	if (it != aiConsumed.end())
+	{
+		return it->second;
+	}
+	const int iConsumed = std::max(0, pCity->getRawYieldConsumed(eYield));
+	aiConsumed[kKey] = iConsumed;
+	return iConsumed;
+}
+
+// the urgency of a delivery of iAmount of a good to a colony: 0..3 levels (3: the production of the colony is short of it now, 2: it lasts only a few turns, or the
+// colony needs it for its construction, 1: the store is below the level the player wants to keep, 0: it would only be stored) x WTP_URGENCY_TIER, plus the grading
+// inside of the level: the value of what the colony cannot produce without it, the larger it is the more urgent. Colonies that cannot be found: 0.
+static int wtpImportUrgency(const CvPlayerAI& kOwner, const IDInfo& kDestination, YieldTypes eYield, int iAmount, const WtpTradeClaims& kClaims)
+{
+	const CvCity* pCity = ::getCity(kDestination);
+	if (pCity == NULL || iAmount <= 0)
+	{
+		return 0;
+	}
+	// what is there and what the other transports bring
+	const int iStock = pCity->getYieldStored(eYield) + kClaims.incoming(kDestination, eYield);
+	const int iConsumed = wtpUrgencyConsumption(pCity, eYield);
+	const int iNeeded = pCity->getProductionNeeded(eYield);
+	const int iMaintain = pCity->getAutoMaintainThreshold(eYield);
+	int iTier = 0;
+	int iMagnitude = 0;
+	if (iConsumed > 0)
+	{
+		const int iUnit = wtpUrgencyProductValue(kOwner, eYield);
+		if (iStock < iConsumed)
+		{
+			iTier = 3;
+		}
+		else if (iStock < 3 * iConsumed)
+		{
+			iTier = 2;
+		}
+		else
+		{
+			iTier = 1;
+		}
+		// the value of the production per turn that depends on it (what the delivery can save: at most what is missing for the next turn, in the lower levels the consumption)
+		const int iShortage = std::max(0, iConsumed - iStock);
+		const int iAtStake = (iTier == 3) ? iShortage : iConsumed;
+		iMagnitude = iUnit * std::min(iAtStake, iAmount) + iUnit * iConsumed / 4;
+	}
+	if (iNeeded > 0 && iStock < iNeeded)
+	{
+		// construction: the missing goods of the building or unit in production
+		iTier = std::max(iTier, 2);
+		iMagnitude += wtpUrgencyYieldValue(kOwner, eYield) * std::min(iAmount, iNeeded - iStock) / 4;
+	}
+	if (iTier == 0)
+	{
+		if (iMaintain > 0 && iStock < iMaintain)
+		{
+			iTier = 1;
+			iMagnitude = wtpUrgencyYieldValue(kOwner, eYield) * std::min(iAmount, iMaintain - iStock) / 10;
+		}
+		else
+		{
+			iMagnitude = wtpUrgencyYieldValue(kOwner, eYield) * iAmount / 50;
+		}
+	}
+	// (waiting: more urgent by levels, at most the highest)
+	iTier = std::min(3, iTier + wtpAgingLevels(pCity, eYield, 0));
+	return iTier * WTP_URGENCY_TIER + std::min(WTP_URGENCY_MAGNITUDE, iMagnitude);
+}
+
+// the urgency of fetching iAmount of a good from a colony: the fuller its store, the more urgent (above 85 percent goods are lost), then the amount that could be
+// fetched; raw materials before finished goods. The amounts that other transports are on their way to fetch are subtracted.
+static int wtpExportUrgency(const CvPlayerAI& kOwner, const IDInfo& kSource, YieldTypes eYield, int iAmount, const WtpTradeClaims& kClaims)
+{
+	const CvCity* pCity = ::getCity(kSource);
+	if (pCity == NULL || iAmount <= 0)
+	{
+		return 0;
+	}
+	const int iCapacity = std::max(1, pCity->getMaxYieldCapacity());
+	const int iStock = std::max(0, pCity->getYieldStored(eYield) - kClaims.outgoing(kSource, eYield));
+	const int iTotal = pCity->getTotalYieldStored();
+	const int iFill = std::max((100 * iStock) / iCapacity, (100 * iTotal) / iCapacity);
+	int iTier = 0;
+	if (iFill >= 85)
+	{
+		iTier = 2;
+	}
+	else if (iFill >= 50)
+	{
+		iTier = 1;
+	}
+	// (waiting: more urgent by levels, at most the highest)
+	iTier = std::min(3, iTier + wtpAgingLevels(pCity, eYield, 1));
+	// the amount that could be fetched (of 200: a load of two slots) and how full the store is
+	int iMagnitude = std::min(iAmount, 400) * 50 + iFill * 100;
+	iMagnitude = std::min(WTP_URGENCY_MAGNITUDE, iMagnitude);
+	if (wtpIsRawYield(eYield))
+	{
+		iMagnitude += WTP_URGENCY_RAW_BONUS;
+	}
+	return iTier * WTP_URGENCY_TIER + iMagnitude;
+}
+
+// the value of a route: imports count three times, exports once
+static int wtpUrgencyRouteValue(const CvPlayerAI& kOwner, const CvTradeRoute* pRoute, int iAmount, const WtpTradeClaims& kClaims)
+{
+	const int iImport = wtpImportUrgency(kOwner, pRoute->getDestinationCity(), pRoute->getYield(), iAmount, kClaims);
+	const int iExport = wtpExportUrgency(kOwner, pRoute->getSourceCity(), pRoute->getYield(), iAmount, kClaims);
+	return (3 * iImport + iExport) / 4;
+}
+
 // WTP: rebuilds the orders of the transport after it has decided where to go (and loaded here): every yield on board is brought from
 // its source to its destination colony; an empty transport on its way to a source colony will fetch the yields of the best route from there
-void CvSelectionGroupAI::updateTradeOrders(const std::vector<CvTradeRoute*>& routes, const std::vector<int>& routeValues, const IDInfo& kBestDestination)
+void CvSelectionGroupAI::updateTradeOrders(const std::vector<CvTradeRoute*>& routes, const std::vector<int>& routeValues, const IDInfo& kBestDestination, int iTurnsToBest)
 {
 	std::vector<WtpTradeOrder> aNewOrders;
 	const CvCity* pPlotCity = plot()->getPlotCity();
@@ -1140,6 +1502,7 @@ void CvSelectionGroupAI::updateTradeOrders(const std::vector<CvTradeRoute*>& rou
 				kOrder.kSource = routes[i]->getSourceCity();
 				kOrder.kDestination = routes[i]->getDestinationCity();
 				kOrder.bLoaded = false;
+				kOrder.iTurns = iTurnsToBest;
 				aNewOrders.push_back(kOrder);
 			}
 		}
@@ -1184,6 +1547,13 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	const bool bMaxTrip = isHuman() && getAutomateType() == AUTOMATE_TRANSPORT_FULL && getDomainType() == DOMAIN_LAND;
 	// WTP: Automate Transport and the assigned routes (R) fill the hold and stop at colonies on the way
 	const bool bFillHold = WTP_TRADE_ROUTE_FILL_HOLD && isHuman() && (getAutomateType() == AUTOMATE_TRANSPORT_FULL || getAutomateType() == AUTOMATE_TRANSPORT_ROUTES);
+	// WTP: the most urgent job first (see wtpImportUrgency), with the orders of the other transports of the player known
+	const bool bUrgency = WTP_TRADE_ROUTE_URGENCY && bFillHold;
+	WtpTradeClaims kClaims;
+	if (bUrgency)
+	{
+		wtpCollectTradeClaims(this, kClaims);
+	}
 
 	// Erik: We need to determine if we're dealing with a coastal transport
 	bool bCoastalTransport = false;
@@ -1384,7 +1754,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					yieldsToUnload = std::min(yieldsToUnload, estimateYieldsToLoad(pDestinationCity, 9999, eYield, turnsToReach, 0));
 				}
 				//int iRouteValue = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), aiYieldsLoaded[routes[i]->getYield()]);
-				int iRouteValue = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), yieldsToUnload);
+				int iRouteValue = bUrgency ? wtpImportUrgency(kOwner, routes[i]->getDestinationCity(), routes[i]->getYield(), yieldsToUnload, kClaims)
+					: kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), yieldsToUnload);
 				// R&R mod, vetiarvind, max yield import limit - end
 
 				if (iRouteValue > 0)
@@ -1467,6 +1838,32 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			//int iAmount = pSourceCity->getYieldStored(eYield) - pSourceCity->getMaintainLevel(eYield);
 			int iAmount = pSourceCity->getYieldStored(eYield) - pSourceCity->getAutoMaintainThreshold(eYield);
 			// transport feeder - end - Nightinggale
+			if (bUrgency && pSourceCity != pPlotCity)
+			{
+				// WTP: what another transport is on its way to fetch there is no job for this one, unless this one is there at least 2 turns earlier (in a colony
+				// the transport stands in it loads what is there)
+				kClaims.iMyTurns = 1000;
+				if (kClaims.outgoing(routes[i]->getSourceCity(), eYield) > 0)
+				{
+					int iMyTurns = 0;
+					std::map<int, std::pair<bool, int> >::const_iterator itMyTurns = aSourcePaths.find(pSourceCity->getID());
+					if (itMyTurns != aSourcePaths.end())
+					{
+						iMyTurns = itMyTurns->second.second;
+					}
+					else
+					{
+						const bool bMyOk = WTP_timedPath(this, WtpTiming::SLOT_TR_PATH_ROUTE, pSourceCity->plot(), plot(), (bIgnoreDanger ? MOVE_IGNORE_DANGER : MOVE_NO_ENEMY_TERRITORY), true, &iMyTurns);
+						aSourcePaths[pSourceCity->getID()] = std::make_pair(bMyOk, iMyTurns);
+					}
+					kClaims.iMyTurns = iMyTurns;
+				}
+				iAmount -= kClaims.outgoing(routes[i]->getSourceCity(), eYield);
+			}
+			else
+			{
+				kClaims.iMyTurns = (bUrgency && pSourceCity == pPlotCity) ? 0 : 1000;
+			}
 			// WTP: land transport with Automate Transport: no trip of more than 10 turns
 			// WTP: a route with nothing to carry gets no path search: it could not add any value (most routes have nothing to move in a given turn)
 			if (bMaxTrip && pDestinationCity != NULL && iAmount > 0)
@@ -1561,13 +1958,28 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 			}
 
 			// R&R mod, vetiarvind, max yield import limit - end
+			if (bUrgency && bNoCargo && iAmount > 0 && iAmount < GC.getGameINLINE().getCargoYieldCapacity() / WTP_URGENCY_MIN_TRIP_SLOT_DIVISOR)
+			{
+				// WTP: too little for a trip of its own (the stock grows meanwhile); after the waiting time of the aging it is carried anyway
+				if (wtpAgingLevels(pSourceCity, eYield, 1) <= 0)
+				{
+					iAmount = 0;
+				}
+			}
 			if (iAmount > 0)
 			{
 
-				int iExportValue = kOwner.AI_transferYieldValue(routes[i]->getSourceCity(), routes[i]->getYield(), -iAmount);
-				int iImportValue = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), iAmount);
-				int iRouteValue = (iExportValue + iImportValue + 2 * std::min(iExportValue, iImportValue)) / 4;
-
+				int iRouteValue;
+				if (bUrgency)
+				{
+					iRouteValue = wtpUrgencyRouteValue(kOwner, routes[i], iAmount, kClaims);
+				}
+				else
+				{
+					int iExportValue = kOwner.AI_transferYieldValue(routes[i]->getSourceCity(), routes[i]->getYield(), -iAmount);
+					int iImportValue = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), iAmount);
+					iRouteValue = (iExportValue + iImportValue + 2 * std::min(iExportValue, iImportValue)) / 4;
+				}
 
 				if (pSourceCity == pPlotCity)
 				{
@@ -1669,11 +2081,19 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					&& (!bMaxTrip || iTurns <= LAND_TRANSPORT_MAX_TRIP_TURNS)) // WTP: land transport: no trip of more than 10 turns
 				// TAC - Trade Routes Advisor - koma13 - END
 				{
-					iValue /= 1 + kOwner.AI_plotTargetMissionAIs(pDestinationCityPlot, MISSIONAI_TRANSPORT, this, 0);
+					if (!bUrgency)
+					{
+						iValue /= 1 + kOwner.AI_plotTargetMissionAIs(pDestinationCityPlot, MISSIONAI_TRANSPORT, this, 0);
+					}
 
-					// WTP: a human player's automated transport serves the nearest colony first (value per turn), with cargo on board as well as on
-					// the empty way to a colony whose yields are fetched (so it does not pass a near job for a far one of little more value)
-					if (bFillHold && iValue > 0)
+					// WTP: a human player's automated transport serves the most urgent colony first (with cargo on board as well as on the empty way to a colony whose
+					// yields are fetched); the distance only decides between jobs of a similar urgency (the transports know of each other by their orders, see wtpCollectTradeClaims,
+					// so the colonies that another transport serves are not divided by the number of the transports on their way any more)
+					if (bUrgency && iValue > 0)
+					{
+						iValue = std::max(1, (int)(iValue * 100.0 / (100 + WTP_URGENCY_DISTANCE_PERCENT * std::max(0, iTurns))));
+					}
+					else if (bFillHold && iValue > 0)
 					{
 						iValue = std::max(1, iValue / std::max(1, iTurns));
 					}
@@ -1853,6 +2273,7 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				break;
 			}
 		}
+		kClaims.iMyTurns = 0; // (it loads here: it is in the colony of the source)
 		// WTP: also a full transport loads into a partly filled slot of the same yield (the game merges the load into it)
 		while (!isFull() || (bFillHold && getPartialYieldSpace(NO_YIELD) > 0))
 		{
@@ -1899,9 +2320,18 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 					// R&R mod, vetiarvind, max yield import limit - end
 					if (iAmount > 0)
 					{
-						int iExportValue = kOwner.AI_transferYieldValue(routes[i]->getSourceCity(), routes[i]->getYield(), -iAmount);
-						int iImportValue = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), iAmount);
-						int iRouteValue = (iExportValue + iImportValue + 2 * std::min(iExportValue, iImportValue)) / 4;
+						int iRouteValue;
+						if (bUrgency)
+						{
+							// (the most urgent yield is loaded first)
+							iRouteValue = wtpUrgencyRouteValue(kOwner, routes[i], iAmount, kClaims);
+						}
+						else
+						{
+							int iExportValue = kOwner.AI_transferYieldValue(routes[i]->getSourceCity(), routes[i]->getYield(), -iAmount);
+							int iImportValue = kOwner.AI_transferYieldValue(routes[i]->getDestinationCity(), routes[i]->getYield(), iAmount);
+							iRouteValue = (iExportValue + iImportValue + 2 * std::min(iExportValue, iImportValue)) / 4;
+						}
 
 						if (iRouteValue > iBestRouteValue)
 						{
@@ -1938,6 +2368,10 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 
 							// R&R mod, vetiarvind, max yield import limit - end
 							aiYieldsLoaded[routes[iBestRoute]->getYield()] += loaded;
+							if (loaded > 0 && bUrgency)
+							{
+								wtpNoteServed(pPlotCity, routes[iBestRoute]->getYield(), 1); // (picked up: the export waits no more)
+							}
 							bLoadedAny = (loaded > 0);
 							break;
 						}
@@ -2263,7 +2697,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 				pushMission(MISSION_SKIP);
 				if (isHuman())
 				{
-					updateTradeOrders(routes, routeValues, kBestDestination);
+					std::map<IDInfo, std::pair<bool, int> >::const_iterator itBestTurns = aGroupToDestPaths.find(kBestDestination);
+					updateTradeOrders(routes, routeValues, kBestDestination, (itBestTurns != aGroupToDestPaths.end()) ? itBestTurns->second.second : 0);
 				}
 				return true;
 			}
@@ -2281,7 +2716,8 @@ bool CvSelectionGroupAI::AI_tradeRoutes()
 	// WTP: the orders shown in the tooltip of the transport (human player only)
 	if (isHuman())
 	{
-		updateTradeOrders(routes, routeValues, kBestDestination);
+		std::map<IDInfo, std::pair<bool, int> >::const_iterator itBestTurns = aGroupToDestPaths.find(kBestDestination);
+		updateTradeOrders(routes, routeValues, kBestDestination, (itBestTurns != aGroupToDestPaths.end()) ? itBestTurns->second.second : 0);
 	}
 
 	wtpTradeLap.next(WtpTiming::SLOT_TR_PUSH);
@@ -2455,6 +2891,7 @@ void CvSelectionGroupAI::unloadToCity(CvCity* pCity, CvUnit* unit, UnloadMode um
 		{
 			return;
 		}
+		wtpNoteServed(pCity, unit->getYield(), 0); // (delivered: the import waits no more)
 		if (toUnload < totalStored)
 		{
 			unit->unloadStoredAmount(toUnload);
@@ -2466,6 +2903,7 @@ void CvSelectionGroupAI::unloadToCity(CvCity* pCity, CvUnit* unit, UnloadMode um
 	}
 	else
 	{
+		wtpNoteServed(pCity, unit->getYield(), 0);
 		unit->unload();
 	}
 }

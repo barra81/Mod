@@ -125,6 +125,8 @@ public:
 		IDInfo kSource;
 		IDInfo kDestination;
 		bool bLoaded;
+		int iTurns; // not loaded: the turns the transport needs to get to the source colony (a nearer transport may take the job over, see wtpCollectTradeClaims)
+		WtpTradeOrder() : eYield(NO_YIELD), bLoaded(false), iTurns(0) {}
 	};
 	const std::vector<WtpTradeOrder>& getTradeOrders() const { return m_aTradeOrders; }
 	const IDInfo& getTooltipStop() const { return m_kTooltipStop; }
@@ -147,7 +149,7 @@ private:
 	void unloadToCity(CvCity* pCity, CvUnit* unit, UnloadMode um = NoForce);
 	// R&R mod, vetiarvind, max yield import limit - end
 
-	void updateTradeOrders(const std::vector<CvTradeRoute*>& routes, const std::vector<int>& routeValues, const IDInfo& kBestDestination);
+	void updateTradeOrders(const std::vector<CvTradeRoute*>& routes, const std::vector<int>& routeValues, const IDInfo& kBestDestination, int iTurnsToBest);
 	void processTradeRoute(CvTradeRoute* pRoute, std::map<IDInfo, int>& cityValues, std::vector<CvTradeRoute*>& routes, std::vector<int>& routeValues, std::vector<bool>& yieldsDelivered, std::vector<bool>& yieldsToUnload);
 };
 

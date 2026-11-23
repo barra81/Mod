@@ -159,6 +159,9 @@
 //     count fewer pairs (the dead ones are no longer counted as free). (b) New timing slots, no change of behavior: the parts of AI_tradeRoutes (set-up, unloading,
 //     values, main loop, best destination, pick-up/filling, orders, final move), the colonist AI (AI_hasSuitableJob, AI_doWfTask, AI_betterJob, AI_joinCity,
 //     AI_learn) and in the ship AIs AI_continueMission, AI_retreatToCity, AI_safety.
+// 17. Turns 511-532 (5,700+ units): UNITAI_COLONIST 7.7 -> 14.3 s (AI_doWfTask). Suspect: AI_foodSurplusForNewcomer scanned all units per call, and
+//     AI_bestFoodSurplusCity once per colony (286 x 5,700 units). Change: AI_bestFoodSurplusCity counts the colonists on their way once (a map city -> number).
+//     New slots inside AI_doWfTask: the food check and the way to the colony, to see which part really costs.
 //  7. The long times matter more with more AI players (the tester plays with only 3 opponents because of the turn time): the plan
 //     scales about linearly with the number of European AIs, so the per player table is there to measure that.
 //
@@ -251,6 +254,8 @@ namespace WtpTiming
 		SLOT_TR_PUSH,
 		SLOT_COL_HASJOB,
 		SLOT_COL_WFTASK,
+		SLOT_COL_FOOD,
+		SLOT_COL_TRAVEL,
 		SLOT_COL_BETTERJOB,
 		SLOT_COL_JOIN,
 		SLOT_COL_LEARN,
@@ -398,6 +403,8 @@ namespace WtpTiming
 		"    in AI_tradeRoutes: the final loading and the move order",
 		"  in the colonist AI (all callers): AI_hasSuitableJob of the colony",
 		"  in the colonist AI (all callers): AI_doWfTask",
+		"    in AI_doWfTask: the food check of the target colony (AI_foodSurplusForNewcomer / AI_bestFoodSurplusCity)",
+		"    in AI_doWfTask: the way to the colony (travel times, ship, paths)",
 		"  in the colonist AI (all callers): AI_betterJob",
 		"  in the colonist AI (all callers): AI_joinCity / AI_joinOptimalCity",
 		"  in the colonist AI (all callers): AI_learn",

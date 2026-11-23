@@ -18162,6 +18162,16 @@ CvCity* CvPlayerAI::AI_bestFoodSurplusCity(const CvCity& kFrom, const CvCity* pE
 	CvCity* pBest = NULL;
 	int iBestSurplus = 1;
 	int iLoop;
+	// WTP: the colonists on their way are counted once for all colonies (not one scan of all units per colony)
+	std::map<int, int> mapIncoming;
+	for (CvUnit* pLoopUnit = firstUnit(&iLoop); pLoopUnit != NULL; pLoopUnit = nextUnit(&iLoop))
+	{
+		const CvUnitAI& kLoopAI = static_cast<const CvUnitAI&>(*pLoopUnit);
+		if (kLoopAI.AI_getWfTask() == CvUnitAI::WF_JOIN_CITY && pLoopUnit->getID() != iSkipUnitID)
+		{
+			++mapIncoming[kLoopAI.AI_getWfCityID()];
+		}
+	}
 	for (CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 	{
 		if (pLoopCity == pExclude)
@@ -18170,7 +18180,13 @@ CvCity* CvPlayerAI::AI_bestFoodSurplusCity(const CvCity& kFrom, const CvCity* pE
 		}
 		const bool bReachable = pLoopCity->area() == kFrom.area()
 			|| (pLoopCity->isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()) && kFrom.isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()));
-		const int iSurplus = AI_foodSurplusForNewcomer(*pLoopCity, iSkipUnitID);
+		if (!bReachable)
+		{
+			continue;
+		}
+		const std::map<int, int>::const_iterator itIncoming = mapIncoming.find(pLoopCity->getID());
+		const int iSurplus = pLoopCity->foodDifference() - 2 * (itIncoming != mapIncoming.end() ? itIncoming->second : 0)
+			- GLOBAL_DEFINE_FOOD_CONSUMPTION_PER_POPULATION;
 		if (bReachable && iSurplus >= 2 && iSurplus > iBestSurplus)
 		{
 			iBestSurplus = iSurplus;
