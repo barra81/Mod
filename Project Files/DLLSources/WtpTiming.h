@@ -512,6 +512,13 @@ namespace WtpTiming
 		char szSeaLevel[48];
 		int iPathfinderParallel;
 		int iPathfinderMinChildren;
+		// AI settlement brake (game option GAMEOPTION_AI_CITY_BRAKE), all values are read from WTP_Settings.txt
+		int iBrakeFloor;          // smallest soft limit of cities, whatever the map says
+		int iBrakePlotsPerCity;   // land plots a colonial power gets per city (map size term)
+		int iBrakeHumanPct;       // the soft limit follows this percentage of the biggest human city count
+		int iBrakeHumanWeight;    // weight in percent of that human term against the map term
+		int iBrakeLeaderPct;      // an AI may not be bigger than this percentage of the average of the other AIs (plus 2)
+		int iBrakeFalloff;        // percentage of the wish for further cities that is kept above the soft limit
 	};
 
 	inline Data& data()
@@ -525,6 +532,12 @@ namespace WtpTiming
 			kData.iLastTurn = -1;
 			kData.iPathfinderParallel = 0; // measured: serial is about 25-30% faster in the late game
 			kData.iPathfinderMinChildren = 0;
+			kData.iBrakeFloor = 12;
+			kData.iBrakePlotsPerCity = 30;
+			kData.iBrakeHumanPct = 150;
+			kData.iBrakeHumanWeight = 25;
+			kData.iBrakeLeaderPct = 130;
+			kData.iBrakeFalloff = 25;
 			LARGE_INTEGER kFreq;
 			kFreq.QuadPart = 0;
 			QueryPerformanceFrequency(&kFreq);
@@ -1240,6 +1253,12 @@ namespace WtpTiming
 			{
 				fprintf(f, "PathfinderParallel=%d\n", kData.iPathfinderParallel);
 				fprintf(f, "PathfinderMinChildren=%d\n", kData.iPathfinderMinChildren);
+				fprintf(f, "AiBrakeFloor=%d\n", kData.iBrakeFloor);
+				fprintf(f, "AiBrakePlotsPerCity=%d\n", kData.iBrakePlotsPerCity);
+				fprintf(f, "AiBrakeHumanPct=%d\n", kData.iBrakeHumanPct);
+				fprintf(f, "AiBrakeHumanWeight=%d\n", kData.iBrakeHumanWeight);
+				fprintf(f, "AiBrakeLeaderPct=%d\n", kData.iBrakeLeaderPct);
+				fprintf(f, "AiBrakeFalloff=%d\n", kData.iBrakeFalloff);
 				fclose(f);
 			}
 			return;
@@ -1255,6 +1274,30 @@ namespace WtpTiming
 			else if (sscanf(szLine, "PathfinderMinChildren=%d", &iValue) == 1)
 			{
 				kData.iPathfinderMinChildren = iValue;
+			}
+			else if (sscanf(szLine, "AiBrakeFloor=%d", &iValue) == 1)
+			{
+				kData.iBrakeFloor = std::max(1, iValue);
+			}
+			else if (sscanf(szLine, "AiBrakePlotsPerCity=%d", &iValue) == 1)
+			{
+				kData.iBrakePlotsPerCity = std::max(5, iValue);
+			}
+			else if (sscanf(szLine, "AiBrakeHumanPct=%d", &iValue) == 1)
+			{
+				kData.iBrakeHumanPct = std::max(0, iValue);
+			}
+			else if (sscanf(szLine, "AiBrakeHumanWeight=%d", &iValue) == 1)
+			{
+				kData.iBrakeHumanWeight = std::min(100, std::max(0, iValue));
+			}
+			else if (sscanf(szLine, "AiBrakeLeaderPct=%d", &iValue) == 1)
+			{
+				kData.iBrakeLeaderPct = std::max(100, iValue);
+			}
+			else if (sscanf(szLine, "AiBrakeFalloff=%d", &iValue) == 1)
+			{
+				kData.iBrakeFalloff = std::min(100, std::max(0, iValue));
 			}
 		}
 		fclose(f);

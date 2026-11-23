@@ -544,4 +544,16 @@
 		<Spanish>Con el nuevo sistema, FFs vuelven a estar disponibles si se destruye la posesión de Civilization.</Spanish>
 		<Russian>С новой системой Отцы Основатели снова становятся доступными всякий раз, когда нанявшая их цивилизация уничтожается.</Russian>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GAMEOPTION_AI_CITY_BRAKE</Tag>
+		<English>AI Settlement Brake</English>
+		<German>Siedlungsbremse für die KI</German>
+		<Russian>Тормоз расселения для ИИ</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GAMEOPTION_AI_CITY_BRAKE_HELP</Tag>
+		<English>Colonial AI players found fewer new colonies once they have more cities than a soft limit. The limit depends on map size (strongest), game speed and the number of cities of the human players, and no AI may get far ahead of the other AIs. It saves turn time on big maps. The values can be changed in WTP_Settings.txt.</English>
+		<German>Koloniale KI-Spieler gründen weniger neue Kolonien, sobald sie mehr Städte haben als eine weiche Grenze. Die Grenze hängt von der Kartengröße (am stärksten), der Spielgeschwindigkeit und der Städtezahl der menschlichen Spieler ab, und keine KI soll den anderen KIs weit davonziehen. Das spart Rundenzeit auf großen Karten. Die Werte lassen sich in WTP_Settings.txt ändern.</German>
+		<Russian>Колониальные ИИ основывают меньше новых колоний, когда у них больше городов, чем мягкий предел. Предел зависит от размера карты (сильнее всего), скорости игры и числа городов игроков-людей, и ни один ИИ не должен сильно оторваться от остальных. Это экономит время хода на больших картах. Значения можно изменить в WTP_Settings.txt.</Russian>
+	</TEXT>
 </Civ4GameText>

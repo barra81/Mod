@@ -409,6 +409,7 @@ public:
 	UnitTypes AI_bestUnit(UnitAITypes eUnitAI = NO_UNITAI, CvArea* pArea = NULL);
 
 	int AI_desiredCityCount();
+	int AI_getCityBrakeLimit(); // WTP: soft limit of the AI settlement brake (game option)
 
 	int AI_professionValue(ProfessionTypes eProfession, UnitAITypes eUnitAI) const;
 	int AI_professionGoldValue(ProfessionTypes eProfession);

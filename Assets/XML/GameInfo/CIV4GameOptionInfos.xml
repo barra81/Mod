@@ -205,6 +205,13 @@
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
+			<Type>GAMEOPTION_AI_CITY_BRAKE</Type>
+			<Description>TXT_KEY_GAMEOPTION_AI_CITY_BRAKE</Description>
+			<Help>TXT_KEY_GAMEOPTION_AI_CITY_BRAKE_HELP</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
 			<Type>GAMEOPTION_RANDOM_FOUNDING_FATHERS</Type>
 			<Description>TXT_KEY_GAMEOPTION_RANDOM_FOUNDING_FATHERS</Description>
 			<Help>TXT_KEY_GAMEOPTION_RANDOM_FOUNDING_FATHERS_HELP</Help>
