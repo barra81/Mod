@@ -184,11 +184,20 @@ def _namespace(seed, xml):
 
 
 def _run(seed):
+	"""Generate the map; a seed whose map the generator rejects (MapRejected, e.g. a straight dug south channel) is
+	followed by the next one."""
 	xml = {'CIV4FeatureInfos.xml': _unpack(_XML_FEATURES), 'CIV4BonusInfos.xml': _unpack(_XML_BONUSES)}
-	ns = _namespace(seed, xml)
 	code = compile(_unpack(_CODE), 'Random New World generator', 'exec')
-	exec code in ns
-	return ns
+	for attempt in range(50):
+		ns = _namespace(seed, xml)
+		try:
+			exec code in ns
+			return ns
+		except Exception, e:
+			if e.__class__.__name__ != 'MapRejected' or attempt == 49:
+				raise
+			CvUtil.pyPrint('Random New World: seed %d rejected (%s)' % (seed, e))
+			seed = ns['next_seed'](seed)
 
 
 def _info(prefix, name):

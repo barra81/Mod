@@ -700,6 +700,17 @@ SOUTH_ROUTE_LAT = 20                     # (the lower half of the map: 50 still 
 SOUTH_PASSAGE = set()
 
 
+STRAIGHT_CHANNEL_MAX = 4   # longest straight east-west run of land plots the southern channel may cut
+
+
+class MapRejected(Exception):
+    """This seed makes a map that is thrown away; the caller goes on with next_seed(seed)."""
+
+
+def next_seed(seed):
+    return (seed * 69069 + 12345) % 1000000007
+
+
 def south_route(sea):
     """Is there an edge-connected way through the plots sea(i) from the west to the east edge south of SOUTH_ROUTE_LAT?"""
     ys = lat_y(SOUTH_ROUTE_LAT)
@@ -735,7 +746,22 @@ def south_route_path(cost):
 if not south_route(lambda i: not land[i]):
     # (the atolls and the volcano isle are not drowned: their plot types are set again later)
     _keep = set(I(x, y) for x, y in atolls) | set(I(x, y) for x, y in VOLCANO_ISLE)
-    for i in south_route_path(lambda j: None if j in _keep else (1.0 + 3.0 * max(0.0, HEIGHT0[j] - SEA_LEVEL) if land[j] else 0.01)):
+    _path = south_route_path(lambda j: None if j in _keep else (1.0 + 3.0 * max(0.0, HEIGHT0[j] - SEA_LEVEL) if land[j] else 0.01))
+    # a channel cut straight east-west through the land looks dug, not grown: such a map is thrown away and the
+    # caller tries the next seed (next_seed)
+    _run_, _longest = 0, 0
+    for k, i in enumerate(_path):
+        if land[i] and k > 0 and land[_path[k - 1]] and _path[k - 1] // W == i // W:
+            _run_ += 1
+        else:
+            _run_ = 1 if land[i] else 0
+        _longest = max(_longest, _run_)
+    if _longest > STRAIGHT_CHANNEL_MAX:
+        if __name__ == '__main__':               # run as a script: exit code 3, the next seed is printed
+            print('rejected: straight south channel of', _longest, 'plots, next seed', next_seed(SEED))
+            sys.exit(3)
+        raise MapRejected('south route: straight channel of %d plots' % _longest)
+    for i in _path:
         x, y = i % W, i // W
         for j in (i, I(x, max(0, y - 1)), I(x, min(H - 1, y + 1))):
             if land[j] and j not in _keep:
