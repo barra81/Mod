@@ -57,7 +57,7 @@ The generated file is also stored as `PrivateMaps/Eporue Massive.ColonizationWBS
 
 ## Random New World (`gen_random.py`)
 
-Built on `gen.py`, but nothing is drawn by hand: every seed makes new landmasses. 85x137 (taller than wide), world size MASSIVE, 70°N–40°S, Atlantic (Europe) in the east, Pacific in the west.
+Built on `gen.py`, but nothing is drawn by hand: every seed makes new landmasses. 85x137 (taller than wide), world size MASSIVE (other sizes: see Map sizes), 70°N–40°S, Atlantic (Europe) in the east, Pacific in the west.
 
 ```
 python Tools/MapGenerator/gen_random.py [seed] [output dir]     # default: seed 1, Tools/MapGenerator/out_random
@@ -88,11 +88,14 @@ The world and the previews of each seed are in `Tools/MapGenerator/out_random/se
 - Coasts: the continental shelf is read at a warped position and the edge of the open sea in the east and west bends and falls off gently, so the continents get no straight west or east coasts (user 2026-11-23).
 - Southern sea route: besides the northern strait there is always a way from the Atlantic to the Pacific south of latitude 20 (between the continents or south of the southern one). If the land closes every way, the cheapest crossing is drowned into a strait three plots wide; shallow coast on that way becomes coast for large ships (`south_route`, `SOUTH_PASSAGE`).
 - Continents: two, or three in about a third of the maps (`N_CONT`, `THREE_CONT_SHARE`). The continental plates are chosen around continent centres spread from south to north, and the crust sinks along the plate borders between the groups (`DSEAM`), so the continents are parted by bending straits. A map whose continents lie more than `CONT_GAP_MAX` (10) plots apart is rejected and the next seed is used; the south edge stays open water (`MARGIN_S`).
+- Map sizes: `python gen_random.py SEED OUT SIZE` (TINY, SMALL, STANDARD, LARGE, HUGE, MASSIVE, GIGANTIC) uses the grid of FaireWeather (`GRID`: Tiny 23x30 ... Massive 85x137, Gigantic 127x184). Massive is the size the generator was made for and stays unchanged; the others scale its plot distances (`sz`, `szf`: `FX` across, `FY` along, `FS` both), its counts of set pieces by area (`na`) and the feature sizes of the noise (`Noise.SCALE`). Three continents only from Huge up.
+- Drainage lakes: basins without an outlet below their rim fill up into lakes (`DRAIN`, up to `DRAIN_LAKES_MAX`); the corner drainage passes their water on, so each lake spills into an outflow river (after FaireWeather 1.1).
+- Shallow coast in patches: coast turns shallow at random (20 %, 40 % next to shallow coast), never at a choke point (`choke_point`), so straits stay open for large ships (after FaireWeather).
 - Rejected maps: a straight dug south channel or continents too far apart reject the seed (`reject`, `MapRejected`); the map script then goes on with `next_seed`, `gen_random.py` run as a script exits with code 3.
 
 ### In-game map script (`make_mapscript.py`)
 
-`PrivateMaps/Random_New_World.py` makes a new world with this generator in every game (map script list in Custom Game, always 85x137, two plot colony radius). The game runs Python 2.4, so `make_mapscript.py` rewrites `noise.py`, `place_names.py` and `gen_random.py` (without its output part) into Python 2.4 code with the `ast` module and packs it, with `CIV4FeatureInfos.xml` and `CIV4BonusInfos.xml`, into the map script built from `mapscript_template.py`:
+`PrivateMaps/Random_New_World.py` makes a new world with this generator in every game (map script list in Custom Game, grid by world size as above, two plot colony radius). The game runs Python 2.4, so `make_mapscript.py` rewrites `noise.py`, `place_names.py` and `gen_random.py` (without its output part) into Python 2.4 code with the `ast` module and packs it, with `CIV4FeatureInfos.xml` and `CIV4BonusInfos.xml`, into the map script built from `mapscript_template.py`:
 
 ```
 python Tools/MapGenerator/make_mapscript.py [--test=1,2,3] [--dump]   # --test: the rewritten code must give the same map as gen_random.py; --dump: out_random/mapscript_code.py

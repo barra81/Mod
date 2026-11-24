@@ -3,6 +3,7 @@ import math, random
 
 class Noise:
     """Seeded 2D value noise with fBm."""
+    SCALE = 1.0          # all feature sizes times this (a generator for several map sizes sets it)
 
     def __init__(self, seed):
         r = random.Random(seed)
@@ -24,7 +25,7 @@ class Noise:
         return (a + (b - a) * sx) + ((c + (d - c) * sx) - (a + (b - a) * sx)) * sy
 
     def fbm(self, x, y, octaves=4, scale=16.0, persistence=0.5):
-        amp, freq, tot, norm = 1.0, 1.0 / scale, 0.0, 0.0
+        amp, freq, tot, norm = 1.0, 1.0 / (scale * self.SCALE), 0.0, 0.0
         for o in range(octaves):
             tot += amp * self.value(x * freq + o * 17.3, y * freq - o * 9.1)
             norm += amp
