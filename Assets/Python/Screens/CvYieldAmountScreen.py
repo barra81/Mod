@@ -6,6 +6,7 @@
 from CvPythonExtensions import *
 import CvUtil
 import CvScreenEnums
+import time
 
 gc = CyGlobalContext()
 localText = CyTranslator()
@@ -64,6 +65,7 @@ class CvYieldAmountScreen:
 		self.tReopen = None # the dialog that Alt+Tab closed (it is opened again for the same transfer)
 		self.iReopenWait = 0
 		self.iReopenTries = 0
+		self.tLastKey = None # the last key: (key, source, time)
 
 	def getScreen(self):
 		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.YIELD_AMOUNT)
@@ -479,8 +481,14 @@ class CvYieldAmountScreen:
 			self.bHostMain = False
 			self.pHost = None
 
-	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
-	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False):
+	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open; on a harbor screen they come as
+	# NOTIFY_CHARACTER from handleEmbeddedInput instead). The same key from the other source right after it is the same press.
+	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False, szSource = "kbd"):
+		fNow = time.clock()
+		tLast = self.tLastKey
+		self.tLastKey = (iKey, szSource, fNow)
+		if tLast != None and tLast[0] == iKey and tLast[1] != szSource and fNow - tLast[2] < 0.05:
+			return
 		self.bCtrlDown = bCtrl or iKey in self.aKeyCtrl
 		self.bShiftDown = bShift or iKey in self.aKeyShift
 		if bCtrl and bShift and iKey == self.getKeyId("KB_Q"):
@@ -518,6 +526,14 @@ class CvYieldAmountScreen:
 	# the clicks on the buttons of the dialog when it is drawn on a harbor screen (CvScreensInterface.handleInput gives them here);
 	# returns 1 if the event was for the dialog
 	def handleEmbeddedInput(self, inputClass):
+		# the keys on a harbor screen (Europe / Africa / Port Royal): the screen gets them, CvEventManager.onKbdEvent does not
+		# (the arrow keys are asked from the keyboard in updateMove)
+		if int(inputClass.getNotifyCode()) == int(NotifyCode.NOTIFY_CHARACTER) and not self.bHostMain:
+			iKey = int(inputClass.getData())
+			if iKey in self.aKeyArrows:
+				return 1
+			self.handleKey(iKey, inputClass.isCtrlKeyDown(), inputClass.isShiftKeyDown(), inputClass.isAltKeyDown(), "screen")
+			return 1
 		if int(inputClass.getNotifyCode()) != int(NotifyCode.NOTIFY_CLICKED) or inputClass.getButtonType() != WidgetTypes.WIDGET_GENERAL:
 			return 0
 		iData = inputClass.getData1()
