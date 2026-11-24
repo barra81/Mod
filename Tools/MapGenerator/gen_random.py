@@ -1024,7 +1024,7 @@ for x, y in ALL:
 RAIN_LAT = [(0, 1.0), (7, 0.95), (14, 0.8), (21, 0.56), (27, 0.48), (34, 0.62), (44, 0.85), (55, 0.8), (64, 0.55), (75, 0.45)]   # rain by latitude (also used by the climate)
 DRAIN_LAKES_MAX = na(10) if FS <= 1 else na(15)     # (Gigantic: a few more)
 DRAIN_DEPTH = 0.03                # least depth of the basin below its rim (elevation units)
-DRAIN_SIZE = (2, na(24, 3))             # plots per lake
+DRAIN_SIZE = (2, min(24, na(24, 3)))    # plots per lake
 fill_lvl = elev[:]
 _seen = [False] * (W * H)
 pq = []
@@ -1075,7 +1075,7 @@ for _, low, cells in _basins[:DRAIN_LAKES_MAX]:
         DRAIN.add(i)
         DRAIN_LEVEL[i] = level
 # enclosed water bodies left by the landmass noise become lakes too
-LAKE_MAX = na(45, 6)                  # plots per lake
+LAKE_MAX = min(45, na(45, 6))         # plots per lake (the game treats 50 water plots as ocean)
 for comp in components([not land[i] for i in range(W * H)], N8):
     if len(comp) <= LAKE_MAX and not any(x in (0, W - 1) or y in (0, H - 1) for x, y in comp):
         for x, y in comp:
@@ -1320,7 +1320,14 @@ for k in corder:
         # their water far out into the drier lowlands
         cacc[k] = sum(P[I(px, py)] + HIGHLAND_WATER * (1.0 if plot_type[I(px, py)] == 0 else (0.55 if plot_type[I(px, py)] == 1 else 0.0))
                       for px, py in corner_plots(i, j)) / 4.0
+# dry land soaks up and evaporates the water (user 2026-11-25: few rivers in the desert): in every dry corner a share of the
+# flow is lost, so small streams die out in the desert and only large rivers cross it
+DRY_P, DRY_LOSS = 0.3, 0.55           # rain below which a corner loses water, largest loss per corner (rain 0)
 for k in reversed(corder):
+    if not outlet[k]:
+        pm = sum(P[I(px, py)] for px, py in corner_plots(k % CW, k // CW)) / 4.0
+        if pm < DRY_P:
+            cacc[k] *= 1 - DRY_LOSS * (DRY_P - pm) / DRY_P
     if cdown[k] >= 0:
         cacc[cdown[k]] += cacc[k]
 
