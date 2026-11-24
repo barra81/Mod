@@ -2864,15 +2864,17 @@ def europe_plots():
                 dq.append(j)
     east = [s == 1 for s in side]
     west = [s == -1 for s in side]
-    # where EUROPE_WEST lies straight west of EUROPE_EAST over open sea (a row without land between them), the Atlantic
-    # Europe begins EUROPE_EAST_MIN plots east of the middle of the map, not nearer to it
+    # where EUROPE_WEST lies straight west of EUROPE_EAST over open sea (a row without mainland between them: small
+    # islands, fewer than ISLE_MAX_TILES land tiles, do not count), the Atlantic Europe begins EUROPE_EAST_MIN plots east
+    # of the middle of the map, not nearer to it
     x_min = W // 2 + EUROPE_EAST_MIN
+    main = set(mainland)
     for y in range(H):
         for x in range(x_min - 1, -1, -1):
             if not east[I(x, y)]:
                 continue
             k = x - 1
-            while k >= 0 and ocean[I(k, y)] and not west[I(k, y)]:
+            while k >= 0 and I(k, y) not in main and not west[I(k, y)]:
                 k -= 1
             if k >= 0 and west[I(k, y)]:
                 for x2 in range(x + 1):
@@ -2984,10 +2986,14 @@ if west_isle:
 CARIB_EUROPE = [I(wx, wy + d) for d in range(-2, 3) if inb(wx, wy + d)] if west_isle else []     # a narrow strip, five plots long
 
 
+_main = set(I(x, y) for comp in components([not ocean[i] for i in range(W * H)]) if len(comp) >= ISLE_MAX_TILES
+            for x, y in comp)
+
+
 def pacific_straight_west(i):
-    """Is EUROPE_WEST reached from plot i going straight west over open sea?"""
+    """Is EUROPE_WEST reached from plot i going straight west over open sea (small islands do not count)?"""
     x, y = i % W - 1, i // W
-    while x >= 0 and ocean[I(x, y)] and not pacific[I(x, y)]:
+    while x >= 0 and I(x, y) not in _main and not pacific[I(x, y)]:
         x -= 1
     return x >= 0 and pacific[I(x, y)]
 
