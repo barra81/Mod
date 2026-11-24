@@ -2890,8 +2890,8 @@ for i in list(nofr):
 # Europe: all open sea at least EUROPE_DIST tiles from the nearest land that is connected to the map edge through such
 # sea; it is flooded from the east edge (Atlantic, EUROPE_EAST) and the west edge (Pacific, EUROPE_WEST) at once, each
 # plot goes to the nearer edge. So the access follows the coast, and an island only pushes Europe back around itself.
-# On the Atlantic side small islands (fewer than ISLE_MAX_TILES land tiles) in front of the coast keep Europe only
-# ISLE_EUROPE_DIST tiles away, so they do not push the Atlantic far away from the mainland coast behind them.
+# On both sides small islands (fewer than ISLE_MAX_TILES land tiles) in front of the coast keep Europe only
+# ISLE_EUROPE_DIST tiles away, so they do not push Europe far away from the mainland coast behind them.
 EUROPE_DIST = 7
 ISLE_EUROPE_DIST = 3
 ISLE_MAX_TILES = 60
@@ -2905,8 +2905,9 @@ def europe_plots():
     mainland = [I(x, y) for comp in components(not_sea) if len(comp) >= ISLE_MAX_TILES for x, y in comp]
     dl_main = bfs_dist(mainland, lambda j: True)
     sea_ok = [ocean[i] and terrain[i] in ('OCEAN', 'COAST') for i in range(W * H)]
+    # (on both sides: user 2026-11-24, small islands must not push the Pacific Europe far to the west either)
     open_sea = {1: [sea_ok[i] and dl_main[i] >= EUROPE_DIST and dl[i] >= ISLE_EUROPE_DIST for i in range(W * H)],
-                -1: [sea_ok[i] and dl[i] >= EUROPE_DIST for i in range(W * H)]}
+                -1: [sea_ok[i] and dl_main[i] >= EUROPE_DIST and dl[i] >= ISLE_EUROPE_DIST for i in range(W * H)]}
     side = [0] * (W * H)                         # 1 east, -1 west
     dq = deque()
     for y in range(H):
