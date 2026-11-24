@@ -2835,6 +2835,7 @@ for i in list(nofr):
 EUROPE_DIST = 7
 ISLE_EUROPE_DIST = 3
 ISLE_MAX_TILES = 60
+EUROPE_GAP = 15                     # plain sea plots between EUROPE_EAST and EUROPE_WEST where they would touch
 
 
 def europe_plots():
@@ -2862,6 +2863,19 @@ def europe_plots():
                 dq.append(j)
     east = [s == 1 for s in side]
     west = [s == -1 for s in side]
+    # where the two floods meet in the open sea (south of the land, or through a wide strait), EUROPE_EAST and
+    # EUROPE_WEST would touch: there both are pulled back until EUROPE_GAP plots of plain sea lie between them
+    # (distance over the sea; about half of the gap is taken from each side)
+    if any(east[i] and any(west[I(qx, qy)] for qx, qy in nbrs(i % W, i // W)) for i in range(W * H)):
+        d_west = bfs_dist([i for i in range(W * H) if west[i]], lambda j: ocean[j])
+        for i in range(W * H):
+            if east[i] and d_west[i] <= EUROPE_GAP // 2:
+                east[i] = False
+        d_east = bfs_dist([i for i in range(W * H) if east[i]], lambda j: ocean[j])
+        for i in range(W * H):
+            if west[i] and d_east[i] <= EUROPE_GAP:
+                west[i] = False
+        print('europe: east and west zones touched, gap of', EUROPE_GAP, 'plots made')
     for i in range(W * H):
         if east[i] or west[i]:
             terrain[i] = 'OCEAN'                     # Europe plots are open ocean
