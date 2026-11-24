@@ -19646,7 +19646,8 @@ bool CvUnitAI::AI_nativeTradeEurope()
 				{
 					szSold += L", ";
 				}
-				szSold += CvWString::format(L"%d %s", pCargo->getYieldStored(), GC.getYieldInfo(pCargo->getYield()).getDescription());
+				// the good as its icon (the proceeds are one sum, green, in the report)
+				szSold += CvWString::format(L"%d%c", pCargo->getYieldStored(), GC.getYieldInfo(pCargo->getYield()).getChar());
 			}
 		}
 	}
@@ -19726,7 +19727,8 @@ bool CvUnitAI::AI_nativeTradeEurope()
 					{
 						szBought += L", ";
 					}
-					szBought += CvWString::format(L"%d %s (%d)", iAmount, GC.getYieldInfo(eYield).getDescription(), iAmount * iPrice);
+					// the good as its icon, the expenses red in brackets
+					szBought += CvWString::format(L"%d%c " SETCOLR L"(%d)" ENDCOLR, iAmount, GC.getYieldInfo(eYield).getChar(), TEXT_COLOR("COLOR_NEGATIVE_TEXT"), iAmount * iPrice);
 					if (bHuman)
 					{
 						iBudget -= iAmount * iPrice;
@@ -19764,8 +19766,11 @@ bool CvUnitAI::AI_nativeTradeEurope()
 	if (isHuman())
 	{
 		const CvWString szNothing = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_NOTHING");
-		CvWString szBuffer = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_EUROPE", getName().GetCString(), szSold.empty() ? szNothing.GetCString() : szSold.GetCString(),
-			iSoldFor, szBought.empty() ? szNothing.GetCString() : szBought.GetCString());
+		// the name of the ship in the colour of units, the proceeds green (as in the report of a village visit, wtpNativeTradeReport)
+		const CvWString szShip = CvWString::format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR("COLOR_UNIT_TEXT"), getName().GetCString());
+		const CvWString szSoldFor = CvWString::format(SETCOLR L"%d" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), iSoldFor);
+		CvWString szBuffer = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_EUROPE", szShip.GetCString(), szSold.empty() ? szNothing.GetCString() : szSold.GetCString(),
+			szSoldFor.GetCString(), szBought.empty() ? szNothing.GetCString() : szBought.GetCString());
 		gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_INFO, getButton(), COLOR_WHITE);
 	}
 
