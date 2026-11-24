@@ -27,7 +27,9 @@ SIZE = sys.argv[3].upper() if len(sys.argv) > 3 else 'MASSIVE'
 W, H = GRID[SIZE]
 FX, FY = W / 85.0, H / 137.0
 FS = math.sqrt(FX * FY)
-Noise.SCALE = FS ** 0.6 if SIZE != 'MASSIVE' else 1.0
+FL = min(FS, 1.0)       # feature sizes (plates, noise) shrink on smaller maps but do not grow on larger ones: Gigantic gets
+                        # more plates, ranges and regions instead of larger ones (user 2026-11-25: too much flat desert)
+Noise.SCALE = FL ** 0.6 if SIZE != 'MASSIVE' else 1.0
 
 
 def sz(v, f=None, lo=1):
@@ -40,6 +42,11 @@ def sz(v, f=None, lo=1):
 def na(v, lo=1):
     """A count of the Massive map (islands, harbours, ...) at this size: by area, at least lo."""
     return sz(v, FX * FY, lo)
+
+
+def szl(v):
+    """A feature size of the Massive map (plates, warps), smaller on smaller maps, never larger."""
+    return v if SIZE == 'MASSIVE' else v * FL
 
 
 def szf(v, f=None):
@@ -114,20 +121,22 @@ LAND_SHARE = 0.34                    # share of land plots on the whole map
 CONT_SHARE = 0.40                    # share of the map on continental plates (land and shelf)
 
 NPL = tect.randint(15, 19)        # (plates and their spacing scale together, so a smaller map has the same layout)
+if FS > 1:
+    NPL = int(round(NPL * FX * FY))                     # larger maps: more plates of the Massive size
 plates = []
 for _ in range(2000):
     if len(plates) >= NPL:
         break
     px, py = tect.uniform(-2, W + 2), tect.uniform(-2, H + 2)
-    if all(math.hypot(px - p['x'], py - p['y']) > szf(13) for p in plates):
+    if all(math.hypot(px - p['x'], py - p['y']) > szl(13) for p in plates):
         a, s = tect.uniform(0, 2 * math.pi), tect.uniform(0.4, 1.0)
         plates.append(dict(x=px, y=py, vx=s * math.cos(a), vy=s * math.sin(a), w=tect.uniform(0.8, 1.2), cont=False))
 NPL = len(plates)
 
 
 def plate_of(x, y):
-    wx = x + szf(5.0) * NZ[0].fbm(x, y, 3, 14)
-    wy = y + szf(5.0) * NZ[1].fbm(x, y, 3, 14)
+    wx = x + szl(5.0) * NZ[0].fbm(x, y, 3, 14)
+    wy = y + szl(5.0) * NZ[1].fbm(x, y, 3, 14)
     return min(range(NPL), key=lambda k: math.hypot(wx - plates[k]['x'], wy - plates[k]['y']) * plates[k]['w'])
 
 
@@ -158,7 +167,7 @@ def _cont_group(k):
 
 # the continents are parted by a strait along the plate borders between the groups of plates around each centre:
 # it sinks the crust there (SEAM_DEPTH), so it bends with the plate borders and is never a straight cut
-SEAM_DEPTH, SEAM_WIDTH = 1.0, max(2.5, szf(3.5))
+SEAM_DEPTH, SEAM_WIDTH = 1.0, max(2.5, szl(3.5))
 _grp = [_cont_group(plate[i]) for i in range(W * H)]
 DSEAM = [10 ** 6] * (W * H)
 _q = deque()
@@ -179,7 +188,7 @@ for k in order_pl:
         break
     plates[k]['cont'] = True
     got += plate_area[k]
-crust = blur([1.0 if plates[plate[i]]['cont'] else -1.0 for i in range(W * H)], sz(4, lo=2))     # continental shelf and slope
+crust = blur([1.0 if plates[plate[i]]['cont'] else -1.0 for i in range(W * H)], 4 if FS >= 1 else sz(4, lo=2))     # continental shelf and slope
 
 
 def sample(a, fx, fy):
@@ -195,8 +204,8 @@ def sample(a, fx, fy):
 # no straight west and east coasts along the plate borders (user 2026-11-23): the shelf is read at a warped position,
 # finer than the warp of the plates, so the coast bends in bays and capes
 _crust0 = crust
-crust = [sample(_crust0, x + szf(6.0) * NZ[24].fbm(x, y, 3, 10) + szf(2.0) * NZ[24].fbm(x + 500.0, y, 2, 4),
-                 y + szf(3.0) * NZ[25].fbm(x, y, 3, 10)) for x, y in ALL]
+crust = [sample(_crust0, x + szl(6.0) * NZ[24].fbm(x, y, 3, 10) + szl(2.0) * NZ[24].fbm(x + 500.0, y, 2, 4),
+                 y + szl(3.0) * NZ[25].fbm(x, y, 3, 10)) for x, y in ALL]
 
 # plate boundaries: which way do the neighbours move relative to each other?
 border = {}                     # (a, b) -> boundary points on the side of plate a
@@ -1013,7 +1022,7 @@ for x, y in ALL:
 # below its rim, the water fills it up and a lake forms; the lake spills over its lowest rim into an outflow
 # river (edge rivers below), so lakes and rivers form connected systems.
 RAIN_LAT = [(0, 1.0), (7, 0.95), (14, 0.8), (21, 0.56), (27, 0.48), (34, 0.62), (44, 0.85), (55, 0.8), (64, 0.55), (75, 0.45)]   # rain by latitude (also used by the climate)
-DRAIN_LAKES_MAX = na(10)
+DRAIN_LAKES_MAX = na(10) if FS <= 1 else na(15)     # (Gigantic: a few more)
 DRAIN_DEPTH = 0.03                # least depth of the basin below its rim (elevation units)
 DRAIN_SIZE = (2, na(24, 3))             # plots per lake
 fill_lvl = elev[:]
@@ -1098,12 +1107,13 @@ dcoast = bfs_dist([i for i in range(W * H) if ocean[i]], lambda j: not ocean[j])
 
 # ---------------------------------------------------------------- climate
 T = [0.0] * (W * H)
-SOUTH_COLD = 32.0
+SOUTH_COLD, NORTH_COLD = 38.0, 8.0      # (user 2026-11-25: both cold zones a little larger)
 for x, y in ALL:
     i = I(x, y)
     # the far south is colder than the same latitude in the north (user 2026-11-25: tundra and taiga at the southern
-    # tip again): south of 15 degrees the latitude counts up to 32 degrees more, so 40 S is as cold as 72 N
-    la = abs(lat(y)) + (SOUTH_COLD * smoothstep(15, 40, -lat(y)) if lat(y) < 0 else 0)
+    # tip again): south of 15 degrees the latitude counts up to 38 degrees more, so 40 S is as cold as 78 N; in the north
+    # it counts up to 8 more from 35 degrees on
+    la = abs(lat(y)) + (SOUTH_COLD * smoothstep(15, 40, -lat(y)) if lat(y) < 0 else NORTH_COLD * smoothstep(35, 70, lat(y)))
     t = 1 - (la / 80.0) ** 1.3
     t -= 0.22 * ridge[i] + 0.12 * max(0.0, min(0.6, BASE[i] - SEA_LEVEL)) + (0.03 if plot_type[i] == 1 else 0)     # ranges and high plateaus are colder
     t += 0.03 * NZ[10].fbm(x, y, 3, 10)
@@ -3217,6 +3227,53 @@ for i in to_desert:
     if feature[i] not in (None, 'ROCK_FORMATIONS_DESERT', 'CACTUS_TREES', 'BARREL_CACTUS'):
         feature[i] = None
 print('caribbean revision: rock reefs removed', reefs_removed, 'shrubland south', len(south_shrub), 'to desert', len(to_desert))
+
+# large flat deserts break up into chains of rocky hills (user 2026-11-25: on Gigantic very much flat desert); thin
+# lines of ridged noise, so they read as old worn chains, not as scatter. Late (after all desert is made), hills only,
+# so the connectivity of the land stays as checked
+DESERT_FLAT_MAX = 30                  # no connected flat desert larger than this stays without hills
+dh_rng = random.Random(SEED * 7 + 83)
+DESERT_HILLS = 0
+
+
+def flat_desert(i):
+    return land[i] and terrain[i] == 'DESERT' and plot_type[i] == 2
+
+
+def hill_ok(i):
+    x, y = i % W, i // W
+    return flat_desert(i) and i not in SET_PIECES and i not in IMPROVEMENT and i not in ROUTE and not has_river(x, y)         and not any(not land[I(nx, ny)] for nx, ny in nbrs(x, y)) and feature[i] in (None, 'ROCK_FORMATIONS_DESERT')
+
+
+for comp in components([flat_desert(i) for i in range(W * H)], N4):
+    if len(comp) <= DESERT_FLAT_MAX:
+        continue
+    off = dh_rng.uniform(0, 1000)
+    for x, y in comp:
+        i = I(x, y)
+        if hill_ok(i) and NZ[18].ridged(x + off, y, 3, 5) > 0.9:
+            plot_type[i] = 1
+            DESERT_HILLS += 1
+for _ in range(300):                  # what is still too large gets a short hill chain in its middle
+    big = [c for c in components([flat_desert(i) for i in range(W * H)], N4) if len(c) > DESERT_FLAT_MAX]
+    added = 0
+    for comp in big:
+        cells = set(I(x, y) for x, y in comp)
+        dd = bfs_dist([i for i in cells if any(I(nx, ny) not in cells for nx, ny in nbrs(i % W, i // W, N4))], lambda j: j in cells)
+        ok = [i for i in cells if hill_ok(i)]
+        if not ok:
+            continue
+        x, y = divmod(max(ok, key=lambda i: dd[i] + dh_rng.random()), W)[::-1]
+        dx, dy = dh_rng.choice(N8)
+        for k in range(-2, 3):
+            j = I(x + k * dx, y + k * dy) if inb(x + k * dx, y + k * dy) else None
+            if j in cells and hill_ok(j):
+                plot_type[j] = 1
+                DESERT_HILLS += 1
+                added += 1
+    if not added:
+        break
+print('desert hill chains: plots', DESERT_HILLS)
 
 # ---------------------------------------------------------------- landmark names
 # map signs (landmarks visible to every player) give the invented landscape its names;
