@@ -21,7 +21,7 @@ W, H = 85, 137
 SEED = int(sys.argv[1]) if len(sys.argv) > 1 else 1
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_random')
 rng = random.Random(SEED)
-NZ = [Noise(SEED * 1000 + i) for i in range(28)]
+NZ = [Noise(SEED * 1000 + i) for i in range(29)]
 
 N4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 N8 = N4 + [(1, 1), (1, -1), (-1, 1), (-1, -1)]
@@ -79,6 +79,9 @@ def blur(a, n=1):
 # west (Pacific) stays free of land.
 tect = random.Random(SEED * 7 + 1)
 MARGIN_E, MARGIN_W = 16, 8          # open water for Europe (east) and the Pacific (west)
+MARGIN_S = 4                        # open water along the south edge: the southern continent does not touch it
+CONT_GAP_MAX = 10                   # widest strait between two continents; a map with a wider one is rejected
+THREE_CONT_SHARE = 0.35             # share of maps with three continents instead of two
 ARC_MAX_LEN = 10                    # volcanic island arcs between ocean plates are cut to this length
 LAND_SHARE = 0.34                    # share of land plots on the whole map
 CONT_SHARE = 0.40                    # share of the map on continental plates (land and shelf)
@@ -103,8 +106,46 @@ def plate_of(x, y):
 
 plate = [plate_of(x + 0.5, y + 0.5) for x, y in ALL]
 plate_area = Counter(plate)
-# continental plates: random, but not in the open sea at the east and west edge
-order_pl = sorted(range(NPL), key=lambda k: tect.random() + (2 if not MARGIN_W + 8 <= plates[k]['x'] <= W - MARGIN_E - 5 else 0))
+# continental plates: grouped around two or three continent centres spread from south to north (user 2026-11-24: the
+# continents not so far apart), the nearer a plate to a centre the likelier it carries a continent; not in the open
+# sea at the east and west edge
+N_CONT = 3 if tect.random() < THREE_CONT_SHARE else 2
+_band = (H - MARGIN_S - 6) / float(N_CONT)
+CONT_CENTRES = [((MARGIN_W + 8 + W - MARGIN_E - 5) / 2.0 + tect.uniform(-6, 6),
+                 MARGIN_S + 3 + _band * (k + 0.5) + tect.uniform(-0.15, 0.15) * _band) for k in range(N_CONT)]
+
+
+def _cont_rank(k):
+    p = plates[k]
+    d = min(math.hypot((p['x'] - cx) * 1.5, p['y'] - cy) for cx, cy in CONT_CENTRES) / _band
+    return d + 0.6 * tect.random() + (2 if not MARGIN_W + 8 <= p['x'] <= W - MARGIN_E - 5 else 0)
+
+
+order_pl = sorted(range(NPL), key=_cont_rank)
+
+
+def _cont_group(k):
+    p = plates[k]
+    return min(range(N_CONT), key=lambda c: math.hypot((p['x'] - CONT_CENTRES[c][0]) * 1.5, p['y'] - CONT_CENTRES[c][1]))
+
+
+# the continents are parted by a strait along the plate borders between the groups of plates around each centre:
+# it sinks the crust there (SEAM_DEPTH), so it bends with the plate borders and is never a straight cut
+SEAM_DEPTH, SEAM_WIDTH = 1.0, 3.5
+_grp = [_cont_group(plate[i]) for i in range(W * H)]
+DSEAM = [10 ** 6] * (W * H)
+_q = deque()
+for x, y in ALL:
+    if any(_grp[I(nx, ny)] != _grp[I(x, y)] for nx, ny in nbrs(x, y, N4)):
+        DSEAM[I(x, y)] = 0
+        _q.append(I(x, y))
+while _q:
+    _i = _q.popleft()
+    for nx, ny in nbrs(_i % W, _i // W, N4):
+        _j = I(nx, ny)
+        if DSEAM[_j] > DSEAM[_i] + 1:
+            DSEAM[_j] = DSEAM[_i] + 1
+            _q.append(_j)
 got = 0
 for k in order_pl:
     if got >= CONT_SHARE * W * H and sum(p['cont'] for p in plates) >= 2:
@@ -256,6 +297,10 @@ for x, y in ALL:
     m_w = MARGIN_W + 3 + 4.0 * NZ[27].fbm(3.5, y, 3, 5) + 1.5 * NZ[27].fbm(x * 0.7, y * 0.7 + 50.0, 2, 3)
     if x < m_w:
         b -= (m_w - x) * 0.2
+    b -= SEAM_DEPTH * math.exp(-(DSEAM[i] / SEAM_WIDTH) ** 2)
+    m_s = MARGIN_S + 2.0 * NZ[28].fbm(x, 0.5, 3, 6)
+    if y < m_s:
+        b -= (m_s - y) * 0.3
     BASE[i] = b
     HEIGHT0[i] = b + 0.6 * ridge_of(x, y)
 SEA_LEVEL = sorted(HEIGHT0)[int((1 - LAND_SHARE) * W * H)]
@@ -707,6 +752,13 @@ class MapRejected(Exception):
     """This seed makes a map that is thrown away; the caller goes on with next_seed(seed)."""
 
 
+def reject(why):
+    if __name__ == '__main__':                   # run as a script: exit code 3, the next seed is printed
+        print('rejected:', why, '- next seed', next_seed(SEED))
+        sys.exit(3)
+    raise MapRejected(why)
+
+
 def next_seed(seed):
     return (seed * 69069 + 12345) % 1000000007
 
@@ -757,10 +809,7 @@ if not south_route(lambda i: not land[i]):
             _run_ = 1 if land[i] else 0
         _longest = max(_longest, _run_)
     if _longest > STRAIGHT_CHANNEL_MAX:
-        if __name__ == '__main__':               # run as a script: exit code 3, the next seed is printed
-            print('rejected: straight south channel of', _longest, 'plots, next seed', next_seed(SEED))
-            sys.exit(3)
-        raise MapRejected('south route: straight channel of %d plots' % _longest)
+        reject('south route: straight channel of %d plots' % _longest)
     for i in _path:
         x, y = i % W, i // W
         for j in (i, I(x, max(0, y - 1)), I(x, min(H - 1, y + 1))):
@@ -771,6 +820,17 @@ if not south_route(lambda i: not land[i]):
         if len(comp) < 3 and any(I(nx, ny) in SOUTH_PASSAGE for x, y in comp for nx, ny in nbrs(x, y)):
             for x, y in comp:
                 land[I(x, y)] = False
+# the continents (land masses of CONT_MIN_TILES and more) from south to north: no strait between two of them wider than
+# CONT_GAP_MAX plots, and the south edge stays open water (MARGIN_S)
+CONT_MIN_TILES = 250
+_conts = sorted([c for c in components(land) if len(c) >= CONT_MIN_TILES], key=lambda c: sum(y for _, y in c) / float(len(c)))
+CONT_GAPS = []
+for _a, _b in zip(_conts, _conts[1:]):
+    _d = bfs_dist([I(x, y) for x, y in _a], lambda j: True)
+    CONT_GAPS.append(min(_d[I(x, y)] for x, y in _b) - 1)
+print('continents', N_CONT, 'planned', len(_conts), 'found', [len(c) for c in _conts], 'gaps', CONT_GAPS)
+if CONT_GAPS and max(CONT_GAPS) > CONT_GAP_MAX:
+    reject('continents %d plots apart' % max(CONT_GAPS))
 dcoast = bfs_dist([i for i in range(W * H) if not land[i]], lambda j: land[j])
 
 ridge = [0.0] * (W * H)

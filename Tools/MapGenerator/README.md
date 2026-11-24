@@ -87,6 +87,8 @@ The world and the previews of each seed are in `Tools/MapGenerator/out_random/se
 
 - Coasts: the continental shelf is read at a warped position and the edge of the open sea in the east and west bends and falls off gently, so the continents get no straight west or east coasts (user 2026-11-23).
 - Southern sea route: besides the northern strait there is always a way from the Atlantic to the Pacific south of latitude 20 (between the continents or south of the southern one). If the land closes every way, the cheapest crossing is drowned into a strait three plots wide; shallow coast on that way becomes coast for large ships (`south_route`, `SOUTH_PASSAGE`).
+- Continents: two, or three in about a third of the maps (`N_CONT`, `THREE_CONT_SHARE`). The continental plates are chosen around continent centres spread from south to north, and the crust sinks along the plate borders between the groups (`DSEAM`), so the continents are parted by bending straits. A map whose continents lie more than `CONT_GAP_MAX` (10) plots apart is rejected and the next seed is used; the south edge stays open water (`MARGIN_S`).
+- Rejected maps: a straight dug south channel or continents too far apart reject the seed (`reject`, `MapRejected`); the map script then goes on with `next_seed`, `gen_random.py` run as a script exits with code 3.
 
 ### In-game map script (`make_mapscript.py`)
 
