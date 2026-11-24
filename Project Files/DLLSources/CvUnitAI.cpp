@@ -18886,6 +18886,19 @@ namespace
 	}
 }
 
+// WTP: the report of a village visit of a native trade ship (human player): the name of the ship in the colour of units, the village in the
+// colour of its tribe; the deals (szSold, szBought) are made with icons and colours by AI_nativeTradeSell / AI_nativeTradeBuy
+static CvWString wtpNativeTradeReport(const CvUnit& kUnit, const CvCity& kVillage, const CvWString& szSold, const CvWString& szBought)
+{
+	const CvPlayer& kTribe = GET_PLAYER(kVillage.getOwnerINLINE());
+	const CvWString szShip = CvWString::format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR("COLOR_UNIT_TEXT"), kUnit.getName().GetCString());
+	const CvWString szVillage = CvWString::format(SETCOLR L"%s" ENDCOLR, kTribe.getPlayerTextColorR(), kTribe.getPlayerTextColorG(),
+		kTribe.getPlayerTextColorB(), kTribe.getPlayerTextColorA(), kVillage.getName().GetCString());
+	const CvWString szNothing = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_NOTHING");
+	return gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_VILLAGE", szShip.GetCString(), szVillage.GetCString(),
+		szSold.empty() ? szNothing.GetCString() : szSold.GetCString(), szBought.empty() ? szNothing.GetCString() : szBought.GetCString());
+}
+
 // WTP: native trade ship: sells the goods aboard to the native village on this plot, bargaining once per sale.
 // Returns 1 if something was sold, 0 if not, -1 if the natives refuse to trade with us for some turns (angry).
 int CvUnitAI::AI_nativeTradeSell(CvWString* pszDeals)
@@ -18969,7 +18982,8 @@ int CvUnitAI::AI_nativeTradeSell(CvWString* pszDeals)
 				{
 					*pszDeals += L", ";
 				}
-				*pszDeals += CvWString::format(L"%d %s (%d)", iAmount, GC.getYieldInfo(eYield).getDescription(), iGained);
+				// the good as its icon, the proceeds green in brackets
+				*pszDeals += CvWString::format(L"%d%c " SETCOLR L"(%d)" ENDCOLR, iAmount, GC.getYieldInfo(eYield).getChar(), TEXT_COLOR("COLOR_POSITIVE_TEXT"), iGained);
 			}
 		}
 	}
@@ -19077,7 +19091,8 @@ int CvUnitAI::AI_nativeTradeBuy(CvWString* pszDeals)
 			{
 				*pszDeals += L", ";
 			}
-			*pszDeals += CvWString::format(L"%d %s (%d)", iBestAmount, GC.getYieldInfo(eBestYield).getDescription(), iSpent);
+			// the good as its icon, the expenses red in brackets
+			*pszDeals += CvWString::format(L"%d%c " SETCOLR L"(%d)" ENDCOLR, iBestAmount, GC.getYieldInfo(eBestYield).getChar(), TEXT_COLOR("COLOR_NEGATIVE_TEXT"), iSpent);
 		}
 	}
 	return iDeals;
@@ -19294,8 +19309,7 @@ void CvUnitAI::AI_nativeSupplyMove()
 			getOwnerINLINE(), kOwner.getCivilizationDescription(0), iTurn, getName().GetCString(), pHere->getName().GetCString(), iDeals, getCargo(), cargoSpace());
 		if (isHuman() && !szBought.empty())
 		{
-			const CvWString szNothing = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_NOTHING");
-			CvWString szBuffer = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_VILLAGE", getName().GetCString(), pHere->getNameKey(), szNothing.GetCString(), szBought.GetCString());
+			CvWString szBuffer = wtpNativeTradeReport(*this, *pHere, CvWString(), szBought);
 			gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_INFO, getButton(), COLOR_WHITE, getX_INLINE(), getY_INLINE());
 		}
 	}
@@ -19539,9 +19553,7 @@ void CvUnitAI::AI_nativeTradeShipMove()
 	}
 	if (bAtVillage && isHuman() && (bSoldHere || !szBought.empty()))
 	{
-		const CvWString szNothing = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_NOTHING");
-		CvWString szBuffer = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_VILLAGE", getName().GetCString(), pHere->getNameKey(),
-			szSold.empty() ? szNothing.GetCString() : szSold.GetCString(), szBought.empty() ? szNothing.GetCString() : szBought.GetCString());
+		CvWString szBuffer = wtpNativeTradeReport(*this, *pHere, szSold, szBought);
 		gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_INFO, getButton(), COLOR_WHITE, getX_INLINE(), getY_INLINE());
 	}
 
