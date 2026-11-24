@@ -261,11 +261,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_RESOURCETABLE_SHOW_OR_HIDE_YIELDS</Tag>
-		<English>Toggle displayed yields</English>
+		<English>Toggle displayed yields[NEWLINE][ICON_BULLET]While the Shift key is held the other setting is shown</English>
 		<Portuguese>Alternar recursos exibidos</Portuguese>
 		<French>Basculer l'affichage des ressources</French>
-		<German>Waren ein-/ausblenden</German>
-		<Russian>Переключить отображаемые товары</Russian>
+		<German>Waren ein-/ausblenden[NEWLINE][ICON_BULLET]Solange Shift gehalten wird, gilt die jeweils andere Einstellung</German>
+		<Russian>Переключить отображаемые товары[NEWLINE][ICON_BULLET]Пока удерживается Shift, действует противоположная настройка</Russian>
 		<Hungarian>Árumegjelenítés váltása</Hungarian>
 	</TEXT>
 	<TEXT>
