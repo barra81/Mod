@@ -982,6 +982,62 @@ for x, y in ALL:
     if land[i] and plot_type[i] == 2 and abs(lat(y)) < 13 and dcoast[i] > 2 and ridge[i] < 0.1:
         if NZ[23].fbm(x, y, 3, 2.5) > 0.38:
             lake[i] = True
+# drainage lakes (after FaireWeather 1.1): rain water runs downhill to the sea. Where a basin has no way out
+# below its rim, the water fills it up and a lake forms; the lake spills over its lowest rim into an outflow
+# river (edge rivers below), so lakes and rivers form connected systems.
+RAIN_LAT = [(0, 1.0), (7, 0.95), (14, 0.8), (21, 0.56), (27, 0.48), (34, 0.62), (44, 0.85), (55, 0.8), (64, 0.55), (75, 0.45)]   # rain by latitude (also used by the climate)
+DRAIN_LAKES_MAX = 10
+DRAIN_DEPTH = 0.03                # least depth of the basin below its rim (elevation units)
+DRAIN_SIZE = (2, 24)              # plots per lake
+fill_lvl = elev[:]
+_seen = [False] * (W * H)
+pq = []
+for x, y in ALL:
+    i = I(x, y)
+    if land[i] and any(not land[I(nx, ny)] for nx, ny in nbrs(x, y, N4)):
+        _seen[i] = True
+        heapq.heappush(pq, (elev[i], i))
+while pq:
+    e, i = heapq.heappop(pq)
+    for nx, ny in nbrs(i % W, i // W, N4):
+        j = I(nx, ny)
+        if land[j] and not _seen[j]:
+            _seen[j] = True
+            fill_lvl[j] = max(elev[j], e)
+            heapq.heappush(pq, (fill_lvl[j], j))
+dl_rng = random.Random(SEED * 7 + 79)
+DRAIN, DRAIN_LEVEL = set(), {}
+_basins = []
+for comp in components([land[i] and not lake[i] and fill_lvl[i] - elev[i] > 0.002 for i in range(W * H)], N4):
+    cells = [I(x, y) for x, y in comp]
+    low = min(cells, key=lambda i: elev[i])
+    depth = fill_lvl[low] - elev[low]
+    if depth < DRAIN_DEPTH or any(dcoast[i] < 2 for i in cells):
+        continue
+    if any(lake[I(nx, ny)] for x, y in comp for nx, ny in nbrs(x, y)):
+        continue
+    wet = interp(RAIN_LAT, abs(lat(low // W)))      # dry belts keep fewer lakes
+    _basins.append((depth * wet * dl_rng.uniform(0.5, 1.5), low, set(cells)))
+_basins.sort(reverse=True)
+for _, low, cells in _basins[:DRAIN_LAKES_MAX]:
+    lk, seen_l, pq = [], set([low]), [(elev[low], low)]       # the water rises from the deepest plot
+    while pq and len(lk) < DRAIN_SIZE[1]:
+        e, i = heapq.heappop(pq)
+        if plot_type[i] == 0:
+            continue
+        lk.append(i)
+        for nx, ny in nbrs(i % W, i // W, N4):
+            j = I(nx, ny)
+            if j in cells and j not in seen_l:
+                seen_l.add(j)
+                heapq.heappush(pq, (elev[j], j))
+    if len(lk) < DRAIN_SIZE[0] or any(lake[I(nx, ny)] and I(nx, ny) not in lk for i in lk for nx, ny in nbrs(i % W, i // W)):
+        continue
+    level = max(elev[i] for i in lk)
+    for i in lk:
+        lake[i] = True
+        DRAIN.add(i)
+        DRAIN_LEVEL[i] = level
 # enclosed water bodies left by the landmass noise become lakes too
 for comp in components([not land[i] for i in range(W * H)], N8):
     if len(comp) <= 45 and not any(x in (0, W - 1) or y in (0, H - 1) for x, y in comp):
@@ -1006,6 +1062,8 @@ for comp in components(lake):
             lake[i], land[i], plot_type[i] = False, True, 2
 
 FINGER = set(i for i in FINGER if lake[i])
+DRAIN = set(i for i in DRAIN if lake[i])
+print('drainage lakes', len(components([i in DRAIN for i in range(W * H)], N8)), 'plots', len(DRAIN), 'basins', len(_basins))
 FINGER_SHORE = set(I(nx, ny) for i in FINGER for nx, ny in nbrs(i % W, i // W) if land[I(nx, ny)])
 ocean = [not land[i] and not lake[i] for i in range(W * H)]
 dcoast = bfs_dist([i for i in range(W * H) if ocean[i]], lambda j: not ocean[j])
@@ -1019,7 +1077,6 @@ for x, y in ALL:
     t += 0.03 * NZ[10].fbm(x, y, 3, 10)
     T[i] = t
 
-RAIN_LAT = [(0, 1.0), (7, 0.95), (14, 0.8), (21, 0.56), (27, 0.48), (34, 0.62), (44, 0.85), (55, 0.8), (64, 0.55), (75, 0.45)]
 
 
 def march(y, xs):
@@ -1190,9 +1247,9 @@ outlet = [False] * (CW * CH)
 for j in range(CH):
     for i in range(CW):
         ps = list(corner_plots(i, j))
-        if len(ps) < 4 or any(not land[I(px, py)] for px, py in ps):
+        if len(ps) < 4 or any(not land[I(px, py)] and I(px, py) not in DRAIN for px, py in ps):   # drainage lakes pass the water on
             outlet[C(i, j)] = True
-        cel[C(i, j)] = sum(elev[I(px, py)] if land[I(px, py)] else 0 for px, py in ps) / len(ps) + 0.15 * NZ[19].fbm(i, j, 3, 4) + 0.04 * NZ[20].fbm(i, j, 2, 2)
+        cel[C(i, j)] = sum(elev[I(px, py)] if land[I(px, py)] else DRAIN_LEVEL.get(I(px, py), 0) for px, py in ps) / len(ps) + 0.15 * NZ[19].fbm(i, j, 3, 4) + 0.04 * NZ[20].fbm(i, j, 2, 2)
 cdown = [-1] * (CW * CH)
 cseen = [False] * (CW * CH)
 corder = []
@@ -1226,6 +1283,34 @@ for k in reversed(corder):
         cacc[cdown[k]] += cacc[k]
 
 RIVER_T = 2.1
+
+
+def edge_plot_pair(k, d):
+    i, j = k % CW, k // CW
+    if d % CW == i:
+        return I(i - 1, min(j, d // CW)), I(i, min(j, d // CW))
+    return I(min(i, d % CW), j - 1), I(min(i, d % CW), j)
+
+
+def drain_edge(k):
+    """The edge from corner k downstream runs along or through a drainage lake: no river is drawn there."""
+    return any(p in DRAIN for p in edge_plot_pair(k, cdown[k]))
+
+
+# every drainage lake spills into an outflow river: the strongest flow leaving the lake gets enough water
+DRAIN_OUT = 0
+for comp in components([i in DRAIN for i in range(W * H)], N8):
+    lk = set(I(x, y) for x, y in comp)
+    exits = [k for k in range(CW * CH) if not outlet[k] and cdown[k] >= 0 and not any(p in lk for p in edge_plot_pair(k, cdown[k]))
+             and any(I(px, py) in lk for px, py in corner_plots(k % CW, k // CW))]
+    if not exits:
+        continue
+    q = max(exits, key=lambda k: cacc[k])
+    add = max(0.0, 1.3 * RIVER_T - cacc[q])
+    while q >= 0 and not outlet[q]:
+        cacc[q] += add
+        q = cdown[q]
+    DRAIN_OUT += 1
 
 
 def river_t(k):
@@ -1273,7 +1358,7 @@ def n4_join(cells):
 wofr = {}  # plot -> NS direction (river on east edge)
 nofr = {}  # plot -> WE direction (river on south edge)
 for k in range(CW * CH):
-    if outlet[k] or cdown[k] < 0 or cacc[k] < river_t(k):
+    if outlet[k] or cdown[k] < 0 or cacc[k] < river_t(k) or drain_edge(k):
         continue
     i, j = k % CW, k // CW
     d = cdown[k]
@@ -1327,7 +1412,7 @@ if volcano_island:
     VOLCANO_RIVER = len(best_path) - 1
 
 
-_rk = set(k for k in range(CW * CH) if not outlet[k] and cdown[k] >= 0 and cacc[k] >= river_t(k))
+_rk = set(k for k in range(CW * CH) if not outlet[k] and cdown[k] >= 0 and cacc[k] >= river_t(k) and not drain_edge(k))
 _kids = Counter(cdown[k] for k in _rk)
 RIVER_SOURCES = [k for k in _rk if _kids[k] == 0]
 _pe = [P[i] for i in list(wofr) + list(nofr)]
@@ -1340,6 +1425,10 @@ def has_river(x, y):
     if i in wofr or i in nofr:
         return True
     return (x > 0 and I(x - 1, y) in wofr) or (y < H - 1 and I(x, y + 1) in nofr)
+
+
+_dl = components([i in DRAIN for i in range(W * H)], N8)
+print('drainage lakes', len(_dl), 'with outflow river', sum(1 for c in _dl if any(has_river(nx, ny) for x, y in c for nx, ny in nbrs(x, y) if land[I(nx, ny)])))
 
 
 # natural harbours: deep, sheltered bays behind a narrow entrance on straight open coasts,
@@ -2250,6 +2339,44 @@ for x, y in ALL:
             terrain[i] = 'SHALLOW_COAST' if shallow else 'COAST'
         else:
             terrain[i] = 'OCEAN'
+
+# shallow coast in patches (after FaireWeather): coast turns shallow at random, more likely next to shallow coast,
+# but never at a choke point - a strait or channel stays deep for large ships
+SHALLOW_PATCH, SHALLOW_PATCH_NEXT = 0.2, 0.4
+RING4 = [(dx, dy) for dx in range(-4, 5) for dy in range(-4, 5) if 3.5 <= math.hypot(dx, dy) < 4.5]
+
+
+def choke_point(x, y):
+    water_opp = land_opp = False
+    for dx, dy in RING4:
+        ax, ay, bx, by = x + dx, y + dy, x - dx, y - dy
+        if not (inb(ax, ay) and inb(bx, by)):
+            continue
+        wa, wb = not land[I(ax, ay)], not land[I(bx, by)]
+        water_opp = water_opp or (wa and wb)
+        land_opp = land_opp or (not wa and not wb)
+        if water_opp and land_opp:
+            return True
+    return False
+
+
+sp_rng = random.Random(SEED * 7 + 73)
+CHOKE = set(i for i in range(W * H) if ocean[i] and terrain[i] in ('COAST', 'SHALLOW_COAST') and choke_point(i % W, i // W))
+shallow_choke = 0
+for i in CHOKE:
+    if terrain[i] == 'SHALLOW_COAST' and i not in SHALLOW_WATER:
+        terrain[i] = 'COAST'
+        shallow_choke += 1
+shallow_patch = 0
+for x, y in ALL:
+    i = I(x, y)
+    if terrain[i] != 'COAST' or i in HARBOUR_WATER or i in CHOKE:
+        continue
+    nxt = any(terrain[I(nx, ny)] == 'SHALLOW_COAST' for nx, ny in nbrs(x, y))
+    if sp_rng.random() < (SHALLOW_PATCH_NEXT if nxt else SHALLOW_PATCH):
+        terrain[i] = 'SHALLOW_COAST'
+        shallow_patch += 1
+print('shallow coast patches', shallow_patch, 'choke points', len(CHOKE), 'kept deep', shallow_choke)
 
 # ---------------------------------------------------------------- connectivity (peaks + large rivers are barriers)
 feature = [None] * (W * H)
