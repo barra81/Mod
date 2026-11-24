@@ -1098,9 +1098,13 @@ dcoast = bfs_dist([i for i in range(W * H) if ocean[i]], lambda j: not ocean[j])
 
 # ---------------------------------------------------------------- climate
 T = [0.0] * (W * H)
+SOUTH_COLD = 32.0
 for x, y in ALL:
     i = I(x, y)
-    t = 1 - (abs(lat(y)) / 80.0) ** 1.3
+    # the far south is colder than the same latitude in the north (user 2026-11-25: tundra and taiga at the southern
+    # tip again): south of 15 degrees the latitude counts up to 32 degrees more, so 40 S is as cold as 72 N
+    la = abs(lat(y)) + (SOUTH_COLD * smoothstep(15, 40, -lat(y)) if lat(y) < 0 else 0)
+    t = 1 - (la / 80.0) ** 1.3
     t -= 0.22 * ridge[i] + 0.12 * max(0.0, min(0.6, BASE[i] - SEA_LEVEL)) + (0.03 if plot_type[i] == 1 else 0)     # ranges and high plateaus are colder
     t += 0.03 * NZ[10].fbm(x, y, 3, 10)
     T[i] = t
@@ -2745,9 +2749,10 @@ for x, y in ALL:
     n = sum(adj)
     chance = {0: 5, 1: 10, 2: 20}.get(n, 30 if n <= 4 else (45 if n <= 6 else 55))
     if rng.random() * 100 < chance:
-        # 1 gold, 2 silver, 3 coal: the metal summits half as often as an even third each (user 2026-11-21), the rest coal
+        # 1 gold, 2 silver, 3 coal: the metal summits a quarter as often as an even third each (user 2026-11-21: half,
+        # 2026-11-25: half again), the rest coal
         r = rng.random()
-        feature[i] = 'REMARKABLE_MOUNTAIN%d' % (1 if r < 1 / 6 else (2 if r < 1 / 3 else 3))
+        feature[i] = 'REMARKABLE_MOUNTAIN%d' % (1 if r < 1 / 12 else (2 if r < 1 / 6 else 3))
 
 # meteor crater in the tropical jungle
 crater = None
