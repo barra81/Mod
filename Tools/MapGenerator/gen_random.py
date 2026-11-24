@@ -17,11 +17,38 @@ from noise import Noise, poly_dist, poly_len, smoothstep, interp
 from png import write_png
 from place_names import PlaceNames
 
-W, H = 85, 137
+# grid size per world size, as in FaireWeatherTweakEx (Europe distance 4); Massive is the size the generator was
+# made for, the others scale its plot distances (FX across, FY along, FS both) and its noise feature sizes
+GRID = {'TINY': (23, 30), 'SMALL': (28, 40), 'STANDARD': (38, 60), 'LARGE': (48, 80), 'HUGE': (58, 100),
+        'MASSIVE': (85, 137), 'GIGANTIC': (127, 184)}
 SEED = int(sys.argv[1]) if len(sys.argv) > 1 else 1
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_random')
+SIZE = sys.argv[3].upper() if len(sys.argv) > 3 else 'MASSIVE'
+W, H = GRID[SIZE]
+FX, FY = W / 85.0, H / 137.0
+FS = math.sqrt(FX * FY)
+Noise.SCALE = FS ** 0.6 if SIZE != 'MASSIVE' else 1.0
+
+
+def sz(v, f=None, lo=1):
+    """A plot distance of the Massive map at this size (FS unless another factor is given), at least lo."""
+    if SIZE == 'MASSIVE':
+        return v
+    return max(lo, int(round(v * (FS if f is None else f))))
+
+
+def na(v, lo=1):
+    """A count of the Massive map (islands, harbours, ...) at this size: by area, at least lo."""
+    return sz(v, FX * FY, lo)
+
+
+def szf(v, f=None):
+    """As sz, for a fractional distance."""
+    return v if SIZE == 'MASSIVE' else v * (FS if f is None else f)
+
+
 rng = random.Random(SEED)
-NZ = [Noise(SEED * 1000 + i) for i in range(28)]
+NZ = [Noise(SEED * 1000 + i) for i in range(29)]
 
 N4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 N8 = N4 + [(1, 1), (1, -1), (-1, 1), (-1, -1)]
@@ -78,40 +105,81 @@ def blur(a, n=1):
 # rift valley with long lakes sinks in. The open sea in the east (Atlantic with the Europe plots) and in the
 # west (Pacific) stays free of land.
 tect = random.Random(SEED * 7 + 1)
-MARGIN_E, MARGIN_W = 16, 8          # open water for Europe (east) and the Pacific (west)
-ARC_MAX_LEN = 10                    # volcanic island arcs between ocean plates are cut to this length
+MARGIN_E, MARGIN_W = sz(16, FX, 4), sz(8, FX, 2)   # open water for Europe (east) and the Pacific (west)
+MARGIN_S = sz(4, FY)                # open water along the south edge: the southern continent does not touch it
+CONT_GAP_MAX = sz(10, lo=4)         # widest strait between two continents; a map with a wider one is rejected
+THREE_CONT_SHARE = 0.35 if H >= 100 else 0.0   # share of maps with three continents instead of two (room from Huge up)
+ARC_MAX_LEN = sz(10, lo=4)          # volcanic island arcs between ocean plates are cut to this length
 LAND_SHARE = 0.34                    # share of land plots on the whole map
 CONT_SHARE = 0.40                    # share of the map on continental plates (land and shelf)
 
-NPL = tect.randint(15, 19)
+NPL = tect.randint(15, 19)        # (plates and their spacing scale together, so a smaller map has the same layout)
 plates = []
 for _ in range(2000):
     if len(plates) >= NPL:
         break
     px, py = tect.uniform(-2, W + 2), tect.uniform(-2, H + 2)
-    if all(math.hypot(px - p['x'], py - p['y']) > 13 for p in plates):
+    if all(math.hypot(px - p['x'], py - p['y']) > szf(13) for p in plates):
         a, s = tect.uniform(0, 2 * math.pi), tect.uniform(0.4, 1.0)
         plates.append(dict(x=px, y=py, vx=s * math.cos(a), vy=s * math.sin(a), w=tect.uniform(0.8, 1.2), cont=False))
 NPL = len(plates)
 
 
 def plate_of(x, y):
-    wx = x + 5.0 * NZ[0].fbm(x, y, 3, 14)
-    wy = y + 5.0 * NZ[1].fbm(x, y, 3, 14)
+    wx = x + szf(5.0) * NZ[0].fbm(x, y, 3, 14)
+    wy = y + szf(5.0) * NZ[1].fbm(x, y, 3, 14)
     return min(range(NPL), key=lambda k: math.hypot(wx - plates[k]['x'], wy - plates[k]['y']) * plates[k]['w'])
 
 
 plate = [plate_of(x + 0.5, y + 0.5) for x, y in ALL]
 plate_area = Counter(plate)
-# continental plates: random, but not in the open sea at the east and west edge
-order_pl = sorted(range(NPL), key=lambda k: tect.random() + (2 if not MARGIN_W + 8 <= plates[k]['x'] <= W - MARGIN_E - 5 else 0))
+# continental plates: grouped around two or three continent centres spread from south to north (user 2026-11-24: the
+# continents not so far apart), the nearer a plate to a centre the likelier it carries a continent; not in the open
+# sea at the east and west edge
+N_CONT = 3 if tect.random() < THREE_CONT_SHARE else 2
+_band = (H - MARGIN_S - sz(6, FY)) / float(N_CONT)
+CONT_CENTRES = [((MARGIN_W + sz(8, FX) + W - MARGIN_E - sz(5, FX)) / 2.0 + tect.uniform(-6, 6) * szf(1.0, FX),
+                 MARGIN_S + sz(3, FY) + _band * (k + 0.5) + tect.uniform(-0.15, 0.15) * _band) for k in range(N_CONT)]
+
+
+def _cont_rank(k):
+    p = plates[k]
+    d = min(math.hypot((p['x'] - cx) * 1.5, p['y'] - cy) for cx, cy in CONT_CENTRES) / _band
+    return d + 0.6 * tect.random() + (2 if not MARGIN_W + sz(8, FX) <= p['x'] <= W - MARGIN_E - sz(5, FX) else 0)
+
+
+order_pl = sorted(range(NPL), key=_cont_rank)
+
+
+def _cont_group(k):
+    p = plates[k]
+    return min(range(N_CONT), key=lambda c: math.hypot((p['x'] - CONT_CENTRES[c][0]) * 1.5, p['y'] - CONT_CENTRES[c][1]))
+
+
+# the continents are parted by a strait along the plate borders between the groups of plates around each centre:
+# it sinks the crust there (SEAM_DEPTH), so it bends with the plate borders and is never a straight cut
+SEAM_DEPTH, SEAM_WIDTH = 1.0, max(2.5, szf(3.5))
+_grp = [_cont_group(plate[i]) for i in range(W * H)]
+DSEAM = [10 ** 6] * (W * H)
+_q = deque()
+for x, y in ALL:
+    if any(_grp[I(nx, ny)] != _grp[I(x, y)] for nx, ny in nbrs(x, y, N4)):
+        DSEAM[I(x, y)] = 0
+        _q.append(I(x, y))
+while _q:
+    _i = _q.popleft()
+    for nx, ny in nbrs(_i % W, _i // W, N4):
+        _j = I(nx, ny)
+        if DSEAM[_j] > DSEAM[_i] + 1:
+            DSEAM[_j] = DSEAM[_i] + 1
+            _q.append(_j)
 got = 0
 for k in order_pl:
     if got >= CONT_SHARE * W * H and sum(p['cont'] for p in plates) >= 2:
         break
     plates[k]['cont'] = True
     got += plate_area[k]
-crust = blur([1.0 if plates[plate[i]]['cont'] else -1.0 for i in range(W * H)], 4)     # continental shelf and slope
+crust = blur([1.0 if plates[plate[i]]['cont'] else -1.0 for i in range(W * H)], sz(4, lo=2))     # continental shelf and slope
 
 
 def sample(a, fx, fy):
@@ -127,8 +195,8 @@ def sample(a, fx, fy):
 # no straight west and east coasts along the plate borders (user 2026-11-23): the shelf is read at a warped position,
 # finer than the warp of the plates, so the coast bends in bays and capes
 _crust0 = crust
-crust = [sample(_crust0, x + 6.0 * NZ[24].fbm(x, y, 3, 10) + 2.0 * NZ[24].fbm(x + 500.0, y, 2, 4),
-                 y + 3.0 * NZ[25].fbm(x, y, 3, 10)) for x, y in ALL]
+crust = [sample(_crust0, x + szf(6.0) * NZ[24].fbm(x, y, 3, 10) + szf(2.0) * NZ[24].fbm(x + 500.0, y, 2, 4),
+                 y + szf(3.0) * NZ[25].fbm(x, y, 3, 10)) for x, y in ALL]
 
 # plate boundaries: which way do the neighbours move relative to each other?
 border = {}                     # (a, b) -> boundary points on the side of plate a
@@ -250,12 +318,16 @@ for x, y in ALL:
         d, _ = poly_dist(x, y, pts)
         b -= depth * math.exp(-(d / wd) ** 2)
     # (the edge of the open sea bends in and out and falls off gently, so the coasts do not follow it as a straight line)
-    m_e = W - MARGIN_E - 5 + 4.0 * NZ[26].fbm(0.5, y, 3, 6) + 1.5 * NZ[26].fbm(x * 0.7, y * 0.7 + 50.0, 2, 3)
+    m_e = W - MARGIN_E - sz(5, FX) + szf(4.0, FX) * NZ[26].fbm(0.5, y, 3, 6) + szf(1.5, FX) * NZ[26].fbm(x * 0.7, y * 0.7 + 50.0, 2, 3)
     if x > m_e:
-        b -= (x - m_e) * 0.16
-    m_w = MARGIN_W + 3 + 4.0 * NZ[27].fbm(3.5, y, 3, 5) + 1.5 * NZ[27].fbm(x * 0.7, y * 0.7 + 50.0, 2, 3)
+        b -= (x - m_e) * 0.16 / szf(1.0, FX)
+    m_w = MARGIN_W + sz(3, FX) + szf(4.0, FX) * NZ[27].fbm(3.5, y, 3, 5) + szf(1.5, FX) * NZ[27].fbm(x * 0.7, y * 0.7 + 50.0, 2, 3)
     if x < m_w:
-        b -= (m_w - x) * 0.2
+        b -= (m_w - x) * 0.2 / szf(1.0, FX)
+    b -= SEAM_DEPTH * math.exp(-(DSEAM[i] / SEAM_WIDTH) ** 2)
+    m_s = MARGIN_S + szf(2.0, FY) * NZ[28].fbm(x, 0.5, 3, 6)
+    if y < m_s:
+        b -= (m_s - y) * 0.3 / szf(1.0, FY)
     BASE[i] = b
     HEIGHT0[i] = b + 0.6 * ridge_of(x, y)
 SEA_LEVEL = sorted(HEIGHT0)[int((1 - LAND_SHARE) * W * H)]
@@ -300,8 +372,8 @@ def free_water(x, y, r):
 
 # the island sea: the warm sea off an east coast (land to the west, open sea towards the Atlantic and Europe in the
 # east) that is most enclosed by land, like the Caribbean, gets the island world
-ISLE_R = 12
-ISLE_GROUP_R = 7                                   # the islands, the volcano isle and the atolls stay this close together,
+ISLE_R = sz(12, lo=4)
+ISLE_GROUP_R = sz(7, lo=3)                                  # the islands, the volcano isle and the atolls stay this close together,
                                                    # so they hide only a short stretch of coast from Europe
 best = None
 for x, y in ALL:
@@ -439,9 +511,9 @@ cands = [(x, y) for x in range(MARGIN_W + 6, W - MARGIN_E - 1) for y in range(3,
          if not in_isle_sea(x, y, ISLE_R + 4) and free_water(x, y, 3) and not free_water(x, y, 8)]
 crng.shuffle(cands)
 for x, y in cands:
-    if len(SEA_ISLES) >= 11:
+    if len(SEA_ISLES) >= na(11):
         break
-    if any(math.hypot(x - c[0][0], y - c[0][1]) < 11 for c in SEA_ISLES) or not free_water(x, y, 3):
+    if any(math.hypot(x - c[0][0], y - c[0][1]) < sz(11, lo=4) for c in SEA_ISLES) or not free_water(x, y, 3):
         continue
     isle = grow_island(x, y, crng.choice([5, 6, 8, 9, 10, 12]), 5)
     if isle:
@@ -492,7 +564,7 @@ atolls = []
 cands = [(x, y) for x, y in ALL if in_isle_sea(x, y, ISLE_GROUP_R + 2) and free_water(x, y, 2)]
 crng.shuffle(cands)
 for x, y in cands:
-    if len(atolls) >= 3:
+    if len(atolls) >= na(3):
         break
     if all(max(abs(x - ax), abs(y - ay)) >= 4 for ax, ay in atolls):
         atolls.append((x, y))
@@ -614,7 +686,7 @@ cands = [(x, y) for x, y in ALL if land[I(x, y)] and dcoast[I(x, y)] >= 4
 mrng.shuffle(cands)
 minis = []
 for x, y in cands:
-    if len(minis) >= 26:
+    if len(minis) >= na(26):
         break
     if any(math.hypot(x - mx, y - my) < 9 for mx, my in minis) or in_basin(x, y, 8):
         continue
@@ -636,9 +708,9 @@ EAST_RANGES = []
 cands = [(x, y) for x, y in ALL if land[I(x, y)] and dcoast[I(x, y)] >= 3 and range_dist(x, y) > 5 and not in_alti(x, y, 3) and not in_basin(x, y, 8)]
 mrng.shuffle(cands)
 for x, y in cands:
-    if len(EAST_RANGES) >= 13:
+    if len(EAST_RANGES) >= na(13):
         break
-    if any(math.hypot(x - R['pts'][1][0], y - R['pts'][1][1]) < 10 for R in EAST_RANGES) or range_dist(x, y) <= 5:
+    if any(math.hypot(x - R['pts'][1][0], y - R['pts'][1][1]) < sz(10, lo=3) for R in EAST_RANGES) or range_dist(x, y) <= 5:
         continue
     a, ln = mrng.random() * math.pi, mrng.uniform(4.0, 9.0)
     pts = [(x + t * ln * math.cos(a) + mrng.uniform(-1, 1) * math.sin(a), y + t * ln * math.sin(a) - mrng.uniform(-1, 1) * math.cos(a))
@@ -662,7 +734,7 @@ if cands:
 # the far north breaks up into an arctic archipelago; a winding strait (like Magellan's) runs between the
 # mainland and the large islands - an ice-free route from the Atlantic to the Pacific
 _sy = lat_y(61)
-STRAIT_PTS = [(x, _sy + mrng.uniform(-1.5, 1.5)) for x in range(0, W - 8, 6)] + [(W - 8, _sy)]
+STRAIT_PTS = [(x, _sy + mrng.uniform(-1.5, 1.5)) for x in range(0, W - sz(8, FX), sz(6, lo=3))] + [(W - sz(8, FX), _sy)]
 
 
 def strait_y(x):
@@ -686,7 +758,7 @@ for wd in (0.8, 1.1, 1.5):
             land[i] = False                      # open arctic sea between the islands
     water = [not land[i] for i in range(W * H)]
     west = next((c for c in components(water, N4) if any(p[0] == 0 and abs(p[1] - strait_y(0)) <= 3 for p in c)), [])
-    if any(p[0] >= W - 10 and -2 <= p[1] - strait_y(W - 10) <= 5 for p in west):
+    if any(p[0] >= W - sz(10, FX) and -2 <= p[1] - strait_y(W - sz(10, FX)) <= 5 for p in west):
         break
 for comp in components(land):                    # no arctic specks
     if len(comp) < 4 and all(y > strait_y(x) for x, y in comp):
@@ -705,6 +777,13 @@ STRAIGHT_CHANNEL_MAX = 4   # longest straight east-west run of land plots the so
 
 class MapRejected(Exception):
     """This seed makes a map that is thrown away; the caller goes on with next_seed(seed)."""
+
+
+def reject(why):
+    if __name__ == '__main__':                   # run as a script: exit code 3, the next seed is printed
+        print('rejected:', why, '- next seed', next_seed(SEED))
+        sys.exit(3)
+    raise MapRejected(why)
 
 
 def next_seed(seed):
@@ -757,10 +836,7 @@ if not south_route(lambda i: not land[i]):
             _run_ = 1 if land[i] else 0
         _longest = max(_longest, _run_)
     if _longest > STRAIGHT_CHANNEL_MAX:
-        if __name__ == '__main__':               # run as a script: exit code 3, the next seed is printed
-            print('rejected: straight south channel of', _longest, 'plots, next seed', next_seed(SEED))
-            sys.exit(3)
-        raise MapRejected('south route: straight channel of %d plots' % _longest)
+        reject('south route: straight channel of %d plots' % _longest)
     for i in _path:
         x, y = i % W, i // W
         for j in (i, I(x, max(0, y - 1)), I(x, min(H - 1, y + 1))):
@@ -771,6 +847,17 @@ if not south_route(lambda i: not land[i]):
         if len(comp) < 3 and any(I(nx, ny) in SOUTH_PASSAGE for x, y in comp for nx, ny in nbrs(x, y)):
             for x, y in comp:
                 land[I(x, y)] = False
+# the continents (land masses of CONT_MIN_TILES and more) from south to north: no strait between two of them wider than
+# CONT_GAP_MAX plots, and the south edge stays open water (MARGIN_S)
+CONT_MIN_TILES = sz(250, FX * FY, 20)
+_conts = sorted([c for c in components(land) if len(c) >= CONT_MIN_TILES], key=lambda c: sum(y for _, y in c) / float(len(c)))
+CONT_GAPS = []
+for _a, _b in zip(_conts, _conts[1:]):
+    _d = bfs_dist([I(x, y) for x, y in _a], lambda j: True)
+    CONT_GAPS.append(min(_d[I(x, y)] for x, y in _b) - 1)
+print('continents', N_CONT, 'planned', len(_conts), 'found', [len(c) for c in _conts], 'gaps', CONT_GAPS)
+if CONT_GAPS and max(CONT_GAPS) > CONT_GAP_MAX:
+    reject('continents %d plots apart' % max(CONT_GAPS))
 dcoast = bfs_dist([i for i in range(W * H) if not land[i]], lambda j: land[j])
 
 ridge = [0.0] * (W * H)
@@ -922,9 +1009,66 @@ for x, y in ALL:
     if land[i] and plot_type[i] == 2 and abs(lat(y)) < 13 and dcoast[i] > 2 and ridge[i] < 0.1:
         if NZ[23].fbm(x, y, 3, 2.5) > 0.38:
             lake[i] = True
+# drainage lakes (after FaireWeather 1.1): rain water runs downhill to the sea. Where a basin has no way out
+# below its rim, the water fills it up and a lake forms; the lake spills over its lowest rim into an outflow
+# river (edge rivers below), so lakes and rivers form connected systems.
+RAIN_LAT = [(0, 1.0), (7, 0.95), (14, 0.8), (21, 0.56), (27, 0.48), (34, 0.62), (44, 0.85), (55, 0.8), (64, 0.55), (75, 0.45)]   # rain by latitude (also used by the climate)
+DRAIN_LAKES_MAX = na(10)
+DRAIN_DEPTH = 0.03                # least depth of the basin below its rim (elevation units)
+DRAIN_SIZE = (2, na(24, 3))             # plots per lake
+fill_lvl = elev[:]
+_seen = [False] * (W * H)
+pq = []
+for x, y in ALL:
+    i = I(x, y)
+    if land[i] and any(not land[I(nx, ny)] for nx, ny in nbrs(x, y, N4)):
+        _seen[i] = True
+        heapq.heappush(pq, (elev[i], i))
+while pq:
+    e, i = heapq.heappop(pq)
+    for nx, ny in nbrs(i % W, i // W, N4):
+        j = I(nx, ny)
+        if land[j] and not _seen[j]:
+            _seen[j] = True
+            fill_lvl[j] = max(elev[j], e)
+            heapq.heappush(pq, (fill_lvl[j], j))
+dl_rng = random.Random(SEED * 7 + 79)
+DRAIN, DRAIN_LEVEL = set(), {}
+_basins = []
+for comp in components([land[i] and not lake[i] and fill_lvl[i] - elev[i] > 0.002 for i in range(W * H)], N4):
+    cells = [I(x, y) for x, y in comp]
+    low = min(cells, key=lambda i: elev[i])
+    depth = fill_lvl[low] - elev[low]
+    if depth < DRAIN_DEPTH or any(dcoast[i] < 2 for i in cells):
+        continue
+    if any(lake[I(nx, ny)] for x, y in comp for nx, ny in nbrs(x, y)):
+        continue
+    wet = interp(RAIN_LAT, abs(lat(low // W)))      # dry belts keep fewer lakes
+    _basins.append((depth * wet * dl_rng.uniform(0.5, 1.5), low, set(cells)))
+_basins.sort(reverse=True)
+for _, low, cells in _basins[:DRAIN_LAKES_MAX]:
+    lk, seen_l, pq = [], set([low]), [(elev[low], low)]       # the water rises from the deepest plot
+    while pq and len(lk) < DRAIN_SIZE[1]:
+        e, i = heapq.heappop(pq)
+        if plot_type[i] == 0:
+            continue
+        lk.append(i)
+        for nx, ny in nbrs(i % W, i // W, N4):
+            j = I(nx, ny)
+            if j in cells and j not in seen_l:
+                seen_l.add(j)
+                heapq.heappush(pq, (elev[j], j))
+    if len(lk) < DRAIN_SIZE[0] or any(lake[I(nx, ny)] and I(nx, ny) not in lk for i in lk for nx, ny in nbrs(i % W, i // W)):
+        continue
+    level = max(elev[i] for i in lk)
+    for i in lk:
+        lake[i] = True
+        DRAIN.add(i)
+        DRAIN_LEVEL[i] = level
 # enclosed water bodies left by the landmass noise become lakes too
+LAKE_MAX = na(45, 6)                  # plots per lake
 for comp in components([not land[i] for i in range(W * H)], N8):
-    if len(comp) <= 45 and not any(x in (0, W - 1) or y in (0, H - 1) for x, y in comp):
+    if len(comp) <= LAKE_MAX and not any(x in (0, W - 1) or y in (0, H - 1) for x, y in comp):
         for x, y in comp:
             lake[I(x, y)] = True
 for i in range(W * H):
@@ -940,12 +1084,14 @@ for x, y in ALL:
         land[i] = True
         plot_type[i] = 2
 for comp in components(lake):
-    if len(comp) > 45:
-        for x, y in comp[45:]:
+    if len(comp) > LAKE_MAX:
+        for x, y in comp[LAKE_MAX:]:
             i = I(x, y)
             lake[i], land[i], plot_type[i] = False, True, 2
 
 FINGER = set(i for i in FINGER if lake[i])
+DRAIN = set(i for i in DRAIN if lake[i])
+print('drainage lakes', len(components([i in DRAIN for i in range(W * H)], N8)), 'plots', len(DRAIN), 'basins', len(_basins))
 FINGER_SHORE = set(I(nx, ny) for i in FINGER for nx, ny in nbrs(i % W, i // W) if land[I(nx, ny)])
 ocean = [not land[i] and not lake[i] for i in range(W * H)]
 dcoast = bfs_dist([i for i in range(W * H) if ocean[i]], lambda j: not ocean[j])
@@ -959,7 +1105,6 @@ for x, y in ALL:
     t += 0.03 * NZ[10].fbm(x, y, 3, 10)
     T[i] = t
 
-RAIN_LAT = [(0, 1.0), (7, 0.95), (14, 0.8), (21, 0.56), (27, 0.48), (34, 0.62), (44, 0.85), (55, 0.8), (64, 0.55), (75, 0.45)]
 
 
 def march(y, xs):
@@ -1079,11 +1224,11 @@ for i in order:
 
 large = [False] * (W * H)
 mouths = sorted([i for i in order if ocean[down[i]] and land[i]], key=lambda i: -acc[i])
-LR_COUNT, LR_FRAC, LR_MAXLEN = 7, 0.33, 40
+LR_COUNT, LR_FRAC, LR_MAXLEN = na(7), 0.33, sz(40, lo=8)
 river_paths = []
 used = 0
 for m in mouths:
-    if used >= LR_COUNT or acc[m] < 45:
+    if used >= LR_COUNT or acc[m] < na(45, 8):
         break
     if any(large[I(nx, ny)] for nx, ny in nbrs(m % W, m // W)):
         continue
@@ -1130,9 +1275,9 @@ outlet = [False] * (CW * CH)
 for j in range(CH):
     for i in range(CW):
         ps = list(corner_plots(i, j))
-        if len(ps) < 4 or any(not land[I(px, py)] for px, py in ps):
+        if len(ps) < 4 or any(not land[I(px, py)] and I(px, py) not in DRAIN for px, py in ps):   # drainage lakes pass the water on
             outlet[C(i, j)] = True
-        cel[C(i, j)] = sum(elev[I(px, py)] if land[I(px, py)] else 0 for px, py in ps) / len(ps) + 0.15 * NZ[19].fbm(i, j, 3, 4) + 0.04 * NZ[20].fbm(i, j, 2, 2)
+        cel[C(i, j)] = sum(elev[I(px, py)] if land[I(px, py)] else DRAIN_LEVEL.get(I(px, py), 0) for px, py in ps) / len(ps) + 0.15 * NZ[19].fbm(i, j, 3, 4) + 0.04 * NZ[20].fbm(i, j, 2, 2)
 cdown = [-1] * (CW * CH)
 cseen = [False] * (CW * CH)
 corder = []
@@ -1166,6 +1311,34 @@ for k in reversed(corder):
         cacc[cdown[k]] += cacc[k]
 
 RIVER_T = 2.1
+
+
+def edge_plot_pair(k, d):
+    i, j = k % CW, k // CW
+    if d % CW == i:
+        return I(i - 1, min(j, d // CW)), I(i, min(j, d // CW))
+    return I(min(i, d % CW), j - 1), I(min(i, d % CW), j)
+
+
+def drain_edge(k):
+    """The edge from corner k downstream runs along or through a drainage lake: no river is drawn there."""
+    return any(p in DRAIN for p in edge_plot_pair(k, cdown[k]))
+
+
+# every drainage lake spills into an outflow river: the strongest flow leaving the lake gets enough water
+DRAIN_OUT = 0
+for comp in components([i in DRAIN for i in range(W * H)], N8):
+    lk = set(I(x, y) for x, y in comp)
+    exits = [k for k in range(CW * CH) if not outlet[k] and cdown[k] >= 0 and not any(p in lk for p in edge_plot_pair(k, cdown[k]))
+             and any(I(px, py) in lk for px, py in corner_plots(k % CW, k // CW))]
+    if not exits:
+        continue
+    q = max(exits, key=lambda k: cacc[k])
+    add = max(0.0, 1.3 * RIVER_T - cacc[q])
+    while q >= 0 and not outlet[q]:
+        cacc[q] += add
+        q = cdown[q]
+    DRAIN_OUT += 1
 
 
 def river_t(k):
@@ -1213,7 +1386,7 @@ def n4_join(cells):
 wofr = {}  # plot -> NS direction (river on east edge)
 nofr = {}  # plot -> WE direction (river on south edge)
 for k in range(CW * CH):
-    if outlet[k] or cdown[k] < 0 or cacc[k] < river_t(k):
+    if outlet[k] or cdown[k] < 0 or cacc[k] < river_t(k) or drain_edge(k):
         continue
     i, j = k % CW, k // CW
     d = cdown[k]
@@ -1267,7 +1440,7 @@ if volcano_island:
     VOLCANO_RIVER = len(best_path) - 1
 
 
-_rk = set(k for k in range(CW * CH) if not outlet[k] and cdown[k] >= 0 and cacc[k] >= river_t(k))
+_rk = set(k for k in range(CW * CH) if not outlet[k] and cdown[k] >= 0 and cacc[k] >= river_t(k) and not drain_edge(k))
 _kids = Counter(cdown[k] for k in _rk)
 RIVER_SOURCES = [k for k in _rk if _kids[k] == 0]
 _pe = [P[i] for i in list(wofr) + list(nofr)]
@@ -1280,6 +1453,10 @@ def has_river(x, y):
     if i in wofr or i in nofr:
         return True
     return (x > 0 and I(x - 1, y) in wofr) or (y < H - 1 and I(x, y + 1) in nofr)
+
+
+_dl = components([i in DRAIN for i in range(W * H)], N8)
+print('drainage lakes', len(_dl), 'with outflow river', sum(1 for c in _dl if any(has_river(nx, ny) for x, y in c for nx, ny in nbrs(x, y) if land[I(nx, ny)])))
 
 
 # natural harbours: deep, sheltered bays behind a narrow entrance on straight open coasts,
@@ -1399,9 +1576,9 @@ for x, y in ALL:
         cands.append((x, y, -sea[0][0], -sea[0][1]))
 hb_rng.shuffle(cands)
 for x, y, nx_, ny_ in cands:
-    if len(harbours) >= 3:
+    if len(harbours) >= na(3):
         break
-    if any(math.hypot(x - hx, y - hy) < 14 for hx, hy, _, _ in harbours):
+    if any(math.hypot(x - hx, y - hy) < sz(14, lo=5) for hx, hy, _, _ in harbours):
         continue
     bx, by = x + 3 * nx_, y + 3 * ny_
     if any(math.hypot(bx - r % W, by - r // W) < 6 for r in river_cells):
@@ -1431,7 +1608,7 @@ for x, y, nx_, ny_ in cands:
 # small coves: 3-5 water tiles cut into the coast, a natural anchorage for a coastal town
 coves = []
 for x, y, nx_, ny_ in cands:
-    if len(coves) >= 14:
+    if len(coves) >= na(14):
         break
     if any(math.hypot(x - hx, y - hy) < 9 for hx, hy, _, _ in harbours) or any(math.hypot(x - cx, y - cy) < 7 for cx, cy, _, _ in coves):
         continue
@@ -1587,7 +1764,7 @@ cands = [(x, y) for x, y in ALL if terrain[I(x, y)] == 'DESERT' and plot_type[I(
 orng.shuffle(cands)
 oases = []
 for x, y in cands:
-    if len(oases) >= 7:
+    if len(oases) >= na(7):
         break
     if all(math.hypot(x - ox, y - oy) >= 7 for ox, oy in oases):
         oases.append((x, y))
@@ -2191,6 +2368,44 @@ for x, y in ALL:
         else:
             terrain[i] = 'OCEAN'
 
+# shallow coast in patches (after FaireWeather): coast turns shallow at random, more likely next to shallow coast,
+# but never at a choke point - a strait or channel stays deep for large ships
+SHALLOW_PATCH, SHALLOW_PATCH_NEXT = 0.2, 0.4
+RING4 = [(dx, dy) for dx in range(-4, 5) for dy in range(-4, 5) if 3.5 <= math.hypot(dx, dy) < 4.5]
+
+
+def choke_point(x, y):
+    water_opp = land_opp = False
+    for dx, dy in RING4:
+        ax, ay, bx, by = x + dx, y + dy, x - dx, y - dy
+        if not (inb(ax, ay) and inb(bx, by)):
+            continue
+        wa, wb = not land[I(ax, ay)], not land[I(bx, by)]
+        water_opp = water_opp or (wa and wb)
+        land_opp = land_opp or (not wa and not wb)
+        if water_opp and land_opp:
+            return True
+    return False
+
+
+sp_rng = random.Random(SEED * 7 + 73)
+CHOKE = set(i for i in range(W * H) if ocean[i] and terrain[i] in ('COAST', 'SHALLOW_COAST') and choke_point(i % W, i // W))
+shallow_choke = 0
+for i in CHOKE:
+    if terrain[i] == 'SHALLOW_COAST' and i not in SHALLOW_WATER:
+        terrain[i] = 'COAST'
+        shallow_choke += 1
+shallow_patch = 0
+for x, y in ALL:
+    i = I(x, y)
+    if terrain[i] != 'COAST' or i in HARBOUR_WATER or i in CHOKE:
+        continue
+    nxt = any(terrain[I(nx, ny)] == 'SHALLOW_COAST' for nx, ny in nbrs(x, y))
+    if sp_rng.random() < (SHALLOW_PATCH_NEXT if nxt else SHALLOW_PATCH):
+        terrain[i] = 'SHALLOW_COAST'
+        shallow_patch += 1
+print('shallow coast patches', shallow_patch, 'choke points', len(CHOKE), 'kept deep', shallow_choke)
+
 # ---------------------------------------------------------------- connectivity (peaks + large rivers are barriers)
 feature = [None] * (W * H)
 for path in river_paths:
@@ -2570,7 +2785,7 @@ seeds = [i for i in range(W * H) if feature[i] in WOODED and hardwood_kind(i)]
 hw_rng.shuffle(seeds)
 HARDWOOD, hw_centres = set(), []
 for c in seeds:
-    if len(hw_centres) >= 30:
+    if len(hw_centres) >= na(30):
         break
     if any(max(abs(c % W - h % W), abs(c // W - h // W)) < 7 for h in hw_centres):
         continue
@@ -2606,7 +2821,7 @@ jungle = [i for i in range(W * H) if ruin_ok(i) and feature[i] == 'JUNGLE' and a
 jungle.sort(key=lambda i: -sum(1 for nx, ny in nbrs(i % W, i // W) if feature[I(nx, ny)] == 'JUNGLE') - ru_rng.random())
 RUINS = []
 for i in jungle:
-    if len(RUINS) >= 5:
+    if len(RUINS) >= na(5):
         break
     if all(3 <= max(abs(i % W - r % W), abs(i // W - r // W)) for r in RUINS) and \
             (not RUINS or max(abs(i % W - RUINS[0] % W), abs(i // W - RUINS[0] // W)) <= 7):
@@ -2770,9 +2985,9 @@ cands = [(x, y) for x, y in ALL if terrain[I(x, y)] in ('SHALLOW_COAST', 'COAST'
 rng.shuffle(cands)
 cands.sort(key=lambda p: terrain[I(*p)] != 'SHALLOW_COAST')
 for x, y in cands:
-    if len(pearls) >= 8:
+    if len(pearls) >= na(8):
         break
-    if all(math.hypot(x - px, y - py) >= 10 for px, py in pearls):
+    if all(math.hypot(x - px, y - py) >= sz(10, lo=3) for px, py in pearls):
         pearls.append((x, y))
         feature[I(x, y)] = 'PEARL_REEF'
 
@@ -2830,11 +3045,13 @@ for i in list(nofr):
 # Europe: all open sea at least EUROPE_DIST tiles from the nearest land that is connected to the map edge through such
 # sea; it is flooded from the east edge (Atlantic, EUROPE_EAST) and the west edge (Pacific, EUROPE_WEST) at once, each
 # plot goes to the nearer edge. So the access follows the coast, and an island only pushes Europe back around itself.
-# On the Atlantic side small islands (fewer than ISLE_MAX_TILES land tiles) in front of the coast keep Europe only
-# ISLE_EUROPE_DIST tiles away, so they do not push the Atlantic far away from the mainland coast behind them.
-EUROPE_DIST = 7
-ISLE_EUROPE_DIST = 3
-ISLE_MAX_TILES = 60
+# On both sides small islands (fewer than ISLE_MAX_TILES land tiles) in front of the coast keep Europe only
+# ISLE_EUROPE_DIST tiles away, so they do not push Europe far away from the mainland coast behind them.
+EUROPE_DIST = sz(7, FX, 2)
+ISLE_EUROPE_DIST = sz(3, FX)
+ISLE_MAX_TILES = na(60, 6)
+EUROPE_GAP = sz(15, FX, 4)                    # plain sea plots between EUROPE_EAST and EUROPE_WEST where they would touch
+EUROPE_EAST_MIN = sz(5, FX)                # Atlantic Europe at least this far east of the middle where the Pacific lies straight west
 
 
 def europe_plots():
@@ -2843,8 +3060,9 @@ def europe_plots():
     mainland = [I(x, y) for comp in components(not_sea) if len(comp) >= ISLE_MAX_TILES for x, y in comp]
     dl_main = bfs_dist(mainland, lambda j: True)
     sea_ok = [ocean[i] and terrain[i] in ('OCEAN', 'COAST') for i in range(W * H)]
+    # (on both sides: user 2026-11-24, small islands must not push the Pacific Europe far to the west either)
     open_sea = {1: [sea_ok[i] and dl_main[i] >= EUROPE_DIST and dl[i] >= ISLE_EUROPE_DIST for i in range(W * H)],
-                -1: [sea_ok[i] and dl[i] >= EUROPE_DIST for i in range(W * H)]}
+                -1: [sea_ok[i] and dl_main[i] >= EUROPE_DIST and dl[i] >= ISLE_EUROPE_DIST for i in range(W * H)]}
     side = [0] * (W * H)                         # 1 east, -1 west
     dq = deque()
     for y in range(H):
@@ -2862,6 +3080,35 @@ def europe_plots():
                 dq.append(j)
     east = [s == 1 for s in side]
     west = [s == -1 for s in side]
+    # where EUROPE_WEST lies straight west of EUROPE_EAST over open sea (a row without mainland between them: small
+    # islands, fewer than ISLE_MAX_TILES land tiles, do not count), the Atlantic Europe begins EUROPE_EAST_MIN plots east
+    # of the middle of the map, not nearer to it
+    x_min = W // 2 + EUROPE_EAST_MIN
+    main = set(mainland)
+    for y in range(H):
+        for x in range(x_min - 1, -1, -1):
+            if not east[I(x, y)]:
+                continue
+            k = x - 1
+            while k >= 0 and I(k, y) not in main and not west[I(k, y)]:
+                k -= 1
+            if k >= 0 and west[I(k, y)]:
+                for x2 in range(x + 1):
+                    east[I(x2, y)] = False
+                break
+    # where the two floods come nearer than EUROPE_GAP plots over the sea (south of the land, or through a wide strait),
+    # both are pulled back until EUROPE_GAP plots of plain sea lie between them: about half of the gap is taken from the
+    # Atlantic side, but not nearer to the middle than above, the rest from the Pacific side
+    d_west = bfs_dist([i for i in range(W * H) if west[i]], lambda j: ocean[j])
+    if any(east[i] and d_west[i] <= EUROPE_GAP for i in range(W * H)):
+        for i in range(W * H):
+            if east[i] and d_west[i] <= EUROPE_GAP // 2 and i % W < x_min:
+                east[i] = False
+        d_east = bfs_dist([i for i in range(W * H) if east[i]], lambda j: ocean[j])
+        for i in range(W * H):
+            if west[i] and d_east[i] <= EUROPE_GAP:
+                west[i] = False
+        print('europe: east and west zones too near, gap of', EUROPE_GAP, 'plots made')
     for i in range(W * H):
         if east[i] or west[i]:
             terrain[i] = 'OCEAN'                     # Europe plots are open ocean
@@ -2888,7 +3135,7 @@ for x, y in ALL:
     cove_cands.append((x, y))
 cove_rng.shuffle(cove_cands)
 for x, y in cove_cands:
-    if len(SE_COVES) >= 5:
+    if len(SE_COVES) >= na(5):
         break
     if any(abs(y - cy) < 6 for cx, cy in SE_COVES) or any(math.hypot(x - hx, y - hy) < 9 for hx, hy, _, _ in harbours):
         continue
@@ -2953,6 +3200,22 @@ if west_isle:
     wx = int(round(sum(x for x, _ in west_isle) / float(len(west_isle))))
     wy = int(round(sum(y for _, y in west_isle) / float(len(west_isle))))
 CARIB_EUROPE = [I(wx, wy + d) for d in range(-2, 3) if inb(wx, wy + d)] if west_isle else []     # a narrow strip, five plots long
+
+
+_main = set(I(x, y) for comp in components([not ocean[i] for i in range(W * H)]) if len(comp) >= ISLE_MAX_TILES
+            for x, y in comp)
+
+
+def pacific_straight_west(i):
+    """Is EUROPE_WEST reached from plot i going straight west over open sea (small islands do not count)?"""
+    x, y = i % W - 1, i // W
+    while x >= 0 and I(x, y) not in _main and not pacific[I(x, y)]:
+        x -= 1
+    return x >= 0 and pacific[I(x, y)]
+
+
+if wx < W // 2 + EUROPE_EAST_MIN and any(pacific_straight_west(i) for i in CARIB_EUROPE):
+    CARIB_EUROPE = []                            # no Atlantic Europe near the middle of the map (europe_plots)
 for i in CARIB_EUROPE:
     terrain[i], feature[i] = 'OCEAN', None
     for qx, qy in nbrs(i % W, i // W):
@@ -3412,14 +3675,14 @@ print('resources', len(BONUS), sorted(Counter(BONUS.values()).items(), key=lambd
 
 # ---------------------------------------------------------------- output
 os.makedirs(OUT, exist_ok=True)
-wb = os.path.join(OUT, 'Random New World Massive.ColonizationWBSave')
+wb = os.path.join(OUT, 'Random New World %s.ColonizationWBSave' % SIZE.title())
 with open(wb, 'w', newline='\r\n') as f:
     f.write('Version=11\nBeginGame\n\tDescription=TXT_KEY_MAP_SCRIPT_RANDOM_NEW_WORLD_DESCR\n\tModPath=\n\tOption=GAMEOPTION_TWO_PLOT_CITY_RADIUS\n')
     f.write('\tWBNorthAmericanNative=1\n\tWBSouthAmericanNative=1\n\tWBCentralAmericanNative=1\nEndGame\n')
     for p in range(49):
         f.write('BeginPlayer\n\tTeam=%d\n\tLeaderType=NONE\n\tCivType=NONE\nEndPlayer\n' % p)
     f.write('BeginMap\n\tgrid width=%d\n\tgrid height=%d\n\ttop latitude=%d\n\tbottom latitude=%d\n' % (W, H, TOP_LAT, BOTTOM_LAT))
-    f.write('\twrap X=0\n\twrap Y=0\n\tworld size=WORLDSIZE_MASSIVE\n\tclimate=CLIMATE_TEMPERATE\n\tsealevel=SEALEVEL_MEDIUM\n')
+    f.write('\twrap X=0\n\twrap Y=0\n\tworld size=WORLDSIZE_%s\n\tclimate=CLIMATE_TEMPERATE\n\tsealevel=SEALEVEL_MEDIUM\n' % SIZE)
     f.write('\tnum plots written=%d\n\tnum signs written=%d\n' % (W * H, len(SIGNS)))
     f.write('\tCity Catchment Radius=2\n')
     f.write('\tRandomize Features=false\n\tRandomize Resources=false\n\tRandomize Goodies=true\nEndMap\n\n### Plot Info ###\n')

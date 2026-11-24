@@ -80,6 +80,8 @@ class Py24(ast.NodeTransformer):
             name = node.targets[0].id
             if name == 'SEED':
                 node.value = ast.Name('_SEED', ast.Load())
+            elif name == 'SIZE':
+                node.value = ast.Name('_SIZE', ast.Load())
             elif name == 'OUT':
                 node.value = ast.Constant(None)
         return node
@@ -187,7 +189,7 @@ def pack(text):
 RESULT_KEYS = ('plot_type', 'terrain', 'feature', 'wofr', 'nofr', 'europe', 'pacific', 'BONUS', 'IMPROVEMENT', 'ROUTE', 'SIGNS')
 
 
-def self_test(code, seed):
+def self_test(code, seed, size='MASSIVE'):
     """Run the rewritten code (with the helpers of the map script) and gen_random.py itself under Python 3 with the
     same seed: the results must be the same, else a rewrite changed the meaning."""
     import io
@@ -200,13 +202,13 @@ def self_test(code, seed):
     for name, path in XML_FILES.items():
         with open(path, encoding='utf-8') as f:
             xml[name] = f.read()
-    ns = hns['_namespace'](seed, xml)
+    ns = hns['_namespace'](seed, xml, size)
     with contextlib.redirect_stdout(io.StringIO()):
         exec(compile(code, 'converted', 'exec'), ns)
     gen = read('gen_random.py')
     ons = {'__name__': 'gen_random', '__file__': os.path.join(HERE, 'gen_random.py')}
     argv = sys.argv
-    sys.argv = ['gen_random.py', str(seed), os.path.join(HERE, 'out_random', 'selftest')]
+    sys.argv = ['gen_random.py', str(seed), os.path.join(HERE, 'out_random', 'selftest'), size]
     try:
         with contextlib.redirect_stdout(io.StringIO()):
             exec(compile(gen[:gen.find(OUTPUT_MARK)], 'gen_random', 'exec'), ons)
@@ -214,16 +216,17 @@ def self_test(code, seed):
         sys.argv = argv
     bad = [k for k in RESULT_KEYS if ns[k] != ons[k]]
     if bad:
-        raise SystemExit('self test seed %d: the rewritten code differs in %s' % (seed, ', '.join(bad)))
-    print('self test seed %d: same result as gen_random.py' % seed)
+        raise SystemExit('self test seed %d %s: the rewritten code differs in %s' % (seed, size, ', '.join(bad)))
+    print('self test seed %d %s: same result as gen_random.py' % (seed, size))
 
 
 def main():
     code = convert()
     for arg in sys.argv[1:]:
         if arg.startswith('--test='):
-            for seed in arg[7:].split(','):
-                self_test(code, int(seed))
+            for item in arg[7:].split(','):                  # seed or seed:size, e.g. --test=1,7:tiny
+                seed, _, size = item.partition(':')
+                self_test(code, int(seed), (size or 'massive').upper())
     xml = {}
     for name, path in XML_FILES.items():
         with open(path, encoding='utf-8') as f:

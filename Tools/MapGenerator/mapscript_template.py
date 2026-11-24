@@ -7,7 +7,8 @@
 ##
 ## Every game makes a new world: plate tectonics, mountain ranges, climate,
 ## rivers, set pieces, resources and landmark names, Europe in the east
-## (Atlantic) and west (Pacific). The size is always 85 x 137 plots.
+## (Atlantic) and west (Pacific). The grid size follows the world size as in
+## FaireWeather (Tiny 23 x 30 ... Massive 85 x 137, Gigantic 127 x 184).
 ##############################################################################
 
 from CvPythonExtensions import *
@@ -16,7 +17,9 @@ import base64
 import math
 
 gc = CyGlobalContext()
-W, H = 85, 137
+GRID = {'TINY': (23, 30), 'SMALL': (28, 40), 'STANDARD': (38, 60), 'LARGE': (48, 80), 'HUGE': (58, 100),
+        'MASSIVE': (85, 137), 'GIGANTIC': (127, 184)}          # the same table as in gen_random.py
+W, H = GRID['MASSIVE']
 TOP_LAT, BOTTOM_LAT = 70, -40
 _result = None
 _signs = None
@@ -174,22 +177,22 @@ def _log(*args):
 	pass
 
 
-def _namespace(seed, xml):
+def _namespace(seed, xml, size='MASSIVE'):
 	def read_xml(path):
 		return xml[path.replace('\\', '/').split('/')[-1]]
-	return {'__name__': 'random_new_world', '__file__': 'Random_New_World.py', '_SEED': seed, '_read_xml': read_xml,
+	return {'__name__': 'random_new_world', '__file__': 'Random_New_World.py', '_SEED': seed, '_SIZE': size, '_read_xml': read_xml,
 	        'any': _any, 'all': _all, 'max': _max, 'min': _min, 'round': _round, 'next': _next, 'Counter': _Counter,
 	        '_choices': _choices, '_log': _log}
 ## helpers end
 
 
-def _run(seed):
+def _run(seed, size):
 	"""Generate the map; a seed whose map the generator rejects (MapRejected, e.g. a straight dug south channel) is
 	followed by the next one."""
 	xml = {'CIV4FeatureInfos.xml': _unpack(_XML_FEATURES), 'CIV4BonusInfos.xml': _unpack(_XML_BONUSES)}
 	code = compile(_unpack(_CODE), 'Random New World generator', 'exec')
 	for attempt in range(50):
-		ns = _namespace(seed, xml)
+		ns = _namespace(seed, xml, size)
 		try:
 			exec code in ns
 			return ns
@@ -252,12 +255,21 @@ def getNumCustomMapOptions():
 	return 0
 
 
+def _size_name(eWorldSize):
+	"""WORLDSIZE_LARGE -> LARGE; an unknown world size gets the Massive grid."""
+	for name in GRID:
+		if eWorldSize == getattr(WorldSizeTypes, 'WORLDSIZE_' + name, None):
+			return name
+	CvUtil.pyPrint('Random New World: unknown world size %s, Massive grid' % (eWorldSize,))
+	return 'MASSIVE'
+
+
 def getGridSize(argsList):
-	"Colonization: the actual map size. Every world size gives the same 85 x 137 plots"
+	"Colonization: the actual map size, per world size as in FaireWeather"
 	if argsList[0] == -1:
 		return []
 	gc.getMap().setCityCatchmentRadiusMapMaker(1)           # two plot colony radius, the generator plans the sites for it
-	return (W, H)
+	return GRID[_size_name(argsList[0])]
 
 
 def beforeGeneration():
@@ -267,8 +279,11 @@ def beforeGeneration():
 def generatePlotTypes():
 	global _result
 	NiTextOut("Random New World: plates, ranges, climate, rivers ...")
+	global W, H
 	seed = gc.getGame().getMapRandNum(1000000000, "Random New World seed")
-	_result = _run(seed)
+	size = _size_name(gc.getMap().getWorldSize())
+	W, H = GRID[size]
+	_result = _run(seed, size)
 	return list(_result['plot_type'])
 
 
