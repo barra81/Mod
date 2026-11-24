@@ -2836,6 +2836,7 @@ EUROPE_DIST = 7
 ISLE_EUROPE_DIST = 3
 ISLE_MAX_TILES = 60
 EUROPE_GAP = 15                     # plain sea plots between EUROPE_EAST and EUROPE_WEST where they would touch
+EUROPE_EAST_MIN = 5                 # Atlantic Europe at least this far east of the middle where the Pacific lies straight west
 
 
 def europe_plots():
@@ -2863,19 +2864,33 @@ def europe_plots():
                 dq.append(j)
     east = [s == 1 for s in side]
     west = [s == -1 for s in side]
-    # where the two floods meet in the open sea (south of the land, or through a wide strait), EUROPE_EAST and
-    # EUROPE_WEST would touch: there both are pulled back until EUROPE_GAP plots of plain sea lie between them
-    # (distance over the sea; about half of the gap is taken from each side)
-    if any(east[i] and any(west[I(qx, qy)] for qx, qy in nbrs(i % W, i // W)) for i in range(W * H)):
-        d_west = bfs_dist([i for i in range(W * H) if west[i]], lambda j: ocean[j])
+    # where EUROPE_WEST lies straight west of EUROPE_EAST over open sea (a row without land between them), the Atlantic
+    # Europe begins EUROPE_EAST_MIN plots east of the middle of the map, not nearer to it
+    x_min = W // 2 + EUROPE_EAST_MIN
+    for y in range(H):
+        for x in range(x_min - 1, -1, -1):
+            if not east[I(x, y)]:
+                continue
+            k = x - 1
+            while k >= 0 and ocean[I(k, y)] and not west[I(k, y)]:
+                k -= 1
+            if k >= 0 and west[I(k, y)]:
+                for x2 in range(x + 1):
+                    east[I(x2, y)] = False
+                break
+    # where the two floods come nearer than EUROPE_GAP plots over the sea (south of the land, or through a wide strait),
+    # both are pulled back until EUROPE_GAP plots of plain sea lie between them: about half of the gap is taken from the
+    # Atlantic side, but not nearer to the middle than above, the rest from the Pacific side
+    d_west = bfs_dist([i for i in range(W * H) if west[i]], lambda j: ocean[j])
+    if any(east[i] and d_west[i] <= EUROPE_GAP for i in range(W * H)):
         for i in range(W * H):
-            if east[i] and d_west[i] <= EUROPE_GAP // 2:
+            if east[i] and d_west[i] <= EUROPE_GAP // 2 and i % W < x_min:
                 east[i] = False
         d_east = bfs_dist([i for i in range(W * H) if east[i]], lambda j: ocean[j])
         for i in range(W * H):
             if west[i] and d_east[i] <= EUROPE_GAP:
                 west[i] = False
-        print('europe: east and west zones touched, gap of', EUROPE_GAP, 'plots made')
+        print('europe: east and west zones too near, gap of', EUROPE_GAP, 'plots made')
     for i in range(W * H):
         if east[i] or west[i]:
             terrain[i] = 'OCEAN'                     # Europe plots are open ocean
@@ -2967,6 +2982,18 @@ if west_isle:
     wx = int(round(sum(x for x, _ in west_isle) / float(len(west_isle))))
     wy = int(round(sum(y for _, y in west_isle) / float(len(west_isle))))
 CARIB_EUROPE = [I(wx, wy + d) for d in range(-2, 3) if inb(wx, wy + d)] if west_isle else []     # a narrow strip, five plots long
+
+
+def pacific_straight_west(i):
+    """Is EUROPE_WEST reached from plot i going straight west over open sea?"""
+    x, y = i % W - 1, i // W
+    while x >= 0 and ocean[I(x, y)] and not pacific[I(x, y)]:
+        x -= 1
+    return x >= 0 and pacific[I(x, y)]
+
+
+if wx < W // 2 + EUROPE_EAST_MIN and any(pacific_straight_west(i) for i in CARIB_EUROPE):
+    CARIB_EUROPE = []                            # no Atlantic Europe near the middle of the map (europe_plots)
 for i in CARIB_EUROPE:
     terrain[i], feature[i] = 'OCEAN', None
     for qx, qy in nbrs(i % W, i // W):
