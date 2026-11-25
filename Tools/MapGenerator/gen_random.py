@@ -799,19 +799,21 @@ def next_seed(seed):
     return (seed * 69069 + 12345) % 1000000007
 
 
-def south_route(sea):
-    """Is there an edge-connected way through the plots sea(i) from the west to the east edge south of SOUTH_ROUTE_LAT?"""
-    ys = lat_y(SOUTH_ROUTE_LAT)
-    for c in components([sea(i) and i // W <= ys for i in range(W * H)], N4):
+def south_route(sea, y0=0, y1=None):
+    """Is there an edge-connected way through the plots sea(i) from the west to the east edge in the rows y0..y1
+    (default: south of SOUTH_ROUTE_LAT)?"""
+    ys = lat_y(SOUTH_ROUTE_LAT) if y1 is None else y1
+    for c in components([sea(i) and y0 <= i // W <= ys for i in range(W * H)], N4):
         if any(p[0] == 0 for p in c) and any(p[0] == W - 1 for p in c):
             return True
     return False
 
 
-def south_route_path(cost):
-    """Cheapest edge-connected way from the west to the east edge south of SOUTH_ROUTE_LAT; cost(i) None = blocked."""
-    ys = lat_y(SOUTH_ROUTE_LAT)
-    src = [I(0, y) for y in range(ys + 1) if cost(I(0, y)) is not None]
+def south_route_path(cost, y0=0, y1=None):
+    """Cheapest edge-connected way from the west to the east edge in the rows y0..y1 (default: south of
+    SOUTH_ROUTE_LAT); cost(i) None = blocked."""
+    ys = lat_y(SOUTH_ROUTE_LAT) if y1 is None else y1
+    src = [I(0, y) for y in range(y0, ys + 1) if cost(I(0, y)) is not None]
     dist, prev, pq = dict((i, 0.0) for i in src), {}, [(0.0, i) for i in src]
     while pq:
         c, i = heapq.heappop(pq)
@@ -824,7 +826,7 @@ def south_route_path(cost):
             continue
         for nx, ny in nbrs(i % W, i // W, N4):
             j = I(nx, ny)
-            step = cost(j) if ny <= ys else None
+            step = cost(j) if y0 <= ny <= ys else None
             if step is not None and c + step < dist.get(j, 1e9):
                 dist[j], prev[j] = c + step, i
                 heapq.heappush(pq, (c + step, j))
@@ -1693,10 +1695,10 @@ for x, y in ALL:
     elif t < 0.33:
         b = 'TAIGA' if m > 0.30 else 'TUNDRA'
     elif t < 0.50:
-        if m < 0.17:
+        if m < 0.12:
             b = 'ROCK_STEPPES'
         elif m < 0.27:
-            b = 'ROCK_STEPPES' if NZ[14].fbm(x, y, 2, 4) > 0.1 else 'PLAINS_FERTILE'
+            b = 'ROCK_STEPPES' if NZ[14].fbm(x, y, 2, 4) > 0.3 else 'PLAINS'   # (user 2026-11-25: less rock steppe)
         elif m < 0.48:
             b = 'PLAINS_FERTILE'
         else:
@@ -1705,7 +1707,7 @@ for x, y in ALL:
         if m < 0.17:
             b = 'DESERT'
         elif m < 0.25:
-            b = 'ROCK_STEPPES' if elev[i] > 0.4 else 'SHRUBLAND'
+            b = 'ROCK_STEPPES' if elev[i] > 0.5 else 'SHRUBLAND'
         elif m < 0.38:
             b = 'PLAINS'
         elif m < 0.52:                  # (user 2026-11-25: more fertile plains, about 9 % of the land)
@@ -2980,6 +2982,22 @@ if not south_route(deep):
             terrain[i] = 'COAST'
             south_lanes += 1
 print('south route: strait', len(SOUTH_PASSAGE), 'deep lanes', south_lanes, 'open', south_route(deep))
+
+# every channel between two continents that is open water from the Pacific to the Atlantic is open for large ships
+# too (user 2026-11-25: the middle channel was shallow behind the island sea): the way is searched in the rows
+# between the middles of the two continents, its cheapest shallow plots become coast
+_cy = [sum(y for _, y in c) / float(len(c)) for c in _conts]
+channel_lanes = []
+for _ya, _yb in zip(_cy, _cy[1:]):
+    _y0, _y1 = int(_ya), int(_yb)
+    if south_route(lambda j: ocean[j] and not large[j], _y0, _y1) and not south_route(deep, _y0, _y1):
+        n = 0
+        for i in south_route_path(lambda j: (0.01 if deep(j) else 1.0) if ocean[j] and not large[j] else None, _y0, _y1):
+            if not deep(i):
+                terrain[i] = 'COAST'
+                n += 1
+        channel_lanes.append(n)
+print('channels between continents: deep lanes', channel_lanes)
 
 # water features
 for x, y in ALL:
