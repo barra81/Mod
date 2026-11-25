@@ -1702,12 +1702,12 @@ for x, y in ALL:
     m = P[i] + 0.07 * NZ[13].fbm(x, y, 3, 6) + (0.05 if has_river(x, y) else 0)
     m += 0.05 * smoothstep(18, 26, lat(y))     # the northern continent: more room for fertile land
     M[i] = m
-    if t < 0.10:
+    if t < 0.08:                    # (less snow and tundra, more taiga: user 2026-11-25)
         b = 'SNOW'
-    elif t < 0.20:
+    elif t < 0.16:
         b = 'TUNDRA'
     elif t < 0.33:
-        b = 'TAIGA' if m > 0.30 else 'TUNDRA'
+        b = 'TAIGA' if m > 0.24 else 'TUNDRA'
     elif t < 0.50:
         if m < 0.12:
             b = 'ROCK_STEPPES'
