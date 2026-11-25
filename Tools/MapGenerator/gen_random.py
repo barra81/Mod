@@ -2367,6 +2367,33 @@ for x, y in order:
     if lone_rng.random() < 0.6:
         plot_type[i] = 1
         LONE_HILLS.append(i)
+# more random hills in all regions away from the mountains, single or in pairs (user 2026-11-25: the land there was too
+# flat; about 75 % more hills there)
+FAR_HILL_P = 0.50                     # chance per open flat plot at least 3 plots from the nearest peak
+far_rng = random.Random(SEED * 7 + 101)
+dpeak = bfs_dist([i for i in range(W * H) if land[i] and plot_type[i] == 0], lambda j: True)
+FAR_TERR = ('GRASS', 'PLAINS', 'PLAINS_FERTILE', 'SAVANNAH', 'TAIGA', 'SHRUBLAND', 'TUNDRA', 'DESERT', 'ROCK_STEPPES', 'MARSH', 'WETLAND')
+
+
+def far_hill_ok(x, y):
+    i = I(x, y)
+    return land[i] and plot_type[i] == 2 and i not in SET_PIECES and not large[i] and dpeak[i] >= 3         and terrain[i] in FAR_TERR and sum(1 for nx, ny in nbrs(x, y) if plot_type[I(nx, ny)] == 1) <= 1
+
+
+FAR_HILLS = []
+order = [(x, y) for x, y in ALL]
+far_rng.shuffle(order)
+for x, y in order:
+    if not far_hill_ok(x, y) or (has_river(x, y) and far_rng.random() < 0.5) or far_rng.random() >= FAR_HILL_P:
+        continue
+    plot_type[I(x, y)] = 1
+    FAR_HILLS.append(I(x, y))
+    if far_rng.random() < 0.5:            # a second hill next to it: a small ridge
+        nb = [(nx, ny) for nx, ny in nbrs(x, y, N4) if far_hill_ok(nx, ny)]
+        if nb:
+            nx, ny = far_rng.choice(nb)
+            plot_type[I(nx, ny)] = 1
+            FAR_HILLS.append(I(nx, ny))
 for x, y in ALL:
     i = I(x, y)
     if land[i] and terrain[i] == 'SNOW' and abs(lat(y)) < 60 and any(lake[I(nx, ny)] for nx, ny in nbrs(x, y)):
@@ -3922,7 +3949,7 @@ print('harbours', [(h[0], h[1]) for h in harbours], 'salt basin', SALT_BASIN, le
       'gorge', gorge and (river_paths[gorge[0]][gorge[1]] % W, river_paths[gorge[0]][gorge[1]] // W), len(GORGE), 'island', sorted((i % W, i // W) for i in ISLAND)[:1], len(ISLAND))
 print('signs', len(SIGNS), SIGNS)
 print('hardwood clusters', len(hw_centres), len(HARDWOOD), 'ruins', [(i % W, i // W) for i in RUINS], 'road plots', len(ROUTE))
-print('lone hills', len(LONE_HILLS), 'plains converted', len(to_plains))
+print('far hills', len(FAR_HILLS)); print('lone hills', len(LONE_HILLS), 'plains converted', len(to_plains))
 print('plates', NPL, 'continental', sum(p['cont'] for p in plates), 'ranges', Counter(R.get('kind') for R in RANGES), 'rifts', len(RIFTS),
       'island sea', ISLE_SEA, 'caldera', CALDERA, 'currents', len(CURRENTS))
 print('peaks', sum(1 for i in range(W * H) if plot_type[i] == 0), 'hills', sum(1 for i in range(W * H) if plot_type[i] == 1))
