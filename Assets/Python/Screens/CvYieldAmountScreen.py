@@ -9,6 +9,16 @@ import CvScreenEnums
 import time
 
 gc = CyGlobalContext()
+
+
+def logKey(szText):
+	try:
+		f = open("WTP_AmountKeys.log", "a")
+		f.write(szText + "\n")
+		f.close()
+	except:
+		pass
+
 localText = CyTranslator()
 
 BTN_MINUS = 40001
@@ -485,11 +495,20 @@ class CvYieldAmountScreen:
 	# NOTIFY_CHARACTER from handleEmbeddedInput as well). One press can come from both sources, the second one up to a few
 	# frames later (on a slow harbor screen more than 50 ms: 3 became 33): the same key from the other source within half a
 	# second is that copy and is dropped, once per taken key, so a key pressed twice still counts twice.
+	# A copy from the same source within 80 ms (a press delivered twice) is dropped as well; nobody presses a key twice
+	# that fast. Every key is written to WTP_AmountKeys.log (source, key, time, taken or dropped) to see where copies come from.
 	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False, szSource = "kbd"):
 		fNow = time.clock()
 		tLast = self.tLastKey
-		if tLast != None and not tLast[3] and tLast[0] == iKey and tLast[1] != szSource and fNow - tLast[2] < 0.5:
-			tLast[3] = True
+		bCopy = False
+		if tLast != None and tLast[0] == iKey:
+			if tLast[1] != szSource and not tLast[3] and fNow - tLast[2] < 0.5:
+				tLast[3] = True
+				bCopy = True
+			elif tLast[1] == szSource and fNow - tLast[2] < 0.08:
+				bCopy = True
+		logKey("%s key %d t %.3f %s" % (szSource, iKey, fNow, bCopy and "dropped" or "taken"))
+		if bCopy:
 			return
 		self.tLastKey = [iKey, szSource, fNow, False]
 		self.bCtrlDown = bCtrl or iKey in self.aKeyCtrl
