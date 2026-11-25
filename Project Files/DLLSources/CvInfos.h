@@ -2967,6 +2967,7 @@ public:
 	// Arrays
 	int getYield(YieldTypes eYield) const;
 	int getRiverYieldIncrease(YieldTypes eYield) const;
+	int getHillsYieldChange(YieldTypes eYield) const; // WTP: terrain specific change on hills, added to the yield's iHillsChange
 	DllExport int get3DAudioScriptFootstepIndex(int i) const;
 	// Other
 	DllExport const CvArtInfoTerrain* getArtInfo() const;
@@ -2992,6 +2993,7 @@ protected:
 	// Arrays
 	int* m_aiYields;
 	int* m_aiRiverYieldIncrease;
+	int* m_aiHillsYieldChange;
 	int* m_ai3DAudioScriptFootstepIndex;
 private:
 	CvString m_szArtDefineTag;

@@ -262,6 +262,11 @@ int CyTerrainInfo::getRiverYieldIncrease(int iYield) const
 	return CvTerrainInfo::getRiverYieldIncrease(static_cast<YieldTypes>(iYield));
 }
 
+int CyTerrainInfo::getHillsYieldChange(int iYield) const
+{
+	return CvTerrainInfo::getHillsYieldChange(static_cast<YieldTypes>(iYield));
+}
+
 int CyTerrainInfo::getYield(int iYield) const
 {
 	return CvTerrainInfo::getYield(static_cast<YieldTypes>(iYield));

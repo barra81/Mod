@@ -51,6 +51,7 @@
 		<element type="ArtDefineTag"/>
 		<element type="Yields"/>
 		<element type="RiverYieldIncreases"/>
+		<element type="HillsYieldChanges" minOccurs="0"/>
 		<element type="bWater"/>
 		<element type="bImpassable"/>
 		<element type="bFound"/>

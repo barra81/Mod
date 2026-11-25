@@ -22,6 +22,7 @@ class CyTerrainInfo : public CvTerrainInfo
 {
 public:
 	int getRiverYieldIncrease(int iYield) const;
+	int getHillsYieldChange(int iYield) const;
 	int getYield(int iYield) const;
 };
 BOOST_STATIC_ASSERT(sizeof(CyTerrainInfo) == sizeof(CvTerrainInfo));
