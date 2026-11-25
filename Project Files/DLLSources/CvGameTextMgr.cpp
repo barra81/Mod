@@ -404,6 +404,11 @@ static CvWString wtpTransportPlaceName(int iPlace)
 	return CvWString::format(L"(%d/%d)", iA - 2, iB - 2);
 }
 
+// WTP: the flag for the help texts of the harbour screens (Europe, Africa, Port Royal): their tooltips are shown by the game, no Python tooltip folds the
+// rows of the statistics of a transport there (see CvMainInterface.foldTransportStats), so the statistics are left out. Set by CvDLLWidgetData::parseShipCargoUnitHelp
+static bool g_bWtpHideTransportStats = false;
+void wtpSetHideTransportStats(bool b) { g_bWtpHideTransportStats = b; }
+
 void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, bool bOneLine, bool bShort)
 {
 	CxDesyncMonitor StartAsyncExecution;
@@ -772,24 +777,25 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				const int iDelSlots = pUnit->getTransportStat(CvUnit::TS_DELIVERED_SLOTS);
 				const int iDelValue = pUnit->getTransportStat(CvUnit::TS_DELIVERED_VALUE);
 				const int iIdle = pUnit->getTransportStat(CvUnit::TS_IDLE);
-				szString.append(NEWLINE);
-				szString.append(gDLL->getText("TXT_KEY_WTP_TRANSPORT_STATS"));
+				CvWString szBlock;
+				szBlock.append(NEWLINE);
+				szBlock.append(gDLL->getText("TXT_KEY_WTP_TRANSPORT_STATS"));
 				// the first row: the line "Logs" (its child window: the cargo of the last turns, the lines marked with \x00AA)
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_LOGS").GetCString()));
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TURNS", iTurns).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_LOGS").GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TURNS", iTurns).GetCString()));
 				// (the averages with one decimal)
 				const int iAvgSlots10 = (iSlotSum * 10 + iTurns / 2) / iTurns;
 				const int iAvgCapacity = (iCapacitySum + iTurns / 2) / iTurns;
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_SLOTS", CvWString::format(L"%d.%d", iAvgSlots10 / 10, iAvgSlots10 % 10).GetCString(), iAvgCapacity, (iCapacitySum > 0 ? iSlotSum * 100 / iCapacitySum : 0)).GetCString()));
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_EMPTY", iEmpty, iEmpty * 100 / iTurns).GetCString()));
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_FULL", iFull, iFull * 100 / iTurns).GetCString()));
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_HALF_OR_LESS", iHalfOrLess, iHalfOrLess * 100 / iTurns).GetCString()));
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_VALUE", pUnit->getTransportStat(CvUnit::TS_VALUE_SUM) / iTurns).GetCString()));
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_AMOUNT", pUnit->getTransportStat(CvUnit::TS_AMOUNT_SUM) / iTurns).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_SLOTS", CvWString::format(L"%d.%d", iAvgSlots10 / 10, iAvgSlots10 % 10).GetCString(), iAvgCapacity, (iCapacitySum > 0 ? iSlotSum * 100 / iCapacitySum : 0)).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_EMPTY", iEmpty, iEmpty * 100 / iTurns).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_FULL", iFull, iFull * 100 / iTurns).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_HALF_OR_LESS", iHalfOrLess, iHalfOrLess * 100 / iTurns).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_VALUE", pUnit->getTransportStat(CvUnit::TS_VALUE_SUM) / iTurns).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_AMOUNT", pUnit->getTransportStat(CvUnit::TS_AMOUNT_SUM) / iTurns).GetCString()));
 				const int iDelSlots10 = (iDelSlots * 10 + iTurns / 2) / iTurns;
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED", iDelSlots, CvWString::format(L"%d.%d", iDelSlots10 / 10, iDelSlots10 % 10).GetCString()).GetCString()));
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED_VALUE", iDelValue, iDelValue / iTurns).GetCString()));
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_IDLE", iIdle, iIdle * 100 / iTurns).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED", iDelSlots, CvWString::format(L"%d.%d", iDelSlots10 / 10, iDelSlots10 % 10).GetCString()).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_UNLOADED_VALUE", iDelValue, iDelValue / iTurns).GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_IDLE", iIdle, iIdle * 100 / iTurns).GetCString()));
 				// the good that was on board most in all turns (slots summed over the turns, saved with the unit)
 				YieldTypes eTopYield = NO_YIELD;
 				int iTopTurns = 0;
@@ -806,7 +812,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 				}
 				if (eTopYield != NO_YIELD && iAllYieldTurns > 0)
 				{
-					szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD", CvWString::format(L"%c %s", GC.getYieldInfo(eTopYield).getChar(), GC.getYieldInfo(eTopYield).getDescription()).GetCString(), iTopTurns * 100 / iAllYieldTurns).GetCString()));
+					szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD", CvWString::format(L"%c %s", GC.getYieldInfo(eTopYield).getChar(), GC.getYieldInfo(eTopYield).getDescription()).GetCString(), iTopTurns * 100 / iAllYieldTurns).GetCString()));
 				}
 				// the good that was carried most in the logged turns (the amounts of the last turns in service; the row above counts all turns)
 				{
@@ -840,7 +846,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					}
 					if (eLogYield != NO_YIELD && iAllAmounts > 0)
 					{
-						szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD_LOG", CvWString::format(L"%c %s", GC.getYieldInfo(eLogYield).getChar(), GC.getYieldInfo(eLogYield).getDescription()).GetCString(), iLogAmount * 100 / iAllAmounts, iYieldRecords).GetCString()));
+						szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_YIELD_LOG", CvWString::format(L"%c %s", GC.getYieldInfo(eLogYield).getChar(), GC.getYieldInfo(eLogYield).getDescription()).GetCString(), iLogAmount * 100 / iAllAmounts, iYieldRecords).GetCString()));
 					}
 				}
 				// the destination that the goods of the logged turns went to most often (the turns of the log: every turn counts once for a place)
@@ -878,10 +884,10 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					}
 					if (iTopPlace != 0)
 					{
-						szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_DEST", wtpTransportPlaceName(iTopPlace).GetCString(), iTopTurns, iDestRecords).GetCString()));
+						szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_TOP_DEST", wtpTransportPlaceName(iTopPlace).GetCString(), iTopTurns, iDestRecords).GetCString()));
 					}
 				}
-				szString.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_NOTE").GetCString()));
+				szBlock.append(CvWString::format(L"\n\x00AB%s", gDLL->getText("TXT_KEY_WTP_TS_NOTE").GetCString()));
 				// the log, newest turn first, one line (marked with \x00AA) per turn: "T471(60/37): 100[goods] [import] place of the unloading; [export] place of loading, T469;; 48[goods] [export] place of loading, T470; [map] destination, 6[moves] ..." (the separator between the goods is yellow, ;; and between the unloaded and the loaded goods ||; the goods unloaded in that turn come first)
 				// (T471 is the turn that the line describes - the turn in which the goods were loaded and unloaded: the record is written at the turn change and holds the next turn, so it is shown minus one; the place of the ship and the goods on board are as at the end of that turn)
 				// (cyan header with the turn and the brackets, the place of the ship inside of them and the turn of the loading (T469) in a paler yellow (240,225,130), the separators ;; in the plain yellow, green amounts; the symbols are glyphs of the game font; the place of every
@@ -994,13 +1000,19 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 					}
 					CvWString szLogPlaceOpen = (szLogPlace.length() > 0) ? L"(" : L"";
 					CvWString szLogPlaceClose = (szLogPlace.length() > 0) ? L")" : L"";
-					szString.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s" ENDCOLR SETCOLR L"%s" ENDCOLR SETCOLR L"%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0] - 1, szLogPlaceOpen.GetCString(), 240, 225, 130, 255, szLogPlace.GetCString(), TEXT_COLOR("COLOR_CYAN"), szLogPlaceClose.GetCString(), szGoods.GetCString()));
+					szBlock.append(CvWString::format(L"\n\x00AA" SETCOLR L"%s%d%s" ENDCOLR SETCOLR L"%s" ENDCOLR SETCOLR L"%s:" ENDCOLR L" %s", TEXT_COLOR("COLOR_CYAN"), gDLL->getText("TXT_KEY_WTP_TS_LOG_TURN").GetCString(), piRec[0] - 1, szLogPlaceOpen.GetCString(), 240, 225, 130, 255, szLogPlace.GetCString(), TEXT_COLOR("COLOR_CYAN"), szLogPlaceClose.GetCString(), szGoods.GetCString()));
 				}
 				// the last line of the log window: "Legend" (marked with \x00AA), its child window is the explanation of the symbols (the line marked with \x00BA)
 				if (!aiLog.empty())
 				{
-					szString.append(CvWString::format(L"\n\x00AA%s", gDLL->getText("TXT_KEY_WTP_TS_LEGEND_TITLE").GetCString()));
-					szString.append(CvWString::format(L"\n\x00BA%s", gDLL->getText("TXT_KEY_WTP_TS_LOG_LEGEND", CvWString::format(L"%c", GC.getSymbolID(EXPORT_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MAP_CHAR)).GetCString(), CvWString::format(L"%c", iTilesChar).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MOVES_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(IMPORT_CHAR)).GetCString()).GetCString()));
+					szBlock.append(CvWString::format(L"\n\x00AA%s", gDLL->getText("TXT_KEY_WTP_TS_LEGEND_TITLE").GetCString()));
+					szBlock.append(CvWString::format(L"\n\x00BA%s", gDLL->getText("TXT_KEY_WTP_TS_LOG_LEGEND", CvWString::format(L"%c", GC.getSymbolID(EXPORT_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MAP_CHAR)).GetCString(), CvWString::format(L"%c", iTilesChar).GetCString(), CvWString::format(L"%c", GC.getSymbolID(MOVES_CHAR)).GetCString(), CvWString::format(L"%c", GC.getSymbolID(IMPORT_CHAR)).GetCString()).GetCString()));
+				}
+				// (the harbour screens show the text of the game as it is, nothing folds the marked rows into child windows there: no statistics in them.
+				// Everywhere else the Python tooltip folds the marked rows)
+				if (!g_bWtpHideTransportStats)
+				{
+					szString.append(szBlock);
 				}
 			}
 			szString.append(szTempBuffer);
