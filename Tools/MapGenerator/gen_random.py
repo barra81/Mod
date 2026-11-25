@@ -1742,7 +1742,10 @@ for x, y in ALL:
     if plot_type[i] == 2 and m > 0.68 and elev[i] < 0.3 and b not in ('SNOW', 'DESERT'):
         lowwet = dcoast[i] <= 2 or has_river(x, y) or any(lake[I(nx, ny)] or large[I(nx, ny)] for nx, ny in nbrs(x, y))
         if lowwet and NZ[15].fbm(x, y, 2, 3) > 0.05:
-            b = 'MARSH' if t >= 0.58 else ('WETLAND' if t >= 0.2 else b)
+            if t >= 0.58:
+                b = 'MARSH'
+            elif t >= 0.2 and NZ[15].fbm(x * 3.1, y * 3.1, 2, 2) > 0.15:   # cool wetland in patches mixed with grass (user 2026-11-25)
+                b = 'WETLAND'
     if plot_type[i] == 2 and t > 0.78 and m > 0.55 and b == 'SAVANNAH' and NZ[15].fbm(x, y, 3, 3) > 0.12:
         b = 'MARSH'
     if plot_type[i] == 0:
@@ -1761,6 +1764,7 @@ for x, y in ALL:
             and M[i] - 0.05 * smoothstep(18, 26, lat(y)) < 0.18 + 0.03 * NZ[13].fbm(x * 1.5, y * 1.5, 2, 3):
         terrain[i] = 'DESERT'
 
+wet_rng = random.Random(SEED * 7 + 89)
 DELTA, VALLEY_GREEN, OASIS_RING = set(), set(), set()
 for path in river_paths:
     m = path[0]
@@ -1774,7 +1778,10 @@ for path in river_paths:
     for x, y in ALL:
         i = I(x, y)
         if land[i] and plot_type[i] == 2 and math.hypot(x - mx, y - my) <= 2.6 and T[i] >= 0.2:
-            terrain[i] = 'MARSH' if T[i] >= 0.55 else 'WETLAND'
+            if T[i] >= 0.55:
+                terrain[i] = 'MARSH'
+            elif wet_rng.random() < 0.45:       # cool deltas: wetland mixed with the grass, no solid clump
+                terrain[i] = 'WETLAND'
             DELTA.add(i)
 for path in river_paths:                       # green ribbon through dry land
     for i in path:
@@ -2142,6 +2149,29 @@ for x, y in ALL:
         if len(wn) >= 3 and clay_rng.random() < 0.6:
             terrain[i] = Counter(wn).most_common(1)[0][0]
             CLAY_HILLS.append(i)
+
+# single wetland plots beside rivers in grassland and fertile plains, and lone wetland hills in moist savannah and
+# prairie (user 2026-11-25)
+wet2_rng = random.Random(SEED * 7 + 97)
+WET_SKIP = DELTA | VALLEY_GREEN | OASIS_RING | CANYON_WALL | MESA | MESA_BASE | HIDDEN | BASIN | GORGE | GORGE_FLOOR | ISLAND
+def wet_close(x, y, r, hills_only=False):
+    for ny in range(max(0, y - r), min(H, y + r + 1)):
+        for nx in range(max(0, x - r), min(W, x + r + 1)):
+            j = I(nx, ny)
+            if (nx, ny) != (x, y) and land[j] and terrain[j] in wet and (plot_type[j] == 1 or not hills_only):
+                return True
+    return False
+for x, y in ALL:
+    i = I(x, y)
+    if not land[i] or i in WET_SKIP or large[i] or (x, y) in atolls:
+        continue
+    water = has_river(x, y) or any(lake[I(nx, ny)] or large[I(nx, ny)] for nx, ny in nbrs(x, y))
+    if plot_type[i] == 2 and terrain[i] in ('GRASS', 'PLAINS_FERTILE') and has_river(x, y) and T[i] >= 0.2             and wet2_rng.random() < 0.08 and not wet_close(x, y, 1):
+        terrain[i] = 'WETLAND'
+    elif plot_type[i] in (1, 2) and terrain[i] in ('SAVANNAH', 'PLAINS') and (water or M[i] > 0.5)             and wet2_rng.random() < (0.12 if water else 0.05) and not wet_close(x, y, 2, True)             and sum(1 for nx, ny in nbrs(x, y) if plot_type[I(nx, ny)] == 1) <= 1:
+        plot_type[i] = 1
+        terrain[i] = 'WETLAND'
+        CLAY_HILLS.append(i)
 
 # scattered clay hills elsewhere: every settled region keeps a clay source within reach
 CLAY_R = 7
