@@ -3699,8 +3699,8 @@ with open(wb, 'w', newline='\r\n') as f:
 COL = {
     'OCEAN': (28, 58, 110), 'COAST': (45, 95, 160), 'SHALLOW_COAST': (70, 140, 185), 'LAKE': (60, 120, 200),
     'LARGE_RIVERS': (40, 110, 230), 'SNOW': (240, 240, 245), 'TUNDRA': (170, 175, 160), 'TAIGA': (110, 140, 115),
-    'GRASS': (90, 170, 70), 'PLAINS_FERTILE': (165, 190, 90), 'PLAINS': (200, 185, 110), 'SAVANNAH': (175, 175, 60),
-    'SHRUBLAND': (200, 160, 100), 'DESERT': (235, 215, 150), 'ROCK_STEPPES': (165, 145, 120),
+    'GRASS': (90, 170, 70), 'PLAINS_FERTILE': (190, 120, 60), 'PLAINS': (220, 200, 60), 'SAVANNAH': (150, 205, 105),
+    'SHRUBLAND': (240, 228, 140), 'DESERT': (205, 195, 160), 'ROCK_STEPPES': (165, 145, 120),   # (user 2026-11-25)
     'MARSH': (80, 130, 100), 'WETLAND': (100, 140, 140),
 }
 FOREST_COL = {'JUNGLE': (20, 90, 30), 'DENSE_FOREST': (20, 80, 30), 'ANCIENT_FOREST': (30, 70, 50)}
@@ -3770,7 +3770,7 @@ for row in img:
 LEGEND = [('OZEAN', COL['OCEAN'], 3, ''), ('KÜSTE', COL['COAST'], 3, ''), ('FLACHWASSER', COL['SHALLOW_COAST'], 3, ''),
           ('EUROPAZONE', EUROPE_COL, 3, ''), ('SEE', COL['LAKE'], 3, ''), ('GROSSER FLUSS', COL['LARGE_RIVERS'], 3, ''),
           ('SCHNEE', COL['SNOW'], 2, ''), ('TUNDRA', COL['TUNDRA'], 2, ''), ('TAIGA', COL['TAIGA'], 2, ''),
-          ('GRASLAND', COL['GRASS'], 2, ''), ('FRUCHTBARE EBENE', COL['PLAINS_FERTILE'], 2, ''), ('PRÄRIE', COL['PLAINS'], 2, ''),
+          ('GRASLAND', COL['GRASS'], 2, ''), ('PLAINS', COL['PLAINS_FERTILE'], 2, ''), ('PRÄRIE', COL['PLAINS'], 2, ''),
           ('SAVANNE', COL['SAVANNAH'], 2, ''), ('BUSCHLAND', COL['SHRUBLAND'], 2, ''), ('WÜSTE', COL['DESERT'], 2, ''),
           ('FELSSTEPPE', COL['ROCK_STEPPES'], 2, ''), ('SUMPF', COL['MARSH'], 2, ''), ('FEUCHTGEBIET', COL['WETLAND'], 2, ''),
           (None, None, None, None),
