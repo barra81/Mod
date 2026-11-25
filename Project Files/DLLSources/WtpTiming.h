@@ -181,6 +181,9 @@
 // changed while the game is running:
 //   PathfinderParallel=1     1 = child nodes of the path search are expanded with TBB, 0 = always serial (default, faster in the measurements)
 //   PathfinderMinChildren=0  parallel only when at least this many child nodes have to be expanded in one step
+//   AiBrake*                 the soft limit of the AI settlement brake (game option GAMEOPTION_AI_CITY_BRAKE)
+// In a network multiplayer game these settings are not read from the file (every machine has to calculate the same game): the built-in
+// values are used, see forceNetworkDefaults.
 //
 // This logging is meant to stay in the mod permanently: it is the basis for judging performance changes and for evaluating logs
 // sent in by other players. It is cheap (a few clock reads per call, main thread only, one file write per turn change).
@@ -505,6 +508,7 @@ namespace WtpTiming
 		bool bSessionWritten;
 		bool bGameInfo;
 		bool bMultiplayer;
+		bool bNetwork;            // a network multiplayer game: the settings that change the course of the game are not read from the file (see forceNetworkDefaults)
 		char szGameSpeed[48];
 		char szHandicap[48];
 		char szWorldSize[48];
@@ -520,6 +524,12 @@ namespace WtpTiming
 		int iBrakeLeaderPct;      // an AI may not be bigger than this percentage of the average of the other AIs (plus 2)
 		int iBrakeFalloff;        // percentage of the wish for further cities that is kept above the soft limit
 	};
+
+	// WTP: in a network multiplayer game every machine has to calculate the same game. The settings that change the course of the game (the
+	// brake of the AI settlements, the parallel path search: the order of the paths found in parallel is not the same on every machine) are
+	// therefore not taken from the local file WTP_Settings.txt there, the built-in values are used. The other settings are only about the log.
+	struct Data;
+	inline void forceNetworkDefaults(Data& kData);
 
 	inline Data& data()
 	{
@@ -544,6 +554,29 @@ namespace WtpTiming
 			kData.iFrequency = (kFreq.QuadPart > 0) ? kFreq.QuadPart : 1;
 		}
 		return kData;
+	}
+
+	inline void forceNetworkDefaults(Data& kData)
+	{
+		kData.iPathfinderParallel = 0;
+		kData.iPathfinderMinChildren = 0;
+		kData.iBrakeFloor = 10;
+		kData.iBrakePlotsPerCity = 50;
+		kData.iBrakeHumanPct = 150;
+		kData.iBrakeHumanWeight = 25;
+		kData.iBrakeLeaderPct = 130;
+		kData.iBrakeFalloff = 25;
+	}
+
+	// called at the start of every CvGame::doTurn: whether this is a network multiplayer game (then the settings above are the built-in ones)
+	inline void setNetworkGame(bool bNetwork)
+	{
+		Data& kData = data();
+		kData.bNetwork = bNetwork;
+		if (bNetwork)
+		{
+			forceNetworkDefaults(kData);
+		}
 	}
 
 	inline __int64 now()
@@ -1301,6 +1334,10 @@ namespace WtpTiming
 			}
 		}
 		fclose(f);
+		if (kData.bNetwork)
+		{
+			forceNetworkDefaults(kData);
+		}
 	}
 
 	// Call at the start of CvGame::doTurn (main thread): writes the report for everything since the last call, resets, reloads settings.
