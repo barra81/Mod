@@ -3705,38 +3705,42 @@ COL = {
 }
 FOREST_COL = {'JUNGLE': (20, 90, 30), 'DENSE_FOREST': (20, 80, 30), 'ANCIENT_FOREST': (30, 70, 50)}
 S = 8
-img = [[(0, 0, 0)] * (W * S) for _ in range(H * S)]
+
+
+def cell_col(sx, sy, c, pt, f, route=False, impr=False):
+    """Colour of pixel (sx, sy) of a plot cell: terrain colour c, plot type pt, feature f, road, improvement."""
+    col = c
+    if pt == 1 and (sx + sy) % 4 == 0:
+        col = tuple(max(0, v - 45) for v in c)
+    if pt == 0:
+        col = (95, 85, 80) if abs(sx - S // 2) <= sy // 2 else c
+        if f.startswith('REMARKABLE') and abs(sx - S // 2) <= sy // 2:
+            col = (60, 50, 45)
+    if f == 'VOLCANO' and abs(sx - S // 2) <= sy // 2:
+        col = (200, 40, 20)
+    if ('FOREST' in f or f in ('JUNGLE', 'TROPICAL_GROVES', 'MANGROVE')) and (sx % 3 == 1 and sy % 3 == 1):
+        col = FOREST_COL.get(f, (30, 100, 40))
+    if f.startswith('ARROW') and sx == S // 2 and sy == S // 2:
+        col = (200, 220, 255)
+    if route and sy == S // 2:
+        col = (150, 90, 40)
+    if impr and 2 <= sx <= 5 and 2 <= sy <= 5:
+        col = (120, 120, 120)
+    if f == 'RIVER_FORD' and sy in (3, 4):
+        col = (170, 140, 90)
+    return col
+
+
+EUROPE_COL = (22, 45, 90)
+LEG_W = 252                                   # legend column right of the map
+img = [[(0, 0, 0)] * (W * S + LEG_W) for _ in range(max(H * S, 54 + 31 * (2 * S + 1) + 16))]
 for x, y in ALL:
     i = I(x, y)
-    c = COL[terrain[i]]
-    if europe[i] or pacific[i]:
-        c = (22, 45, 90)
+    c = EUROPE_COL if europe[i] or pacific[i] else COL[terrain[i]]
     f = feature[i] or ''
     for sy in range(S):
         for sx in range(S):
-            px, py = x * S + sx, (H - 1 - y) * S + sy
-            col = c
-            if plot_type[i] == 1 and (sx + sy) % 4 == 0:
-                col = tuple(max(0, v - 45) for v in c)
-            if plot_type[i] == 0:
-                col = (95, 85, 80) if abs(sx - S // 2) <= sy // 2 else c
-                if f == 'VOLCANO' and abs(sx - S // 2) <= sy // 2:
-                    col = (200, 40, 20)
-                elif f.startswith('REMARKABLE') and abs(sx - S // 2) <= sy // 2:
-                    col = (60, 50, 45)
-            if f == 'VOLCANO' and abs(sx - S // 2) <= sy // 2:
-                col = (200, 40, 20)
-            if ('FOREST' in f or f in ('JUNGLE', 'TROPICAL_GROVES', 'MANGROVE')) and (sx % 3 == 1 and sy % 3 == 1):
-                col = FOREST_COL.get(f, (30, 100, 40))
-            if f.startswith('ARROW') and sx == S // 2 and sy == S // 2:
-                col = (200, 220, 255)
-            if i in ROUTE and sy == S // 2:
-                col = (150, 90, 40)
-            if i in IMPROVEMENT and 2 <= sx <= 5 and 2 <= sy <= 5:
-                col = (120, 120, 120)
-            if f == 'RIVER_FORD' and sy in (3, 4):
-                col = (170, 140, 90)
-            img[py][px] = col
+            img[(H - 1 - y) * S + sy][x * S + sx] = cell_col(sx, sy, c, plot_type[i], f, i in ROUTE, i in IMPROVEMENT)
 for x, y, _ in SIGNS:
     for sy in range(2):
         for sx in range(2):
@@ -3755,7 +3759,45 @@ for i, d in nofr.items():
         img[(H - 1 - y) * S + S - 1][x * S + sx] = RC
         if y - 1 >= 0:
             img[(H - 1 - (y - 1)) * S][x * S + sx] = RC
-write_png(os.path.join(OUT, 'preview.png'), W * S, H * S, img)
+
+# legend (user 2026-11-25): a swatch drawn like a map cell, with its name
+from bitfont import draw_text
+LEG_BG, LEG_FG = (30, 30, 34), (225, 225, 225)
+lx0 = W * S
+for row in img:
+    for px in range(lx0, lx0 + LEG_W):
+        row[px] = LEG_BG
+LEGEND = [('OZEAN', COL['OCEAN'], 3, ''), ('KÜSTE', COL['COAST'], 3, ''), ('FLACHWASSER', COL['SHALLOW_COAST'], 3, ''),
+          ('EUROPAZONE', EUROPE_COL, 3, ''), ('SEE', COL['LAKE'], 3, ''), ('GROSSER FLUSS', COL['LARGE_RIVERS'], 3, ''),
+          ('SCHNEE', COL['SNOW'], 2, ''), ('TUNDRA', COL['TUNDRA'], 2, ''), ('TAIGA', COL['TAIGA'], 2, ''),
+          ('GRASLAND', COL['GRASS'], 2, ''), ('FRUCHTBARE EBENE', COL['PLAINS_FERTILE'], 2, ''), ('PRÄRIE', COL['PLAINS'], 2, ''),
+          ('SAVANNE', COL['SAVANNAH'], 2, ''), ('BUSCHLAND', COL['SHRUBLAND'], 2, ''), ('WÜSTE', COL['DESERT'], 2, ''),
+          ('FELSSTEPPE', COL['ROCK_STEPPES'], 2, ''), ('SUMPF', COL['MARSH'], 2, ''), ('FEUCHTGEBIET', COL['WETLAND'], 2, ''),
+          (None, None, None, None),
+          ('HÜGEL', COL['PLAINS'], 1, ''), ('GIPFEL', COL['TUNDRA'], 0, ''), ('BESONDERER GIPFEL', COL['TUNDRA'], 0, 'REMARKABLE'),
+          ('VULKAN', COL['TUNDRA'], 0, 'VOLCANO'), ('WALD', COL['GRASS'], 2, 'FOREST'), ('DSCHUNGEL', COL['SAVANNAH'], 2, 'JUNGLE'),
+          ('FLUSS', COL['GRASS'], 2, 'RIVER'), ('MEERESSTRÖMUNG', COL['OCEAN'], 3, 'ARROW'), ('STRASSE', COL['GRASS'], 2, 'ROUTE'),
+          ('RUINE', COL['SAVANNAH'], 2, 'IMPROVEMENT'), ('FURT', COL['GRASS'], 2, 'RIVER_FORD'), ('ORTSNAME', COL['GRASS'], 2, 'SIGN')]
+draw_text(img, lx0 + 10, 8, 'SEED %d' % SEED, LEG_FG, 2)
+draw_text(img, lx0 + 10, 28, '%s %dX%d' % (SIZE, W, H), LEG_FG, 2)
+ly = 54
+for name, c, pt, f in LEGEND:
+    if name is None:
+        ly += 6
+        continue
+    ox, oy = lx0 + 10, ly
+    for sy in range(S):
+        for sx in range(S):
+            col = cell_col(sx, sy, c, pt, f, f == 'ROUTE', f == 'IMPROVEMENT')
+            if f == 'RIVER' and sx == S - 1:
+                col = RC
+            if f == 'SIGN' and sx < 2 and sy < 2:
+                col = (255, 255, 255)
+            img[oy + 2 * sy][ox + 2 * sx] = img[oy + 2 * sy + 1][ox + 2 * sx] = col
+            img[oy + 2 * sy][ox + 2 * sx + 1] = img[oy + 2 * sy + 1][ox + 2 * sx + 1] = col
+    draw_text(img, ox + 2 * S + 8, oy + 2, name, LEG_FG, 2)
+    ly += 2 * S + 1
+write_png(os.path.join(OUT, 'preview.png'), W * S + LEG_W, len(img), img)
 
 
 # height map (land: lowland green to snowy summits, sea: shelf to deep ocean) and precipitation map (land: dry
