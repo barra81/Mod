@@ -112,8 +112,13 @@ def blur(a, n=1):
 # rift valley with long lakes sinks in. The open sea in the east (Atlantic with the Europe plots) and in the
 # west (Pacific) stays free of land.
 tect = random.Random(SEED * 7 + 1)
-MARGIN_E, MARGIN_W = sz(16, FX, 4), sz(8, FX, 2)   # open water for Europe (east) and the Pacific (west)
-MARGIN_S = sz(4, FY)                # open water along the south edge: the southern continent does not touch it
+# Europe plots keep the same distance from the coast on every map size (user 2026-11-25), so the Atlantic margin
+# does not shrink below that distance plus a few plots of Europe
+EUROPE_DIST = 7                     # Europe plots at least this many tiles from the mainland coast
+ISLE_EUROPE_DIST = 3                # ... and from small islands
+MARGIN_E, MARGIN_W = max(sz(16, FX, 4), EUROPE_DIST + 3), sz(8, FX, 2)   # open water for Europe (east) and the Pacific (west)
+MARGIN_S = max(sz(4, FY), 3)        # open water along the south edge: the southern continent does not touch it
+SOUTH_FREE = 2                      # rows along the south edge kept as open water without reefs and ice (user 2026-11-25)
 CONT_GAP_MAX = sz(10, lo=4)         # widest strait between two continents; a map with a wider one is rejected
 THREE_CONT_SHARE = 0.35 if H >= 100 else 0.0   # share of maps with three continents instead of two (room from Huge up)
 ARC_MAX_LEN = sz(10, lo=4)          # volcanic island arcs between ocean plates are cut to this length
@@ -595,6 +600,15 @@ def bfs_dist(sources, passable):
                 q.append(j)
     return dist
 
+
+# the SOUTH_FREE rows along the south edge stay open water: a free way for ships south of the southern continent
+for x, y in ALL:
+    if y < SOUTH_FREE:
+        land[I(x, y)] = False
+atolls = [p for p in atolls if p[1] >= SOUTH_FREE]
+VOLCANO_ISLE = [p for p in VOLCANO_ISLE if p[1] >= SOUTH_FREE]
+skerries = [p for p in skerries if p[1] >= SOUTH_FREE]
+BARRIER = set(i for i in BARRIER if i // W >= SOUTH_FREE)
 
 dcoast = bfs_dist([i for i in range(W * H) if not land[i]], lambda j: land[j])
 
@@ -3036,6 +3050,8 @@ for x, y in ALL:
         continue
     tr, la, r = terrain[i], lat(y), rng.random()
     ice_ok = i not in PASSAGE and i not in SOUTH_PASSAGE
+    if y < SOUTH_FREE:
+        continue                               # the free southern way: no reefs, no ice
     if tr == 'OCEAN':
         if la > 65 and r < (la - 64) / 7.0 and ice_ok:
             feature[i] = 'ICE'
@@ -3123,8 +3139,6 @@ for i in list(nofr):
 # plot goes to the nearer edge. So the access follows the coast, and an island only pushes Europe back around itself.
 # On both sides small islands (fewer than ISLE_MAX_TILES land tiles) in front of the coast keep Europe only
 # ISLE_EUROPE_DIST tiles away, so they do not push Europe far away from the mainland coast behind them.
-EUROPE_DIST = sz(7, FX, 2)
-ISLE_EUROPE_DIST = sz(3, FX)
 ISLE_MAX_TILES = na(60, 6)
 EUROPE_GAP = sz(15, FX, 4)                    # plain sea plots between EUROPE_EAST and EUROPE_WEST where they would touch
 EUROPE_EAST_MIN = sz(5, FX)                # Atlantic Europe at least this far east of the middle where the Pacific lies straight west
@@ -3545,6 +3559,19 @@ for x, y in ALL:
     if (nocoast and coastal) or (onlycoast and not coastal):
         feature[i] = 'FOREST' if f == 'DENSE_FOREST' and terrain[i] in FEATURE_TERRAINS['FOREST'] else None
         fixed_features += 1
+# the free southern way (SOUTH_FREE rows): open for large ships, nothing that blocks a ship (reefs, ice)
+south_free_fixed = 0
+for x, y in ALL:
+    i = I(x, y)
+    if y >= SOUTH_FREE or not ocean[i]:
+        continue
+    if feature[i] in ('ICE', 'REEF', 'STONE_REEF', 'PEARL_REEF'):
+        feature[i] = None
+        south_free_fixed += 1
+    if terrain[i] == 'SHALLOW_COAST':
+        terrain[i] = 'COAST'
+        south_free_fixed += 1
+print('south free rows: fixed', south_free_fixed, 'land left', sum(1 for x, y in ALL if y < SOUTH_FREE and not ocean[I(x, y)]))
 small_seas = 0
 for comp in components([ocean[i] and not large[i] for i in range(W * H)]):
     cells = [I(x, y) for x, y in comp]
