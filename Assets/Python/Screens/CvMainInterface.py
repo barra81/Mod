@@ -4035,10 +4035,20 @@ class CvMainInterface:
 		except:
 			pass
 
-	# the option "New message panel" of the game options (PLAYEROPTION_MODDER_1, default off, kept in the profile of the player)
+	# the option "New message panel" of the game options (PLAYEROPTION_MODDER_1, default off, kept in the profile of the player).
+	# In a hotseat / PBEM game the game sets the options of a player only while he is the active one, so before his first turn he does not have
+	# them: the option of any human player counts then (the DLL asks the same, see WtpHudMessages::isPanelOption), otherwise the panel would stay
+	# hidden for him while the game's own message area is switched off for the messages
 	def isMessagePanelOption(self):
 		try:
-			return gc.getActivePlayer().isOption(PlayerOptionTypes.PLAYEROPTION_MODDER_1)
+			if gc.getActivePlayer().isOption(PlayerOptionTypes.PLAYEROPTION_MODDER_1):
+				return True
+			if gc.getGame().isHotSeat() or gc.getGame().isPbem():
+				for iPlayer in range(gc.getMAX_PLAYERS()):
+					pPlayer = gc.getPlayer(iPlayer)
+					if pPlayer.isHuman() and pPlayer.isOption(PlayerOptionTypes.PLAYEROPTION_MODDER_1):
+						return True
+			return False
 		except:
 			return False
 
