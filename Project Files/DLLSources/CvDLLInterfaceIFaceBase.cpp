@@ -62,11 +62,34 @@ namespace WtpHudMessages
 	{
 		s_bPriority = bPriority;
 	}
+	// the option "New message panel" of the game options (PLAYEROPTION_MODDER_1, default off)
+	static bool isPanelOption(PlayerTypes ePlayer)
+	{
+		if (GET_PLAYER(ePlayer).isOption(PLAYEROPTION_MODDER_1))
+		{
+			return true;
+		}
+		// hotseat / PBEM: the players share one profile, and a player gets its options only when he becomes active (CvGame::setActivePlayer,
+		// sendPlayerOptions, after showMissedMessages): before his first turn he does not have them. So the option of any human player counts.
+		CvGame& kGame = GC.getGameINLINE();
+		if (kGame.isHotSeat() || kGame.isPbem())
+		{
+			for (int iPlayer = 0; iPlayer < MAX_PLAYERS; iPlayer++)
+			{
+				const CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+				if (kPlayer.isHuman() && kPlayer.isOption(PLAYEROPTION_MODDER_1))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	bool isPanelMessage(PlayerTypes ePlayer, InterfaceMessageTypes eType)
 	{
 		return (ePlayer > NO_PLAYER && ePlayer < MAX_PLAYERS && GET_PLAYER(ePlayer).isHuman()
 			&& GC.getDefineINT("MESSAGE_PANEL_ENABLED") != 0
-			&& GET_PLAYER(ePlayer).isOption(PLAYEROPTION_MODDER_1) // the option "New message panel" of the game options (default off)
+			&& isPanelOption(ePlayer)
 			&& (eType == MESSAGE_TYPE_INFO || eType == MESSAGE_TYPE_DISPLAY_ONLY || eType == MESSAGE_TYPE_MAJOR_EVENT
 				|| eType == MESSAGE_TYPE_MINOR_EVENT || eType == MESSAGE_TYPE_COMBAT_MESSAGE));
 	}
