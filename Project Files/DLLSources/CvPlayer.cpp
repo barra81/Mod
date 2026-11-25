@@ -13995,7 +13995,25 @@ void CvPlayer::showMissedMessages()
 		if (!msg.getShown())
 		{
 			msg.setShown(true);
-			gDLL->getInterfaceIFace()->showMessage(msg);
+			// WTP: a message that did not come through addPlayerMessage (the exe, CyInterface().addMessage of Python) goes to the message
+			// panel instead of the game's own message area (hotseat: all of them would pop up at once over the panel)
+			if (WtpHudMessages::isPanelMessage(getID(), msg.getMessageType()))
+			{
+				WtpHudMessages::add(getID(), CvWString(msg.getDescription()), msg.getX(), msg.getY());
+				if (GC.getDefineINT("MESSAGE_PANEL_HIDE_ENGINE_DISPLAY") != 0)
+				{
+					msg.setLength(WTP_HUD_MESSAGE_LENGTH_BASE + (int)msg.getMessageType());
+					msg.setMessageType(MESSAGE_TYPE_LOG_ONLY);
+				}
+				else
+				{
+					gDLL->getInterfaceIFace()->showMessage(msg);
+				}
+			}
+			else
+			{
+				gDLL->getInterfaceIFace()->showMessage(msg);
+			}
 		}
 		++it;
 	}

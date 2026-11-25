@@ -433,6 +433,8 @@ namespace WtpHudMessages
 	void add(const CvWString& szText, int iX, int iY);
 	void addTop(const CvWString& szText); // a message of the mod: always at the very top of the panel (before the other priority messages)
 	void setPriority(bool bPriority); // the messages that are added while it is set are shown at the top of the panel
+	// a message of this type for this player goes to the panel (human player with the option "New message panel" on)
+	bool isPanelMessage(PlayerTypes ePlayer, InterfaceMessageTypes eType);
 	int getNumPriority();
 	int getNumPriorityPrevious();
 	void clear(PlayerTypes ePlayer); // the end of the turn of the player: his messages become those of the turn before

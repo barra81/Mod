@@ -175,6 +175,9 @@ public:
 	int getNumHudMessagesPrevious() const;
 	int getNumHudPriority() const;
 	void addHudMessage(std::wstring szText, bool bPriority) const; // WTP: a message of the Python code for the message panel (priority: at the top)
+	// WTP: the same as CyInterface().addMessage, but through the DLL: the message panel gets the message (CyInterface goes to the exe directly)
+	void addMessage(int iPlayer, bool bForce, int iLength, std::wstring szString, std::string szSound, int eType, std::string szIcon, int eFlashColor,
+		int iFlashX, int iFlashY, bool bShowOffScreenArrows, bool bShowOnScreenArrows) const;
 	int getNumHudPriorityPrevious() const;
 	std::wstring getHudMessagePreviousText(int i) const;
 	int getHudMessagePreviousX(int i) const;
