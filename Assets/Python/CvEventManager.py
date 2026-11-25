@@ -458,6 +458,7 @@ class CvEventManager:
 	def onBeginPlayerTurn(self, argsList):
 		'Called at the beginning of a players turn'
 		iGameTurn, iPlayer = argsList
+		CvMarketBoom.showPendingMessage(iPlayer) # the message of the market boom (waits for the first turn, see CvMarketBoom)
 		CvRandomEventInterface.checkEuropeanBorderDisputeKingWarDemand(iPlayer)
 		CvRandomEventInterface.checkTradeQuestLeadershipChanges(iPlayer)
 
