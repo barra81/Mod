@@ -4188,6 +4188,18 @@ class CvMainInterface:
 			game = gc.getGame()
 			iNumCurrent = game.getNumHudMessages()
 			iNumPrevious = game.getNumHudMessagesPrevious()
+			# hotseat: another player sits at the screen now. The panel shows his messages (the DLL keeps them per player) with his own settings
+			# (auto expand and position in his script data) and opens like at the start of a turn
+			if game.getActivePlayer() != getattr(self, "iMessagePlayer", game.getActivePlayer()):
+				self.bMessageAutoExpand = None
+				self.bMessagePosRead = False
+				self.iMsgMoveX = 0
+				self.iMsgMoveY = 0
+				self.bMessagePanelExpanded = False
+				self.bMessagePanelPrevious = False
+				self.iMessagePage = 0
+				self.iMessageTurn = -1
+			self.iMessagePlayer = game.getActivePlayer()
 			# a new turn: the panel opens expanded with its first messages (when the option is on)
 			if game.getGameTurn() != self.iMessageTurn:
 				self.iMessageTurn = game.getGameTurn()
@@ -4231,7 +4243,7 @@ class CvMainInterface:
 			if self.bMsgWpView:
 				aWpEntries = self.getMsgWaypointEntries()
 				tWpKey = (self.iMsgWpPage, tuple([t[5] for t in aWpEntries]))
-			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes, self.bMsgWpView, self.bMsgWpSea, tWpKey, self.isMessagePanelIdle())
+			tKey = (self.iMessagePlayer, iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes, self.bMsgWpView, self.bMsgWpSea, tWpKey, self.isMessagePanelIdle())
 			if tKey == self.tMessagePanelKey:
 				return
 			self.tMessagePanelKey = tKey

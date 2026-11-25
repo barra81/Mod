@@ -426,14 +426,16 @@ public:
 
 // WTP: the messages of the human player since the end of his last turn, for the message panel of the main interface (Python,
 // CyGame.getNumHudMessages ...). The panel can be clicked to expand it, the messages of the game's own message area are too short-lived to read.
+// Every human player has his own messages (hotseat); the getters and add / addTop without a player are those of the active player.
 namespace WtpHudMessages
 {
+	void add(PlayerTypes ePlayer, const CvWString& szText, int iX, int iY);
 	void add(const CvWString& szText, int iX, int iY);
 	void addTop(const CvWString& szText); // a message of the mod: always at the very top of the panel (before the other priority messages)
 	void setPriority(bool bPriority); // the messages that are added while it is set are shown at the top of the panel
 	int getNumPriority();
 	int getNumPriorityPrevious();
-	void clear();
+	void clear(PlayerTypes ePlayer); // the end of the turn of the player: his messages become those of the turn before
 	int getNum();
 	const CvWString& getText(int i);
 	int getX(int i);
