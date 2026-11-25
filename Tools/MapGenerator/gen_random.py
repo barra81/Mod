@@ -1708,7 +1708,7 @@ for x, y in ALL:
             b = 'ROCK_STEPPES' if elev[i] > 0.4 else 'SHRUBLAND'
         elif m < 0.38:
             b = 'PLAINS'
-        elif m < 0.55:                  # (user 2026-11-25: more fertile plains)
+        elif m < 0.52:                  # (user 2026-11-25: more fertile plains, about 9 % of the land)
             b = 'PLAINS_FERTILE'
         else:
             b = 'GRASS'
@@ -1719,12 +1719,12 @@ for x, y in ALL:
             b = 'SHRUBLAND'
         elif m < 0.40:
             b = 'PLAINS'
-        elif m < 0.52:                  # warm fertile plains instead of grass and savannah (user 2026-11-25)
+        elif m < 0.48:                  # warm fertile plains instead of grass and savannah (user 2026-11-25)
             b = 'PLAINS_FERTILE'
-        elif m < 0.62:
-            b = 'GRASS'
+        elif m < 0.60:
+            b = 'GRASS' if NZ[14].fbm(x, y, 2, 5) > -0.15 else 'SAVANNAH'
         else:
-            b = 'GRASS' if t < 0.76 or NZ[14].fbm(x, y, 2, 5) > 0.05 else 'SAVANNAH'
+            b = 'GRASS' if t < 0.74 or NZ[14].fbm(x, y, 2, 5) > 0.0 else 'SAVANNAH'
     else:
         if m < 0.18:
             b = 'DESERT'
@@ -1732,7 +1732,7 @@ for x, y in ALL:
             b = 'SHRUBLAND'
         elif m < 0.38:
             b = 'PLAINS'                # the dry edge of the tropics: open prairie, the savannah needs more rain
-        elif m < 0.50:
+        elif m < 0.44:
             b = 'PLAINS_FERTILE' if NZ[14].fbm(x, y, 2, 5) > -0.1 else 'GRASS'   # less savannah (user 2026-11-25)
         else:
             b = 'SAVANNAH'
@@ -3699,8 +3699,8 @@ with open(wb, 'w', newline='\r\n') as f:
 COL = {
     'OCEAN': (28, 58, 110), 'COAST': (45, 95, 160), 'SHALLOW_COAST': (70, 140, 185), 'LAKE': (60, 120, 200),
     'LARGE_RIVERS': (40, 110, 230), 'SNOW': (240, 240, 245), 'TUNDRA': (170, 175, 160), 'TAIGA': (110, 140, 115),
-    'GRASS': (90, 170, 70), 'PLAINS_FERTILE': (190, 120, 60), 'PLAINS': (220, 200, 60), 'SAVANNAH': (150, 205, 105),
-    'SHRUBLAND': (240, 228, 140), 'DESERT': (205, 195, 160), 'ROCK_STEPPES': (165, 145, 120),   # (user 2026-11-25)
+    'GRASS': (90, 170, 70), 'PLAINS_FERTILE': (180, 138, 98), 'PLAINS': (210, 196, 115), 'SAVANNAH': (150, 205, 105),
+    'SHRUBLAND': (230, 222, 165), 'DESERT': (205, 197, 168), 'ROCK_STEPPES': (165, 145, 120),   # (user 2026-11-25)
     'MARSH': (80, 130, 100), 'WETLAND': (100, 140, 140),
 }
 FOREST_COL = {'JUNGLE': (20, 90, 30), 'DENSE_FOREST': (20, 80, 30), 'ANCIENT_FOREST': (30, 70, 50)}
