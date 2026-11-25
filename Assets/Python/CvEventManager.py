@@ -357,6 +357,11 @@ class CvEventManager:
 
 		iData1, iData2, iData3, iData4, iData5 = argsList
 
+		# WTP: storage / upkeep multiplier of the game options in a network game (iData2: player, iData3: storage index, iData4: upkeep index, iData5: speed dependence)
+		if (iData1 == WtpGameOptions.MSG_OPTIONS):
+			WtpGameOptions.onNetMessage(iData2, iData3, iData4, iData5)
+			return
+
 		# Territorial Influence
 		if (iData1 == 750):
 			iPlayer = iData2
