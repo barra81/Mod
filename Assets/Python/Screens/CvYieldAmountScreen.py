@@ -65,7 +65,7 @@ class CvYieldAmountScreen:
 		self.tReopen = None # the dialog that Alt+Tab closed (it is opened again for the same transfer)
 		self.iReopenWait = 0
 		self.iReopenTries = 0
-		self.tLastKey = None # the last key: (key, source, time)
+		self.tLastKey = None # the last key taken: [key, source, time, its copy from the other source seen]
 
 	def getScreen(self):
 		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.YIELD_AMOUNT)
@@ -482,13 +482,16 @@ class CvYieldAmountScreen:
 			self.pHost = None
 
 	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open; on a harbor screen they come as
-	# NOTIFY_CHARACTER from handleEmbeddedInput instead). The same key from the other source right after it is the same press.
+	# NOTIFY_CHARACTER from handleEmbeddedInput as well). One press can come from both sources, the second one up to a few
+	# frames later (on a slow harbor screen more than 50 ms: 3 became 33): the same key from the other source within half a
+	# second is that copy and is dropped, once per taken key, so a key pressed twice still counts twice.
 	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False, szSource = "kbd"):
 		fNow = time.clock()
 		tLast = self.tLastKey
-		self.tLastKey = (iKey, szSource, fNow)
-		if tLast != None and tLast[0] == iKey and tLast[1] != szSource and fNow - tLast[2] < 0.05:
+		if tLast != None and not tLast[3] and tLast[0] == iKey and tLast[1] != szSource and fNow - tLast[2] < 0.5:
+			tLast[3] = True
 			return
+		self.tLastKey = [iKey, szSource, fNow, False]
 		self.bCtrlDown = bCtrl or iKey in self.aKeyCtrl
 		self.bShiftDown = bShift or iKey in self.aKeyShift
 		if bCtrl and bShift and iKey == self.getKeyId("KB_Q"):
