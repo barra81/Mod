@@ -127,5 +127,7 @@ def _showBoom(iPlayer, king, booms):
     popupInfo.setText(szText)
     popupInfo.addPopup(iPlayer)
 
-    CyInterface().addMessage(iPlayer, True, 10, localText.getText("TXT_KEY_MARKET_BOOM_MESSAGE", (szNames[0], szNames[1], szNames[2])),
-                             "", 0, "", ColorTypes(8), -1, -1, False, False)
+    # (CyGame().addMessage of the message panel goes through the DLL, so the panel gets the message; CyInterface goes to the exe directly)
+    addMessage = getattr(CyGame(), "addMessage", None) or CyInterface().addMessage
+    addMessage(iPlayer, True, 10, localText.getText("TXT_KEY_MARKET_BOOM_MESSAGE", (szNames[0], szNames[1], szNames[2])),
+               "", 0, "", ColorTypes(8), -1, -1, False, False)
