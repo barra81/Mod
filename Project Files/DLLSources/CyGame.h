@@ -204,6 +204,7 @@ public:
 
 	// WTP: the amount dialog of the transfers (python)
 	bool isArrowKeyPressed(int iDir) const; // 0: left, 1: right, 2: up, 3: down
+	bool isVirtualKeyPressed(int iVirtualKey) const; // a Windows virtual key code (VK_...) is down
 	void sendYieldTransfer(int iUnitID, int iData3, int iYield, int iAmount, bool bPlayerAction) const; // the amount dialog sends the transfer of goods
 	void sendDiploYieldAmount(int iYield, int iAmount, int iFromPlayer) const; // the amount dialog sets the amount of goods of a diplomacy deal
 
