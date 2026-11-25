@@ -7581,6 +7581,13 @@ void CvGame::changeYieldBoughtTotal(TradeLocationTypes eLocation, PlayerTypes eM
 			CvPlayer* pColonyPlayer = kEuropePlayer.getColonyPlayer();
 			FAssert(pColonyPlayer != NULL);
 
+			// WTP: a European player that is alive but has no colony (can happen in a hotseat game whose players were changed at the start)
+			// is skipped, the pointer is not set for it (it crashed here at the turn change of the king: isAlive on NULL)
+			if (pColonyPlayer == NULL)
+			{
+				continue;
+			}
+
 			if (pColonyPlayer->isAlive())
 			{
 				iMercantilePercent *= 100 + pColonyPlayer->getMercantileFactor();

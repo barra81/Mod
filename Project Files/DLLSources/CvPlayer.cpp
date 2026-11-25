@@ -2334,7 +2334,9 @@ void CvPlayer::doTurn()
 	EXTRA_POWER_CHECK
 
 	verifyCivics();
-	if (isEurope()) {
+	// WTP: a European player without a colony (alive, but no colonial player has it as parent, e.g. in a hotseat game whose players were
+	// changed at the start) has nobody to tax and nobody who trades with it: no prices and no tax raises for it (they use the colony player)
+	if (isEurope() && getColonyPlayer() != NULL) {
 		doPrices();
 		doAfricaPrices(); // R&R, ray, Africa
 		doPortRoyalPrices(); // R&R, ray, Port Royal
