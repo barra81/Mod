@@ -13995,6 +13995,13 @@ void CvPlayer::showMissedMessages()
 		if (!msg.getShown())
 		{
 			msg.setShown(true);
+			// WTP: a message of the message panel (only logged, see CvDLLInterfaceIFaceBase::addPlayerMessage) is in the panel already:
+			// showMessage would put it into the game's own message area all the same (hotseat: all of them at once when the turn starts)
+			if (msg.getMessageType() == MESSAGE_TYPE_LOG_ONLY && msg.getLength() >= WTP_HUD_MESSAGE_LENGTH_BASE)
+			{
+				++it;
+				continue;
+			}
 			// WTP: a message that did not come through addPlayerMessage (the exe, CyInterface().addMessage of Python) goes to the message
 			// panel instead of the game's own message area (hotseat: all of them would pop up at once over the panel)
 			if (WtpHudMessages::isPanelMessage(getID(), msg.getMessageType()))
