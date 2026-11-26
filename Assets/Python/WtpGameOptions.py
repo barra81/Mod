@@ -1,7 +1,8 @@
 ## WTP: game options for the storage multiplier and the military upkeep multiplier.
 ## The choices are saved in WTP_GameOptions.ini (like the tooltip settings). They are applied to the defines of the game
 ## (WAREHOUSE_STORAGE_PERCENT, MILITARY_UPKEEP_SPEED_*) when a savegame is loaded, when a game starts and at the start of
-## every turn - not at the moment the option is changed. Python 2.4: no conditional expressions, no with blocks.
+## every turn - not at the moment the option is changed. In a network game the values of the first human player count (see below).
+## Python 2.4: no conditional expressions, no with blocks.
 from CvPythonExtensions import *
 
 gc = CyGlobalContext()
@@ -86,10 +87,94 @@ def setSpeedDependence(bValue):
 		aiValues[2] = 0
 	save(aiValues)
 
-def applyToGame(szWhere = ""):
-	"Puts the saved choices into the defines (load of a savegame, game start, start of a turn)"
+# ---- network multiplayer: the values come from the first human player (usually the host) and are kept in the savegame ----
+# The choices are saved per machine (WTP_GameOptions.ini). In a network game two machines with different files would calculate different
+# storage capacities and upkeep costs (out of sync), so there the values of the first human player are sent to everybody once (mod net message
+# MSG_OPTIONS), kept in the script data of the game (saved with it) and used by every machine; the file of the machine is not used.
+MSG_OPTIONS = 759
+OPTIONS_TAG = "[[WTPOPT:"
+
+# the message was sent in this session
+bSent = False
+
+def isNetwork():
 	try:
+		return CyGame().isNetworkMultiPlayer()
+	except:
+		return False
+
+def getFirstHuman():
+	"the player that decides in a network game: the first human player (the one of the host in the usual lobby)"
+	for iPlayer in range(gc.getMAX_PLAYERS()):
+		if gc.getPlayer(iPlayer).isAlive() and gc.getPlayer(iPlayer).isHuman():
+			return iPlayer
+	return -1
+
+def getSynced():
+	"(storage index, upkeep index, game speed dependence) from the savegame, None while nobody has sent them"
+	try:
+		szData = gc.getGame().getScriptData()
+		if szData is None:
+			return None
+		iStart = szData.find(OPTIONS_TAG)
+		if iStart == -1:
+			return None
+		iStart = iStart + len(OPTIONS_TAG)
+		iEnd = szData.find("]]", iStart)
+		if iEnd == -1:
+			return None
+		aszPart = szData[iStart:iEnd].split(",")
+		aiValues = [int(aszPart[0]), int(aszPart[1]), int(aszPart[2])]
+		aiValues[0] = max(0, min(len(STORAGE_PERCENTS) - 1, aiValues[0]))
+		aiValues[1] = max(0, min(len(UPKEEP_PERCENTS) - 1, aiValues[1]))
+		aiValues[2] = max(0, min(1, aiValues[2]))
+		return aiValues
+	except:
+		return None
+
+def current():
+	"the values that count in this game: the ones of the game in a network game, the ones of this machine otherwise"
+	if isNetwork():
+		aiValues = getSynced()
+		if aiValues is None:
+			return [STORAGE_DEFAULT, UPKEEP_DEFAULT, 0]
+		return aiValues
+	return load()
+
+def sendOptions():
+	"The first human player sends his choices (once, as long as the game has none)"
+	global bSent
+	if bSent or not isNetwork() or getSynced() is not None:
+		return
+	try:
+		iPlayer = gc.getGame().getActivePlayer()
+		if iPlayer == -1 or iPlayer != getFirstHuman():
+			return
 		aiValues = load()
+		bSent = True
+		CyMessageControl().sendModNetMessage(MSG_OPTIONS, iPlayer, aiValues[0], aiValues[1], aiValues[2])
+	except:
+		pass
+
+def onNetMessage(iPlayer, iStorage, iUpkeep, iSpeed):
+	"Every machine: takes the choices of the first human player into the game (only the first message counts)"
+	try:
+		if getSynced() is not None or iPlayer != getFirstHuman():
+			return
+		szData = gc.getGame().getScriptData()
+		if szData is None:
+			szData = ""
+		szData = szData + OPTIONS_TAG + str(iStorage) + "," + str(iUpkeep) + "," + str(iSpeed) + "]]"
+		gc.getGame().setScriptData(szData)
+		applyToGame("NetMessage")
+	except:
+		pass
+
+def applyToGame(szWhere = ""):
+	"Puts the choices into the defines (load of a savegame, game start, start of a turn)"
+	try:
+		sendOptions()
+		aiValues = current()
 		setDefine("WAREHOUSE_STORAGE_PERCENT", STORAGE_PERCENTS[aiValues[0]])
 		iUpkeep = UPKEEP_PERCENTS[aiValues[1]]
 		for szDefine in SPEED_DEFINES:
