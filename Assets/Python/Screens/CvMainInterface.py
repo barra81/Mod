@@ -1768,8 +1768,8 @@ class CvMainInterface:
 		return 0
 
 	# Will hide and show the selection buttons and their associated buttons
-	# WTP: the yellow ring around the buttons of Europe, Africa and Port Royal in the top bar when an own ship lies in that port (the same ring art as
-	# around the automation buttons of a transport). The rings are made with the buttons (hidden with them); this shows the ones of the ports with a ship.
+	# WTP: the yellow ring around the buttons of Europe, Africa and Port Royal in the top bar when an own ship lies in that port (the same ring as around
+	# the sail buttons of a transport). The rings are made with the buttons (hidden with them); this shows the ones of the ports with a ship.
 	def addTopPortRing(self, screen, szName, iX, iY):
 		iSize = self.ADVISOR_BUTTON_SIZE * 4 / 5
 		iPad = (self.ADVISOR_BUTTON_SIZE - iSize) / 2
@@ -1804,6 +1804,36 @@ class CvMainInterface:
 					screen.hide(szName)
 		except:
 			pass
+
+	# WTP: is an own ship in the port of this sail command (Europe / Africa / Port Royal)?
+	def isOwnShipInPort(self, iAction):
+		try:
+			# the sail buttons are automate actions (AUTOMATE_SAIL_TO_*), recognized by their button art (the Africa / Port Royal
+			# automate types are not exposed to Python); the plain sail commands are handled as well
+			kAction = gc.getActionInfo(iAction)
+			szButton = kAction.getButton().lower()
+			iCommand = kAction.getCommandType()
+			if iCommand == CommandTypes.COMMAND_SAIL_TO_EUROPE or "sail_to_mother" in szButton:
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_EUROPE
+			elif iCommand == CommandTypes.COMMAND_SAIL_TO_AFRICA or "sail_to_africa" in szButton:
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_AFRICA
+			elif iCommand == CommandTypes.COMMAND_SAIL_TO_PORT_ROYAL or "sail_to_portroyal" in szButton:
+				eState = UnitTravelStates.UNIT_TRAVEL_STATE_IN_PORT_ROYAL
+			else:
+				return False
+			pPlayer = gc.getPlayer(gc.getGame().getActivePlayer())
+			(pUnit, iter) = pPlayer.firstUnit()
+			bFound = False
+			while (pUnit):
+				# the ships in a port have this travel state (the docks list of the player only holds the colonists)
+				if gc.getUnitInfo(pUnit.getUnitType()).getDomainType() == DomainTypes.DOMAIN_SEA:
+					if (pUnit.getUnitTravelState() == eState and not pUnit.isCargo() and not pUnit.isDelayedDeath()):
+						bFound = True
+				(pUnit, iter) = pPlayer.nextUnit(iter)
+			return bFound
+		except:
+			pass
+		return False
 
 	# WTP: the automate type a HUD button stands for (R button: trade routes, C button: full automation), -1 for other buttons
 	def getAutomateTypeOfButton(self, iAction):
@@ -2200,11 +2230,12 @@ class CvMainInterface:
 							screen.setHitMargins(szName, 18, 18)
 							if not CyInterface().canHandleAction(i, False):
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_DISABLED_BUTTON").getPath())
-							elif pHeadSelectedUnit.isActionRecommended(i):
+							elif pHeadSelectedUnit.isActionRecommended(i) and not self.isOwnShipInPort(i):
+								# (WTP: the buttons to sail to Europe / Africa / Port Royal are marked when an own ship is in that port)
 								screen.overlayButtonGFC(szName, ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath())
-							if self.isAutomateMarked(i, pHeadSelectedUnit):
-								# WTP: a ring a bit larger than the button marks the R button / full automation button of an automated transport
-								# (an own ship in Europe / Africa / Port Royal is shown by the ring around the port buttons of the top bar)
+							if (CyInterface().canHandleAction(i, False) and self.isOwnShipInPort(i)) or self.isAutomateMarked(i, pHeadSelectedUnit):
+								# WTP: a ring above the sail buttons (Europe / Africa / Port Royal) whose port has an own ship, a bit larger than the button;
+								# the same ring marks the R button / full automation button of an automated transport
 								szRing = "WtpPortRing" + str(iCount)
 								iRingPad = -(LARGE_BUTTON_SIZE / 4)
 								screen.addDDSGFC(szRing, "Art/Interface/Game Hud/Actions/port_ring.dds", int(Xcord) - LARGE_BUTTON_SIZE - iRingPad, int(Ycord) - LARGE_BUTTON_SIZE - iRingPad, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, LARGE_BUTTON_SIZE * 2 + iRingPad * 2, WidgetTypes.WIDGET_GENERAL, -1, -1)
