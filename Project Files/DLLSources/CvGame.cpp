@@ -1459,6 +1459,13 @@ void CvGame::doCloseCityScreenOnMiddleMouse()
 void CvGame::update()
 {
 	MOD_PROFILE("CvGame::update");
+	// WTP: crash log test (once per start of the game: only looks for the file CrashLogTest.txt)
+	static bool s_bCrashLogTested = false;
+	if (!s_bCrashLogTested)
+	{
+		s_bCrashLogTested = true;
+		wtpCrashLogSelfTest();
+	}
 	doCloseCityScreenOnMiddleMouse();
 
 	if (!gDLL->GetWorldBuilderMode() || isInAdvancedStart())

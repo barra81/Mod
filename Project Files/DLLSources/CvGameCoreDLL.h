@@ -121,6 +121,7 @@ namespace boost
 // setting this to false will provide the path to the exe dir instead
 // this is usually not needed as it's the working directory
 std::string GetDLLPath(bool bLoadDLLPath = true);
+void wtpCrashLogSelfTest(); // WTP: crash log test (file CrashLogTest.txt next to the DLL)
 
 #include "NiColorA.h"
 #include "NiPoint2.h"
