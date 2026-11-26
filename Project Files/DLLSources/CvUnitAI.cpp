@@ -10666,6 +10666,7 @@ bool CvUnitAI::AI_seaPatrol()
 
 bool CvUnitAI::AI_moveTowardsOcean(int iRange)
 {
+	WtpTiming::Scope wtpWarshipTimer(WtpTiming::SLOT_CS_OCEAN); // WTP: timing log
 	int iBestValue = MAX_INT;
 	CvPlot* pBestPlot = NULL;
 	for (int iX = -iRange; iX <= iRange; iX++)
@@ -10708,6 +10709,7 @@ bool CvUnitAI::AI_moveTowardsOcean(int iRange)
 // TAC - AI Improved Naval AI - koma13 - START
 bool CvUnitAI::AI_moveTowardsDanger(int iMaxPath)
 {
+	WtpTiming::Scope wtpWarshipTimer(WtpTiming::SLOT_CS_DANGER); // WTP: timing log
 	CvPlayerAI& kOwner = GET_PLAYER(getOwnerINLINE());
 
 	CvPlot* pBestPlot = NULL;
@@ -10768,6 +10770,7 @@ bool CvUnitAI::AI_moveTowardsDanger(int iMaxPath)
 
 bool CvUnitAI::AI_moveTowardsVictimCity()
 {
+	WtpTiming::Scope wtpWarshipTimer(WtpTiming::SLOT_CS_VICTIM); // WTP: timing log
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
 	CvPlot* pBestMissionPlot = NULL;
@@ -10802,6 +10805,16 @@ bool CvUnitAI::AI_moveTowardsVictimCity()
 							CvPlot* pDirectionPlot = plotDirection(pCityPlot->getX_INLINE(), pCityPlot->getY_INLINE(), (DirectionTypes)iDirection);
 							if ((pDirectionPlot != NULL) && pDirectionPlot->isWater())
 							{
+								// WTP performance: a plot that cannot beat the best value found so far gets no path search (one search for the
+								// water plots around every coastal city of every other player took about 8 s per turn change on a big map). The
+								// value is at most (city value / (distance to the ocean + 1) + crumbs) / 5 (the divisor is 2 + max(3, turns), the
+								// later divisions only make it smaller) times 3 / 2; so a plot whose upper bound is not above the best value
+								// cannot replace it ("iValue > iBestValue"): the same plot is chosen as before.
+								const int iUpperValue = ((iCityValue / (pDirectionPlot->getDistanceToOcean() + 1) + pCityPlot->getCrumbs()) / 5) * 3 / 2;
+								if (iUpperValue <= iBestValue)
+								{
+									continue;
+								}
 								int iPathTurns;
 								if (generatePath(pDirectionPlot, MOVE_THROUGH_ENEMY, true, &iPathTurns))
 								{
@@ -15718,6 +15731,7 @@ bool CvUnitAI::AI_canBesiege(const CvCity* pCity) const
 // SIEGE_BLOCKADE_SHIPS are needed for the naval blockade, more may join) and stays within SIEGE_BLOCKADE_RANGE plots of it
 bool CvUnitAI::AI_siegeBlockade()
 {
+	WtpTiming::Scope wtpWarshipTimer(WtpTiming::SLOT_CS_SIEGE); // WTP: timing log
 	if (!canAttack() || getDomainType() != DOMAIN_SEA || isCargo())
 	{
 		return false;
@@ -16145,6 +16159,7 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold, bool bFollow)
 //bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iMinStack, bool bFollow)
 bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iMinStack, bool bFollow, bool bAllowCities)
 {
+	WtpTiming::Scope wtpWarshipTimer(WtpTiming::SLOT_CS_ANYATTACK); // WTP: timing log
 	PROFILE_FUNC();
 
 	FAssert(canMove());
@@ -16237,6 +16252,7 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iMinStack, bool 
 // WTP, Schmiddie, Naval AI adjacent attack - START
 bool CvUnitAI::AI_adjacentSeaAttack(int iOddsThreshold)
 {
+	WtpTiming::Scope wtpWarshipTimer(WtpTiming::SLOT_CS_ADJACENT); // WTP: timing log
 	if (!canMove())
 	{
 		return false;
