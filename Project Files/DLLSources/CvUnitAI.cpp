@@ -20,6 +20,7 @@
 
 // interface uses
 #include "CvDLLInterfaceIFaceBase.h"
+#include "CvTalkingHeadMessage.h"
 #include "CvDLLFAStarIFaceBase.h"
 
 #include "CvSavegame.h"
@@ -17811,8 +17812,16 @@ static CvWString wtpNativeTradeReport(const CvUnit& kUnit, const CvCity& kVillag
 	const CvWString szVillage = CvWString::format(SETCOLR L"%s" ENDCOLR, kTribe.getPlayerTextColorR(), kTribe.getPlayerTextColorG(),
 		kTribe.getPlayerTextColorB(), kTribe.getPlayerTextColorA(), kVillage.getName().GetCString());
 	const CvWString szNothing = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_NOTHING");
-	return gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_VILLAGE", szShip.GetCString(), szVillage.GetCString(),
+	CvWString szReport = gDLL->getText("TXT_KEY_NATIVE_TRADE_REPORT_VILLAGE", szShip.GetCString(), szVillage.GetCString(),
 		szSold.empty() ? szNothing.GetCString() : szSold.GetCString(), szBought.empty() ? szNothing.GetCString() : szBought.GetCString());
+	// the message panel of the mod gets the ID of the ship after a marker (a right click on the line jumps to the ship); the game's own panel
+	// would show the marker, so it is only added when the mod's panel takes the message
+	if (WtpHudMessages::isPanelMessage(kUnit.getOwnerINLINE(), MESSAGE_TYPE_INFO))
+	{
+		szReport += WTP_HUD_SHIP_MARKER;
+		szReport += CvWString::format(L"%d", kUnit.getID());
+	}
+	return szReport;
 }
 
 // WTP: native trade ship: sells the goods aboard to the native village on this plot, bargaining once per sale.
