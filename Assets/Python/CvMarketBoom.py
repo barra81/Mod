@@ -127,5 +127,19 @@ def _showBoom(iPlayer, king, booms):
     popupInfo.setText(szText)
     popupInfo.addPopup(iPlayer)
 
-    CyInterface().addMessage(iPlayer, True, 10, localText.getText("TXT_KEY_MARKET_BOOM_MESSAGE", (szNames[0], szNames[1], szNames[2])),
-                             "", 0, "", ColorTypes(8), -1, -1, False, False)
+    # the message is not sent now: onGameStart comes before the options of the players (e.g. "New message panel") are known to the DLL,
+    # so the message would go to the game's own message area (and overlap the panel). It is sent when the player's first turn begins
+    g_pendingMessages[iPlayer] = localText.getText("TXT_KEY_MARKET_BOOM_MESSAGE", (szNames[0], szNames[1], szNames[2]))
+
+
+# the messages of the market boom that wait for the first turn of their player (player id -> text)
+g_pendingMessages = {}
+
+
+def showPendingMessage(iPlayer):
+    "Called from onBeginPlayerTurn: sends the message of the market boom to the player (once)"
+    szText = g_pendingMessages.pop(iPlayer, None)
+    if szText is not None:
+        # (CyGame().addMessage of the message panel goes through the DLL, so the panel gets the message; CyInterface goes to the exe directly)
+        addMessage = getattr(CyGame(), "addMessage", None) or CyInterface().addMessage
+        addMessage(iPlayer, True, 10, szText, "", 0, "", ColorTypes(8), -1, -1, False, False)
