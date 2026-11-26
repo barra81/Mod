@@ -261,6 +261,28 @@ void doNewGameErrorTesting();
 //
 // Set initial items (units, techs, etc...)
 //
+// WTP: game options "Max. European AI players": smallest chosen value, -1 if none is chosen
+static int wtpMaxEuropeanAIs()
+{
+	static const struct { GameOptionTypes eOption; int iMax; } aOptions[] =
+	{
+		{ GAMEOPTION_MAX_EUROPEAN_AI_2, 2 },
+		{ GAMEOPTION_MAX_EUROPEAN_AI_3, 3 },
+		{ GAMEOPTION_MAX_EUROPEAN_AI_4, 4 },
+		{ GAMEOPTION_MAX_EUROPEAN_AI_6, 6 },
+		{ GAMEOPTION_MAX_EUROPEAN_AI_8, 8 },
+	};
+	int iMax = -1;
+	for (int i = 0; i < (int)(sizeof(aOptions) / sizeof(aOptions[0])); i++)
+	{
+		if (GC.getGameINLINE().isOption(aOptions[i].eOption) && (iMax < 0 || aOptions[i].iMax < iMax))
+		{
+			iMax = aOptions[i].iMax;
+		}
+	}
+	return iMax;
+}
+
 void CvGame::setInitialItems(bool bScenario)
 {
 	PROFILE_FUNC();
@@ -275,6 +297,102 @@ void CvGame::setInitialItems(bool bScenario)
 
 	createBarbarianPlayer(); // < JAnimals Mod Start >
 	createChurchPlayer(); // R&R, ray, the Church - START
+
+
+	// WTP: game options "Max. European AI players": surplus European AI players (highest player ids first) become native players, so that
+	// the slots of the start screen that are left on "Random" do not all turn into European powers. A native civ is only chosen if it
+	// is not placed yet (and, without random settlement areas, if it fits the region of the map). If no such native civ is left (the
+	// maps with fixed natives already use all of them) the surplus European AI is removed from the game instead (no cities, no units yet).
+	// Human players are never touched.
+	{
+		const int iMaxEuropean = wtpMaxEuropeanAIs();
+		if (iMaxEuropean >= 0)
+		{
+			int iEuropean = 0;
+			for (PlayerTypes ePlayer = FIRST_PLAYER; ePlayer < NUM_PLAYER_TYPES; ++ePlayer)
+			{
+				const CvPlayer& kPlayer = CvPlayerAI::getPlayer(ePlayer);
+				if (kPlayer.isAlive() && !kPlayer.isHuman() && kPlayer.getCivCategoryTypes() == CIV_CATEGORY_COLONIAL)
+				{
+					iEuropean++;
+				}
+			}
+			int iConverted = 0;
+			int iRemoved = 0;
+			for (int iPlayer = (int)NUM_PLAYER_TYPES - 1; iPlayer >= (int)FIRST_PLAYER && iEuropean > iMaxEuropean; --iPlayer)
+			{
+				const PlayerTypes ePlayer = (PlayerTypes)iPlayer;
+				CvPlayer& kPlayer = CvPlayerAI::getPlayer(ePlayer);
+				if (!kPlayer.isAlive() || kPlayer.isHuman() || kPlayer.getCivCategoryTypes() != CIV_CATEGORY_COLONIAL)
+				{
+					continue;
+				}
+				bool bDone = false;
+				for (CivilizationTypes eCiv = FIRST_CIVILIZATION; eCiv < NUM_CIVILIZATION_TYPES && !bDone; ++eCiv)
+				{
+					CvCivilizationInfo& kCiv = GC.getCivilizationInfo(eCiv);
+					if (kCiv.getCivCategoryTypes() != CIV_CATEGORY_NATIVE)
+					{
+						continue;
+					}
+					if (!isOption(GAMEOPTION_RANDOM_SETTLEMENT_AREAS))
+					{
+						if ((kCiv.isNorthAmericanNative() && !isWBNorthAmericanNative())
+							|| (kCiv.isCentralAmericanNative() && !isWBCentralAmericanNative())
+							|| (kCiv.isSouthAmericanNative() && !isWBSouthAmericanNative()))
+						{
+							continue;
+						}
+					}
+					bool bPlaced = false;
+					for (PlayerTypes eOther = FIRST_PLAYER; eOther < NUM_PLAYER_TYPES; ++eOther)
+					{
+						const CvPlayer& kOther = CvPlayerAI::getPlayer(eOther);
+						if (kOther.isAlive() && kOther.isNative() && kOther.getCivilizationType() == eCiv)
+						{
+							bPlaced = true;
+							break;
+						}
+					}
+					if (bPlaced)
+					{
+						continue;
+					}
+					for (LeaderHeadTypes eLeader = FIRST_LEADER; eLeader < NUM_LEADER_TYPES; ++eLeader)
+					{
+						if (kCiv.isLeaders(eLeader))
+						{
+							GC.getInitCore().setColor(ePlayer, kCiv.getDefaultPlayerColor());
+							GC.getInitCore().setLeader(ePlayer, eLeader);
+							GC.getInitCore().setCiv(ePlayer, eCiv);
+							GC.getInitCore().setSlotStatus(ePlayer, SS_COMPUTER);
+							kPlayer.init(ePlayer);
+							bDone = true;
+							break;
+						}
+					}
+				}
+				if (bDone)
+				{
+					iEuropean--;
+					iConverted++;
+				}
+				else
+				{
+					kPlayer.setAlive(false); // no message (kill() would announce the destruction of the civ)
+					iEuropean--;
+					iRemoved++;
+				}
+			}
+			// log: what the option did (same file as the settlement brake)
+			FILE* f = fopen((std::string(gDLL->getModName()) + "WTP_AiBrake.txt").c_str(), "a");
+			if (f != NULL)
+			{
+				fprintf(f, "max European AIs=%d | European AIs left=%d | converted to natives=%d | removed=%d\n", iMaxEuropean, iEuropean, iConverted, iRemoved);
+				fclose(f);
+			}
+		}
+	}
 
 	// R&R, ray, Correct Geographical Placement of Natives - START
 	if (!GC.getGameINLINE().isOption(GAMEOPTION_RANDOM_SETTLEMENT_AREAS))
