@@ -2289,6 +2289,16 @@ void postLoadGameFixes()
 		kPlayer.postLoadFixes();
 	}
 
+	// WTP: one-time migration for the per-colony tax change (see CvPlayer::migrateLegacySharedKingTaxState; StaticShielding/Mod, commit b4daa44)
+	for (PlayerTypes eKing = FIRST_PLAYER; eKing < NUM_PLAYER_TYPES; ++eKing)
+	{
+		CvPlayer& kKing = GET_PLAYER(eKing);
+		if (kKing.isAlive() && kKing.isEurope())
+		{
+			kKing.migrateLegacySharedKingTaxState();
+		}
+	}
+
 #ifdef _DEBUG
 	//jburet, pointer sanity check
 	for (PlayerTypes ePlayer = FIRST_PLAYER; ePlayer < NUM_PLAYER_TYPES; ++ePlayer)
@@ -2303,7 +2313,8 @@ void postLoadGameFixes()
 			CvPlayer* kColony = &kPlayer;
 			FAssertMsg(kKing != NULL, "Pointer to Parent Player not initialized");
 			FAssertMsg(kKing->getID() == kColony->getParent(), "Pointer to Parent Player doesn't point on the right player");
-			FAssertMsg(kKing->getColony() == kColony->getID(), "Pointer to Parent Player doesn't point on the right player");
+			// WTP: kKing->getColony() == kColony->getID() does NOT hold when two colonies of the same civ share one king - the singular colony
+			// back-pointer can only register one of them. The king's registered colony must still point back (checked below).
 		}
 
 		if (kPlayer.getColony() != NO_PLAYER)

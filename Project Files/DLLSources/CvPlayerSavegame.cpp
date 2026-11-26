@@ -84,6 +84,7 @@ const bool defaultPbemNewTurn = false;
 const bool defaultExtendedGame = false;
 const bool defaultFoundedFirstCity = false;
 const bool defaultStrike = false;
+const bool defaultTaxMigrationDone = false;
 
 const PlayerTypes defaultID = NO_PLAYER;
 const LeaderHeadTypes defaultPersonalityType = NO_LEADER;
@@ -327,6 +328,7 @@ enum SavegameVariableTypes
 	PlayerSave_TradePostMestizoThresholdMultiplier,
 	// WTP, Schmiddie, Trade Post Mestizo - END
 
+	PlayerSave_TaxMigrationDone, // WTP: per-colony taxes (StaticShielding/Mod)
 	NUM_SAVE_ENUM_VALUES,
 };
 
@@ -529,6 +531,7 @@ const char* getSavedEnumNamePlayer(SavegameVariableTypes eType)
 	case PlayerSave_WillingToBargain_Enummap: return "PlayerSave_WillingToBargain_Enummap";
 	case PlayerSave_TimeNoTrade_Enummap: return "PlayerSave_TimeNoTrade_Enummap";
 	case PlayerSave_TimerUsedShipsAndImmigrants: return "PlayerSave_TimerUsedShipsAndImmigrants";
+	case PlayerSave_TaxMigrationDone: return "PlayerSave_TaxMigrationDone";
 	// WTP, Schmiddie, persistent quest log texts - START
 	case PlayerSave_mapQuestMessages: return "PlayerSave_mapQuestMessages";
 	// WTP, Schmiddie, persistent quest log texts - END
@@ -629,6 +632,7 @@ void CvPlayer::resetSavedData(PlayerTypes eID, bool bConstructorCall)
 	m_bExtendedGame = defaultExtendedGame;
 	m_bFoundedFirstCity = defaultFoundedFirstCity;
 	m_bStrike = defaultStrike;
+	m_bTaxMigrationDone = defaultTaxMigrationDone;
 
 	m_eID = eID;
 	updateTeamType();
@@ -1043,6 +1047,7 @@ void CvPlayer::read(CvSavegameReader reader)
 		case PlayerSave_WillingToBargain_Enummap: reader.Read(m_em_bWillingToBargain); break;
 		case PlayerSave_TimeNoTrade_Enummap: reader.Read(m_em_iTimeNoTrade); break;
 		case PlayerSave_TimerUsedShipsAndImmigrants: reader.Read(m_em_TimerUsedShipsAndImmigrants); break;
+		case PlayerSave_TaxMigrationDone: reader.Read(m_bTaxMigrationDone); break;
 
 		case PlayerSave_CacheUpdate:
 			// Updating cache prior to reading anything, which relies on cache to load properly or set other caches
@@ -1349,6 +1354,7 @@ void CvPlayer::write(CvSavegameWriter writer)
 	writer.Write(PlayerSave_WillingToBargain_Enummap, m_em_bWillingToBargain);
 	writer.Write(PlayerSave_TimeNoTrade_Enummap, m_em_iTimeNoTrade);
 	writer.Write(PlayerSave_TimerUsedShipsAndImmigrants, m_em_TimerUsedShipsAndImmigrants);
+	writer.Write(PlayerSave_TaxMigrationDone, m_bTaxMigrationDone, defaultTaxMigrationDone);
 
 	writer.Write(PlayerSave_END);
 }

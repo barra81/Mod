@@ -3376,18 +3376,15 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 	case DIPLOEVENT_REFUSE_TAX_RATE:
 		{
 			AI_changeMemoryCount(ePlayer, MEMORY_REFUSED_TAX, 1);
-			CvPlayer* pRefusingPlayer = getColonyPlayer();
-			if (pRefusingPlayer == NULL)
-			{
-				break; // WTP: no colony player, nobody refused
-			}
-			CvPlayer& kPlayer = *pRefusingPlayer;
+			// WTP: the REFUSING player, not the singular registered colony of this king - with two colonies of the same civ under one king
+			// these can differ (per-colony taxes: StaticShielding/Mod, commit b4daa44)
+			CvPlayer& kPlayer = GET_PLAYER(ePlayer);
 			YieldTypes eYield = (YieldTypes) iData1;
 			kPlayer.setYieldEuropeTradable(eYield, false);
 			// R&R, ray, Improvements to Tax Mechanism - START
-			setYieldScoreTotal(eYield, 0);// R&R, vetiarvind, price dependent tax rate change
+			kPlayer.setYieldScoreTotal(eYield, 0);// R&R, vetiarvind, price dependent tax rate change
 
-			wipeRoyalYieldScore();
+			kPlayer.wipeColonialYieldScore();
 
 			// R&R, ray, Improvements to Tax Mechanism - END
 			CvCity* pCity = kPlayer.getCity(iData2);
@@ -19107,22 +19104,25 @@ int CvPlayer::getYieldSoldTotal(TradeLocationTypes eLocation, YieldTypes eYield)
 }
 
 // This methode returns the revenue brought by a specific Yield
-// It is used by the King for taxation purpose.
+// It is used for taxation purpose.
+// WTP: the score accumulates on the COLONIAL player (one score per colony); a king only keeps legacy values from old savegames until the
+// one-time migration (migrateLegacySharedKingTaxState) has cleared them. A king used to hold one pooled score, which broke games where two
+// colonies of the same civ share one king (StaticShielding/Mod, commit b4daa44).
 int CvPlayer::getYieldScoreTotal(YieldTypes eYield) const
 {
-	FAssert(is(CIV_CATEGORY_KING));
+	FAssert(is(CIV_CATEGORY_COLONIAL) || is(CIV_CATEGORY_KING));
 	return m_em_iYieldScoreTotal.get(eYield);
 }
 
 void CvPlayer::setYieldScoreTotal(YieldTypes eYield, int iValue)
 {
-	FAssert(is(CIV_CATEGORY_KING));
+	FAssert(is(CIV_CATEGORY_COLONIAL) || is(CIV_CATEGORY_KING));
 	m_em_iYieldScoreTotal.set(eYield, iValue);
 }
 
 void CvPlayer::changeYieldCountScoreTotal(YieldTypes eYield, int iChange)
 {
-	FAssert(is(CIV_CATEGORY_KING));
+	FAssert(is(CIV_CATEGORY_COLONIAL) || is(CIV_CATEGORY_KING));
 	int iChangePositive = iChange >= 0 ? iChange : -iChange;
 	m_em_iYieldScoreTotal.add(eYield, iChangePositive);
 }
@@ -19148,25 +19148,113 @@ void CvPlayer::changeYieldTradedCounters(TradeLocationTypes eLocation, YieldType
 		{
 			iUnitPrice = pKing->getYieldBuyPrice(eYield);
 		}
-		pKing->changeYieldCountScoreTotal(eYield, iAmountSold*iUnitPrice);
+		// WTP: the tax score goes to the colony that traded, not to the king: two colonies of the same civ share one king, and a pooled royal
+		// score made one colony's trading raise the other colony's taxes
+		pColonial->changeYieldCountScoreTotal(eYield, iAmountSold*iUnitPrice);
 	}
 	
 	pColonial->changeYieldTradedTaxCounter(eLocation, eYield, iAmountSold);
 	pKing->changeYieldTradedTaxCounter(eLocation, eYield, iAmountSold);
 }
 
-// This method is called by the King to reset his trade counters after a tax increase "proposal"
+// Resets the king's legacy trade counters. The scores accumulate on the colonial players now (see changeYieldTradedCounters); this remains
+// only for the one-time savegame migration (migrateLegacySharedKingTaxState).
 void CvPlayer::wipeRoyalYieldScore()
 {
 	FAssert(isEurope());
-	FAssert(getColonyPlayer() != NULL);
-	if (getColonyPlayer() == NULL)
-	{
-		return; // WTP: no colony player, no embargo list to go by
-	}
 	for (YieldTypes eYieldCargo = FIRST_YIELD; eYieldCargo < NUM_CARGO_YIELD_TYPES; eYieldCargo++)
 	{
-		if (!getColonyPlayer()->isYieldEuropeTradable(eYieldCargo)) continue; //skip whatever is on embargo
+		setYieldScoreTotal(eYieldCargo, 0);
+	}
+}
+
+// One-time migration for the per-colony tax change, called on each king from postLoadGameFixes. The tax trade scores used to accumulate on
+// the king; they accumulate on each colonial player now. The tax rates of all colonies that share this king are averaged (with two colonies
+// of the same civ only the registered one was ever taxed, so e.g. 16/0 becomes 8/8) and the legacy royal score is cleared.
+// WTP addition: with exactly one colony its score is the king's old pooled score, so it is handed over to the colony instead of being lost
+// (the tax progress of an old savegame stays).
+// It is gated by a saved per-king flag and not by the legacy score: the old code wiped the royal score after every accepted tax raise, so a
+// save from before can hold an all-zero score and the flag is the only reliable "already migrated" marker. Saves written by this DLL carry
+// the flag, so a later tax rate difference is never averaged again. It runs the same on all clients (synced load path) and logs what it
+// decides to Logs\TaxMigration.log.
+// Idea and code: StaticShielding/Mod, commits b4daa44 and 214194a.
+void CvPlayer::migrateLegacySharedKingTaxState()
+{
+	FAssert(isEurope());
+
+	if (m_bTaxMigrationDone)
+	{
+		gDLL->logMsg("TaxMigration.log", CvString::format("King player %d (%S): migration already done, skipping", getID(), getCivilizationDescription(0)).c_str());
+		return;
+	}
+
+	gDLL->logMsg("TaxMigration.log", CvString::format("King player %d (%S): running per-colony tax migration", getID(), getCivilizationDescription(0)).c_str());
+
+	// the legacy pooled royal score (it can be all zero if the save was made right after a tax raise wiped it)
+	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_CARGO_YIELD_TYPES; ++eYield)
+	{
+		const int iScore = getYieldScoreTotal(eYield);
+		if (iScore != 0)
+		{
+			gDLL->logMsg("TaxMigration.log", CvString::format("  legacy royal score: yield %d = %d", (int)eYield, iScore).c_str());
+		}
+	}
+
+	int iTaxSum = 0;
+	int iNumColonies = 0;
+	CvPlayer* pOnlyColony = NULL;
+	for (PlayerTypes eColony = FIRST_PLAYER; eColony < NUM_PLAYER_TYPES; ++eColony)
+	{
+		CvPlayer& kColony = GET_PLAYER(eColony);
+		if (!kColony.isAlive() || kColony.getParent() != getID())
+		{
+			continue;
+		}
+		gDLL->logMsg("TaxMigration.log", CvString::format("  child player %d (%S): category %d, tax rate %d", (int)eColony, kColony.getCivilizationDescription(0), (int)kColony.getCivCategoryTypes(), kColony.is(CIV_CATEGORY_COLONIAL) ? kColony.getTaxRate() : -1).c_str());
+		if (kColony.is(CIV_CATEGORY_COLONIAL))
+		{
+			iTaxSum += kColony.getTaxRate();
+			++iNumColonies;
+			pOnlyColony = &kColony;
+		}
+	}
+
+	if (iNumColonies > 1)
+	{
+		const int iAverageTaxRate = iTaxSum / iNumColonies;
+		for (PlayerTypes eColony = FIRST_PLAYER; eColony < NUM_PLAYER_TYPES; ++eColony)
+		{
+			CvPlayer& kColony = GET_PLAYER(eColony);
+			if (kColony.isAlive() && kColony.getParent() == getID() && kColony.is(CIV_CATEGORY_COLONIAL))
+			{
+				kColony.setTaxRate(iAverageTaxRate);
+			}
+		}
+		gDLL->logMsg("TaxMigration.log", CvString::format("  averaged tax rate across %d colonies: %d", iNumColonies, iAverageTaxRate).c_str());
+	}
+	else
+	{
+		if (pOnlyColony != NULL)
+		{
+			for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_CARGO_YIELD_TYPES; ++eYield)
+			{
+				pOnlyColony->setYieldScoreTotal(eYield, getYieldScoreTotal(eYield));
+			}
+		}
+		gDLL->logMsg("TaxMigration.log", CvString::format("  no averaging (%d colony under this king), the royal score went to the colony", iNumColonies).c_str());
+	}
+
+	wipeRoyalYieldScore();
+	m_bTaxMigrationDone = true;
+}
+
+// Called on the colony to reset its trade counters after a tax change
+void CvPlayer::wipeColonialYieldScore()
+{
+	FAssert(is(CIV_CATEGORY_COLONIAL));
+	for (YieldTypes eYieldCargo = FIRST_YIELD; eYieldCargo < NUM_CARGO_YIELD_TYPES; eYieldCargo++)
+	{
+		if (!isYieldEuropeTradable(eYieldCargo)) continue; //skip whatever is on embargo
 
 		setYieldScoreTotal(eYieldCargo, 0);
 
@@ -19181,16 +19269,11 @@ const int CvPlayer::getFullYieldScore()
 
 const int CvPlayer::getFullYieldScore(bool fullCalculation)
 {
-	FAssert(isEurope());
-	FAssert(getColonyPlayer() != NULL);
-	if (getColonyPlayer() == NULL)
-	{
-		return 0; // WTP: no colony player, no score
-	}
+	FAssert(is(CIV_CATEGORY_COLONIAL)); // WTP: computed on the colony itself (per-colony taxes)
 	int iGrandTotal = 0;
 	for (YieldTypes eYieldCargo = FIRST_YIELD; eYieldCargo < NUM_CARGO_YIELD_TYPES; eYieldCargo++)
 	{
-		if (!getColonyPlayer()->isYieldEuropeTradable(eYieldCargo)) continue; //skip whatever is on embargo
+		if (!isYieldEuropeTradable(eYieldCargo)) continue; //skip whatever is on embargo
 		iGrandTotal += getYieldScoreTotal(eYieldCargo);
 	}
 
@@ -19212,25 +19295,20 @@ const int CvPlayer::getTaxThresold()
 
 const int CvPlayer::getTaxThresold(bool fullCalculation)
 {
-	FAssert(is(CIV_CATEGORY_KING));
-	CvPlayerAI* pColonyPlayer = getColonyPlayer();
-	if (pColonyPlayer == NULL)
-	{
-		return 0; // WTP: no colony player, no threshold (nothing is taxed then)
-	}
-	CvPlayerAI& pColony = *pColonyPlayer;
+	// WTP: computed on the colony itself (per-colony taxes, see doTaxRaises)
+	FAssert(is(CIV_CATEGORY_COLONIAL));
 	int iMultiplier = 100;
 	for (TraitTypes eTrait = FIRST_TRAIT; eTrait < NUM_TRAIT_TYPES; ++eTrait)
 	{
 		const CvTraitInfo& kTrait = GC.getTraitInfo(eTrait);
-		if (pColony.hasTrait(eTrait))
+		if (hasTrait(eTrait))
 		{
 			iMultiplier += kTrait.getTaxRateThresholdModifier();
 		}
 	}
 
 	// TAX_TRADE_THRESHOLD_TAX_RATE_PERCENT is a vanilla global, defined at 1000
-	iMultiplier += pColony.getTaxRate() * GLOBAL_DEFINE_TAX_TRADE_THRESHOLD_TAX_RATE_PERCENT / 100;
+	iMultiplier += getTaxRate() * GLOBAL_DEFINE_TAX_TRADE_THRESHOLD_TAX_RATE_PERCENT / 100;
 
 	int threshold = GLOBAL_DEFINE_TAX_TRADE_THRESHOLD * std::max(100, iMultiplier)
 		* GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getGrowthPercent();
@@ -19291,7 +19369,8 @@ YieldTypes CvPlayer::getHighestTradedYield(bool bCalledFrom_hasHighestTradedYiel
 	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_CARGO_YIELD_TYPES; ++eYield)
 	{
 		// reverse order of ifs compared to vanilla. We now go from fastest to slowest tests - Nightinggale
-		if ((eBestYield == NO_YIELD) || (pKing->getYieldScoreTotal(eYield) > pKing->getYieldScoreTotal(eBestYield)))
+		// WTP: the score lives on the colony now (per-colony taxes)
+		if ((eBestYield == NO_YIELD) || (pColony->getYieldScoreTotal(eYield) > pColony->getYieldScoreTotal(eBestYield)))
 		{
 			if (pColony->isYieldEuropeTradable(eYield))
 			{
@@ -19436,8 +19515,8 @@ void CvPlayer::changeTaxRate(int iChange)
 	FAssert(kKing != NULL);
 
 	if (kKing == NULL) return;
-	//reset yields traded
-	kKing->wipeRoyalYieldScore();
+	//reset yields traded (this colony's own counters; per-colony taxes)
+	wipeColonialYieldScore();
 
 	CvString szTextKey = (iOldRate < getTaxRate() ? "TXT_KEY_TAX_RATE_CHANGED" : "TXT_KEY_TAX_RATE_LOWERED");
 	CvWString szBuffer = gDLL->getText(szTextKey.GetCString(), kKing->getNameKey(), iOldRate, getTaxRate());
@@ -20472,26 +20551,20 @@ void CvPlayer::doPrices()
 }
 
 //returns a tax hike chance out of 1000
-const int CvPlayer::getTaxRaiseChance()
+const int CvPlayer::getTaxRaiseChance(CvPlayer& kColony)
 {
 	FAssertMsg(isEurope(), "Only the European Homeland player - i.e the King - should calculate tax raises on his colony");
-	FAssertMsg(getColonyPlayer() != NULL, "getColonyPlayer() is not initialized");
-	if (getColonyPlayer() == NULL)
-	{
-		return 0; // WTP: no colony player, no tax raise
-	}
-	CvPlayer& kColony = *getColonyPlayer();
-
-	FAssertMsg(getColony() == kColony.getID(), "The Europe player shall rise taxes on his own colonies only");
+	FAssertMsg(kColony.getParent() == getID(), "The Europe player shall rise taxes on his own colonies only");
 
 	if (GC.getEraInfo(getCurrentEra()).isRevolution()) return 0;
-	if (!hasHighestTradedYield()) return 0;
+	if (!kColony.hasHighestTradedYield()) return 0;
 
 	// If the colony is already above the max tax rate, then there is no chance
 	if (kColony.getTaxRate() >= kColony.NBMOD_GetMaxTaxRate()) return 0;
 
 	// the revenue fraction for tax purpose is now calculated here
-	if (getFullYieldScore(true) <= getTaxThresold(true)) return 0;
+	// (per-colony score and threshold: a shared king can have several colonies)
+	if (kColony.getFullYieldScore(true) <= kColony.getTaxThresold(true)) return 0;
 
 	int iAttitudeModifier = AI().AI_getAttitudeVal(kColony.getID()) * GLOBAL_DEFINE_TAX_TRADE_INCREASE_CHANCE_KING_ATTITUDE_BASE;
 
@@ -20510,52 +20583,54 @@ const int CvPlayer::getTaxRaiseChance()
 void CvPlayer::doTaxRaises()
 {
 	FAssertMsg(isEurope(), "Only the European Homeland player - i.e the King - should calculate tax raises on his colony");
-	FAssertMsg(getColonyPlayer() != NULL, "getColonyPlayer() is not initialized");
-	if (getColonyPlayer() == NULL)
+
+	// WTP: EVERY colony of this king is processed. The old code only taxed the one colony registered in the singular m_pColony back-pointer,
+	// so with two players of the same civ under one king only one of them was ever taxed (and the pooled trade score let the other player's
+	// trading speed that up). Same loop over the children as in initFreeUnits (StaticShielding/Mod, commit b4daa44).
+	for (PlayerTypes eColony = FIRST_PLAYER; eColony < NUM_PLAYER_TYPES; ++eColony)
 	{
-		return; // WTP: no colony player, no tax raise
-	}
+		CvPlayerAI& kColony = GET_PLAYER(eColony);
+		if (!kColony.isAlive() || kColony.getParent() != getID() || !kColony.is(CIV_CATEGORY_COLONIAL))
+			continue;
 
-	CvPlayer& kColony = *getColonyPlayer();
-	FAssertMsg(getColony() == kColony.getID(), "The Europe player shall rise taxes on his own colonies only");
+		const int iTaxChangeChance = getTaxRaiseChance(kColony);
 
-	const int iTaxChangeChance = getTaxRaiseChance();
+		if (iTaxChangeChance <= 0)
+			continue; // no chance of a tax increase for this colony
 
-	if (iTaxChangeChance <= 0)
-		return; // no change of a tax increase
+		if (GC.getGameINLINE().getSorenRandNum(1000, "Tax rate increase") >= iTaxChangeChance)
+			continue; //Nah, we don't feel like increasing the tax right away
 
-	if (GC.getGameINLINE().getSorenRandNum(1000, "Tax rate increase") >= iTaxChangeChance)
-		return; //Nah, we don't feel like increasing the tax right away
+		FAssert(kColony.hasHighestTradedYield());
 
-	FAssert(hasHighestTradedYield());
+		const int iOldTaxRate = kColony.getTaxRate();
+		int iAttemptedNewTaxRate = iOldTaxRate + 1 + GC.getGameINLINE().getSorenRandNum(GLOBAL_DEFINE_TAX_RATE_MAX_INCREASE, "Tax Rate Increase");
+		int iNewTaxRate = kColony.NBMOD_GetNewTaxRate(iAttemptedNewTaxRate);
 
-	const int iOldTaxRate = kColony.getTaxRate();
-	int iAttemptedNewTaxRate = iOldTaxRate + 1 + GC.getGameINLINE().getSorenRandNum(GLOBAL_DEFINE_TAX_RATE_MAX_INCREASE, "Tax Rate Increase");
-	int iNewTaxRate = kColony.NBMOD_GetNewTaxRate(iAttemptedNewTaxRate);
-
-	if (!kColony.isHuman())
-	{
-		int iAIMaxTaxRate = GC.getHandicapInfo(getHandicapType()).getAIMaxTaxrate();
-		if (iNewTaxRate > iAIMaxTaxRate)
-			iNewTaxRate = iAIMaxTaxRate;
-	}
-
-	if( iNewTaxRate > 99 )
-	{
-		FAssertMsg(false, "Tax Rate is over 99% - should never happen.");
-		iNewTaxRate = 99;
-	}
-
-	int iChange = iNewTaxRate - iOldTaxRate;
-	if(iChange > 0)
-	{
-		if(kColony.isHuman())
+		if (!kColony.isHuman())
 		{
-			kColony.taxIncreaseDiploCall(iOldTaxRate, iNewTaxRate, iChange);
+			int iAIMaxTaxRate = GC.getHandicapInfo(getHandicapType()).getAIMaxTaxrate();
+			if (iNewTaxRate > iAIMaxTaxRate)
+				iNewTaxRate = iAIMaxTaxRate;
 		}
-		else
+
+		if( iNewTaxRate > 99 )
 		{
-			kColony.changeTaxRate(iChange);
+			FAssertMsg(false, "Tax Rate is over 99% - should never happen.");
+			iNewTaxRate = 99;
+		}
+
+		int iChange = iNewTaxRate - iOldTaxRate;
+		if(iChange > 0)
+		{
+			if(kColony.isHuman())
+			{
+				kColony.taxIncreaseDiploCall(iOldTaxRate, iNewTaxRate, iChange);
+			}
+			else
+			{
+				kColony.changeTaxRate(iChange);
+			}
 		}
 	}
 
