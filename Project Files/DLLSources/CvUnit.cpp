@@ -5600,18 +5600,24 @@ void CvUnit::loadAllYieldsByValue()
 	{
 		abExcluded[i] = false;
 	}
-	// not loaded: food, trade goods, livestock, building material, military goods and all raw materials (goods that a profession turns into another good)
-	static const char* const aszExcluded[] = {
-		"YIELD_FOOD", "YIELD_TRADE_GOODS", // food and the goods for trading with the natives
-		"YIELD_CLAY", "YIELD_STONE", "YIELD_TOOLS", "YIELD_HORSES", "YIELD_SAILCLOTH", "YIELD_HARDWOOD", "YIELD_ROPE", // building material
-		"YIELD_MUSKETS", "YIELD_BLADES", "YIELD_CANNONS", "YIELD_BLACK_POWDER", "YIELD_BAKERY_GOODS" // military goods
-	};
-	for (int i = 0; i < (int)(sizeof(aszExcluded) / sizeof(aszExcluded[0])); ++i)
+	// not loaded: the goods of the list ShiftLoadExclude in WTP_Settings.txt (built-in: food, trade goods, building material, military goods; in a network game
+	// always the built-in list), livestock and all raw materials (goods that a profession turns into another good)
 	{
-		const int iYield = GC.getInfoTypeForString(aszExcluded[i], true);
-		if (iYield >= 0 && iYield < NUM_YIELD_TYPES)
+		const std::string szList = std::string(WtpTiming::data().szShiftLoadExclude) + ",";
+		size_t iStart = 0;
+		for (size_t iEnd = szList.find(','); iEnd != std::string::npos; iEnd = szList.find(',', iStart))
 		{
-			abExcluded[iYield] = true;
+			const std::string szName = szList.substr(iStart, iEnd - iStart);
+			iStart = iEnd + 1;
+			if (szName.empty())
+			{
+				continue;
+			}
+			const int iYield = GC.getInfoTypeForString(szName.c_str(), true);
+			if (iYield >= 0 && iYield < NUM_YIELD_TYPES)
+			{
+				abExcluded[iYield] = true;
+			}
 		}
 	}
 	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)

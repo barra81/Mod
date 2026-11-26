@@ -185,6 +185,7 @@
 //   PathfinderParallel=1     1 = child nodes of the path search are expanded with TBB, 0 = always serial (default, faster in the measurements)
 //   PathfinderMinChildren=0  parallel only when at least this many child nodes have to be expanded in one step
 //   AiBrake*                 the soft limit of the AI settlement brake (game option GAMEOPTION_AI_CITY_BRAKE)
+//   ShiftLoadExclude=...     the goods that Shift + load (fill all free cargo slots) leaves on the quay, YIELD_ names separated by commas (CvUnit::loadAllYieldsByValue)
 // In a network multiplayer game these settings are not read from the file (every machine has to calculate the same game): the built-in
 // values are used, see forceNetworkDefaults.
 //
@@ -529,7 +530,26 @@ namespace WtpTiming
 		// 2 = Governor, 3 = Patriot, 4 = Revolutionary
 		int aiBrakeLeaderPct[5];  // an AI may not be bigger than this percentage of the average of the other AIs (plus 2)
 		int aiBrakeFalloff[5];    // percentage of the wish for further cities that is kept above the soft limit
+		// Shift + load (CvUnit::loadAllYieldsByValue): the goods that are never loaded, as a comma separated list of YIELD_ names (ShiftLoadExclude in WTP_Settings.txt)
+		char szShiftLoadExclude[512];
 	};
+
+	// the built-in list of the goods that Shift + load leaves on the quay: food, trade goods, building material and military goods (livestock and the raw
+	// materials of the professions are left out automatically besides this list, see CvUnit::loadAllYieldsByValue)
+	inline const char* shiftLoadExcludeDefault()
+	{
+		return "YIELD_FOOD,YIELD_TRADE_GOODS,YIELD_CLAY,YIELD_STONE,YIELD_TOOLS,YIELD_HORSES,YIELD_SAILCLOTH,YIELD_HARDWOOD,YIELD_ROPE,YIELD_MUSKETS,YIELD_BLADES,YIELD_CANNONS,YIELD_BLACK_POWDER,YIELD_BAKERY_GOODS";
+	}
+
+	// the explained line of the exclusion list (new settings file, or appended to an older one that does not have it yet)
+	inline void writeShiftLoadLines(FILE* f, const char* szList)
+	{
+		fprintf(f, "# --- Shift + load (fill all free cargo slots of a ship): goods that are never loaded ---\n");
+		fprintf(f, "# Comma separated list of YIELD_ names (as in the XML of the yields, no spaces). Livestock and the raw materials of the professions are always left out besides this list.\n");
+		fprintf(f, "# Take a good out of the list and Shift + load takes it, put a good in and it stays on the quay. A name that does not exist is ignored.\n");
+		fprintf(f, "# In a network game the built-in list is used (the load order is a game command and has to give the same result on every machine).\n");
+		fprintf(f, "ShiftLoadExclude=%s\n", szList);
+	}
 
 	// WTP: in a network multiplayer game every machine has to calculate the same game. The settings that change the course of the game (the
 	// brake of the AI settlements, the parallel path search: the order of the paths found in parallel is not the same on every machine) are
@@ -589,6 +609,7 @@ namespace WtpTiming
 			kData.iBrakeHumanPct = 150;
 			kData.iBrakeHumanWeight = 25;
 			setBrakeLevelDefaults(kData);
+			strcpy(kData.szShiftLoadExclude, shiftLoadExcludeDefault());
 			LARGE_INTEGER kFreq;
 			kFreq.QuadPart = 0;
 			QueryPerformanceFrequency(&kFreq);
@@ -606,6 +627,7 @@ namespace WtpTiming
 		kData.iBrakeHumanPct = 150;
 		kData.iBrakeHumanWeight = 25;
 		setBrakeLevelDefaults(kData);
+		strcpy(kData.szShiftLoadExclude, shiftLoadExcludeDefault());
 	}
 
 	// called at the start of every CvGame::doTurn: whether this is a network multiplayer game (then the settings above are the built-in ones)
@@ -1342,16 +1364,36 @@ namespace WtpTiming
 				fprintf(f, "AiBrakeHumanWeight=%d\n", kData.iBrakeHumanWeight);
 				// (the leader cap and falloff lines of Conquistador and the other levels, with explanations)
 				writeBrakeLevelLines(f, kData, true);
+				fprintf(f, "\n");
+				writeShiftLoadLines(f, kData.szShiftLoadExclude);
 				fclose(f);
 			}
 			return;
 		}
-		char szLine[256];
+		char szLine[1024];
+		bool bFoundShiftLoad = false; // the file has the exclusion list of Shift + load
 		bool bFoundLevels = false; // the file has the brake values per difficulty level
 		while (fgets(szLine, sizeof(szLine), f) != NULL)
 		{
 			int iValue = 0;
-			if (sscanf(szLine, "PathfinderParallel=%d", &iValue) == 1)
+			if (strncmp(szLine, "ShiftLoadExclude=", 17) == 0)
+			{
+				bFoundShiftLoad = true;
+				// the rest of the line without the line end and blanks
+				std::string szList;
+				for (const char* p = szLine + 17; *p != 0 && *p != '\r' && *p != '\n'; ++p)
+				{
+					if (*p != ' ' && *p != '\t')
+					{
+						szList += *p;
+					}
+				}
+				if (szList.size() < sizeof(kData.szShiftLoadExclude))
+				{
+					strcpy(kData.szShiftLoadExclude, szList.c_str());
+				}
+			}
+			else if (sscanf(szLine, "PathfinderParallel=%d", &iValue) == 1)
 			{
 				kData.iPathfinderParallel = iValue;
 			}
@@ -1418,6 +1460,17 @@ namespace WtpTiming
 			}
 		}
 		fclose(f);
+		if (!bFoundShiftLoad)
+		{
+			// an older settings file without the exclusion list: it is appended
+			f = fopen(szFile, "a");
+			if (f != NULL)
+			{
+				fprintf(f, "\n");
+				writeShiftLoadLines(f, kData.szShiftLoadExclude);
+				fclose(f);
+			}
+		}
 		if (!bFoundLevels)
 		{
 			// an older settings file without the values per difficulty level: they are appended (the Conquistador values stay where they are)
