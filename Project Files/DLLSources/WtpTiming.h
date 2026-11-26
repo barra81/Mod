@@ -521,8 +521,10 @@ namespace WtpTiming
 		int iBrakePlotsPerCity;   // land plots a colonial power gets per city (map size term)
 		int iBrakeHumanPct;       // the soft limit follows this percentage of the biggest human city count
 		int iBrakeHumanWeight;    // weight in percent of that human term against the map term
-		int iBrakeLeaderPct;      // an AI may not be bigger than this percentage of the average of the other AIs (plus 2); the value of Conquistador, the other levels add a step (CvPlayerAI.cpp)
-		int iBrakeFalloff;        // percentage of the wish for further cities that is kept above the soft limit; the value of Conquistador, the other levels add a step
+		// the next two depend on the difficulty level (index = step from Conquistador + 1, see CvPlayerAI.cpp wtpBrakeStep): 0 = Explorer and easier, 1 = Conquistador,
+		// 2 = Governor, 3 = Patriot, 4 = Revolutionary
+		int aiBrakeLeaderPct[5];  // an AI may not be bigger than this percentage of the average of the other AIs (plus 2)
+		int aiBrakeFalloff[5];    // percentage of the wish for further cities that is kept above the soft limit
 	};
 
 	// WTP: in a network multiplayer game every machine has to calculate the same game. The settings that change the course of the game (the
@@ -530,6 +532,42 @@ namespace WtpTiming
 	// therefore not taken from the local file WTP_Settings.txt there, the built-in values are used. The other settings are only about the log.
 	struct Data;
 	inline void forceNetworkDefaults(Data& kData);
+
+	// the built-in values of the two brake settings per difficulty level (Conquistador is the level the brake was tested on, easier levels are
+	// a little stricter, harder levels a little looser)
+	inline void setBrakeLevelDefaults(Data& kData)
+	{
+		static const int aiLeader[5]  = { 115, 130, 140, 150, 160 };
+		static const int aiFalloff[5] = {  15,  25,  30,  35,  40 };
+		for (int i = 0; i < 5; i++)
+		{
+			kData.aiBrakeLeaderPct[i] = aiLeader[i];
+			kData.aiBrakeFalloff[i] = aiFalloff[i];
+		}
+	}
+
+	// the explained lines of the brake settings per difficulty level (new settings file, or appended to an older one that does not have them yet)
+	inline void writeBrakeLevelLines(FILE* f, const Data& kData, bool bWithConquistador)
+	{
+		fprintf(f, "# --- AI settlement brake: how strict it is on each difficulty level ---\n");
+		fprintf(f, "# The brake is a game option (Game tab of the options). Above its soft limit a colonial AI keeps only a part of its wish for further cities.\n");
+		fprintf(f, "# Leader cap: the soft limit is this percentage of the average city count of the other AIs (plus 2). Higher = the AI may grow more.\n");
+		fprintf(f, "# Falloff: the percentage of the wish for further cities that is kept above the soft limit (0 = hard stop at the limit, 100 = no brake).\n");
+		fprintf(f, "# Conquistador is the level the brake was tested on. Easier levels use a stricter brake, harder levels a looser one.\n");
+		fprintf(f, "AiBrakeLeaderPct_EasierLevels=%d\n", kData.aiBrakeLeaderPct[0]);
+		fprintf(f, "AiBrakeFalloff_EasierLevels=%d\n", kData.aiBrakeFalloff[0]);
+		if (bWithConquistador)
+		{
+			fprintf(f, "AiBrakeLeaderPct=%d\n", kData.aiBrakeLeaderPct[1]);
+			fprintf(f, "AiBrakeFalloff=%d\n", kData.aiBrakeFalloff[1]);
+		}
+		fprintf(f, "AiBrakeLeaderPct_Governor=%d\n", kData.aiBrakeLeaderPct[2]);
+		fprintf(f, "AiBrakeFalloff_Governor=%d\n", kData.aiBrakeFalloff[2]);
+		fprintf(f, "AiBrakeLeaderPct_Patriot=%d\n", kData.aiBrakeLeaderPct[3]);
+		fprintf(f, "AiBrakeFalloff_Patriot=%d\n", kData.aiBrakeFalloff[3]);
+		fprintf(f, "AiBrakeLeaderPct_Revolutionary=%d\n", kData.aiBrakeLeaderPct[4]);
+		fprintf(f, "AiBrakeFalloff_Revolutionary=%d\n", kData.aiBrakeFalloff[4]);
+	}
 
 	inline Data& data()
 	{
@@ -546,8 +584,7 @@ namespace WtpTiming
 			kData.iBrakePlotsPerCity = 50;
 			kData.iBrakeHumanPct = 150;
 			kData.iBrakeHumanWeight = 25;
-			kData.iBrakeLeaderPct = 130;
-			kData.iBrakeFalloff = 25;
+			setBrakeLevelDefaults(kData);
 			LARGE_INTEGER kFreq;
 			kFreq.QuadPart = 0;
 			QueryPerformanceFrequency(&kFreq);
@@ -564,8 +601,7 @@ namespace WtpTiming
 		kData.iBrakePlotsPerCity = 50;
 		kData.iBrakeHumanPct = 150;
 		kData.iBrakeHumanWeight = 25;
-		kData.iBrakeLeaderPct = 130;
-		kData.iBrakeFalloff = 25;
+		setBrakeLevelDefaults(kData);
 	}
 
 	// called at the start of every CvGame::doTurn: whether this is a network multiplayer game (then the settings above are the built-in ones)
@@ -1290,13 +1326,14 @@ namespace WtpTiming
 				fprintf(f, "AiBrakePlotsPerCity=%d\n", kData.iBrakePlotsPerCity);
 				fprintf(f, "AiBrakeHumanPct=%d\n", kData.iBrakeHumanPct);
 				fprintf(f, "AiBrakeHumanWeight=%d\n", kData.iBrakeHumanWeight);
-				fprintf(f, "AiBrakeLeaderPct=%d\n", kData.iBrakeLeaderPct);
-				fprintf(f, "AiBrakeFalloff=%d\n", kData.iBrakeFalloff);
+				// (the leader cap and falloff lines of Conquistador and the other levels, with explanations)
+				writeBrakeLevelLines(f, kData, true);
 				fclose(f);
 			}
 			return;
 		}
 		char szLine[256];
+		bool bFoundLevels = false; // the file has the brake values per difficulty level
 		while (fgets(szLine, sizeof(szLine), f) != NULL)
 		{
 			int iValue = 0;
@@ -1324,16 +1361,60 @@ namespace WtpTiming
 			{
 				kData.iBrakeHumanWeight = std::min(100, std::max(0, iValue));
 			}
+			else if (sscanf(szLine, "AiBrakeLeaderPct_EasierLevels=%d", &iValue) == 1)
+			{
+				kData.aiBrakeLeaderPct[0] = std::max(100, iValue);
+				bFoundLevels = true;
+			}
+			else if (sscanf(szLine, "AiBrakeFalloff_EasierLevels=%d", &iValue) == 1)
+			{
+				kData.aiBrakeFalloff[0] = std::min(100, std::max(0, iValue));
+			}
 			else if (sscanf(szLine, "AiBrakeLeaderPct=%d", &iValue) == 1)
 			{
-				kData.iBrakeLeaderPct = std::max(100, iValue);
+				kData.aiBrakeLeaderPct[1] = std::max(100, iValue); // Conquistador
 			}
 			else if (sscanf(szLine, "AiBrakeFalloff=%d", &iValue) == 1)
 			{
-				kData.iBrakeFalloff = std::min(100, std::max(0, iValue));
+				kData.aiBrakeFalloff[1] = std::min(100, std::max(0, iValue)); // Conquistador
+			}
+			else if (sscanf(szLine, "AiBrakeLeaderPct_Governor=%d", &iValue) == 1)
+			{
+				kData.aiBrakeLeaderPct[2] = std::max(100, iValue);
+			}
+			else if (sscanf(szLine, "AiBrakeFalloff_Governor=%d", &iValue) == 1)
+			{
+				kData.aiBrakeFalloff[2] = std::min(100, std::max(0, iValue));
+			}
+			else if (sscanf(szLine, "AiBrakeLeaderPct_Patriot=%d", &iValue) == 1)
+			{
+				kData.aiBrakeLeaderPct[3] = std::max(100, iValue);
+			}
+			else if (sscanf(szLine, "AiBrakeFalloff_Patriot=%d", &iValue) == 1)
+			{
+				kData.aiBrakeFalloff[3] = std::min(100, std::max(0, iValue));
+			}
+			else if (sscanf(szLine, "AiBrakeLeaderPct_Revolutionary=%d", &iValue) == 1)
+			{
+				kData.aiBrakeLeaderPct[4] = std::max(100, iValue);
+			}
+			else if (sscanf(szLine, "AiBrakeFalloff_Revolutionary=%d", &iValue) == 1)
+			{
+				kData.aiBrakeFalloff[4] = std::min(100, std::max(0, iValue));
 			}
 		}
 		fclose(f);
+		if (!bFoundLevels)
+		{
+			// an older settings file without the values per difficulty level: they are appended (the Conquistador values stay where they are)
+			f = fopen(szFile, "a");
+			if (f != NULL)
+			{
+				fprintf(f, "\n");
+				writeBrakeLevelLines(f, kData, false);
+				fclose(f);
+			}
+		}
 		if (kData.bNetwork)
 		{
 			forceNetworkDefaults(kData);

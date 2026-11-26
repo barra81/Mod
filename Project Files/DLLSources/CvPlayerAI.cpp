@@ -12816,15 +12816,11 @@ UnitTypes CvPlayerAI::AI_bestUnit(UnitAITypes eUnitAI, CvArea* pArea)
 	return eBestUnit;
 }
 
-// WTP: difficulty scaling of the AI settlement brake. The values of WTP_Settings.txt (AiBrakeLeaderPct, AiBrakeFalloff) are the ones of
-// Conquistador (the level the brake was tested on). One level below (Explorer) the brake is somewhat stricter, and the easier levels (Pioneer,
-// Pilgrim) use the same values as Explorer. Above Conquistador (Governor, Patriot, Revolutionary) the soft limit rises in small steps.
-// Only these two values change with the level (the floor, the map term and the human term stay as they are), so that a log of one level can be
-// carried over to the others: the log lines show the level, its step and the values really used (step -1 .. +3, 0 = Conquistador).
-//   step:            -1   0  +1  +2  +3
-static const int s_aiBrakeLeaderDelta[5]  = { -15,  0, 10, 20, 30 }; // added to AiBrakeLeaderPct (percentage of the average of the other AIs)
-static const int s_aiBrakeFalloffDelta[5] = { -10,  0,  5, 10, 15 }; // added to AiBrakeFalloff (percentage of the wish kept above the limit)
-
+// WTP: difficulty scaling of the AI settlement brake. The leader cap and the falloff are set per difficulty level in WTP_Settings.txt
+// (AiBrakeLeaderPct / AiBrakeFalloff for Conquistador, the level the brake was tested on; *_EasierLevels for Explorer and easier, *_Governor,
+// *_Patriot, *_Revolutionary above; the defaults are in WtpTiming.h). Only these two values change with the level (the floor, the map term and
+// the human term stay as they are), so that a log of one level can be carried over to the others: the log lines show the level, its step and
+// the values really used. Step: -1 (Explorer and easier), 0 = Conquistador, +1 Governor, +2 Patriot, +3 Revolutionary.
 static int wtpBrakeStep()
 {
 	static int iConquistador = -2;
@@ -12842,12 +12838,12 @@ static int wtpBrakeStep()
 
 static int wtpBrakeLeaderPct()
 {
-	return std::max(100, WtpTiming::data().iBrakeLeaderPct + s_aiBrakeLeaderDelta[wtpBrakeStep() + 1]);
+	return std::max(100, WtpTiming::data().aiBrakeLeaderPct[wtpBrakeStep() + 1]);
 }
 
 static int wtpBrakeFalloff()
 {
-	return std::min(100, std::max(0, WtpTiming::data().iBrakeFalloff + s_aiBrakeFalloffDelta[wtpBrakeStep() + 1]));
+	return std::min(100, std::max(0, WtpTiming::data().aiBrakeFalloff[wtpBrakeStep() + 1]));
 }
 
 // WTP: writes one line per map (script, size, land, colonial powers, settings) to WTP_AiBrake.txt, so that the tests of the AI settlement
@@ -12880,13 +12876,12 @@ static void wtpLogBrakeMap(int iColonial, int iHumans)
 	FILE* f = fopen(szFile.c_str(), "a");
 	if (f != NULL)
 	{
-		fprintf(f, "map | script=%S | %s | size=%S | %dx%d=%d plots | land=%d (%d%%) | colonial powers=%d (humans %d) | speed=%S | difficulty=%S (step %d from Conquistador) | floor=%d plotsPerCity=%d humanPct=%d humanWeight=%d leaderPct=%d falloff=%d (settings file: %d / %d)\n",
+		fprintf(f, "map | script=%S | %s | size=%S | %dx%d=%d plots | land=%d (%d%%) | colonial powers=%d (humans %d) | speed=%S | difficulty=%S (step %d from Conquistador) | floor=%d plotsPerCity=%d humanPct=%d humanWeight=%d leaderPct=%d falloff=%d\n",
 			szScript.c_str(), bFixed ? "fixed" : "random", GC.getWorldInfo(kMap.getWorldSize()).getDescription(),
 			kMap.getGridWidthINLINE(), kMap.getGridHeightINLINE(), kMap.numPlotsINLINE(), kMap.getLandPlots(),
 			(100 * kMap.getLandPlots()) / std::max(1, kMap.numPlotsINLINE()), iColonial, iHumans,
 			GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getDescription(), GC.getHandicapInfo(GC.getGameINLINE().getHandicapType()).getDescription(), iStep,
-			kSet.iBrakeFloor, kSet.iBrakePlotsPerCity, kSet.iBrakeHumanPct, kSet.iBrakeHumanWeight, wtpBrakeLeaderPct(), wtpBrakeFalloff(),
-			kSet.iBrakeLeaderPct, kSet.iBrakeFalloff);
+			kSet.iBrakeFloor, kSet.iBrakePlotsPerCity, kSet.iBrakeHumanPct, kSet.iBrakeHumanWeight, wtpBrakeLeaderPct(), wtpBrakeFalloff());
 		fclose(f);
 	}
 }
@@ -12972,8 +12967,8 @@ int CvPlayerAI::AI_desiredCityCount()
 // WTP: soft limit of cities of the AI settlement brake. Computed once per player and turn (the settler gate asks for it very often).
 // map term:    land plots / (colonial powers * plots per city, default 50), scaled by the game speed (slower speed = more turns = higher limit)
 // human term:  the limit moves towards 150% of the biggest human city count (weak weight, so the map size stays the strongest term)
-// leader cap:  nobody gets bigger than 130% of the average of the other colonial AIs (plus 2), so no single AI runs away (130% is the value of
-//              Conquistador, see wtpBrakeLeaderPct for the other difficulty levels)
+// leader cap:  nobody gets bigger than 130% of the average of the other colonial AIs (plus 2), so no single AI runs away (130% is the default of
+//              Conquistador; the percentage is set per difficulty level in WTP_Settings.txt, see wtpBrakeLeaderPct)
 // the limit never falls below the floor (default 10)
 int CvPlayerAI::AI_getCityBrakeLimit()
 {
