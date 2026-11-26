@@ -9041,8 +9041,10 @@ void CvPlayer::setTurnActive(bool bNewValue, bool bDoTurn)
 				gDLL->getInterfaceIFace()->setForcePopup(false);
 				gDLL->getInterfaceIFace()->clearQueuedPopups();
 				gDLL->getInterfaceIFace()->flushTalkingHeadMessages();
-				WtpHudMessages::clear(); // WTP: message panel: the messages of the next turn start here
 			}
+			// WTP: message panel: the messages of the next turn start here (for every player, not only the active one: in hotseat
+			// the turn of a player may end when another one is already active)
+			WtpHudMessages::clear(getID());
 
 			GC.getGameINLINE().changeNumGameTurnActive(-1);
 
@@ -14404,7 +14406,50 @@ void CvPlayer::showMissedMessages()
 		if (!msg.getShown())
 		{
 			msg.setShown(true);
-			gDLL->getInterfaceIFace()->showMessage(msg);
+			// WTP: the quest text (title + help with the race standings) is not shown in the game's own message area when the player has the
+			// message panel: the panel has the title as a priority message and the rest as its tooltip. The message stays in the list (the quest
+			// log and the turn log have it, refreshQuestMessages replaces it).
+			if (msg.getMessageType() == MESSAGE_TYPE_QUEST && WtpHudMessages::isPanelMessage(getID(), MESSAGE_TYPE_INFO))
+			{
+				const CvWString szQuest(msg.getDescription());
+				const size_t iBreak = szQuest.find(L'\n');
+				if (iBreak == CvWString::npos)
+				{
+					WtpHudMessages::addQuest(getID(), szQuest, CvWString());
+				}
+				else
+				{
+					WtpHudMessages::addQuest(getID(), szQuest.substr(0, iBreak), szQuest.substr(iBreak + 1));
+				}
+				++it;
+				continue;
+			}
+			// WTP: a message of the message panel (only logged, see CvDLLInterfaceIFaceBase::addPlayerMessage) is in the panel already:
+			// showMessage would put it into the game's own message area all the same (hotseat: all of them at once when the turn starts)
+			if (msg.getMessageType() == MESSAGE_TYPE_LOG_ONLY && msg.getLength() >= WTP_HUD_MESSAGE_LENGTH_BASE)
+			{
+				++it;
+				continue;
+			}
+			// WTP: a message that did not come through addPlayerMessage (the exe, CyInterface().addMessage of Python) goes to the message
+			// panel instead of the game's own message area (hotseat: all of them would pop up at once over the panel)
+			if (WtpHudMessages::isPanelMessage(getID(), msg.getMessageType()))
+			{
+				WtpHudMessages::add(getID(), CvWString(msg.getDescription()), msg.getX(), msg.getY());
+				if (GC.getDefineINT("MESSAGE_PANEL_HIDE_ENGINE_DISPLAY") != 0)
+				{
+					msg.setLength(WTP_HUD_MESSAGE_LENGTH_BASE + (int)msg.getMessageType());
+					msg.setMessageType(MESSAGE_TYPE_LOG_ONLY);
+				}
+				else
+				{
+					gDLL->getInterfaceIFace()->showMessage(msg);
+				}
+			}
+			else
+			{
+				gDLL->getInterfaceIFace()->showMessage(msg);
+			}
 		}
 		++it;
 	}

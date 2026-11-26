@@ -830,6 +830,18 @@ void CyGame::addHudMessage(std::wstring szText, bool bPriority) const
 	WtpHudMessages::add(CvWString(szText), -1, -1);
 }
 
+void CyGame::addMessage(int iPlayer, bool bForce, int iLength, std::wstring szString, std::string szSound, int eType, std::string szIcon, int eFlashColor,
+	int iFlashX, int iFlashY, bool bShowOffScreenArrows, bool bShowOnScreenArrows) const
+{
+	if (iPlayer < 0 || iPlayer >= MAX_PLAYERS)
+	{
+		return;
+	}
+	gDLL->getInterfaceIFace()->addPlayerMessage((PlayerTypes)iPlayer, bForce, iLength, CvWString(szString), Coordinates(iFlashX, iFlashY),
+		szSound.empty() ? NULL : szSound.c_str(), (InterfaceMessageTypes)eType, szIcon.empty() ? NULL : szIcon.c_str(), (ColorTypes)eFlashColor,
+		bShowOffScreenArrows, bShowOnScreenArrows);
+}
+
 int CyGame::getNumHudPriority() const
 {
 	return WtpHudMessages::getNumPriority();

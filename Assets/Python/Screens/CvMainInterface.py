@@ -485,6 +485,8 @@ class CvMainInterface:
 	tCursorTipAt = (-1000, -1000)
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
+	dMessageTips = {} # WTP: message index -> tooltip text (messages with WTP_HUD_TIP_MARKER: the quests with their race standings)
+	WTP_HUD_TIP_MARKER = u"[[WTPTIP]]" # the same as in the DLL (CvTalkingHeadMessage.h)
 	BUTTON_MESSAGE_PANEL = 756 # WTP: the message panel of the turn (click: expand / collapse)
 	BUTTON_MESSAGE_MORE = 758 # WTP: message panel footer: the next older page of messages
 	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
@@ -11214,10 +11216,20 @@ class CvMainInterface:
 		except:
 			pass
 
-	# the option "New message panel" of the game options (PLAYEROPTION_MODDER_1, default off, kept in the profile of the player)
+	# the option "New message panel" of the game options (PLAYEROPTION_MODDER_1, default off, kept in the profile of the player).
+	# In a hotseat / PBEM game the game sets the options of a player only while he is the active one, so before his first turn he does not have
+	# them: the option of any human player counts then (the DLL asks the same, see WtpHudMessages::isPanelOption), otherwise the panel would stay
+	# hidden for him while the game's own message area is switched off for the messages
 	def isMessagePanelOption(self):
 		try:
-			return gc.getActivePlayer().isOption(PlayerOptionTypes.PLAYEROPTION_MODDER_1)
+			if gc.getActivePlayer().isOption(PlayerOptionTypes.PLAYEROPTION_MODDER_1):
+				return True
+			if gc.getGame().isHotSeat() or gc.getGame().isPbem():
+				for iPlayer in range(gc.getMAX_PLAYERS()):
+					pPlayer = gc.getPlayer(iPlayer)
+					if pPlayer.isHuman() and pPlayer.isOption(PlayerOptionTypes.PLAYEROPTION_MODDER_1):
+						return True
+			return False
 		except:
 			return False
 
@@ -11367,6 +11379,18 @@ class CvMainInterface:
 			game = gc.getGame()
 			iNumCurrent = game.getNumHudMessages()
 			iNumPrevious = game.getNumHudMessagesPrevious()
+			# hotseat: another player sits at the screen now. The panel shows his messages (the DLL keeps them per player) with his own settings
+			# (auto expand and position in his script data) and opens like at the start of a turn
+			if game.getActivePlayer() != getattr(self, "iMessagePlayer", game.getActivePlayer()):
+				self.bMessageAutoExpand = None
+				self.bMessagePosRead = False
+				self.iMsgMoveX = 0
+				self.iMsgMoveY = 0
+				self.bMessagePanelExpanded = False
+				self.bMessagePanelPrevious = False
+				self.iMessagePage = 0
+				self.iMessageTurn = -1
+			self.iMessagePlayer = game.getActivePlayer()
 			# a new turn: the panel opens expanded with its first messages (when the option is on)
 			if game.getGameTurn() != self.iMessageTurn:
 				self.iMessageTurn = game.getGameTurn()
@@ -11410,7 +11434,7 @@ class CvMainInterface:
 			if self.bMsgWpView:
 				aWpEntries = self.getMsgWaypointEntries()
 				tWpKey = (self.iMsgWpPage, tuple([t[5] for t in aWpEntries]))
-			tKey = (iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes, self.bMsgWpView, self.bMsgWpSea, tWpKey, self.isMessagePanelIdle())
+			tKey = (self.iMessagePlayer, iNumCurrent, iNumPrevious, iNumPriority, bPrevious, self.iMessagePage, self.bMessagePanelExpanded, self.getMessageAutoExpand(), self.iMsgMoveX, self.iMsgMoveY, xRes, yRes, self.bMsgWpView, self.bMsgWpSea, tWpKey, self.isMessagePanelIdle())
 			if tKey == self.tMessagePanelKey:
 				return
 			self.tMessagePanelKey = tKey
@@ -11455,6 +11479,13 @@ class CvMainInterface:
 					aszMessages.append(game.getHudMessageText(i))
 					aiX.append(game.getHudMessageX(i))
 					aiY.append(game.getHudMessageY(i))
+			# messages with a tooltip (the quests): the text after the marker is the tooltip, the line shows only the text before it
+			self.dMessageTips = {}
+			for i in range(len(aszMessages)):
+				iTip = aszMessages[i].find(self.WTP_HUD_TIP_MARKER)
+				if iTip >= 0:
+					self.dMessageTips[i] = aszMessages[i][iTip + len(self.WTP_HUD_TIP_MARKER):]
+					aszMessages[i] = aszMessages[i][:iTip]
 			# (measured in the panel: a symbol is 3.1 characters wide, 22 of them in a row left room for two more)
 			self.fMsgIconWidth = 3.1
 			try:
@@ -12332,6 +12363,10 @@ class CvMainInterface:
 
 	def getMessagePediaHelp(self, iMessage):
 		try:
+			# a quest: the quest text with the race standings
+			szTip = self.dMessageTips.get(iMessage, u"")
+			if szTip != u"":
+				return szTip
 			iContact = self.getMessageContact(iMessage)
 			if iContact >= 0:
 				pNative = gc.getPlayer(iContact)

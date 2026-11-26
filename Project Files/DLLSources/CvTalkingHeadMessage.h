@@ -8,6 +8,9 @@ class CvSavegameWriter;
 // WTP: a message for the message panel is given to the game as MESSAGE_TYPE_LOG_ONLY (the game's own message area does not show it)
 // with the length WTP_HUD_MESSAGE_LENGTH_BASE + the type it would have had, so that it expires like that type (see getExpireTurn)
 static const int WTP_HUD_MESSAGE_LENGTH_BASE = 1000;
+// WTP: a message of the panel can carry a tooltip: text + this marker + tooltip text (the panel cuts it off, the tooltip is shown in the
+// help window beside the panel). Used for the quest messages (title = text, the quest text with the race standings = tooltip).
+#define WTP_HUD_TIP_MARKER L"[[WTPTIP]]"
 
 class CvTalkingHeadMessage
 {

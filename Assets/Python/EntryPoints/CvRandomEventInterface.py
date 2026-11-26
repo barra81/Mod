@@ -1808,7 +1808,7 @@ def applyDiscoveryLegendaryScoutXP(argsList):
 
 	_setDiscoveryLegendaryScoutLeftTurn(unit, -1)
 
-	CyInterface().addMessage(
+	CyGame().addMessage(
 		kTriggeredData.ePlayer,
 		True,
 		10,
@@ -2712,7 +2712,7 @@ def _changeKingRelation(argsList, iChange):
 
 	if player.isHuman():
 		if iChange > 0:
-			CyInterface().addMessage(
+			CyGame().addMessage(
 				kTriggeredData.ePlayer,
 				False,
 				10,
@@ -2727,7 +2727,7 @@ def _changeKingRelation(argsList, iChange):
 				True
 			)
 		elif iChange < 0:
-			CyInterface().addMessage(
+			CyGame().addMessage(
 				kTriggeredData.ePlayer,
 				False,
 				10,
@@ -2846,7 +2846,7 @@ def applyDiscoveryFever(argsList):
 
 	# Player feedback
 	if player.isHuman():
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			kTriggeredData.ePlayer,
 			True,
 			10,
@@ -3033,7 +3033,7 @@ def applyDiscoveryDesert(argsList):
 
 	# Player feedback
 	if player.isHuman():
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			kTriggeredData.ePlayer,
 			True,
 			10,
@@ -3862,7 +3862,7 @@ def applyVolcano1(argsList):
 			plot = listPlots[gc.getGame().getSorenRandNum(len(listPlots), "Volcano event improvement destroyed")]
 			iImprovement = plot.getImprovementType()
 			szBuffer = localText.getText("TXT_KEY_EVENT_CITY_IMPROVEMENT_DESTROYED", (gc.getImprovementInfo(iImprovement).getTextKey(), ))
-			CyInterface().addMessage(kTriggeredData.ePlayer, False, gc.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", InterfaceMessageTypes.MESSAGE_TYPE_INFO, gc.getImprovementInfo(iImprovement).getButton(), gc.getInfoTypeForString("COLOR_RED"), plot.getX(), plot.getY(), True, True)
+			CyGame().addMessage(kTriggeredData.ePlayer, False, gc.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", InterfaceMessageTypes.MESSAGE_TYPE_INFO, gc.getImprovementInfo(iImprovement).getButton(), gc.getInfoTypeForString("COLOR_RED"), plot.getX(), plot.getY(), True, True)
 			if iImprovement in listRuins:
 				plot.setImprovementType(iRuins)
 			else:
@@ -6394,7 +6394,7 @@ def applyPirates1a(argsList):
 		unit.kill(False)
 
 		if player.isHuman():
-			CyInterface().addMessage(
+			CyGame().addMessage(
 				kTriggeredData.ePlayer,
 				False,
 				gc.getEVENT_MESSAGE_TIME(),
@@ -6420,7 +6420,7 @@ def applyPirates1a(argsList):
 	city.spawnBarbarianUnitOnAdjacentPlotOfCity(iPirateCutterClass)
 
 	if player.isHuman():
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			kTriggeredData.ePlayer,
 			False,
 			gc.getEVENT_MESSAGE_TIME(),
@@ -9385,7 +9385,7 @@ def changeFailedTraderToExpertTrader(argsList):
 	_clearDiscoveryFailedTraderSelectedUnitData(player)
 
 	if bSeasoned:
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			kTriggeredData.ePlayer,
 			True,
 			10,
@@ -10557,7 +10557,7 @@ def _showNativeTrainingProgressMessage(player, unit, iCount):
 	else:
 		szText = localText.getText("TXT_KEY_EVENT_NATIVE_TRAINING_PROGRESS_3", (unit.getNameKey(),))
 
-	CyInterface().addMessage(
+	CyGame().addMessage(
 		player.getID(),
 		True,
 		10,
@@ -10581,7 +10581,7 @@ def _showNativeTrainingVisitedVillageMessage(player, unit):
 
 	szText = localText.getText("TXT_KEY_EVENT_NATIVE_TRAINING_PROGRESS_VISITED_ONLY", (unit.getNameKey(),))
 
-	CyInterface().addMessage(
+	CyGame().addMessage(
 		player.getID(),
 		True,
 		10,
@@ -10957,7 +10957,7 @@ def applyStirredUpNativesHorsesQuestStart(argsList):
 	_sunHorsesSetNumber(player, _sunHorsesKeyPlotY(), nativeCity.getY())
 
 	if player.isHuman():
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			kTriggeredData.ePlayer,
 			True,
 			gc.getEVENT_MESSAGE_TIME(),
@@ -11339,7 +11339,7 @@ def applyStirredUpNativesMusketsQuestStart(argsList):
 	_sunMusketsSetNumber(player, _sunMusketsKeyPlotY(), nativeCity.getY())
 
 	if player.isHuman():
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			kTriggeredData.ePlayer,
 			True,
 			gc.getEVENT_MESSAGE_TIME(),
@@ -11786,7 +11786,7 @@ def _nlrMaintainReturnedPlots(player):
 				nativePlayer.AI_changeAttitudeExtra(player.getID(), -4)
 
 				if player.isHuman():
-					CyInterface().addMessage(
+					CyGame().addMessage(
 						player.getID(),
 						True,
 						gc.getEVENT_MESSAGE_TIME(),
@@ -12676,7 +12676,7 @@ def _nsgMaintainLockedPlot(player):
 			nativePlayer.AI_changeAttitudeExtra(player.getID(), -4)
 			_nsgRemove(player, _nsgReturnedKey())
 
-			CyInterface().addMessage(
+			CyGame().addMessage(
 				player.getID(),
 				True,
 				20,
@@ -13223,7 +13223,7 @@ def checkTradeQuestLeadershipChanges(iPlayer):
 			else:
 				iColor = gc.getInfoTypeForString("COLOR_YELLOW")
 
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			iPlayer,
 			True,
 			gc.getEVENT_MESSAGE_TIME(),
@@ -19070,7 +19070,7 @@ def _applyDirectSuccessfulCriminalRaid(city):
 	if bestType == "gold" and bestLoot > 0:
 		player.changeGold(-bestLoot)
 
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			player.getID(),
 			True,
 			gc.getEVENT_MESSAGE_TIME(),
@@ -19094,7 +19094,7 @@ def _applyDirectSuccessfulCriminalRaid(city):
 
 		sYieldName = gc.getYieldInfo(bestYield).getDescription()
 
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			player.getID(),
 			True,
 			gc.getEVENT_MESSAGE_TIME(),
@@ -19117,7 +19117,7 @@ def _applyDirectSuccessfulCriminalRaid(city):
 		)
 		return True
 
-	CyInterface().addMessage(
+	CyGame().addMessage(
 		player.getID(),
 		True,
 		gc.getEVENT_MESSAGE_TIME(),
@@ -19160,7 +19160,7 @@ def applyCriminalsBlackmailCityRefuse(argsList):
 
 		# 50%: city successfully defended
 		if iRoll < 50:
-			CyInterface().addMessage(
+			CyGame().addMessage(
 				player.getID(),
 				True,
 				gc.getEVENT_MESSAGE_TIME(),
@@ -19180,7 +19180,7 @@ def applyCriminalsBlackmailCityRefuse(argsList):
 			return True
 
 		# 50%: defenders fail to prevent the raid
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			player.getID(),
 			True,
 			gc.getEVENT_MESSAGE_TIME(),
@@ -19434,7 +19434,7 @@ def _sendFerryStationRobbersMessage(ePlayer, szTextKey, plot, iColor):
 	if plot is None or plot.isNone():
 		return
 
-	CyInterface().addMessage(
+	CyGame().addMessage(
 		ePlayer,
 		True,
 		gc.getEVENT_MESSAGE_TIME(),
@@ -27189,7 +27189,7 @@ def _sendNativeRefugeesMessage(receivingCity):
 		if not player.isHuman():
 			continue
 
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			iPlayer,
 			False,
 			gc.getEVENT_MESSAGE_TIME(),
@@ -27321,7 +27321,7 @@ def _sendAncestorsCallMessage(city):
 		if not player.isHuman():
 			continue
 
-		CyInterface().addMessage(
+		CyGame().addMessage(
 			iPlayer,
 			False,
 			gc.getEVENT_MESSAGE_TIME(),

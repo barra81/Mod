@@ -19,89 +19,196 @@ namespace WtpHudMessages
 		int iX;
 		int iY;
 	};
+	// the messages of one player: every human player has his own (hotseat: the panel shows those of the active player only,
+	// and the messages that come while another player is active wait in his own list instead of the game's own message area)
 	// priority messages are kept in front of the others (in the order they came), the panel shows them at the top
+	struct PlayerMessages
+	{
+		std::vector<Entry> aEntries;
+		std::vector<Entry> aPreviousEntries; // the messages of the turn before (shown on demand by the panel)
+		int iNumPriority;
+		int iNumPriorityPrevious;
+		PlayerMessages() : iNumPriority(0), iNumPriorityPrevious(0) {}
+		bool empty() const
+		{
+			return aEntries.empty() && aPreviousEntries.empty();
+		}
+		void reset()
+		{
+			aEntries.clear();
+			aPreviousEntries.clear();
+			iNumPriority = 0;
+			iNumPriorityPrevious = 0;
+		}
+	};
 	static bool s_bPriority = false;
-	static int s_iNumPriority = 0;
-	static int s_iNumPriorityPrevious = 0;
+	static PlayerMessages& messagesOf(PlayerTypes ePlayer)
+	{
+		static PlayerMessages aMessages[MAX_PLAYERS];
+		static PlayerMessages kNone; // NO_PLAYER (no game yet): an empty list, nothing is kept
+		if (ePlayer < 0 || ePlayer >= MAX_PLAYERS)
+		{
+			kNone.reset();
+			return kNone;
+		}
+		return aMessages[ePlayer];
+	}
+	// the messages that the panel shows: those of the active player
+	static PlayerMessages& active()
+	{
+		return messagesOf(GC.getGameINLINE().getActivePlayer());
+	}
 	void setPriority(bool bPriority)
 	{
 		s_bPriority = bPriority;
 	}
+	// the option "New message panel" of the game options (PLAYEROPTION_MODDER_1, default off)
+	static bool isPanelOption(PlayerTypes ePlayer)
+	{
+		if (GET_PLAYER(ePlayer).isOption(PLAYEROPTION_MODDER_1))
+		{
+			return true;
+		}
+		// hotseat / PBEM: the players share one profile, and a player gets its options only when he becomes active (CvGame::setActivePlayer,
+		// sendPlayerOptions, after showMissedMessages): before his first turn he does not have them. So the option of any human player counts.
+		CvGame& kGame = GC.getGameINLINE();
+		if (kGame.isHotSeat() || kGame.isPbem())
+		{
+			for (int iPlayer = 0; iPlayer < MAX_PLAYERS; iPlayer++)
+			{
+				const CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+				if (kPlayer.isHuman() && kPlayer.isOption(PLAYEROPTION_MODDER_1))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	bool isPanelMessage(PlayerTypes ePlayer, InterfaceMessageTypes eType)
+	{
+		return (ePlayer > NO_PLAYER && ePlayer < MAX_PLAYERS && GET_PLAYER(ePlayer).isHuman()
+			&& GC.getDefineINT("MESSAGE_PANEL_ENABLED") != 0
+			&& isPanelOption(ePlayer)
+			&& (eType == MESSAGE_TYPE_INFO || eType == MESSAGE_TYPE_DISPLAY_ONLY || eType == MESSAGE_TYPE_MAJOR_EVENT
+				|| eType == MESSAGE_TYPE_MINOR_EVENT || eType == MESSAGE_TYPE_COMBAT_MESSAGE));
+	}
 	int getNumPriority()
 	{
-		return s_iNumPriority;
+		return active().iNumPriority;
 	}
 	int getNumPriorityPrevious()
 	{
-		return s_iNumPriorityPrevious;
+		return active().iNumPriorityPrevious;
 	}
-	static std::vector<Entry>& entries()
+	void add(PlayerTypes ePlayer, const CvWString& szText, int iX, int iY)
 	{
-		static std::vector<Entry> aEntries;
-		return aEntries;
-	}
-	void add(const CvWString& szText, int iX, int iY)
-	{
+		PlayerMessages& kMessages = messagesOf(ePlayer);
 		Entry kEntry;
 		kEntry.szText = szText;
 		kEntry.iX = iX;
 		kEntry.iY = iY;
 		if (s_bPriority)
 		{
-			entries().insert(entries().begin() + s_iNumPriority, kEntry);
-			s_iNumPriority++;
+			kMessages.aEntries.insert(kMessages.aEntries.begin() + kMessages.iNumPriority, kEntry);
+			kMessages.iNumPriority++;
 		}
 		else
 		{
-			entries().push_back(kEntry);
+			kMessages.aEntries.push_back(kEntry);
 		}
+	}
+	void add(const CvWString& szText, int iX, int iY)
+	{
+		add(GC.getGameINLINE().getActivePlayer(), szText, iX, iY);
 	}
 	void addTop(const CvWString& szText)
 	{
+		PlayerMessages& kMessages = active();
 		Entry kEntry;
 		kEntry.szText = szText;
 		kEntry.iX = -1;
 		kEntry.iY = -1;
-		entries().insert(entries().begin(), kEntry);
-		s_iNumPriority++;
+		kMessages.aEntries.insert(kMessages.aEntries.begin(), kEntry);
+		kMessages.iNumPriority++;
 	}
-	// the messages of the turn before (shown on demand by the panel)
-	static std::vector<Entry>& previousEntries()
+	void addQuest(PlayerTypes ePlayer, const CvWString& szTitle, const CvWString& szTip)
 	{
-		static std::vector<Entry> aEntries;
-		return aEntries;
-	}
-	void clear()
-	{
-		if (!entries().empty())
+		PlayerMessages& kMessages = messagesOf(ePlayer);
+		const CvWString szPrefix = szTitle + WTP_HUD_TIP_MARKER;
+		for (size_t i = 0; i < kMessages.aEntries.size(); ++i)
 		{
-			previousEntries() = entries();
-			s_iNumPriorityPrevious = s_iNumPriority;
+			if (kMessages.aEntries[i].szText.compare(0, szPrefix.length(), szPrefix) == 0)
+			{
+				kMessages.aEntries.erase(kMessages.aEntries.begin() + i);
+				if ((int)i < kMessages.iNumPriority)
+				{
+					kMessages.iNumPriority--;
+				}
+				break;
+			}
 		}
-		entries().clear();
-		s_iNumPriority = 0;
+		Entry kEntry;
+		kEntry.szText = szPrefix + szTip;
+		kEntry.iX = -1;
+		kEntry.iY = -1;
+		kMessages.aEntries.insert(kMessages.aEntries.begin() + kMessages.iNumPriority, kEntry);
+		kMessages.iNumPriority++;
+	}
+	void clear(PlayerTypes ePlayer)
+	{
+		PlayerMessages& kMessages = messagesOf(ePlayer);
+		if (!kMessages.aEntries.empty())
+		{
+			kMessages.aPreviousEntries = kMessages.aEntries;
+			kMessages.iNumPriorityPrevious = kMessages.iNumPriority;
+		}
+		kMessages.aEntries.clear();
+		kMessages.iNumPriority = 0;
+	}
+	int getNum()
+	{
+		return (int)active().aEntries.size();
+	}
+	const CvWString& getText(int i)
+	{
+		static const CvWString szEmpty;
+		return (i >= 0 && i < getNum()) ? active().aEntries[i].szText : szEmpty;
+	}
+	int getX(int i)
+	{
+		return (i >= 0 && i < getNum()) ? active().aEntries[i].iX : -1;
+	}
+	int getY(int i)
+	{
+		return (i >= 0 && i < getNum()) ? active().aEntries[i].iY : -1;
 	}
 	int getNumPrevious()
 	{
-		return (int)previousEntries().size();
+		return (int)active().aPreviousEntries.size();
 	}
 	const CvWString& getPreviousText(int i)
 	{
 		static const CvWString szEmpty;
-		return (i >= 0 && i < getNumPrevious()) ? previousEntries()[i].szText : szEmpty;
+		return (i >= 0 && i < getNumPrevious()) ? active().aPreviousEntries[i].szText : szEmpty;
 	}
 	int getPreviousX(int i)
 	{
-		return (i >= 0 && i < getNumPrevious()) ? previousEntries()[i].iX : -1;
+		return (i >= 0 && i < getNumPrevious()) ? active().aPreviousEntries[i].iX : -1;
 	}
 	int getPreviousY(int i)
 	{
-		return (i >= 0 && i < getNumPrevious()) ? previousEntries()[i].iY : -1;
+		return (i >= 0 && i < getNumPrevious()) ? active().aPreviousEntries[i].iY : -1;
 	}
 	// savegame: all the messages as one string (fields separated by control characters)
+	// format: for every player with messages SEP_PLAYER, the player id, SEP_PLAYER_DATA and the block of the player (the format of
+	// the savegames before the messages per player: four sections, see appendBlock). A string without SEP_PLAYER at the start is
+	// such an old block: its messages belong to the active player (the only human player the panel knew).
 	static const wchar SEP_FIELD = 1;
 	static const wchar SEP_ENTRY = 2;
 	static const wchar SEP_SECTION = 3;
+	static const wchar SEP_PLAYER = 4;
+	static const wchar SEP_PLAYER_DATA = 5;
 	static void appendEntries(CvWString& szData, const std::vector<Entry>& aEntries)
 	{
 		for (size_t i = 0; i < aEntries.size(); i++)
@@ -114,16 +221,31 @@ namespace WtpHudMessages
 			szData += SEP_ENTRY;
 		}
 	}
+	static void appendBlock(CvWString& szData, const PlayerMessages& kMessages)
+	{
+		szData += CvWString::format(L"%d", kMessages.iNumPriority);
+		szData += SEP_SECTION;
+		szData += CvWString::format(L"%d", kMessages.iNumPriorityPrevious);
+		szData += SEP_SECTION;
+		appendEntries(szData, kMessages.aEntries);
+		szData += SEP_SECTION;
+		appendEntries(szData, kMessages.aPreviousEntries);
+	}
 	CvWString serialize()
 	{
 		CvWString szData;
-		szData += CvWString::format(L"%d", s_iNumPriority);
-		szData += SEP_SECTION;
-		szData += CvWString::format(L"%d", s_iNumPriorityPrevious);
-		szData += SEP_SECTION;
-		appendEntries(szData, entries());
-		szData += SEP_SECTION;
-		appendEntries(szData, previousEntries());
+		for (int iPlayer = 0; iPlayer < MAX_PLAYERS; iPlayer++)
+		{
+			const PlayerMessages& kMessages = messagesOf((PlayerTypes)iPlayer);
+			if (kMessages.empty())
+			{
+				continue;
+			}
+			szData += SEP_PLAYER;
+			szData += CvWString::format(L"%d", iPlayer);
+			szData += SEP_PLAYER_DATA;
+			appendBlock(szData, kMessages);
+		}
 		return szData;
 	}
 	static void parseEntries(const CvWString& szSection, std::vector<Entry>& aEntries)
@@ -156,13 +278,9 @@ namespace WtpHudMessages
 			aEntries.push_back(kEntry);
 		}
 	}
-	void deserialize(const CvWString& szData)
+	static void parseBlock(const CvWString& szData, PlayerMessages& kMessages)
 	{
-		entries().clear();
-		previousEntries().clear();
-		s_iNumPriority = 0;
-		s_iNumPriorityPrevious = 0;
-		s_bPriority = false;
+		kMessages.reset();
 		if (szData.empty())
 		{
 			return;
@@ -180,27 +298,49 @@ namespace WtpHudMessages
 			aszSection[i] = szData.substr(iPos, iEnd - iPos);
 			iPos = iEnd + 1;
 		}
-		parseEntries(aszSection[2], entries());
-		parseEntries(aszSection[3], previousEntries());
-		s_iNumPriority = std::min((int)wcstol(aszSection[0].c_str(), NULL, 10), (int)entries().size());
-		s_iNumPriorityPrevious = std::min((int)wcstol(aszSection[1].c_str(), NULL, 10), (int)previousEntries().size());
+		parseEntries(aszSection[2], kMessages.aEntries);
+		parseEntries(aszSection[3], kMessages.aPreviousEntries);
+		kMessages.iNumPriority = std::max(0, std::min((int)wcstol(aszSection[0].c_str(), NULL, 10), (int)kMessages.aEntries.size()));
+		kMessages.iNumPriorityPrevious = std::max(0, std::min((int)wcstol(aszSection[1].c_str(), NULL, 10), (int)kMessages.aPreviousEntries.size()));
 	}
-	int getNum()
+	void deserialize(const CvWString& szData)
 	{
-		return (int)entries().size();
-	}
-	const CvWString& getText(int i)
-	{
-		static const CvWString szEmpty;
-		return (i >= 0 && i < getNum()) ? entries()[i].szText : szEmpty;
-	}
-	int getX(int i)
-	{
-		return (i >= 0 && i < getNum()) ? entries()[i].iX : -1;
-	}
-	int getY(int i)
-	{
-		return (i >= 0 && i < getNum()) ? entries()[i].iY : -1;
+		for (int iPlayer = 0; iPlayer < MAX_PLAYERS; iPlayer++)
+		{
+			messagesOf((PlayerTypes)iPlayer).reset();
+		}
+		s_bPriority = false;
+		if (szData.empty())
+		{
+			return;
+		}
+		if (szData[0] != SEP_PLAYER)
+		{
+			// a savegame from before the messages per player
+			parseBlock(szData, active());
+			return;
+		}
+		size_t iPos = 1;
+		while (iPos <= szData.length())
+		{
+			size_t iEnd = szData.find(SEP_PLAYER, iPos);
+			if (iEnd == CvWString::npos)
+			{
+				iEnd = szData.length();
+			}
+			CvWString szPlayer = szData.substr(iPos, iEnd - iPos);
+			iPos = iEnd + 1;
+			size_t iData = szPlayer.find(SEP_PLAYER_DATA);
+			if (iData == CvWString::npos)
+			{
+				continue;
+			}
+			int iPlayer = (int)wcstol(szPlayer.substr(0, iData).c_str(), NULL, 10);
+			if (iPlayer >= 0 && iPlayer < MAX_PLAYERS)
+			{
+				parseBlock(szPlayer.substr(iData + 1), messagesOf((PlayerTypes)iPlayer));
+			}
+		}
 	}
 }
 
@@ -212,15 +352,14 @@ void CvDLLInterfaceIFaceBase::addPlayerMessage(PlayerTypes ePlayer, bool bForce,
 #ifndef NO_ADDMESSAGE
 	// WTP: the message panel (MESSAGE_PANEL_ENABLED in GlobalDefinesAlt.xml) keeps the messages of the turn for the human player. With
 	// MESSAGE_PANEL_HIDE_ENGINE_DISPLAY the game's own message area does not show them (log only, they expire as before, see CvTalkingHeadMessage)
-	if (ePlayer != NO_PLAYER && ePlayer == GC.getGameINLINE().getActivePlayer() && GET_PLAYER(ePlayer).isHuman()
-		&& GC.getDefineINT("MESSAGE_PANEL_ENABLED") != 0
-		&& GET_PLAYER(ePlayer).isOption(PLAYEROPTION_MODDER_1) // the option "New message panel" of the game options (default off)
-		&& (eType == MESSAGE_TYPE_INFO || eType == MESSAGE_TYPE_DISPLAY_ONLY || eType == MESSAGE_TYPE_MAJOR_EVENT
-			|| eType == MESSAGE_TYPE_MINOR_EVENT || eType == MESSAGE_TYPE_COMBAT_MESSAGE))
+	// (every human player, not only the active one: in hotseat the messages of a player who is not active wait in his own list of the panel;
+	// in the game's own message area they would all pop up at once over the panel when his turn starts, see CvPlayer::showMissedMessages)
+	if (WtpHudMessages::isPanelMessage(ePlayer, eType))
 	{
-		WtpHudMessages::add(szString, coord.x(), coord.y());
+		WtpHudMessages::add(ePlayer, szString, coord.x(), coord.y());
 		// the sound of a message is played here because a message that is only logged has none, so every message plays its own sound as before
-		if (pszSound != NULL && pszSound[0] != 0)
+		// (only for the active player: the others do not sit at the screen now)
+		if (pszSound != NULL && pszSound[0] != 0 && ePlayer == GC.getGameINLINE().getActivePlayer())
 		{
 			playGeneralSound(pszSound);
 		}
