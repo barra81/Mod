@@ -186,6 +186,7 @@
 //   PathfinderMinChildren=0  parallel only when at least this many child nodes have to be expanded in one step
 //   AiBrake*                 the soft limit of the AI settlement brake (game option GAMEOPTION_AI_CITY_BRAKE)
 //   ShiftLoadExclude=...     the goods that Shift + load (fill all free cargo slots) leaves on the quay, YIELD_ names separated by commas (CvUnit::loadAllYieldsByValue)
+//   ShiftLoadInclude=...     exceptions: goods that Shift + load takes although the automatic rules (livestock, raw materials) or the list above leave them
 // In a network multiplayer game these settings are not read from the file (every machine has to calculate the same game): the built-in
 // values are used, see forceNetworkDefaults.
 //
@@ -532,6 +533,8 @@ namespace WtpTiming
 		int aiBrakeFalloff[5];    // percentage of the wish for further cities that is kept above the soft limit
 		// Shift + load (CvUnit::loadAllYieldsByValue): the goods that are never loaded, as a comma separated list of YIELD_ names (ShiftLoadExclude in WTP_Settings.txt)
 		char szShiftLoadExclude[512];
+		// the goods that Shift + load takes although the automatic exclusion (livestock, raw materials) or the list above would leave them (ShiftLoadInclude; empty = none)
+		char szShiftLoadInclude[512];
 	};
 
 	// the built-in list of the goods that Shift + load leaves on the quay: food, trade goods, building material and military goods (livestock and the raw
@@ -542,13 +545,38 @@ namespace WtpTiming
 	}
 
 	// the explained line of the exclusion list (new settings file, or appended to an older one that does not have it yet)
-	inline void writeShiftLoadLines(FILE* f, const char* szList)
+	inline void writeShiftLoadLines(FILE* f, const char* szList, const char* szInclude, bool bWithList)
 	{
-		fprintf(f, "# --- Shift + load (fill all free cargo slots of a ship): goods that are never loaded ---\n");
-		fprintf(f, "# Comma separated list of YIELD_ names (as in the XML of the yields, no spaces). Livestock and the raw materials of the professions are always left out besides this list.\n");
-		fprintf(f, "# Take a good out of the list and Shift + load takes it, put a good in and it stays on the quay. A name that does not exist is ignored.\n");
-		fprintf(f, "# In a network game the built-in list is used (the load order is a game command and has to give the same result on every machine).\n");
-		fprintf(f, "ShiftLoadExclude=%s\n", szList);
+		if (bWithList)
+		{
+			fprintf(f, "# --- Shift + load (fill all free cargo slots of a ship): goods that are never loaded ---\n");
+			fprintf(f, "# Comma separated list of YIELD_ names (as in the XML of the yields, no spaces). Livestock and the raw materials of the professions are always left out besides this list.\n");
+			fprintf(f, "# Take a good out of the list and Shift + load takes it, put a good in and it stays on the quay. A name that does not exist is ignored.\n");
+			fprintf(f, "# In a network game the built-in list is used (the load order is a game command and has to give the same result on every machine).\n");
+			fprintf(f, "ShiftLoadExclude=%s\n", szList);
+		}
+		fprintf(f, "# Exceptions: goods that are loaded although they are left out automatically (livestock, raw materials) or are in the list above. Empty = no exception, the rules above apply.\n");
+		fprintf(f, "# Example: ShiftLoadInclude=YIELD_HORSES,YIELD_COTTON  (the goods named here are always loaded, whatever the rules above say)\n");
+		fprintf(f, "ShiftLoadInclude=%s\n", szInclude);
+	}
+
+	// the value of a list line of the settings file (after the "="): without blanks and the line end; false if it does not fit
+	inline bool readListValue(const char* szValue, char* szOut, size_t iSize)
+	{
+		std::string szList;
+		for (const char* p = szValue; *p != 0 && *p != '\r' && *p != '\n'; ++p)
+		{
+			if (*p != ' ' && *p != '\t')
+			{
+				szList += *p;
+			}
+		}
+		if (szList.size() >= iSize)
+		{
+			return false;
+		}
+		strcpy(szOut, szList.c_str());
+		return true;
 	}
 
 	// WTP: in a network multiplayer game every machine has to calculate the same game. The settings that change the course of the game (the
@@ -610,6 +638,7 @@ namespace WtpTiming
 			kData.iBrakeHumanWeight = 25;
 			setBrakeLevelDefaults(kData);
 			strcpy(kData.szShiftLoadExclude, shiftLoadExcludeDefault());
+			kData.szShiftLoadInclude[0] = 0;
 			LARGE_INTEGER kFreq;
 			kFreq.QuadPart = 0;
 			QueryPerformanceFrequency(&kFreq);
@@ -628,6 +657,7 @@ namespace WtpTiming
 		kData.iBrakeHumanWeight = 25;
 		setBrakeLevelDefaults(kData);
 		strcpy(kData.szShiftLoadExclude, shiftLoadExcludeDefault());
+		kData.szShiftLoadInclude[0] = 0;
 	}
 
 	// called at the start of every CvGame::doTurn: whether this is a network multiplayer game (then the settings above are the built-in ones)
@@ -1365,13 +1395,14 @@ namespace WtpTiming
 				// (the leader cap and falloff lines of Conquistador and the other levels, with explanations)
 				writeBrakeLevelLines(f, kData, true);
 				fprintf(f, "\n");
-				writeShiftLoadLines(f, kData.szShiftLoadExclude);
+				writeShiftLoadLines(f, kData.szShiftLoadExclude, kData.szShiftLoadInclude, true);
 				fclose(f);
 			}
 			return;
 		}
 		char szLine[1024];
 		bool bFoundShiftLoad = false; // the file has the exclusion list of Shift + load
+		bool bFoundShiftInclude = false; // ... and the list of exceptions
 		bool bFoundLevels = false; // the file has the brake values per difficulty level
 		while (fgets(szLine, sizeof(szLine), f) != NULL)
 		{
@@ -1379,19 +1410,12 @@ namespace WtpTiming
 			if (strncmp(szLine, "ShiftLoadExclude=", 17) == 0)
 			{
 				bFoundShiftLoad = true;
-				// the rest of the line without the line end and blanks
-				std::string szList;
-				for (const char* p = szLine + 17; *p != 0 && *p != '\r' && *p != '\n'; ++p)
-				{
-					if (*p != ' ' && *p != '\t')
-					{
-						szList += *p;
-					}
-				}
-				if (szList.size() < sizeof(kData.szShiftLoadExclude))
-				{
-					strcpy(kData.szShiftLoadExclude, szList.c_str());
-				}
+				readListValue(szLine + 17, kData.szShiftLoadExclude, sizeof(kData.szShiftLoadExclude));
+			}
+			else if (strncmp(szLine, "ShiftLoadInclude=", 17) == 0)
+			{
+				bFoundShiftInclude = true;
+				readListValue(szLine + 17, kData.szShiftLoadInclude, sizeof(kData.szShiftLoadInclude));
 			}
 			else if (sscanf(szLine, "PathfinderParallel=%d", &iValue) == 1)
 			{
@@ -1460,14 +1484,14 @@ namespace WtpTiming
 			}
 		}
 		fclose(f);
-		if (!bFoundShiftLoad)
+		if (!bFoundShiftLoad || !bFoundShiftInclude)
 		{
-			// an older settings file without the exclusion list: it is appended
+			// an older settings file without the exclusion list or the exceptions: the lines are appended (the list that exists is kept as it is)
 			f = fopen(szFile, "a");
 			if (f != NULL)
 			{
 				fprintf(f, "\n");
-				writeShiftLoadLines(f, kData.szShiftLoadExclude);
+				writeShiftLoadLines(f, kData.szShiftLoadExclude, kData.szShiftLoadInclude, !bFoundShiftLoad);
 				fclose(f);
 			}
 		}

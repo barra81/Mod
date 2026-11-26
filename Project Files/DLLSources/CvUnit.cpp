@@ -5601,7 +5601,7 @@ void CvUnit::loadAllYieldsByValue()
 		abExcluded[i] = false;
 	}
 	// not loaded: the goods of the list ShiftLoadExclude in WTP_Settings.txt (built-in: food, trade goods, building material, military goods; in a network game
-	// always the built-in list), livestock and all raw materials (goods that a profession turns into another good)
+	// always the built-in list), livestock and all raw materials (goods that a profession turns into another good); the list ShiftLoadInclude makes exceptions
 	{
 		const std::string szList = std::string(WtpTiming::data().szShiftLoadExclude) + ",";
 		size_t iStart = 0;
@@ -5639,6 +5639,21 @@ void CvUnit::loadAllYieldsByValue()
 				{
 					abExcluded[iConsumed] = true;
 				}
+			}
+		}
+	}
+	// the exceptions (ShiftLoadInclude in WTP_Settings.txt, empty = none): these goods are loaded whatever the rules above say
+	{
+		const std::string szList = std::string(WtpTiming::data().szShiftLoadInclude) + ",";
+		size_t iStart = 0;
+		for (size_t iEnd = szList.find(','); iEnd != std::string::npos; iEnd = szList.find(',', iStart))
+		{
+			const std::string szName = szList.substr(iStart, iEnd - iStart);
+			iStart = iEnd + 1;
+			const int iYield = szName.empty() ? -1 : GC.getInfoTypeForString(szName.c_str(), true);
+			if (iYield >= 0 && iYield < NUM_YIELD_TYPES)
+			{
+				abExcluded[iYield] = false;
 			}
 		}
 	}
