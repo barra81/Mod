@@ -12845,7 +12845,11 @@ class CvMainInterface:
 			self.updateMessageScroll()
 		except:
 			pass
-			CvScreensInterface.yieldAmountScreen.update(fDelta) # (the mouse wheel of the amount dialog)
+		# the mouse wheel of the amount dialog (it has to run every frame, also when the message panel update has failed)
+		try:
+			CvScreensInterface.yieldAmountScreen.update(fDelta)
+		except:
+			pass
 		self.updateBuildingUpgradePanel()
 		self.updateAutomatedFollow()
 		return
