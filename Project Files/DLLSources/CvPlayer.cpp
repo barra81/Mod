@@ -15410,6 +15410,44 @@ void CvPlayer::applyEvent(EventTypes eEvent, const EventTriggeredData& kTriggere
 	int iRandomGold = getEventCost(eEvent, kTriggeredData.m_eOtherPlayer, true);
 	iGold += GC.getGameINLINE().getSorenRandNum(iRandomGold - iGold + 1, "Event random gold");
 
+	// WTP: do not charge gold when the event's unit reward cannot be granted (no valid unit for this civ, or no valid spawn location).
+	// The unit spawn further below is conditional and has no rollback, so the player would pay and receive nothing (e.g. the Eccentric
+	// Architect event). Idea and code: StaticShielding/Mod, commit f97b56c.
+	if (iGold < 0 && kEvent.getUnitClass() != NO_UNITCLASS && kEvent.getNumUnits() > 0)
+	{
+		bool bCanGrantUnit = false;
+		UnitTypes eRewardUnit = (UnitTypes)GC.getCivilizationInfo(getCivilizationType()).getCivilizationUnits(kEvent.getUnitClass());
+		if (eRewardUnit != NO_UNIT)
+		{
+			if (GC.getUnitInfo(eRewardUnit).getDomainType() == DOMAIN_SEA)
+			{
+				// mirrors the spawn logic below: a coastal deep water city or the starting plot
+				bCanGrantUnit = (getStartingPlot() != NULL);
+				if (!bCanGrantUnit)
+				{
+					int iLoop;
+					for (CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+					{
+						if (pLoopCity->isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()) && pLoopCity->plot()->hasDeepWaterCoast())
+						{
+							bCanGrantUnit = true;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				bCanGrantUnit = (pCity != NULL || getPrimaryCity() != NULL);
+			}
+		}
+		if (!bCanGrantUnit)
+		{
+			FAssertMsg(false, "Event charges gold for a unit reward that cannot be granted - waiving the cost");
+			iGold = 0;
+		}
+	}
+
 	if (iGold != 0)
 	{
 		OOS_LOG("Apply event gold A", iGold);
@@ -15629,7 +15667,13 @@ void CvPlayer::applyEvent(EventTypes eEvent, const EventTriggeredData& kTriggere
 					for (int i = 0; i < kEvent.getNumUnits(); ++i)
 					{
 						OOS_LOG_3("Event add unit at city", CvString(pUnitCity->getName()).c_str(), getTypeStr(eUnit));
-						initUnit(eUnit, GC.getUnitInfo(eUnit).getDefaultProfession(), pUnitCity->getX_INLINE(), pUnitCity->getY_INLINE());
+						CvUnit* pEventUnit = initUnit(eUnit, GC.getUnitInfo(eUnit).getDefaultProfession(), pUnitCity->getX_INLINE(), pUnitCity->getY_INLINE());
+						if (pEventUnit != NULL)
+						{
+							// WTP: tell the player where the reward unit appeared (events like the Eccentric Architect spawn it in the capital, easy to miss)
+							CvWString szBuffer = gDLL->getText("TXT_KEY_FOREIGN_COLONIST_HIRED", pEventUnit->getUnitInfo().getTextKeyWide(), pUnitCity->getNameKey());
+							gDLL->getInterfaceIFace()->addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, pUnitCity, "AS2D_POSITIVE_DINK", MESSAGE_TYPE_MINOR_EVENT, pEventUnit->getButton(), COLOR_WHITE, true, true);
+						}
 					}
 				}
 				else if (GC.getUnitInfo(eUnit).getDomainType() == DOMAIN_SEA)
@@ -15640,6 +15684,7 @@ void CvPlayer::applyEvent(EventTypes eEvent, const EventTriggeredData& kTriggere
 					{
 						for (int i = 0; i < kEvent.getNumUnits(); ++i)
 						{
+							OOS_LOG_3("Event add unit at starting plot", getTypeStr(eUnit), pStartingPlot->getX_INLINE());
 							initUnit(eUnit, GC.getUnitInfo(eUnit).getDefaultProfession(), pStartingPlot->coord());
 						}
 					}
