@@ -10309,6 +10309,7 @@ m_bBadCityLocation(false),// WTP, ray, Health Overhaul
 m_iWorldSoundscapeScriptId(0),
 m_aiYields(NULL),
 m_aiRiverYieldIncrease(NULL),
+m_aiHillsYieldChange(NULL),
 m_ai3DAudioScriptFootstepIndex(NULL)
 {
 }
@@ -10323,6 +10324,7 @@ CvTerrainInfo::~CvTerrainInfo()
 {
 	SAFE_DELETE_ARRAY(m_aiYields);
 	SAFE_DELETE_ARRAY(m_aiRiverYieldIncrease);
+	SAFE_DELETE_ARRAY(m_aiHillsYieldChange);
 	SAFE_DELETE_ARRAY(m_ai3DAudioScriptFootstepIndex);
 }
 int CvTerrainInfo::getMovementCost() const
@@ -10394,6 +10396,12 @@ int CvTerrainInfo::getRiverYieldIncrease(YieldTypes eYield) const
 	FAssertMsg(eYield > NO_YIELD, "Index out of bounds");
 	return m_aiRiverYieldIncrease ? m_aiRiverYieldIncrease[eYield] : -1;
 }
+int CvTerrainInfo::getHillsYieldChange(YieldTypes eYield) const
+{
+	FAssertMsg(eYield < NUM_YIELD_TYPES, "Index out of bounds");
+	FAssertMsg(eYield > NO_YIELD, "Index out of bounds");
+	return m_aiHillsYieldChange ? m_aiHillsYieldChange[eYield] : 0;
+}
 int CvTerrainInfo::get3DAudioScriptFootstepIndex(int i) const
 {
 //	FAssertMsg(i < ?, "Index out of bounds");
@@ -10411,6 +10419,7 @@ bool CvTerrainInfo::read(CvXMLLoadUtility* pXML)
 	setArtDefineTag(szTextVal);
 	pXML->SetVariableListTagPair(&m_aiYields, "Yields", NUM_YIELD_TYPES, 0);
 	pXML->SetVariableListTagPair(&m_aiRiverYieldIncrease, "RiverYieldIncreases", NUM_YIELD_TYPES, 0);
+	pXML->SetVariableListTagPair(&m_aiHillsYieldChange, "HillsYieldChanges", NUM_YIELD_TYPES, 0);
 
 	pXML->GetChildXmlValByName(&m_bWater, "bWater");
 	pXML->GetChildXmlValByName(&m_bImpassable, "bImpassable");

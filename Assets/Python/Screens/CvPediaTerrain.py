@@ -152,7 +152,7 @@ class CvPediaTerrain:
 		if (not gc.getTerrainInfo(self.iTerrain).isWater()):
 			screen.appendListBoxString(panelName, szHillsText, WidgetTypes.WIDGET_GENERAL, 0, 0, CvUtil.FONT_LEFT_JUSTIFY)
 			for iYield in range(YieldTypes.NUM_YIELD_TYPES):
-				iYieldChange = gc.getTerrainInfo(self.iTerrain).getYield(iYield) + gc.getYieldInfo(iYield).getHillsChange();
+				iYieldChange = gc.getTerrainInfo(self.iTerrain).getYield(iYield) + gc.getYieldInfo(iYield).getHillsChange() + gc.getTerrainInfo(self.iTerrain).getHillsYieldChange(iYield);
 				# ray, removing unnecessary display of negative Yields for Hill diversification
 				# if (iYield != 0):
 				if (iYieldChange > 0):

@@ -7122,6 +7122,7 @@ int CvPlot::calculateNatureYield(YieldTypes eYield, TeamTypes eTeam, bool bIgnor
 	if (isHills())
 	{
 		iYield += GC.getYieldInfo(eYield).getHillsChange();
+		iYield += GC.getTerrainInfo(getTerrainType()).getHillsYieldChange(eYield); // WTP: terrain specific hills change
 	}
 
 	//WTP, ray, Lakes - START

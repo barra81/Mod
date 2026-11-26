@@ -592,6 +592,10 @@
 					<iValue>1</iValue>
 				</YieldIntegerPair>
 				<YieldIntegerPair>
+					<YieldType>YIELD_CLAY</YieldType>
+					<iValue>3</iValue>
+				</YieldIntegerPair>
+				<YieldIntegerPair>
 					<YieldType>YIELD_PIGS</YieldType>
 					<iValue>3</iValue>
 				</YieldIntegerPair>
@@ -674,6 +678,12 @@
 					<iValue>1</iValue>
 				</YieldIntegerPair>
 			</RiverYieldIncreases>
+			<HillsYieldChanges>
+				<YieldIntegerPair>
+					<YieldType>YIELD_CLAY</YieldType>
+					<iValue>-3</iValue>
+				</YieldIntegerPair>
+			</HillsYieldChanges>
 			<bWater>0</bWater>
 			<bImpassable>0</bImpassable>
 			<bFound>1</bFound>

@@ -71,6 +71,7 @@ void CyInfoPythonInterface3()
 		// Arrays
 		.def("getYield", &CyTerrainInfo::getYield, "int (int i)")
 		.def("getRiverYieldIncrease", &CyTerrainInfo::getRiverYieldIncrease, "int (int i)")
+		.def("getHillsYieldChange", &CyTerrainInfo::getHillsYieldChange, "int (int i)")
 		;
 	// CvInterfaceModeInfo
 	python::class_<CvInterfaceModeInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvInterfaceModeInfo")
