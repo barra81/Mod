@@ -7815,6 +7815,50 @@ class CvMainInterface:
 		return aRaw
 
 	# opens the import / export window of the city of a goods window (the city is named in the first line of its top window) with a temporary
+	# right click on a good of the goods bar of the city screen (the tooltip of the bar names this click): the import / export window of the city
+	# shows the good and its tooltip stands frozen on the picture of the good (as after a jump from the tooltip of another colony: tPostJump puts
+	# the cursor on the picture and freezes the tooltip). The window can be open already: it is turned to the good (its unsaved changes stay; a view
+	# or a search that hides the good is set back to all goods), the frozen tooltips of goods of the window are released and the one of the clicked good is made.
+	def openTradeWindowForYield( self, iYield ):
+		try:
+			if iYield < 0 or iYield >= YieldTypes.NUM_YIELD_TYPES or not CyInterface().isCityScreenUp():
+				return False
+			pCity = CyInterface().getHeadSelectedCity()
+			if pCity is None or pCity.isNone() or pCity.getOwner() != gc.getGame().getActivePlayer():
+				return False
+			import CvTradeRouteScreen
+			if not CvTradeRouteScreen.isNewWindowEnabled():
+				return False
+			tWin = CvScreensInterface.tradeRouteScreen
+			screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+			if tWin.isOpen() and tWin.iCity == pCity.getID():
+				# (the frozen tooltips of goods of the window - of this good and of the goods clicked before - are released, the new one takes their place)
+				bMore = True
+				while bMore:
+					bMore = False
+					for i in range(len(self.aFrozen)):
+						if self.dTraderWin.has_key(self.aFrozen[i][0]) and self.aFrozen[i][6] < 0:
+							self.closeFrozenChild(screen, i)
+							bMore = True
+							break
+				if not (iYield in tWin.aYields):
+					tWin.setView(CvTradeRouteScreen.VIEW_ALL)
+			else:
+				self.unfreezeAllTips()
+				if tWin.open(pCity.getID(), False) == 0:
+					return False
+			if not (iYield in tWin.aYields):
+				return False
+			tWin.showYield(iYield)
+			tPos = tWin.getIconCenter(iYield)
+			if tPos is None:
+				return False
+			self.tPostJump = {"yield": iYield, "pos": tPos, "wait": 4}
+			return True
+		except:
+			self.tipError("openTradeWindowForYield")
+		return False
+
 	# filter view of the marked goods of the list (only for this opening)
 	def openGoodsTradeWindow( self, iLevel, aszParas, iKind = 0 ):
 		try:
@@ -9902,6 +9946,11 @@ class CvMainInterface:
 			# WTP: left click on the picture of a good of the import / export window: the tooltip of the good is frozen / released
 			if (inputClass.getButtonType() == WidgetTypes.WIDGET_HELP_YIELD and (inputClass.getFlags() & MouseFlags.MOUSE_LBUTTONUP)):
 				if self.toggleTradeTipFreeze():
+					return 1
+			# WTP: right click on a good of the goods bar of the city screen: the import / export window is opened (or, when it is open already,
+			# turned) on this good and the tooltip of the good is frozen on its picture
+			if (inputClass.getButtonType() == WidgetTypes.WIDGET_MOVE_CARGO_TO_TRANSPORT and (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP)):
+				if self.openTradeWindowForYield(inputClass.getData1()):
 					return 1
 
 			if (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == BUILDING_MANAGMENT_TOGGLE):

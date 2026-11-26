@@ -4116,6 +4116,12 @@
 		<Russian>Чистый избыток всех ваших колоний вместе: производство за вычетом собственного потребления колоний (потребление уже учтено, включая плановый расход). Зелёный — производится больше, чем потребляется, красный — потребляется больше, чем производится.</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_GOODS_BAR_RCLICK</Tag>
+		<English>[COLOR_YELLOW]Right click: import / export settings of this good[COLOR_REVERT]</English>
+		<German>[COLOR_YELLOW]Rechtsklick: Import-/Export-Einstellungen dieser Ware[COLOR_REVERT]</German>
+		<Russian>[COLOR_YELLOW]ПКМ: настройки импорта / экспорта этого товара[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_TRADERS_NET_NOTRADE</Tag>
 		<English>(no import / export)</English>
 		<German>(kein Import / Export)</German>

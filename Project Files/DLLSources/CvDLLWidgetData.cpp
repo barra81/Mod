@@ -3659,6 +3659,15 @@ void CvDLLWidgetData::parseCityYieldHelp(const CvWidgetDataStruct &widgetDataStr
 			}
 		}
 	}
+
+	// WTP: the goods bar of the city screen: a right click on the good opens the import / export window on it (python: CvMainInterface.openTradeWindowForYield);
+	// the line is only for the tooltip of the bar itself (not for the texts the mod makes internally) and for an own city
+	if (pCity != NULL && widgetDataStruct.m_eWidgetType == WIDGET_MOVE_CARGO_TO_TRANSPORT && !g_bWtpInternalHelp
+		&& pCity->getOwnerINLINE() == eActivePlayer && gDLL->getInterfaceIFace()->isCityScreenUp())
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_WTP_TIP_GOODS_BAR_RCLICK"));
+	}
 }
 
 static bool isYieldIndexValid(YieldTypes eYield)
