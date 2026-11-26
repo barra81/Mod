@@ -421,6 +421,7 @@ class CvMainInterface:
 	dTraderLines = {} # the lines of the traders in the tooltips: text without colors -> id of the city
 	dTraderWin = {} # frozen windows with such lines: prefix -> the good
 	bForceTradeTip = False # the tooltip of a good is made although the cursor is not on its picture (refreshTradeTips)
+	dWarLines = {} # the line "At war with ..." in the tooltips of units: text without colors -> the player (nation)
 	dNetLines = {} # the line "all colonies, net per turn" in the tooltips: text without colors -> the good
 	iTradeTipYield = -1
 	szTradeTipText = u""
@@ -3864,6 +3865,79 @@ class CvMainInterface:
 	def getTipPrefix( self, szKey, aArgs ):
 		return self.normTipText(localText.getText(szKey, aArgs)).split(u":")[0].strip()
 
+	# the player (nation) that a unit header names at its end (the name of the owner in the color of the owner; own units and units of hidden
+	# nationality have none); -1 if there is none
+	def getHeaderOwner( self, szHeader ):
+		try:
+			tM = re.search(u",\\s*<color=[0-9,]+>([^<]+)</color>\\s*$", szHeader)
+			if tM is None:
+				return -1
+			szName = tM.group(1).strip()
+			for iPlayer in range(gc.getMAX_PLAYERS()):
+				pPlayer = gc.getPlayer(iPlayer)
+				if pPlayer.isAlive() and pPlayer.getName() == szName:
+					return iPlayer
+		except:
+			pass
+		return -1
+
+	# the line "At war with <nation>" in red below the row of the promotions (below the line "Promotion sum." if there is one) of every unit of a nation
+	# that is at war with the active player; the tooltip of the line names the right click (the diplomacy with the nation)
+	def addAtWarLines( self, aFinal ):
+		try:
+			eActive = gc.getGame().getActivePlayer()
+			iActiveTeam = gc.getPlayer(eActive).getTeam()
+			szSum = localText.getText("TXT_KEY_WTP_TIP_PROMO_SUM", ())
+			aHeaders = []
+			for k in range(len(aFinal)):
+				if self.isUnitHeader(aFinal[k][0]):
+					aHeaders.append(k)
+			aInsert = []
+			for h in range(len(aHeaders)):
+				iStart = aHeaders[h]
+				iEnd = len(aFinal)
+				if h + 1 < len(aHeaders):
+					iEnd = aHeaders[h + 1]
+				ePlayer = self.getHeaderOwner(aFinal[iStart][0])
+				if ePlayer < 0 or ePlayer == eActive:
+					continue
+				pOwner = gc.getPlayer(ePlayer)
+				if not gc.getTeam(pOwner.getTeam()).isAtWar(iActiveTeam):
+					continue
+				iAt = iStart + 1
+				for j in range(iStart + 1, iEnd):
+					if aFinal[j][0] == szSum:
+						iAt = j + 1
+						break
+					if aFinal[j][1] is None and self.isPromotionRow(aFinal[j][0]):
+						iAt = j + 1
+				szNation = pOwner.getCivilizationShortDescription(0)
+				if not szNation:
+					szNation = pOwner.getName()
+				szLine = localText.getText("TXT_KEY_WTP_TIP_AT_WAR", (szNation,))
+				self.dWarLines[self.normTipText(szLine)] = ePlayer
+				aInsert.append((iAt, [szLine, localText.getText("TXT_KEY_WTP_TIP_AT_WAR_HELP", (szNation,))]))
+			for k in range(len(aInsert) - 1, -1, -1):
+				aFinal.insert(aInsert[k][0], aInsert[k][1])
+		except:
+			self.tipError("addAtWarLines")
+		return aFinal
+
+	# right click on the line "At war with ..." of a tooltip: the diplomacy with the nation
+	def clickAtWarLine( self, aszParas, iPara ):
+		try:
+			if iPara < 0 or iPara >= len(aszParas):
+				return False
+			ePlayer = self.dWarLines.get(self.normTipText(aszParas[iPara]))
+			if ePlayer is None:
+				return False
+			if gc.getActivePlayer().canContact(ePlayer):
+				gc.getActivePlayer().contact(ePlayer)
+				return True
+		except:
+			self.tipError("clickAtWarLine")
+		return False
+
 	# the first line of a unit: its name in a color (the color depends on the owner), then the strength and the moves with their icons
 	def isUnitHeader( self, szText ):
 		if szText.find(u"<color=") != 0:
@@ -4045,6 +4119,8 @@ class CvMainInterface:
 						szLastHeader = aEntry[0]
 					elif szLastHeader is not None and len(szCargo) > 3 and self.normTipText(aEntry[0]).find(szCargo) == 0:
 						aEntry[1] = self.getCargoRulesText(szLastHeader)
+			# a unit of a nation that is at war with us: the line "At war" (a right click on it opens the diplomacy with the nation)
+			aFinal = self.addAtWarLines(aFinal)
 			# the lines of the commands of a stack of units in one line
 			aCommands = []
 			iCmdAt = -1
@@ -8638,6 +8714,9 @@ class CvMainInterface:
 			iLevel = iData / 1000
 			iPara = iData % 1000
 			aszParas = self.getLevelParas(iLevel)
+			# right click on the line "At war with ..." of a unit: the diplomacy with the nation
+			if self.clickAtWarLine(aszParas, iPara):
+				return
 			# right click on the name line of the tooltip of an own city: the map looks at the city chosen in the list
 			if self.tryCityListJump(iLevel, iPara, False):
 				return
