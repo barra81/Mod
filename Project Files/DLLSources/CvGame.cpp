@@ -5571,6 +5571,8 @@ void CvGame::addShipName(const CvWString& szName)
 
 void CvGame::doTurn()
 {
+	// WTP: a network game uses the built-in values of the settings that change the course of the game (see WtpTiming::forceNetworkDefaults)
+	WtpTiming::setNetworkGame(isNetworkMultiPlayer());
 	// WTP: the data of the timing report (map, players: type, civilization, cities, units)
 	WtpTiming::noteMap(GC.getMap().getGridWidthINLINE(), GC.getMap().getGridHeightINLINE());
 	WtpTiming::noteGame(
