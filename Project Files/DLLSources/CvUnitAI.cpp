@@ -12065,7 +12065,9 @@ bool CvUnitAI::AI_omniGroup(UnitAITypes eUnitAI, int iMaxGroup, int iMaxOwnUnitA
 				int iCost = 100 * (iPathTurns * iPathTurns + 1);
 				iCost *= 4 + pLoopGroup->getCargo();
 				iCost /= 2 + pLoopGroup->getNumUnits();
-				if (iCost < iBestValue)
+				// WTP: with the same cost the unit with the lower ID wins, so the result does not depend on the order the plots / units are visited in
+				// (a tie broken by the order of an internal list can differ between the machines of a network game; idea: StaticShielding/Mod, 95c97c5)
+				if (iCost < iBestValue || (iCost == iBestValue && pBestUnit != NULL && pLoopUnit->getID() < pBestUnit->getID()))
 				{
 					iBestValue = iCost;
 					pBestUnit = pLoopUnit;
@@ -12236,7 +12238,8 @@ bool CvUnitAI::AI_load(UnitAITypes eUnitAI, MissionAITypes eMissionAI, UnitAITyp
 																// prefer a transport that can hold as much of our group as possible
 																iValue = (std::max(0, iCurrentGroupSize - iCargoSpaceAvailable) * 5) + iPathTurns;
 
-																if (iValue < iBestValue)
+																// WTP: same value: the lower unit ID wins (see AI_omniGroup)
+																if (iValue < iBestValue || (iValue == iBestValue && pBestUnit != NULL && pLoopUnit->getID() < pBestUnit->getID()))
 																{
 																	iBestValue = iValue;
 																	pBestUnit = pLoopUnit;

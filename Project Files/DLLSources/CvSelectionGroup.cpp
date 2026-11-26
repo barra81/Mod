@@ -3897,7 +3897,11 @@ bool CvSelectionGroup::addUnit(CvUnit* pUnit, bool bMinimalChange)
 		if (pLoopUnit != NULL && (
 			(pUnit->AI_groupFirstVal() > pLoopUnit->AI_groupFirstVal()) ||
 			  ((pUnit->AI_groupFirstVal() == pLoopUnit->AI_groupFirstVal()) &&
-				 (pUnit->AI_groupSecondVal() > pLoopUnit->AI_groupSecondVal()))))
+				 // WTP: with the same values the unit with the lower ID goes first (the order of the units in a group must not depend on the
+				 // order they joined in; idea: StaticShielding/Mod, 95c97c5)
+				 ((pUnit->AI_groupSecondVal() > pLoopUnit->AI_groupSecondVal()) ||
+				  ((pUnit->AI_groupSecondVal() == pLoopUnit->AI_groupSecondVal()) &&
+				   (pUnit->getID() < pLoopUnit->getID()))))))
 		{
 			m_units.insertBefore(pUnit->getIDInfo(), pUnitNode);
 			bAdded = true;

@@ -1,6 +1,7 @@
 // playerAI.cpp
 
 #include "CvGameCoreDLL.h"
+#include <algorithm> // WTP: std::sort in AI_groupUpdate
 #include "CvPlayerAI.h"
 #include "CvRandom.h"
 #include "CvGlobals.h"
@@ -2259,59 +2260,57 @@ void CvPlayerAI::AI_unitUpdate()
 }
 
 // TAC - AI BTS Groups - koma13 - START
+// WTP: the groups are sorted by movement priority (low first), with the same priority by the ID of the head unit. The priority of a group is
+// computed once (the old loop asked every group for it again in every pass over the priority values), so this is faster and the order does not
+// depend on the order of the group cycle (a tie broken by the order of an internal list can differ between the machines of a network game;
+// idea: StaticShielding/Mod, commit 95c97c5, there as an insertion sort that asks for the priority on every comparison).
+struct WtpGroupOrderEntry
+{
+	int iPriority;
+	int iHeadUnitID;
+	int iGroupID;
+};
+
+static bool wtpLessGroupOrder(const WtpGroupOrderEntry& kA, const WtpGroupOrderEntry& kB)
+{
+	if (kA.iPriority != kB.iPriority)
+	{
+		return kA.iPriority < kB.iPriority;
+	}
+	if (kA.iHeadUnitID != kB.iHeadUnitID)
+	{
+		return kA.iHeadUnitID < kB.iHeadUnitID;
+	}
+	return kA.iGroupID < kB.iGroupID;
+}
+
 void CvPlayerAI::AI_groupUpdate()
 {
-	CLLNode<int>* pCurrUnitNode;
-	CvSelectionGroup* pLoopSelectionGroup;
-	CLinkList<int> tempGroupCycle;
-	CLinkList<int> finalGroupCycle;
-	int iValue;
+	std::vector<WtpGroupOrderEntry> aGroups;
 
-	tempGroupCycle.clear();
-	finalGroupCycle.clear();
-
-	pCurrUnitNode = headGroupCycleNode();
+	CLLNode<int>* pCurrUnitNode = headGroupCycleNode();
 
 	while (pCurrUnitNode != NULL)
 	{
-		pLoopSelectionGroup = getSelectionGroup(pCurrUnitNode->m_data);
-		if (pLoopSelectionGroup->getNumUnits() > 1)
+		CvSelectionGroup* pLoopSelectionGroup = getSelectionGroup(pCurrUnitNode->m_data);
+		FAssertMsg(pLoopSelectionGroup != NULL, "selection group node with NULL selection group");
+		if (pLoopSelectionGroup != NULL && pLoopSelectionGroup->getNumUnits() > 1)
 		{
-			tempGroupCycle.insertAtEnd(pCurrUnitNode->m_data);
+			WtpGroupOrderEntry kEntry;
+			kEntry.iPriority = AI_movementPriority(pLoopSelectionGroup);
+			CvUnit* pHeadUnit = pLoopSelectionGroup->getHeadUnit();
+			kEntry.iHeadUnitID = (pHeadUnit == NULL) ? MAX_INT : pHeadUnit->getID();
+			kEntry.iGroupID = pCurrUnitNode->m_data;
+			aGroups.push_back(kEntry);
 		}
 		pCurrUnitNode = nextGroupCycleNode(pCurrUnitNode);
 	}
 
-	iValue = 0;
+	std::sort(aGroups.begin(), aGroups.end(), wtpLessGroupOrder);
 
-	while (tempGroupCycle.getLength() > 0)
+	for (size_t i = 0; i < aGroups.size(); ++i)
 	{
-		pCurrUnitNode = tempGroupCycle.head();
-
-		while (pCurrUnitNode != NULL)
-		{
-			pLoopSelectionGroup = getSelectionGroup(pCurrUnitNode->m_data);
-			FAssertMsg(pLoopSelectionGroup != NULL, "selection group node with NULL selection group");
-
-			if (AI_movementPriority(pLoopSelectionGroup) <= iValue)
-			{
-				finalGroupCycle.insertAtEnd(pCurrUnitNode->m_data);
-				pCurrUnitNode = tempGroupCycle.deleteNode(pCurrUnitNode);
-			}
-			else
-			{
-				pCurrUnitNode = tempGroupCycle.next(pCurrUnitNode);
-			}
-		}
-
-		iValue++;
-	}
-
-	pCurrUnitNode = finalGroupCycle.head();
-
-	while (pCurrUnitNode != NULL)
-	{
-		pLoopSelectionGroup = getSelectionGroup(pCurrUnitNode->m_data);
+		CvSelectionGroup* pLoopSelectionGroup = getSelectionGroup(aGroups[i].iGroupID);
 
 		if (NULL != pLoopSelectionGroup)  // group might have been killed by a previous group update
 		{
@@ -2320,10 +2319,7 @@ void CvPlayerAI::AI_groupUpdate()
 				break; // pointers could become invalid...
 			}
 		}
-
-		pCurrUnitNode = finalGroupCycle.next(pCurrUnitNode);
 	}
-
 }
 // TAC - AI BTS Groups - koma13 - END
 
