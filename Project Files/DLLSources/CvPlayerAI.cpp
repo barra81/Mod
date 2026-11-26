@@ -12846,6 +12846,122 @@ static int wtpBrakeFalloff()
 	return std::min(100, std::max(0, WtpTiming::data().aiBrakeFalloff[wtpBrakeStep() + 1]));
 }
 
+// WTP: figures of the settlement brake per player for the log lines of WTP_AiBrake.txt (every 25 turns per AI): what the soft limit is made of
+// (filled by AI_getCityBrakeLimit), the wish for further cities before and after the brake and the checks the brake changed (wtpBrakeNoteWish, called
+// from AI_desiredCityCount), the cities founded / gained / lost since the last line (AI_wtpNoteCityEvent, called from CvPlayer::found, CvPlayer::acquireCity
+// and CvCity::kill). Only for the log, nothing here changes the game (so the values need no saving and no network sync).
+struct WtpBrakeStats
+{
+	bool bLogged;         // a line was written for this player
+	int iLogTurn;         // the turn of the last line
+	int iChecks;          // asks for the wish since the last line
+	int iBlocked;         // of them: the wish before the brake was above the number of cities, after the brake it was not
+	int iFounded;         // cities founded since the last line (CvPlayer::found)
+	int iGained;          // cities gained since the last line (CvPlayer::acquireCity: conquest, trade)
+	int iLost;            // cities lost since the last line (CvCity::kill: conquered or razed)
+	int iLimitTurn;       // the turn the following values are from
+	int iLimit;           // the soft limit
+	int iMapLimit;        // map term
+	int iAfterHuman;      // limit after the human term (before the leader cap and the floor)
+	int iCap;             // leader cap (-1: none, no other AI)
+	int iSpeed;           // game speed in percent
+	int iHumanMax;        // biggest human city count
+	int iOtherAis;        // other colonial AIs
+	int iOtherCities;     // their cities
+	const char* szBinding; // the term that decided
+};
+static WtpBrakeStats s_aBrakeStats[MAX_PLAYERS]; // zero initialized
+
+void CvPlayerAI::AI_wtpNoteCityEvent(PlayerTypes ePlayer, int iEvent)
+{
+	if ((int)ePlayer < 0 || (int)ePlayer >= MAX_PLAYERS)
+	{
+		return;
+	}
+	WtpBrakeStats& kStat = s_aBrakeStats[(int)ePlayer];
+	if (iEvent == 0)
+	{
+		kStat.iFounded++;
+	}
+	else if (iEvent == 1)
+	{
+		kStat.iGained++;
+	}
+	else
+	{
+		kStat.iLost++;
+	}
+}
+
+// the log file of the brake, with a legend at its start once per game session (what every line means and where in the code it comes from, so that
+// somebody else, or another AI, can evaluate the file without further explanation)
+static FILE* wtpOpenBrakeLog()
+{
+	static bool s_bLegend = false;
+	FILE* f = fopen((std::string(gDLL->getModName()) + "WTP_AiBrake.txt").c_str(), "a");
+	if (f != NULL && !s_bLegend)
+	{
+		s_bLegend = true;
+		fputs("# ---- legend (written once per game session) ----\n", f);
+		fputs("# WTP_AiBrake.txt logs the game option 'AI Settlement Brake' (colonial AIs found fewer colonies above a soft limit) and the option 'At most N European AI players'.\n", f);
+		fputs("# Code: CvPlayerAI.cpp: AI_desiredCityCount (the wish for more cities, the brake is applied there), AI_getCityBrakeLimit (the soft limit), wtpBrakeStep / wtpBrakeLeaderPct / wtpBrakeFalloff (difficulty scaling),\n", f);
+		fputs("#   wtpLogBrakeMap (map lines), wtpBrakeNoteWish (turn lines). WtpTiming.h: readSettings / setBrakeLevelDefaults (values from WTP_Settings.txt, one pair per difficulty level).\n", f);
+		fputs("#   CvGame.cpp: CvGame::setInitialItems (the 'max European AIs' line). City events: CvPlayer::found (founded), CvPlayer::acquireCity (gained), CvCity::kill (lost).\n", f);
+		fputs("# 'max European AIs=A | European AIs left=B | converted to natives=C | removed=D': at the start of the game: the chosen maximum, the European AIs that remain, those turned into free native tribes, those removed.\n", f);
+		fputs("# 'map | ...': once per map and difficulty: script, fixed (world builder file) or random, size, plots, land plots, colonial powers (humans), game speed, difficulty (step from Conquistador, see below),\n", f);
+		fputs("#   and the values of the brake that are used: floor, plotsPerCity, humanPct, humanWeight, leaderPct, falloff.\n", f);
+		fputs("# 'turn T | player P | cities C | limit L (map M, speed S%, human max H, other AIs N with K cities) | ...': every 25 turns (and at the first use) per colonial AI. cities = its city count now, limit = the soft limit,\n", f);
+		fputs("#   map = the map term, speed = game speed in percent, human max = biggest human city count, other AIs N with K cities = the other colonial AIs and their cities together.\n", f);
+		fputs("#   'limit from X (map term M, after human term H, leader cap Z)': the term that decided the limit (floor / leader cap / human / map), Z = -1: there is no other AI.\n", f);
+		fputs("#   'wish R -> B': the wish for cities (AI_desiredCityCount) before the brake R and after it B. 'checks N, blocked K': how often the wish was asked since the last line and how often the brake turned\n", f);
+		fputs("#   'wants more cities' (R above the cities) into 'enough' (B not above). 'since last line: founded F, gained G, lost L': cities founded, gained by conquest or trade, lost (conquered or razed). 'units U, settlers S'.\n", f);
+		fputs("# Limit = max(floor, min(map term mixed with the human term, leader cap)). Map term = land plots * game speed% / (colonial powers * plotsPerCity * 100). Human term: humanPct% of the biggest human city count,\n", f);
+		fputs("#   weight humanWeight% against the map term. Leader cap = leaderPct% of the average city count of the other colonial AIs + 2. Above the limit only falloff% of the extra wish is kept: B = limit + (R - limit) * falloff%.\n", f);
+		fputs("# Difficulty: leaderPct and falloff depend on the level (step -1 = Explorer and easier, 0 = Conquistador, +1 Governor, +2 Patriot, +3 Revolutionary), the other values do not, so logs of different levels can be compared.\n", f);
+		fputs("# The cost of the AI per player (turn time, cities, units) and the units by AI type are in WTP_Timing.txt ('per player' and 'units by AI type' tables): compare by game turn.\n", f);
+		fputs("# ---- end of legend ----\n", f);
+	}
+	return f;
+}
+
+// called from AI_desiredCityCount for a colonial player with the brake switched on: counts the checks and writes the turn line every 25 turns
+static void wtpBrakeNoteWish(CvPlayerAI& kPlayer, int iRaw, int iBraked)
+{
+	const int iID = (int)kPlayer.getID();
+	if (iID < 0 || iID >= MAX_PLAYERS)
+	{
+		return;
+	}
+	WtpBrakeStats& kStat = s_aBrakeStats[iID];
+	kStat.iChecks++;
+	if (iRaw > kPlayer.getNumCities() && iBraked <= kPlayer.getNumCities())
+	{
+		kStat.iBlocked++;
+	}
+
+	const int iTurn = GC.getGameINLINE().getGameTurn();
+	if (kPlayer.isHuman() || kStat.iLimitTurn != iTurn || (kStat.bLogged && (iTurn % 25 != 0 || kStat.iLogTurn == iTurn)))
+	{
+		return;
+	}
+	kStat.bLogged = true;
+	kStat.iLogTurn = iTurn;
+	FILE* f = wtpOpenBrakeLog();
+	if (f != NULL)
+	{
+		fprintf(f, "turn %d | player %d | cities %d | limit %d (map %d, speed %d%%, human max %d, other AIs %d with %d cities) | limit from %s (map term %d, after human term %d, leader cap %d) | wish %d -> %d | checks %d, blocked %d | since last line: founded %d, gained %d, lost %d | units %d, settlers %d\n",
+			iTurn, iID, kPlayer.getNumCities(), kStat.iLimit, kStat.iMapLimit, kStat.iSpeed, kStat.iHumanMax, kStat.iOtherAis, kStat.iOtherCities,
+			(kStat.szBinding != NULL) ? kStat.szBinding : "?", kStat.iMapLimit, kStat.iAfterHuman, kStat.iCap, iRaw, iBraked, kStat.iChecks, kStat.iBlocked,
+			kStat.iFounded, kStat.iGained, kStat.iLost, kPlayer.getNumUnits(), kPlayer.AI_totalUnitAIs(UNITAI_SETTLER));
+		fclose(f);
+	}
+	kStat.iChecks = 0;
+	kStat.iBlocked = 0;
+	kStat.iFounded = 0;
+	kStat.iGained = 0;
+	kStat.iLost = 0;
+}
+
 // WTP: writes one line per map (script, size, land, colonial powers, settings) to WTP_AiBrake.txt, so that the tests of the AI settlement
 // brake on different maps can be told apart. A map is told apart from the last one by its script name, size and land plots.
 static void wtpLogBrakeMap(int iColonial, int iHumans)
@@ -12872,8 +12988,7 @@ static void wtpLogBrakeMap(int iColonial, int iHumans)
 	const bool bFixed = szLower.find(L"wbsave") != CvWString::npos;
 
 	const WtpTiming::Data& kSet = WtpTiming::data();
-	const std::string szFile = std::string(gDLL->getModName()) + "WTP_AiBrake.txt";
-	FILE* f = fopen(szFile.c_str(), "a");
+	FILE* f = wtpOpenBrakeLog();
 	if (f != NULL)
 	{
 		fprintf(f, "map | script=%S | %s | size=%S | %dx%d=%d plots | land=%d (%d%%) | colonial powers=%d (humans %d) | speed=%S | difficulty=%S (step %d from Conquistador) | floor=%d plotsPerCity=%d humanPct=%d humanWeight=%d leaderPct=%d falloff=%d\n",
@@ -12954,11 +13069,13 @@ int CvPlayerAI::AI_desiredCityCount()
 	// WTP: AI settlement brake (game option): above a soft limit only a part of the wish for further cities is kept
 	if (bColonial && GC.getGameINLINE().isOption(GAMEOPTION_AI_CITY_BRAKE))
 	{
+		const int iRaw = iCount;
 		const int iLimit = AI_getCityBrakeLimit();
 		if (iCount > iLimit)
 		{
 			iCount = iLimit + ((iCount - iLimit) * wtpBrakeFalloff()) / 100;
 		}
+		wtpBrakeNoteWish(*this, iRaw, iCount); // (log)
 	}
 
 	return iCount;
@@ -12974,7 +13091,6 @@ int CvPlayerAI::AI_getCityBrakeLimit()
 {
 	static int aiTurn[MAX_PLAYERS];
 	static int aiLimit[MAX_PLAYERS];
-	static int aiLoggedTurn[MAX_PLAYERS];
 	static bool bInit = false;
 	if (!bInit)
 	{
@@ -12982,7 +13098,6 @@ int CvPlayerAI::AI_getCityBrakeLimit()
 		{
 			aiTurn[i] = -1;
 			aiLimit[i] = 0;
-			aiLoggedTurn[i] = -1;
 		}
 		bInit = true;
 	}
@@ -13033,31 +13148,50 @@ int CvPlayerAI::AI_getCityBrakeLimit()
 		iLimit = (iMapLimit * (100 - kSet.iBrakeHumanWeight) + iHumanLimit * kSet.iBrakeHumanWeight) / 100;
 	}
 
+	const int iAfterHuman = iLimit; // (for the log)
+
 	// leader cap
+	int iCapUsed = -1;
 	if (iOtherAis > 0)
 	{
 		const int iCap = (iOtherAiCities * wtpBrakeLeaderPct()) / (iOtherAis * 100) + 2;
+		iCapUsed = iCap;
 		iLimit = std::min(iLimit, iCap);
 	}
 
+	// (for the log) the term that decides: the floor, the leader cap, the human term (it pulled the limit below the map term) or the map term
+	const int iBeforeFloor = iLimit;
 	iLimit = std::max(kSet.iBrakeFloor, iLimit);
+	const char* szBinding = "map";
+	if (iBeforeFloor < kSet.iBrakeFloor)
+	{
+		szBinding = "floor";
+	}
+	else if (iCapUsed >= 0 && iCapUsed <= iAfterHuman)
+	{
+		szBinding = "leader cap";
+	}
+	else if (iAfterHuman < iMapLimit)
+	{
+		szBinding = "human";
+	}
 
 	aiTurn[getID()] = iTurn;
 	aiLimit[getID()] = iLimit;
 
 	wtpLogBrakeMap(iColonial, iHumans);
-	// every 25 turns (and the first call after a start) one line per AI: what the limit is made of
-	if (iTurn % 25 == 0 || aiLoggedTurn[getID()] < 0)
-	{
-		aiLoggedTurn[getID()] = iTurn;
-		FILE* f = fopen((std::string(gDLL->getModName()) + "WTP_AiBrake.txt").c_str(), "a");
-		if (f != NULL)
-		{
-			fprintf(f, "turn %d | player %d | cities %d | limit %d (map %d, speed %d%%, human max %d, other AIs %d with %d cities)\n",
-				iTurn, getID(), getNumCities(), iLimit, iMapLimit, iSpeed, iHumanMax, iOtherAis, iOtherAiCities);
-			fclose(f);
-		}
-	}
+	// the figures for the turn line of WTP_AiBrake.txt (written by wtpBrakeNoteWish, which also knows the wish before and after the brake)
+	WtpBrakeStats& kStat = s_aBrakeStats[getID()];
+	kStat.iLimitTurn = iTurn;
+	kStat.iLimit = iLimit;
+	kStat.iMapLimit = iMapLimit;
+	kStat.iAfterHuman = iAfterHuman;
+	kStat.iCap = iCapUsed;
+	kStat.iSpeed = iSpeed;
+	kStat.iHumanMax = iHumanMax;
+	kStat.iOtherAis = iOtherAis;
+	kStat.iOtherCities = iOtherAiCities;
+	kStat.szBinding = szBinding;
 
 	if (gPlayerLogLevel >= 1)
 	{

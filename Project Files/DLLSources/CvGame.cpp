@@ -5751,6 +5751,18 @@ void CvGame::doTurn()
 			const char cWtpType = kWtpPlayer.isHuman() ? 'H' : (kWtpPlayer.isNative() ? 'N' : (kWtpPlayer.isEurope() ? 'K' : 'A'));
 			const char* szWtpCiv = (kWtpPlayer.getCivilizationType() != NO_CIVILIZATION) ? GC.getCivilizationInfo(kWtpPlayer.getCivilizationType()).getType() : "";
 			WtpTiming::notePlayer(iWtpPlayer, cWtpType, kWtpPlayer.getNumCities(), kWtpPlayer.getNumUnits(), szWtpCiv);
+#ifdef WTP_TIMING
+			// the units by unit AI type for the table "units by AI type" (not for natives: 1,000 and more units, only the totals are of interest there)
+			if (cWtpType != 'N')
+			{
+				int iWtpLoop;
+				CvPlayer& kWtpUnitPlayer = GET_PLAYER((PlayerTypes)iWtpPlayer);
+				for (CvUnit* pWtpUnit = kWtpUnitPlayer.firstUnit(&iWtpLoop); pWtpUnit != NULL; pWtpUnit = kWtpUnitPlayer.nextUnit(&iWtpLoop))
+				{
+					WtpTiming::noteUnitAI(iWtpPlayer, (int)pWtpUnit->AI_getUnitAIType());
+				}
+			}
+#endif
 		}
 	}
 	WtpTiming::flush(getGameTurn());

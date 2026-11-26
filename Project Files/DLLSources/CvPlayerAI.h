@@ -410,6 +410,8 @@ public:
 
 	int AI_desiredCityCount();
 	int AI_getCityBrakeLimit(); // WTP: soft limit of the AI settlement brake (game option)
+	// WTP: log of the settlement brake (WTP_AiBrake.txt): a city of ePlayer was founded (iEvent 0), gained by conquest / trade (1) or lost (2: conquered or razed)
+	static void AI_wtpNoteCityEvent(PlayerTypes ePlayer, int iEvent);
 
 	int AI_professionValue(ProfessionTypes eProfession, UnitAITypes eUnitAI) const;
 	int AI_professionGoldValue(ProfessionTypes eProfession);

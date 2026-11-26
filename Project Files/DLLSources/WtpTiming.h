@@ -73,6 +73,9 @@
 //   --- slowest single ...       the 8 slowest single unit updates: owner, unit id, plot, unit AI and how much of it was path search.
 //   --- per player               per player: doTurn, AI_doTurnPre, AI_doTurnPost, AI_unitUpdate, workforce plan, each as
 //                                "ms / calls / longest single call". Use it to see how the cost grows with the number of players.
+//   --- units by AI type         the units of every human / European AI / king player by unit AI type (UNITAI_*), counted at the start of the turn change
+//                                (CvGame::doTurn calls WtpTiming::noteUnitAI per unit, the table is written in WtpTiming::flush). Use it with "per player" to see what
+//                                the cost per unit is made of (transports, wagons, workers, soldiers ...).
 //   --- counters                 size of the workforce plan problem: colonies, free colonists (workers), free jobs, rounds of
 //                                step 3, colony scans in step 3 (the cost of step 3 grows with these).
 // The slots SLOT_WF_S0..S5 split CvPlayerAI::AI_doWorkforcePlan into its steps (0 experts without raw material, 1 jobs, 2 workforce,
@@ -496,6 +499,7 @@ namespace WtpTiming
 		char acPlayerType[MAX_PLAYERS];
 		int aiPlayerCities[MAX_PLAYERS];
 		int aiPlayerUnits[MAX_PLAYERS];
+		int aiPlayerUnitAI[MAX_PLAYERS][NUM_UNITAI_TYPES]; // units of the player by unit AI type (human / European players, see noteUnitAI)
 		char aszPlayerName[MAX_PLAYERS][40];
 		int iMapWidth;
 		int iMapHeight;
@@ -958,6 +962,15 @@ namespace WtpTiming
 		}
 	}
 
+	// called at the start of the turn change (CvGame::doTurn) for every unit of a human / European / king player, before flush: the table "units by AI type"
+	inline void noteUnitAI(int iPlayer, int iUnitAI)
+	{
+		if (iPlayer >= 0 && iPlayer < MAX_PLAYERS && iUnitAI >= 0 && iUnitAI < NUM_UNITAI_TYPES)
+		{
+			data().aiPlayerUnitAI[iPlayer][iUnitAI]++;
+		}
+	}
+
 	// called at the start of the turn change (CvGame::doTurn) for every living player, before flush
 	inline void notePlayer(int iPlayer, char cType, int iCities, int iUnits, const char* szName)
 	{
@@ -1021,6 +1034,7 @@ namespace WtpTiming
 		PlayerScope(PlayerSlot, int) {}
 	};
 	inline void count(Counter, __int64) {}
+	inline void noteUnitAI(int, int) {}
 	inline void notePlayer(int, char, int, int, const char*) {}
 	inline void noteMap(int, int) {}
 	inline void noteGame(const char*, const char*, const char*, const char*, const char*, bool) {}
@@ -1707,6 +1721,34 @@ namespace WtpTiming
 					}
 				}
 
+				// the units of the human / European / king players by unit AI type (counted in CvGame::doTurn with noteUnitAI)
+				fprintf(f, "--- units by AI type (count at the start of the turn change; id, type, units, then UNITAI_*=number; natives are not listed)\n");
+				for (int iP = 0; iP < MAX_PLAYERS; iP++)
+				{
+					if (!kData.abPlayerInfo[iP] || kData.acPlayerType[iP] == 'N')
+					{
+						continue;
+					}
+					int iSum = 0;
+					for (int iAI = 0; iAI < NUM_UNITAI_TYPES; iAI++)
+					{
+						iSum += kData.aiPlayerUnitAI[iP][iAI];
+					}
+					if (iSum == 0)
+					{
+						continue;
+					}
+					fprintf(f, "%d\t%c\t%d", iP, kData.acPlayerType[iP], kData.aiPlayerUnits[iP]);
+					for (int iAI = 0; iAI < NUM_UNITAI_TYPES; iAI++)
+					{
+						if (kData.aiPlayerUnitAI[iP][iAI] > 0)
+						{
+							fprintf(f, "\t%s=%d", GC.getUnitAIInfo((UnitAITypes)iAI).getType(), kData.aiPlayerUnitAI[iP][iAI]);
+						}
+					}
+					fprintf(f, "\n");
+				}
+
 				bool bCounter = false;
 				for (int i = 0; i < CNT_COUNT; i++)
 				{
@@ -1728,6 +1770,7 @@ namespace WtpTiming
 		resetAccumulators();
 		kData.bFightActive = false; // (a fight does not last over a turn change; also guards against a missed end)
 		memset(kData.abPlayerInfo, 0, sizeof(kData.abPlayerInfo));
+		memset(kData.aiPlayerUnitAI, 0, sizeof(kData.aiPlayerUnitAI));
 		// aiDepth is not reset, scopes may be open (flush runs inside nothing, but stay safe)
 #endif
 	}

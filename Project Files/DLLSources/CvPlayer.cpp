@@ -1216,6 +1216,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade)
 	pNewCity = initCity(pCityPlot->coord(), !bConquest);
 
 	FAssertMsg(pNewCity != NULL, "NewCity is not assigned a valid value");
+	CvPlayerAI::AI_wtpNoteCityEvent(getID(), 1); // WTP: log of the settlement brake (city gained by conquest or trade; the old city goes with kill())
 
 	pNewCity->setPreviousOwner(eOldOwner);
 	pNewCity->setOriginalOwner(eOriginalOwner);
@@ -6367,6 +6368,7 @@ CvCity* CvPlayer::found(Coordinates foundCoord)
 
 	CvCity* pCity = initCity(foundCoord, true);
 	FAssertMsg(pCity != NULL, "City is not assigned a valid value");
+	CvPlayerAI::AI_wtpNoteCityEvent(getID(), 0); // WTP: log of the settlement brake (city founded)
 
 	// WTP: AI colonial players get a hardy pioneer once, when they found their first colony
 	if (pCity != NULL && !isHuman() && is(CIV_CATEGORY_COLONIAL) && getNumCities() == 1 && getCitiesLost() == 0)

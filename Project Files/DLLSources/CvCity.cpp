@@ -391,6 +391,7 @@ void CvCity::setupGraphical()
 void CvCity::kill()
 {
 	CityKill killCounter; // activate CityKill::isActive() until this goes out of scope
+	CvPlayerAI::AI_wtpNoteCityEvent(getOwnerINLINE(), 2); // WTP: log of the settlement brake (city lost: conquered or razed)
 
 	CvPlot* pPlot = plot();
 
