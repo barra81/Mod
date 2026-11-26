@@ -512,6 +512,8 @@ class CvMainInterface:
 	tMsgPickKey = None
 	bMsgPickShown = False
 	iMsgPickLines = 0
+	# WTP: the elements of the production bar of a building (icon, text) and the building slot they belong to (the bar itself is named ProductionBox + slot)
+	dBarSpecial = {}
 	BUTTON_BUILDING_UPGRADE_CLOSE = 760 # WTP: building upgrade panel of the city screen: close
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
@@ -1508,6 +1510,10 @@ class CvMainInterface:
 			screen.setImageButton("CityBuildingGraphic" + str(iSpecial), "", BUILDING_GRID[iSpecial][0] + STACK_BAR_HEIGHT, BUILDING_GRID[iSpecial][1] + CITY_TITLE_BAR_HEIGHT, BUILDING_GRID[iSpecial][3], BUILDING_GRID[iSpecial][3], WidgetTypes.WIDGET_ASSIGN_CITIZEN_TO_BUILDING, iSpecial, iTargetBuilding)
 			screen.addDDSGFC("ProductionBox" + str(iSpecial), ArtFileMgr.getInterfaceArtInfo("INTERFACE_PRODUCTION_BOX").getPath(), BUILDING_GRID[iSpecial][0] + STACK_BAR_HEIGHT, BUILDING_GRID[iSpecial][1] + BUILDING_GRID[iSpecial][2], (BUILDING_GRID[iSpecial][3] + STACK_BAR_HEIGHT)*3/4, STACK_BAR_HEIGHT*3/4, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			screen.hide("ProductionBox" + str(iSpecial))
+			# WTP: a real (transparent) button over the production bar: the bar itself, its icon and its text are no buttons and get no clicks. The button is created before the
+			# icon and the text of the bar, so they lie on top of it and keep their tooltips; a left click on the rest of the bar opens the upgrade panel (see handleInput)
+			screen.setImageButton("WtpBarClick" + str(iSpecial), "", BUILDING_GRID[iSpecial][0] + STACK_BAR_HEIGHT, BUILDING_GRID[iSpecial][1] + BUILDING_GRID[iSpecial][2], (BUILDING_GRID[iSpecial][3] + STACK_BAR_HEIGHT)*3/4, STACK_BAR_HEIGHT*3/4, WidgetTypes.WIDGET_ASSIGN_CITIZEN_TO_BUILDING, iSpecial, iTargetBuilding)
+			screen.hide("WtpBarClick" + str(iSpecial))
 
 	# BUTTONS
 		screen.setImageButton("HurryGold", ArtFileMgr.getInterfaceArtInfo("INTERFACE_EUROPE_PURCHASE_UNIT").getPath(), CITIZEN_BAR_WIDTH - 2, CITY_TITLE_BAR_HEIGHT + CITY_VIEW_BOX_HEIGHT_AND_WIDTH - (MAP_EDGE_MARGIN_WIDTH * 2) + (STACK_BAR_HEIGHT * 3 / 2) + (MAP_EDGE_MARGIN_WIDTH / 2) - (CITY_MULTI_TAB_SIZE / 2) - ((CITY_MULTI_TAB_SIZE * RelativeButtonSize / 100) / 2) + (CITY_MULTI_TAB_SIZE / 2), CITY_MULTI_TAB_SIZE * RelativeButtonSize / 100, CITY_MULTI_TAB_SIZE * RelativeButtonSize / 100, WidgetTypes.WIDGET_HURRY, HurryTypes.HURRY_GOLD, -1)
@@ -2782,13 +2788,16 @@ class CvMainInterface:
 								#RWL for SpecialBuilding Trade
 								if (CityBuilding != -1):
 									screen.show("ProductionBox" + str(iSpecialBuildingType))
+									screen.show("WtpBarClick" + str(iSpecialBuildingType)) # WTP: the click button of the bar
 									szName = "YieldOutPutIcon" + str(iYield)
+									self.dBarSpecial[szName] = iSpecialBuildingType # WTP: a click on the bar opens the upgrade panel of the building
 									if (iSecondYield < 0 or iSecondYield >= YieldTypes.NUM_YIELD_TYPES or iSecondYield == iYield):
 										screen.addDDSGFC(szName, gc.getYieldInfo(iYield).getIcon(), BUILDING_GRID[iSpecialBuildingType][0] + (STACK_BAR_HEIGHT / 2), BUILDING_GRID[iSpecialBuildingType][1] + BUILDING_GRID[iSpecialBuildingType][2] - (BUILDING_GRID[iSpecialBuildingType][2] / 6) + STACK_BAR_HEIGHT, STACK_BAR_HEIGHT * 3 / 2, STACK_BAR_HEIGHT * 3 / 2, WidgetTypes.WIDGET_HELP_YIELD, iYield, -1)
 									else:
 										# R&R, we do not show the first icon any more, if we have MultipleProfessionsPerBuilding
 										# screen.addDDSGFC(szName, gc.getYieldInfo(iYield).getIcon(), BUILDING_GRID[iSpecialBuildingType][0] + (STACK_BAR_HEIGHT / 2), BUILDING_GRID[iSpecialBuildingType][1] + BUILDING_GRID[iSpecialBuildingType][2] - (BUILDING_GRID[iSpecialBuildingType][2] / 6) + STACK_BAR_HEIGHT, STACK_BAR_HEIGHT * 3 / 2, STACK_BAR_HEIGHT * 3 / 2, WidgetTypes.WIDGET_HELP_TWO_YIELDS, iYield, iSecondYield)
 										szSecondName = "SecondYieldOutPutIcon" + str(iSecondYield) #the second icon must not use "szName", or it replaces the former icon
+										self.dBarSpecial[szSecondName] = iSpecialBuildingType
 										if (iSecondYield == YieldTypes.YIELD_FOOD):
 											screen.addDDSGFC(szSecondName, gc.getYieldInfo(iYield).getIcon(), BUILDING_GRID[iSpecialBuildingType][0] + (STACK_BAR_HEIGHT / 2), BUILDING_GRID[iSpecialBuildingType][1] + BUILDING_GRID[iSpecialBuildingType][2] - (BUILDING_GRID[iSpecialBuildingType][2] / 6) + STACK_BAR_HEIGHT, STACK_BAR_HEIGHT * 3 / 2, STACK_BAR_HEIGHT * 3 / 2, WidgetTypes.WIDGET_HELP_TWO_YIELDS, iYield, iSecondYield)
 										else:
@@ -2798,6 +2807,7 @@ class CvMainInterface:
 
 								else:
 									screen.hide("ProductionBox" + str(iSpecialBuildingType))
+									screen.hide("WtpBarClick" + str(iSpecialBuildingType))
 
 								ProfessionCount = len(CitizenSpecialBuildingIndexArray[iSpecialBuildingType])
 								for GroupIndex in range(ProfessionCount):
@@ -2864,6 +2874,7 @@ class CvMainInterface:
 								if STANDARD_FONT_SIZE + iBarFontDelta < 1:
 									iBarFontDelta = 1 - STANDARD_FONT_SIZE
 								szName = "WorkerOutputText" + str(iYield)
+								self.dBarSpecial[szName] = iSpecialBuildingType
 								if (iSecondYield == -1 or iSecondYield == iYield):
 									screen.setLabelAt(szName, "ProductionBox" + str(iSpecialBuildingType), self.setFontSize(SzText , iBarFontDelta), CvUtil.FONT_RIGHT_JUSTIFY, (BUILDING_GRID[iSpecialBuildingType][3] + STACK_BAR_HEIGHT) *2 / 3, STACK_BAR_HEIGHT *2 /5, -1.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_HELP_YIELD, iYield, -1)
 								else:
@@ -2871,8 +2882,10 @@ class CvMainInterface:
 
 								CitizenHideList.append(szName)
 								CitizenHideList.append("ProductionBox" + str(iSpecialBuildingType)) # R&R, Robert Surcouf Fix Production box
+								CitizenHideList.append("WtpBarClick" + str(iSpecialBuildingType))
 							else:
 								screen.hide("ProductionBox" + str(iSpecialBuildingType))
+								screen.hide("WtpBarClick" + str(iSpecialBuildingType))
 				#Androrc End
 
 				iSpace = CITIZEN_BAR_WIDTH - (LARGE_BUTTON_SIZE * 3)
@@ -3587,6 +3600,7 @@ class CvMainInterface:
 			for iSpecial in range(gc.getNumSpecialBuildingInfos()):
 				screen.hide("CityBuildingGraphic" + str(iSpecial))
 				screen.hide("ProductionBox" + str(iSpecial))
+				screen.hide("WtpBarClick" + str(iSpecial))
 
 			screen.hideList(RESOURCE_TABLE_HIDE)
 			screen.hide("CityList")
@@ -10764,6 +10778,13 @@ class CvMainInterface:
 			# WTP: a click on a building of the city screen opens the panel to upgrade it; the buttons of the panel start the construction
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_ASSIGN_CITIZEN_TO_BUILDING and inputClass.getFunctionName().startswith("CityBuildingGraphic")):
 				self.showBuildingUpgradePanel(inputClass.getData1(), inputClass.getMouseX(), inputClass.getMouseY())
+			# WTP: a left click on the production bar of a building does the same as a click on the building (the button over the bar, see the creation of the building buttons)
+			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_ASSIGN_CITIZEN_TO_BUILDING and inputClass.getFunctionName().startswith("WtpBarClick")):
+				if not (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP):
+					self.showBuildingUpgradePanel(inputClass.getData1(), inputClass.getMouseX(), inputClass.getMouseY())
+			# (in case the icon or the text of the bar do deliver clicks too: the same)
+			elif (not (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP) and self.getProductionBarSpecial(inputClass.getFunctionName()) >= 0):
+				self.showBuildingUpgradePanel(self.getProductionBarSpecial(inputClass.getFunctionName()), inputClass.getMouseX(), inputClass.getMouseY())
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_CONSTRUCT and inputClass.getFunctionName().startswith("WtpUpg")):
 				self.hideBuildingUpgradePanel()
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_BUILDING_UPGRADE_CLOSE):
@@ -10978,6 +10999,15 @@ class CvMainInterface:
 		except:
 			self.aszUpgradeWidgets = []
 			self.iUpgradeCity = -1
+
+	# the building slot of an element of the production bar (-1: it is none)
+	def getProductionBarSpecial(self, szName):
+		try:
+			if szName.startswith("ProductionBox"):
+				return int(szName[len("ProductionBox"):])
+			return self.dBarSpecial.get(szName, -1)
+		except:
+			return -1
 
 	def showBuildingUpgradePanel(self, iSpecial, iMouseX, iMouseY):
 		try:
