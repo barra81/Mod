@@ -3213,6 +3213,32 @@ class CvMainInterface:
 		return 0
 
 	# Will set the table to display the out put of a city or the players whole empire
+	# the resource table shows all goods (also those with nothing in store and no change) or only the others: the setting of the button
+	# "Toggle displayed yields" (SHOW_ALL_YIELDS), turned around while the Shift key is held (WTP)
+	bYieldShift = False
+
+	def isShowAllYields( self ):
+		return (SHOW_ALL_YIELDS == True) != self.bYieldShift
+
+	# the button is highlighted while only the goods with something in store or a change are shown
+	def setYieldButtonOverlay( self, screen ):
+		if self.isShowAllYields():
+			screen.overlayButtonGFC("ShowOrHideYields", None)
+		else:
+			screen.overlayButtonGFC("ShowOrHideYields", ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath())
+
+	# every frame: Shift pressed or released turns the setting of the button around (as long as the key is held), the table is made again
+	def updateYieldShift( self ):
+		try:
+			bShift = bool(gc.getGame().isShiftKeyPressed())
+			if bShift != self.bYieldShift:
+				self.bYieldShift = bShift
+				scrYield = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE)
+				self.setYieldButtonOverlay(scrYield)
+				self.updateResourceTable()
+		except:
+			pass
+
 	def updateResourceTable( self ):
 
 		screen = CyGInterfaceScreen("MainInterface", CvScreenEnums.MAIN_INTERFACE )
@@ -3287,7 +3313,7 @@ class CvMainInterface:
 				screen.setLabel(szRateLabel, "", self.setFontSize(szRate, 0), CvUtil.FONT_CENTER_JUSTIFY, iX, iY, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_RECEIVE_MOVE_CARGO_TO_CITY, -1, -1 )
 				ResourceHideList.append(szRateLabel)
 
-				if SHOW_ALL_YIELDS == False and iStored == 0 and iRate == 0:
+				if not self.isShowAllYields() and iStored == 0 and iRate == 0:
 					screen.hide("YieldIcon" + str(index))
 				else:
 					screen.show("YieldIcon" + str(index))
@@ -10012,12 +10038,8 @@ class CvMainInterface:
 				CyInterface().clearSelectedCities()
 
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_HELP_SHOW_OR_HIDE_YIELDS):
-				if SHOW_ALL_YIELDS == True:
-					SHOW_ALL_YIELDS = False
-					screen.overlayButtonGFC("ShowOrHideYields", ArtFileMgr.getInterfaceArtInfo("INTERFACE_HIGHLIGHTED_BUTTON").getPath())
-				else:
-					SHOW_ALL_YIELDS = True
- 					screen.overlayButtonGFC("ShowOrHideYields", None)
+				SHOW_ALL_YIELDS = not (SHOW_ALL_YIELDS == True)
+				self.setYieldButtonOverlay(screen)
 				self.updateResourceTable()
 
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == ACHIEVE_ADVISOR_SCREEN_MI):
@@ -11602,6 +11624,7 @@ class CvMainInterface:
 		self.updateTerritorialInfluenceEditor()
 		self.updatePendingWpRename()
 		self.updateCursorTooltip()
+		self.updateYieldShift()
 		self.pollWidgetHelp()
 		self.updatePostJump()
 		self.checkTradeReturnPending()
