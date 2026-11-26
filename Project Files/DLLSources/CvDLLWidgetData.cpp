@@ -233,8 +233,8 @@ CvWString wtpGetWidgetHelpText() { return g_szWtpWidgetHelp; }
 int wtpGetWidgetHelpCount() { return g_iWtpWidgetHelpCount; }
 int wtpGetWidgetHelpType() { return g_iWtpWidgetHelpType; }
 // WTP: with the diplomacy screen open the game shows the help of the HUD elements itself, python cannot clear it there. While the own
-// tooltip is on (set from python) the DLL gives the game an empty text then; the text for python is kept. Exception: the items of the
-// trade window (WIDGET_TRADE_ITEM) keep the game tooltip
+// tooltip is on (set from python) the DLL gives the game an empty text then; the text for python is kept. Not any more: the diplomacy
+// screen keeps the game tooltips (portrait, trade items), only the list of the popup of a colony is still handled below
 static bool g_bWtpHideGameHelp = false;
 static bool g_bWtpInternalHelp = false;
 void wtpSetHideGameHelp(bool b) { g_bWtpHideGameHelp = b; }
@@ -251,13 +251,9 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, const CvWidgetDataStr
 	g_szWtpWidgetHelp = szBuffer.getCString();
 	g_iWtpWidgetHelpType = (int)widgetDataStruct.m_eWidgetType;
 	g_iWtpWidgetHelpCount++;
-	// (not the items of the trade window: their help (price of a good, why the other side refuses) is shown by the game itself, in front
-	// of the diplomacy window; python only moves the help area of the game into view for that, see CvMainInterface.setGameHelpArea)
-	if (g_bWtpHideGameHelp && !g_bWtpInternalHelp && (gDLL->isDiplomacy() || gDLL->isMPDiplomacyScreenUp()) && widgetDataStruct.m_eWidgetType != WIDGET_TRADE_ITEM)
-	{
-		szBuffer.clear();
-	}
-	else if (g_bWtpHideYieldHelp && !g_bWtpInternalHelp && widgetDataStruct.m_eWidgetType == WIDGET_HELP_YIELD)
+	// (with a diplomacy screen open the game help stays as it is, in front of the dialog: the portrait, the items of the trade window; python
+	// only moves the help area of the game into view then, see CvMainInterface.setGameHelpArea)
+	if (g_bWtpHideYieldHelp && !g_bWtpInternalHelp && widgetDataStruct.m_eWidgetType == WIDGET_HELP_YIELD)
 	{
 		szBuffer.clear();
 	}
