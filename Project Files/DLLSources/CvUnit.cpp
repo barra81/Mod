@@ -5637,7 +5637,7 @@ void CvUnit::loadAllYieldsByValue()
 		}
 	}
 	const CvPlayer& kOwner = GET_PLAYER(getOwnerINLINE());
-	// goods that would fill less than 15% of a slot are skipped
+	// goods that would fill less than 15% of a slot are skipped in the first pass (the second pass takes them if slots are free)
 	const int iMinAmount = (15 * GC.getGameINLINE().getCargoYieldCapacity() + 99) / 100;
 	// all goods of one trip should sell best in one harbour: for every harbour the ship can reach the whole load (what is on board plus what the
 	// free slots would take, the best goods for this harbour first) is valued, the harbour with the highest total value decides the order of loading
@@ -5715,35 +5715,59 @@ void CvUnit::loadAllYieldsByValue()
 		}
 	}
 	const bool bSeaTarget = (getDomainType() == DOMAIN_SEA && canReachHarbour(iHarbour));
-	for (int iGuard = 0; iGuard < 100; ++iGuard)
+	const int iSlotCapacity = GC.getGameINLINE().getCargoYieldCapacity();
+	// two passes: the first one takes only the goods that fill at least 15% of a slot, the second one fills the slots that are still free with
+	// what is left (the ship leaves as full as possible)
+	for (int iPass = 0; iPass < 2; ++iPass)
 	{
-		YieldTypes eBest = NO_YIELD;
-		int iBestValue = -1;
-		for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
+		const int iPassMin = (iPass == 0) ? iMinAmount : 1;
+		for (int iGuard = 0; iGuard < 100; ++iGuard)
 		{
-			if (abExcluded[eYield] || !canLoadYield(plot(), eYield, false) || getMaxLoadYieldAmount(eYield) < iMinAmount)
+			// the value of the slot that is loaded now (the amount it takes, not the price of a fixed amount): 10 gold must not beat a full slot of a cheap
+			// good that is worth more together. A good that uses the slot better (more of the slot filled) is preferred when its slot is worth at least
+			// 90% of the best one, so a slightly more valuable but badly filled slot does not take the place of a full one
+			int aiValue[NUM_YIELD_TYPES];
+			int aiAmount[NUM_YIELD_TYPES];
+			int iBestValue = 0;
+			for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
 			{
-				continue;
+				aiValue[eYield] = 0;
+				aiAmount[eYield] = 0;
+				const int iAmount = std::min(iSlotCapacity, getMaxLoadYieldAmount(eYield));
+				if (abExcluded[eYield] || iAmount < iPassMin || !canLoadYield(plot(), eYield, false))
+				{
+					continue;
+				}
+				const int iValue = wtpHarbourProfit(kOwner, iHarbour, eYield, iAmount);
+				// a good that cannot be sold in the target harbour (boycott, not tradable there) is skipped
+				if (bSeaTarget && iValue <= 0)
+				{
+					continue;
+				}
+				aiValue[eYield] = iValue;
+				aiAmount[eYield] = iAmount;
+				iBestValue = std::max(iBestValue, iValue);
 			}
-			const int iValue = wtpHarbourProfit(kOwner, iHarbour, eYield, 100);
-			// a good that cannot be sold in the target harbour (boycott, not tradable there) is skipped
-			if (bSeaTarget && iValue <= 0)
+			YieldTypes eBest = NO_YIELD;
+			for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_YIELD_TYPES; ++eYield)
 			{
-				continue;
+				if (aiAmount[eYield] <= 0 || aiValue[eYield] * 100 < iBestValue * 90)
+				{
+					continue;
+				}
+				if (eBest == NO_YIELD || aiAmount[eYield] > aiAmount[eBest] || (aiAmount[eYield] == aiAmount[eBest] && aiValue[eYield] > aiValue[eBest]))
+				{
+					eBest = eYield;
+				}
 			}
-			if (iValue > iBestValue)
+			if (eBest == NO_YIELD)
 			{
-				iBestValue = iValue;
-				eBest = eYield;
+				break;
 			}
-		}
-		if (eBest == NO_YIELD)
-		{
-			break;
-		}
-		if (loadYield(eBest, false) <= 0)
-		{
-			abExcluded[eBest] = true;
+			if (loadYield(eBest, false) <= 0)
+			{
+				abExcluded[eBest] = true;
+			}
 		}
 	}
 }
