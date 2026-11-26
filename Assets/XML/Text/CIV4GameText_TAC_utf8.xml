@@ -1345,12 +1345,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_NOT_ENOUGH_RAW</Tag>
-		<English>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]We could produce more %F3_yield_icon [COLOR_RED]if we had more %F2_yield_icon available there.[COLOR_REVERT]</English>
-		<Portuguese>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Poderíamos produzir mais %F3_yield_icon [COLOR_RED]se tivéssemos mais %F2_yield_icon disponível lá.[COLOR_REVERT]</Portuguese>
+		<English>[COLOR_RED]%s1_city[COLOR_REVERT] : We could produce more %F3_yield_icon [COLOR_RED]if we had more %F2_yield_icon available there.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_RED]%s1_city[COLOR_REVERT] : Poderíamos produzir mais %F3_yield_icon [COLOR_RED]se tivéssemos mais %F2_yield_icon disponível lá.[COLOR_REVERT]</Portuguese>
 		<French>%s1_city est à cours de %F2_yield_icon et ne peut ainsi plus produire de %F3_yield_icon.</French>
-		<German>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Wir könnten mehr %F3_yield_icon herstellen, [COLOR_RED]stünde uns dort mehr %F2_yield_icon zur Verfügung.[COLOR_REVERT]</German>
-		<Russian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Мы могли бы производить больше %F3_yield_icon, [COLOR_RED]если бы у нас было больше %F2_yield_icon.[COLOR_REVERT]</Russian>
-		<Hungarian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Több %F3_yield_icon-t tudnánk előállítani, [COLOR_RED]ha több %F2_yield_icon állna rendelkezésre.[COLOR_REVERT]</Hungarian>
+		<German>[COLOR_RED]%s1_city[COLOR_REVERT] : Wir könnten mehr %F3_yield_icon herstellen, [COLOR_RED]stünde uns dort mehr %F2_yield_icon zur Verfügung.[COLOR_REVERT]</German>
+		<Russian>[COLOR_RED]%s1_city[COLOR_REVERT] : Мы могли бы производить больше %F3_yield_icon, [COLOR_RED]если бы у нас было больше %F2_yield_icon.[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_RED]%s1_city[COLOR_REVERT] : Több %F3_yield_icon-t tudnánk előállítani, [COLOR_RED]ha több %F2_yield_icon állna rendelkezésre.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRADE_WORLD_MAP_STRING</Tag>
@@ -3368,6 +3368,12 @@
 		<English>[COLOR_RED]%s1_city[COLOR_REVERT] : Production stopped, [COLOR_RED]%d4%F2_yield_icon per turn[COLOR_REVERT] missing to produce %F3_yield_icon</English>
 		<German>[COLOR_RED]%s1_city[COLOR_REVERT] : Produktion steht still, es fehlen [COLOR_RED]%d4%F2_yield_icon pro Runde[COLOR_REVERT] für die Produktion von %F3_yield_icon</German>
 		<Russian>[COLOR_RED]%s1_city[COLOR_REVERT] : производство остановлено, не хватает [COLOR_RED]%d4%F2_yield_icon в ход[COLOR_REVERT] для производства %F3_yield_icon</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_REDUCED_RAW_AMOUNT</Tag>
+		<English>[COLOR_RED]%s1_city[COLOR_REVERT] : Production reduced, [COLOR_RED]%d4%F2_yield_icon per turn[COLOR_REVERT] missing for the full production of %F3_yield_icon</English>
+		<German>[COLOR_RED]%s1_city[COLOR_REVERT] : Produktion verringert, es fehlen [COLOR_RED]%d4%F2_yield_icon pro Runde[COLOR_REVERT] für die volle Produktion von %F3_yield_icon</German>
+		<Russian>[COLOR_RED]%s1_city[COLOR_REVERT] : производство снижено, не хватает [COLOR_RED]%d4%F2_yield_icon в ход[COLOR_REVERT] для полного производства %F3_yield_icon</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_MORE</Tag>

@@ -5440,7 +5440,9 @@ void CvCity::calculateNetYields(int aiYields[NUM_YIELD_TYPES], int* aiProducedYi
 				// WTP: the message names the amount that is missing per turn (consumption minus what is produced and stored)
 				int iMissing = aiConsumedYields[eYieldConsumed] - aiProducedYields[eYieldConsumed] * getBaseYieldRateModifier(eYieldConsumed) / 100 - getYieldStored(eYieldConsumed);
 				iMissing = std::max(1, iMissing);
-				CvWString szBuffer = gDLL->getText("TXT_KEY_WTP_NO_RAW_AMOUNT", getNameKey(), GC.getYieldInfo(eYieldConsumed).getChar(), GC.getYieldInfo(eYieldProduced).getChar(), iMissing);
+				// WTP: the production only stops when nothing of the raw material is there at all; with a part of it the production goes on reduced
+				const bool bProductionStopped = (iMissing >= aiConsumedYields[eYieldConsumed]);
+				CvWString szBuffer = gDLL->getText(bProductionStopped ? "TXT_KEY_WTP_NO_RAW_AMOUNT" : "TXT_KEY_WTP_REDUCED_RAW_AMOUNT", getNameKey(), GC.getYieldInfo(eYieldConsumed).getChar(), GC.getYieldInfo(eYieldProduced).getChar(), iMissing);
 				WtpHudMessages::setPriority(true); // WTP: shown at the top of the message panel
 				gDLL->UI().addPlayerMessage(getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, coord(), "AS2D_DEAL_CANCELLED", MESSAGE_TYPE_MINOR_EVENT, GC.getYieldInfo(eYieldConsumed).getButton(), COLOR_RED, true, true);
 				WtpHudMessages::setPriority(false);
