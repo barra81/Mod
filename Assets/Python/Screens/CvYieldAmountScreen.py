@@ -6,8 +6,19 @@
 from CvPythonExtensions import *
 import CvUtil
 import CvScreenEnums
+import time
 
 gc = CyGlobalContext()
+
+
+def logKey(szText):
+	try:
+		f = open("WTP_AmountKeys.log", "a")
+		f.write(szText + "\n")
+		f.close()
+	except:
+		pass
+
 localText = CyTranslator()
 
 BTN_MINUS = 40001
@@ -64,6 +75,9 @@ class CvYieldAmountScreen:
 		self.tReopen = None # the dialog that Alt+Tab closed (it is opened again for the same transfer)
 		self.iReopenWait = 0
 		self.iReopenTries = 0
+		self.tLastKey = None # the last key taken: [key, source, time, its copy from the other source seen]
+		self.dHeldKeys = {} # the keys of the harbor screen still held down: key -> time of their last NOTIFY_CHARACTER
+		self.dKeyVK = {} # key -> Windows virtual key code (asked in update whether the key is still down)
 
 	def getScreen(self):
 		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.YIELD_AMOUNT)
@@ -118,12 +132,22 @@ class CvYieldAmountScreen:
 			self.iRefresh = 0
 
 		self.dDigits = {}
+		self.dKeyVK = {}
 		for i in range(10):
 			self.dDigits[self.getKeyId("KB_" + str(i))] = i
 			self.dDigits[self.getKeyId("KB_NUMPAD" + str(i))] = i
+			self.dKeyVK[self.getKeyId("KB_" + str(i))] = 0x30 + i
+			self.dKeyVK[self.getKeyId("KB_NUMPAD" + str(i))] = 0x60 + i
 		self.iKeyBack = self.getKeyId("KB_BACKSPACE")
 		self.aKeyOk = [self.getKeyId("KB_RETURN"), self.getKeyId("KB_NUMPADENTER")]
 		self.iKeyEsc = self.getKeyId("KB_ESCAPE")
+		self.dKeyVK[self.iKeyBack] = 0x08
+		for iKey in self.aKeyOk:
+			self.dKeyVK[iKey] = 0x0D
+		self.dKeyVK[self.iKeyEsc] = 0x1B
+		self.dKeyVK[self.getKeyId("KB_PGUP")] = 0x21
+		self.dKeyVK[self.getKeyId("KB_PGDN")] = 0x22
+		self.dHeldKeys = {}
 		self.aKeyShift = [self.getKeyId("KB_LSHIFT"), self.getKeyId("KB_RSHIFT")]
 		self.aKeyCtrl = [self.getKeyId("KB_LCONTROL"), self.getKeyId("KB_RCONTROL")]
 		self.iKeyUp = self.getKeyId("KB_PGUP")
@@ -479,8 +503,29 @@ class CvYieldAmountScreen:
 			self.bHostMain = False
 			self.pHost = None
 
-	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open)
-	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False):
+	# a key down event (CvEventManager.onKbdEvent gives them to the dialog while it is open; on a harbor screen they come as
+	# NOTIFY_CHARACTER from handleEmbeddedInput as well). One press can come from both sources, the second one up to a few
+	# frames later (on a slow harbor screen more than 50 ms: 3 became 33): the same key from the other source within half a
+	# second is that copy and is dropped, once per taken key, so a key pressed twice still counts twice.
+	# On a harbor screen NOTIFY_CHARACTER comes again in every frame while the key is held (the key log showed it): such a key
+	# counts once, then it is held (dHeldKeys) until update sees it released (CyGame.isVirtualKeyPressed; keys without a
+	# known virtual key code, and an old DLL without that function: 150 ms without a new NOTIFY_CHARACTER).
+	# Every key is written to WTP_AmountKeys.log (source, key, time, taken or dropped).
+	def handleKey(self, iKey, bCtrl, bShift = False, bAlt = False, szSource = "kbd"):
+		fNow = time.clock()
+		tLast = self.tLastKey
+		bCopy = False
+		if szSource == "screen":
+			if self.dHeldKeys.has_key(iKey):
+				bCopy = True
+			self.dHeldKeys[iKey] = fNow
+		if not bCopy and tLast != None and tLast[0] == iKey and tLast[1] != szSource and not tLast[3] and fNow - tLast[2] < 0.5:
+			tLast[3] = True
+			bCopy = True
+		logKey("%s key %d t %.3f %s" % (szSource, iKey, fNow, bCopy and "dropped" or "taken"))
+		if bCopy:
+			return
+		self.tLastKey = [iKey, szSource, fNow, False]
 		self.bCtrlDown = bCtrl or iKey in self.aKeyCtrl
 		self.bShiftDown = bShift or iKey in self.aKeyShift
 		if bCtrl and bShift and iKey == self.getKeyId("KB_Q"):
@@ -518,6 +563,14 @@ class CvYieldAmountScreen:
 	# the clicks on the buttons of the dialog when it is drawn on a harbor screen (CvScreensInterface.handleInput gives them here);
 	# returns 1 if the event was for the dialog
 	def handleEmbeddedInput(self, inputClass):
+		# the keys on a harbor screen (Europe / Africa / Port Royal): the screen gets them, CvEventManager.onKbdEvent does not
+		# (the arrow keys are asked from the keyboard in updateMove)
+		if int(inputClass.getNotifyCode()) == int(NotifyCode.NOTIFY_CHARACTER) and not self.bHostMain:
+			iKey = int(inputClass.getData())
+			if iKey in self.aKeyArrows:
+				return 1
+			self.handleKey(iKey, inputClass.isCtrlKeyDown(), inputClass.isShiftKeyDown(), inputClass.isAltKeyDown(), "screen")
+			return 1
 		if int(inputClass.getNotifyCode()) != int(NotifyCode.NOTIFY_CLICKED) or inputClass.getButtonType() != WidgetTypes.WIDGET_GENERAL:
 			return 0
 		iData = inputClass.getData1()
@@ -560,6 +613,28 @@ class CvYieldAmountScreen:
 		return 0
 
 	# the mouse wheel (collected by the DLL while the dialog is open)
+	# the keys of the harbor screen that are released again count anew; 60 ms after the last NOTIFY_CHARACTER at the earliest
+	# (one that was still on its way when the key came up is not a new press)
+	def updateHeldKeys(self):
+		if len(self.dHeldKeys) == 0:
+			return
+		fNow = time.clock()
+		for iKey in self.dHeldKeys.keys():
+			fAge = fNow - self.dHeldKeys[iKey]
+			if fAge < 0.06:
+				continue
+			iVK = self.dKeyVK.get(iKey, 0)
+			bDown = False
+			if iVK > 0:
+				try:
+					bDown = CyGame().isVirtualKeyPressed(iVK)
+				except:
+					bDown = fAge < 0.15 # (a DLL without the function)
+			else:
+				bDown = fAge < 0.15
+			if not bDown:
+				del self.dHeldKeys[iKey]
+
 	def update(self, fDelta):
 		if self.tReopen != None:
 			self.checkReopen()
@@ -571,6 +646,7 @@ class CvYieldAmountScreen:
 				self.finish(False) # the harbor screen was closed meanwhile
 				return 0
 			self.updateMove()
+			self.updateHeldKeys()
 			iNotches = CyGame().takeWheelNotches()
 			if iNotches != 0:
 				bCtrl = CyGame().isCtrlKeyPressed()

@@ -1189,6 +1189,23 @@ bool CyGame::isArrowKeyPressed(int iDir) const
 	return (GetAsyncKeyState(aiKeys[iDir]) & 0x8000) != 0;
 }
 
+// WTP: a key is down (Windows virtual key code), asked directly from the keyboard: the harbor screens send a key as
+// NOTIFY_CHARACTER again in every frame while it is held, the amount dialog counts a press only once until it is released
+bool CyGame::isVirtualKeyPressed(int iVirtualKey) const
+{
+	if (iVirtualKey <= 0 || iVirtualKey > 0xFE)
+	{
+		return false;
+	}
+	HWND hWnd = GetForegroundWindow();
+	DWORD iProcess = 0;
+	if (hWnd == NULL || GetWindowThreadProcessId(hWnd, &iProcess) == 0 || iProcess != GetCurrentProcessId())
+	{
+		return false;
+	}
+	return (GetAsyncKeyState(iVirtualKey) & 0x8000) != 0;
+}
+
 // WTP: the amount of goods of a diplomacy deal (the same as CvDLLButtonPopup::handleSelectYieldAmountPopup does)
 void CyGame::sendDiploYieldAmount(int iYield, int iAmount, int iFromPlayer) const
 {
