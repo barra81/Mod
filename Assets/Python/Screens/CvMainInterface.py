@@ -2725,8 +2725,13 @@ class CvMainInterface:
 				screen.setLabel("HealthText", "Background", szBuffer, CvUtil.FONT_CENTER_JUSTIFY, xResolution * 68 / 100 +iXmodifier, CITY_TITLE_BAR_HEIGHT / 12, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_HELP_YIELD, YieldTypes.YIELD_HEALTH, -1 )
 
 			# CITY HAPPINESS vs UNHAPPINESS
-				pHeadSelectedCity.updateCityHappiness()
-				pHeadSelectedCity.updateCityUnHappiness()
+				# WTP: updateCityHappiness / updateCityUnHappiness (and Law / Crime below) write saved city values that the turn logic uses (festivities,
+				# unrest, crime gold). In a network game only the machine that has the city screen open would write them: out of sync. So the screen
+				# refreshes them in single player, hotseat and PBEM only (as before); in a network game it shows the values of the turn change.
+				# (idea and reason from StaticShielding/Mod, OOS work summary; there the display is computed read-only instead)
+				if not gc.getGame().isNetworkMultiPlayer():
+					pHeadSelectedCity.updateCityHappiness()
+					pHeadSelectedCity.updateCityUnHappiness()
 				iHappiness = pHeadSelectedCity.getCityHappiness()
 				iUnhappiness = pHeadSelectedCity.getCityUnHappiness()
 
@@ -2757,8 +2762,9 @@ class CvMainInterface:
 				screen.setLabel("UnhappinessText", "Background", szBufferUnHappiness, CvUtil.FONT_CENTER_JUSTIFY, xResolution * 74 / 100-iXmodifier, CITY_TITLE_BAR_HEIGHT / 12, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_HELP_YIELD, YieldTypes.YIELD_UNHAPPINESS, -1 )
 
 			# CITY LAW vs CRIME
-				pHeadSelectedCity.updateCityLaw()
-				pHeadSelectedCity.updateCityCrime()
+				if not gc.getGame().isNetworkMultiPlayer(): # (see CITY HAPPINESS vs UNHAPPINESS above)
+					pHeadSelectedCity.updateCityLaw()
+					pHeadSelectedCity.updateCityCrime()
 				iLaw = pHeadSelectedCity.getCityLaw()
 				iCrime = pHeadSelectedCity.getCityCrime()
 
