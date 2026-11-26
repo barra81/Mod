@@ -488,6 +488,8 @@ class CvMainInterface:
 	aszMessageTexts = []
 	dMessageTips = {} # WTP: message index -> tooltip text (messages with WTP_HUD_TIP_MARKER: the quests with their race standings)
 	WTP_HUD_TIP_MARKER = u"[[WTPTIP]]" # the same as in the DLL (CvTalkingHeadMessage.h)
+	WTP_HUD_SHIP_MARKER = u"[[WTPSHIP]]" # the same
+	dMessageShips = {} # WTP: message index -> ID of the ship of a native trade report (messages with WTP_HUD_SHIP_MARKER)
 	BUTTON_MESSAGE_PANEL = 756 # WTP: the message panel of the turn (click: expand / collapse)
 	BUTTON_MESSAGE_MORE = 758 # WTP: message panel footer: the next older page of messages
 	BUTTON_MESSAGE_PREVIOUS = 759 # WTP: message panel footer: the messages of the turn before / back
@@ -515,12 +517,6 @@ class CvMainInterface:
 	# WTP: the elements of the production bar of a building (icon, text) and the building slot they belong to (the bar itself is named ProductionBox + slot)
 	dBarSpecial = {}
 	BUTTON_BUILDING_UPGRADE_CLOSE = 760 # WTP: building upgrade panel of the city screen: close
-	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
-	aszMessageTexts = []
-	dMessageTips = {} # WTP: message index -> tooltip text (messages with WTP_HUD_TIP_MARKER: the quests with their race standings)
-	WTP_HUD_TIP_MARKER = u"[[WTPTIP]]" # the same as in the DLL (CvTalkingHeadMessage.h)
-	WTP_HUD_SHIP_MARKER = u"[[WTPSHIP]]" # the same
-	dMessageShips = {} # WTP: message index -> ID of the ship of a native trade report (messages with WTP_HUD_SHIP_MARKER)
 
 	def numPlotListButtons( self ):
 		return NUM_PLOT_LIST_BUTTONS
