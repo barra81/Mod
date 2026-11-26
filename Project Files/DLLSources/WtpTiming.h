@@ -521,8 +521,8 @@ namespace WtpTiming
 		int iBrakePlotsPerCity;   // land plots a colonial power gets per city (map size term)
 		int iBrakeHumanPct;       // the soft limit follows this percentage of the biggest human city count
 		int iBrakeHumanWeight;    // weight in percent of that human term against the map term
-		int iBrakeLeaderPct;      // an AI may not be bigger than this percentage of the average of the other AIs (plus 2)
-		int iBrakeFalloff;        // percentage of the wish for further cities that is kept above the soft limit
+		int iBrakeLeaderPct;      // an AI may not be bigger than this percentage of the average of the other AIs (plus 2); the value of Conquistador, the other levels add a step (CvPlayerAI.cpp)
+		int iBrakeFalloff;        // percentage of the wish for further cities that is kept above the soft limit; the value of Conquistador, the other levels add a step
 	};
 
 	// WTP: in a network multiplayer game every machine has to calculate the same game. The settings that change the course of the game (the
