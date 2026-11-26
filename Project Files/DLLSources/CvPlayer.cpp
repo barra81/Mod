@@ -3376,7 +3376,12 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 	case DIPLOEVENT_REFUSE_TAX_RATE:
 		{
 			AI_changeMemoryCount(ePlayer, MEMORY_REFUSED_TAX, 1);
-			CvPlayer& kPlayer = *getColonyPlayer();
+			CvPlayer* pRefusingPlayer = getColonyPlayer();
+			if (pRefusingPlayer == NULL)
+			{
+				break; // WTP: no colony player, nobody refused
+			}
+			CvPlayer& kPlayer = *pRefusingPlayer;
 			YieldTypes eYield = (YieldTypes) iData1;
 			kPlayer.setYieldEuropeTradable(eYield, false);
 			// R&R, ray, Improvements to Tax Mechanism - START
@@ -19087,6 +19092,10 @@ void CvPlayer::changeYieldTradedCounters(TradeLocationTypes eLocation, YieldType
 
 	FAssert(pColonial != NULL);
 	FAssert(pKing != NULL);
+	if (pColonial == NULL || pKing == NULL)
+	{
+		return; // WTP: a king without a colony player (see getColonyPlayer)
+	}
 
 	if (eLocation != TRADE_LOCATION_PORT_ROYAL)
 	{
@@ -19106,6 +19115,10 @@ void CvPlayer::wipeRoyalYieldScore()
 {
 	FAssert(isEurope());
 	FAssert(getColonyPlayer() != NULL);
+	if (getColonyPlayer() == NULL)
+	{
+		return; // WTP: no colony player, no embargo list to go by
+	}
 	for (YieldTypes eYieldCargo = FIRST_YIELD; eYieldCargo < NUM_CARGO_YIELD_TYPES; eYieldCargo++)
 	{
 		if (!getColonyPlayer()->isYieldEuropeTradable(eYieldCargo)) continue; //skip whatever is on embargo
@@ -19125,6 +19138,10 @@ const int CvPlayer::getFullYieldScore(bool fullCalculation)
 {
 	FAssert(isEurope());
 	FAssert(getColonyPlayer() != NULL);
+	if (getColonyPlayer() == NULL)
+	{
+		return 0; // WTP: no colony player, no score
+	}
 	int iGrandTotal = 0;
 	for (YieldTypes eYieldCargo = FIRST_YIELD; eYieldCargo < NUM_CARGO_YIELD_TYPES; eYieldCargo++)
 	{
@@ -19151,7 +19168,12 @@ const int CvPlayer::getTaxThresold()
 const int CvPlayer::getTaxThresold(bool fullCalculation)
 {
 	FAssert(is(CIV_CATEGORY_KING));
-	CvPlayerAI& pColony = *getColonyPlayer();
+	CvPlayerAI* pColonyPlayer = getColonyPlayer();
+	if (pColonyPlayer == NULL)
+	{
+		return 0; // WTP: no colony player, no threshold (nothing is taxed then)
+	}
+	CvPlayerAI& pColony = *pColonyPlayer;
 	int iMultiplier = 100;
 	for (TraitTypes eTrait = FIRST_TRAIT; eTrait < NUM_TRAIT_TYPES; ++eTrait)
 	{
@@ -19215,6 +19237,10 @@ YieldTypes CvPlayer::getHighestTradedYield(bool bCalledFrom_hasHighestTradedYiel
 
 	FAssert(pColony != NULL);
 	FAssert(pKing != NULL);
+	if (pColony == NULL || pKing == NULL)
+	{
+		return NO_YIELD; // WTP: a king without a colony player (see getColonyPlayer)
+	}
 
 	YieldTypes eBestYield = NO_YIELD;
 	for (YieldTypes eYield = FIRST_YIELD; eYield < NUM_CARGO_YIELD_TYPES; ++eYield)
@@ -20405,6 +20431,10 @@ const int CvPlayer::getTaxRaiseChance()
 {
 	FAssertMsg(isEurope(), "Only the European Homeland player - i.e the King - should calculate tax raises on his colony");
 	FAssertMsg(getColonyPlayer() != NULL, "getColonyPlayer() is not initialized");
+	if (getColonyPlayer() == NULL)
+	{
+		return 0; // WTP: no colony player, no tax raise
+	}
 	CvPlayer& kColony = *getColonyPlayer();
 
 	FAssertMsg(getColony() == kColony.getID(), "The Europe player shall rise taxes on his own colonies only");
@@ -20436,6 +20466,10 @@ void CvPlayer::doTaxRaises()
 {
 	FAssertMsg(isEurope(), "Only the European Homeland player - i.e the King - should calculate tax raises on his colony");
 	FAssertMsg(getColonyPlayer() != NULL, "getColonyPlayer() is not initialized");
+	if (getColonyPlayer() == NULL)
+	{
+		return; // WTP: no colony player, no tax raise
+	}
 
 	CvPlayer& kColony = *getColonyPlayer();
 	FAssertMsg(getColony() == kColony.getID(), "The Europe player shall rise taxes on his own colonies only");
@@ -25563,7 +25597,7 @@ bool CvPlayer::isForeignKingWillingToTradeImmigrants(PlayerTypes eKing) const
 	}
 
 	// we need to check that we are not at war with its Colonies
-	if (GET_TEAM(getTeam()).isAtWar(kKing.getColonyPlayer()->getTeam()))
+	if (kKing.getColonyPlayer() != NULL && GET_TEAM(getTeam()).isAtWar(kKing.getColonyPlayer()->getTeam()))
 	{
 		return false;
 	}
