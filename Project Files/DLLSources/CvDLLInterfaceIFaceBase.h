@@ -432,6 +432,9 @@ namespace WtpHudMessages
 	void add(PlayerTypes ePlayer, const CvWString& szText, int iX, int iY);
 	void add(const CvWString& szText, int iX, int iY);
 	void addTop(const CvWString& szText); // a message of the mod: always at the very top of the panel (before the other priority messages)
+	// the quest of a player: a priority message with the title as text and the quest text as tooltip (WTP_HUD_TIP_MARKER). A message of the
+	// same title is replaced (the quest texts are rebuilt several times per turn), so every quest is in the panel once, with its latest standings.
+	void addQuest(PlayerTypes ePlayer, const CvWString& szTitle, const CvWString& szTip);
 	void setPriority(bool bPriority); // the messages that are added while it is set are shown at the top of the panel
 	// a message of this type for this player goes to the panel (human player with the option "New message panel" on)
 	bool isPanelMessage(PlayerTypes ePlayer, InterfaceMessageTypes eType);

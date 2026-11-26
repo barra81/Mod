@@ -132,6 +132,29 @@ namespace WtpHudMessages
 		kMessages.aEntries.insert(kMessages.aEntries.begin(), kEntry);
 		kMessages.iNumPriority++;
 	}
+	void addQuest(PlayerTypes ePlayer, const CvWString& szTitle, const CvWString& szTip)
+	{
+		PlayerMessages& kMessages = messagesOf(ePlayer);
+		const CvWString szPrefix = szTitle + WTP_HUD_TIP_MARKER;
+		for (size_t i = 0; i < kMessages.aEntries.size(); ++i)
+		{
+			if (kMessages.aEntries[i].szText.compare(0, szPrefix.length(), szPrefix) == 0)
+			{
+				kMessages.aEntries.erase(kMessages.aEntries.begin() + i);
+				if ((int)i < kMessages.iNumPriority)
+				{
+					kMessages.iNumPriority--;
+				}
+				break;
+			}
+		}
+		Entry kEntry;
+		kEntry.szText = szPrefix + szTip;
+		kEntry.iX = -1;
+		kEntry.iY = -1;
+		kMessages.aEntries.insert(kMessages.aEntries.begin() + kMessages.iNumPriority, kEntry);
+		kMessages.iNumPriority++;
+	}
 	void clear(PlayerTypes ePlayer)
 	{
 		PlayerMessages& kMessages = messagesOf(ePlayer);

@@ -318,6 +318,8 @@ class CvMainInterface:
 	iMsgPickLines = 0
 	dMessagePediaNames = None # WTP: lower case name -> (name, Colopedia screen, id), built at the first use
 	aszMessageTexts = []
+	dMessageTips = {} # WTP: message index -> tooltip text (messages with WTP_HUD_TIP_MARKER: the quests with their race standings)
+	WTP_HUD_TIP_MARKER = u"[[WTPTIP]]" # the same as in the DLL (CvTalkingHeadMessage.h)
 
 	def numPlotListButtons( self ):
 		return NUM_PLOT_LIST_BUTTONS
@@ -4298,6 +4300,13 @@ class CvMainInterface:
 					aszMessages.append(game.getHudMessageText(i))
 					aiX.append(game.getHudMessageX(i))
 					aiY.append(game.getHudMessageY(i))
+			# messages with a tooltip (the quests): the text after the marker is the tooltip, the line shows only the text before it
+			self.dMessageTips = {}
+			for i in range(len(aszMessages)):
+				iTip = aszMessages[i].find(self.WTP_HUD_TIP_MARKER)
+				if iTip >= 0:
+					self.dMessageTips[i] = aszMessages[i][iTip + len(self.WTP_HUD_TIP_MARKER):]
+					aszMessages[i] = aszMessages[i][:iTip]
 			# (measured in the panel: a symbol is 3.1 characters wide, 22 of them in a row left room for two more)
 			self.fMsgIconWidth = 3.1
 			try:
@@ -5135,6 +5144,10 @@ class CvMainInterface:
 
 	def getMessagePediaHelp(self, iMessage):
 		try:
+			# a quest: the quest text with the race standings
+			szTip = self.dMessageTips.get(iMessage, u"")
+			if szTip != u"":
+				return szTip
 			iContact = self.getMessageContact(iMessage)
 			if iContact >= 0:
 				pNative = gc.getPlayer(iContact)
