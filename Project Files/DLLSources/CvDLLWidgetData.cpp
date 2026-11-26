@@ -235,6 +235,7 @@ int wtpGetWidgetHelpType() { return g_iWtpWidgetHelpType; }
 // WTP: with the diplomacy screen open the game shows the help of the HUD elements itself, python cannot clear it there. While the own
 // tooltip is on (set from python) the DLL gives the game an empty text then; the text for python is kept. Not any more: the diplomacy
 // screen keeps the game tooltips (portrait, trade items), only the list of the popup of a colony is still handled below
+extern void wtpSetHideTransportStats(bool b);
 static bool g_bWtpHideGameHelp = false;
 static bool g_bWtpInternalHelp = false;
 void wtpSetHideGameHelp(bool b) { g_bWtpHideGameHelp = b; }
@@ -3642,7 +3643,10 @@ void CvDLLWidgetData::parseShipCargoUnitHelp(const CvWidgetDataStruct &widgetDat
 	CvUnit* pUnit = pPlayer.getUnit(widgetDataStruct.m_iData1);
 	if (pUnit != NULL)
 	{
+		// (the harbour screens show this text as it is: no statistics of a transport in it, see g_bWtpHideTransportStats)
+		wtpSetHideTransportStats(true);
 		GAMETEXT.setUnitHelp(szBuffer, pUnit, false, true);
+		wtpSetHideTransportStats(false);
 	}
 }
 
