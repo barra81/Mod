@@ -8793,7 +8793,9 @@ void CvCity::doYields()
 						GET_PLAYER(getOwnerINLINE()).changeGold(iProfit * GET_PLAYER(getOwnerINLINE()).getExtraTradeMultiplier(kPlayerEurope.getID()) / 100);
 
 						int iDiscountedLoss = iOverflowYieldSellPercent * iLoss / 100;
-						kPlayerEurope.changeYieldTradedCounters(BestPort, eYield, iDiscountedLoss);
+						// WTP: called on the city owner so the tax score is credited to the colony that actually sold (a shared king can have several
+						// colonies; his singular colony pointer may be another player)
+						GET_PLAYER(getOwnerINLINE()).changeYieldTradedCounters(BestPort, eYield, iDiscountedLoss);
 
 						// R&R, ray , Changes to Custom House - START
 						// Selling with Custom House will get Trade Founding Father Points

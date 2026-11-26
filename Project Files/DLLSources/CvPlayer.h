@@ -819,8 +819,9 @@ public:
 	void setYieldScoreTotal(YieldTypes eYield, int iValue);
 	void changeYieldCountScoreTotal(YieldTypes eYield, int iChange);
 	const int getFullYieldScore();
-	const int getTaxRaiseChance();
+	const int getTaxRaiseChance(CvPlayer& kColony); // WTP: per colony (a shared king can have several)
 	const int getTaxThresold();
+	void migrateLegacySharedKingTaxState(); // WTP: one-time savegame migration for per-colony taxes (called from postLoadGameFixes)
 
 	// setting iAmountSold to something negative means something was bought
 	void changeYieldTradedCounters(TradeLocationTypes eScreen, YieldTypes eYield, int iAmountSold, int iUnitPrice = MIN_INT);
@@ -1129,6 +1130,7 @@ protected:
 	bool m_bExtendedGame;
 	bool m_bFoundedFirstCity;
 	bool m_bStrike;
+	bool m_bTaxMigrationDone; // WTP: kings only: the per-colony tax savegame migration has already run
 	bool m_bHuman;
 	// R&R, ray, Bargaining - START
 	EnumMap<PlayerTypes, bool> m_em_bWillingToBargain;
@@ -1304,7 +1306,8 @@ protected:
 	// WTP: price check after a trade: only the traded yield, only every 3rd trade
 	void doTradePriceCheck(TradeLocationTypes eLocation, YieldTypes eYield);
 	void doYieldPriceUpdate(TradeLocationTypes eLocation, YieldTypes eYield);
-	void wipeRoyalYieldScore(); //WTP, jburet, Tax Reform
+	void wipeRoyalYieldScore(); //WTP, jburet, Tax Reform (legacy: only the savegame migration uses it)
+	void wipeColonialYieldScore(); // WTP: per-colony taxes: resets this colony's own trade counters
 
 	const int getFullYieldScore(bool fullCalculation);//WTP, jburet, Tax Reform
 	const int getTaxThresold(bool fullCalculation);//WTP, jburet, Tax Reform
