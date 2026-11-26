@@ -1345,12 +1345,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_NOT_ENOUGH_RAW</Tag>
-		<English>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]We could produce more %F3_yield_icon [COLOR_RED]if we had more %F2_yield_icon available there.[COLOR_REVERT]</English>
-		<Portuguese>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Poderíamos produzir mais %F3_yield_icon [COLOR_RED]se tivéssemos mais %F2_yield_icon disponível lá.[COLOR_REVERT]</Portuguese>
+		<English>[COLOR_RED]%s1_city[COLOR_REVERT] : We could produce more %F3_yield_icon [COLOR_RED]if we had more %F2_yield_icon available there.[COLOR_REVERT]</English>
+		<Portuguese>[COLOR_RED]%s1_city[COLOR_REVERT] : Poderíamos produzir mais %F3_yield_icon [COLOR_RED]se tivéssemos mais %F2_yield_icon disponível lá.[COLOR_REVERT]</Portuguese>
 		<French>%s1_city est à cours de %F2_yield_icon et ne peut ainsi plus produire de %F3_yield_icon.</French>
-		<German>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Wir könnten mehr %F3_yield_icon herstellen, [COLOR_RED]stünde uns dort mehr %F2_yield_icon zur Verfügung.[COLOR_REVERT]</German>
-		<Russian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Мы могли бы производить больше %F3_yield_icon, [COLOR_RED]если бы у нас было больше %F2_yield_icon.[COLOR_REVERT]</Russian>
-		<Hungarian>[COLOR_WARNING_TEXT]%s1_city : [COLOR_REVERT]Több %F3_yield_icon-t tudnánk előállítani, [COLOR_RED]ha több %F2_yield_icon állna rendelkezésre.[COLOR_REVERT]</Hungarian>
+		<German>[COLOR_RED]%s1_city[COLOR_REVERT] : Wir könnten mehr %F3_yield_icon herstellen, [COLOR_RED]stünde uns dort mehr %F2_yield_icon zur Verfügung.[COLOR_REVERT]</German>
+		<Russian>[COLOR_RED]%s1_city[COLOR_REVERT] : Мы могли бы производить больше %F3_yield_icon, [COLOR_RED]если бы у нас было больше %F2_yield_icon.[COLOR_REVERT]</Russian>
+		<Hungarian>[COLOR_RED]%s1_city[COLOR_REVERT] : Több %F3_yield_icon-t tudnánk előállítani, [COLOR_RED]ha több %F2_yield_icon állna rendelkezésre.[COLOR_REVERT]</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRADE_WORLD_MAP_STRING</Tag>
@@ -3963,6 +3963,12 @@
 		<Russian>[COLOR_RED]%s1_city[COLOR_REVERT] : производство остановлено, не хватает [COLOR_RED]%d4%F2_yield_icon в ход[COLOR_REVERT] для производства %F3_yield_icon</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_REDUCED_RAW_AMOUNT</Tag>
+		<English>[COLOR_RED]%s1_city[COLOR_REVERT] : Production reduced, [COLOR_RED]%d4%F2_yield_icon per turn[COLOR_REVERT] missing for the full production of %F3_yield_icon</English>
+		<German>[COLOR_RED]%s1_city[COLOR_REVERT] : Produktion verringert, es fehlen [COLOR_RED]%d4%F2_yield_icon pro Runde[COLOR_REVERT] für die volle Produktion von %F3_yield_icon</German>
+		<Russian>[COLOR_RED]%s1_city[COLOR_REVERT] : производство снижено, не хватает [COLOR_RED]%d4%F2_yield_icon в ход[COLOR_REVERT] для полного производства %F3_yield_icon</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_PANEL_MORE</Tag>
 		<English>[COLOR_FONT_CREAM]%d1_Num older messages: click to see them (page %d2_Num of %d3_Num)[COLOR_REVERT]</English>
 		<German>[COLOR_FONT_CREAM]%d1_Num ältere Meldungen: Klick zum Anzeigen (Seite %d2_Num von %d3_Num)[COLOR_REVERT]</German>
@@ -4075,6 +4081,12 @@
 		<English>Left click: show the place on the map[NEWLINE]Right click: talk to [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
 		<German>Linksklick: Ort auf der Karte zeigen[NEWLINE]Rechtsklick: mit [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] sprechen</German>
 		<Russian>Щелчок левой кнопкой: показать место на карте[NEWLINE]Щелчок правой кнопкой: поговорить с [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_SHIP_HELP</Tag>
+		<English>Left click: show the place on the map[NEWLINE]Right click: jump to the ship [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
+		<German>Linksklick: Ort auf der Karte zeigen[NEWLINE]Rechtsklick: zum Schiff [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] springen</German>
+		<Russian>Щелчок левой кнопкой: показать место на карте[NEWLINE]Щелчок правой кнопкой: перейти к кораблю [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_PEDIA_HELP2</Tag>
