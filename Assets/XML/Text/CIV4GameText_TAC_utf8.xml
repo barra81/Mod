@@ -3490,6 +3490,12 @@
 		<Russian>Щелчок левой кнопкой: показать место на карте[NEWLINE]Щелчок правой кнопкой: поговорить с [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_SHIP_HELP</Tag>
+		<English>Left click: show the place on the map[NEWLINE]Right click: jump to the ship [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
+		<German>Linksklick: Ort auf der Karte zeigen[NEWLINE]Rechtsklick: zum Schiff [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] springen</German>
+		<Russian>Щелчок левой кнопкой: показать место на карте[NEWLINE]Щелчок правой кнопкой: перейти к кораблю [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_PEDIA_HELP2</Tag>
 		<English>Ctrl + right click: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
 		<German>Strg + Rechtsklick: Colopedia - [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</German>

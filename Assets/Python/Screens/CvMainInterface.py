@@ -320,6 +320,8 @@ class CvMainInterface:
 	aszMessageTexts = []
 	dMessageTips = {} # WTP: message index -> tooltip text (messages with WTP_HUD_TIP_MARKER: the quests with their race standings)
 	WTP_HUD_TIP_MARKER = u"[[WTPTIP]]" # the same as in the DLL (CvTalkingHeadMessage.h)
+	WTP_HUD_SHIP_MARKER = u"[[WTPSHIP]]" # the same
+	dMessageShips = {} # WTP: message index -> ID of the ship of a native trade report (messages with WTP_HUD_SHIP_MARKER)
 
 	def numPlotListButtons( self ):
 		return NUM_PLOT_LIST_BUTTONS
@@ -3810,6 +3812,9 @@ class CvMainInterface:
 				self.updateMessagePanel()
 			elif (inputClass.getButtonType() == WidgetTypes.WIDGET_GENERAL and inputClass.getData1() == self.BUTTON_MESSAGE_LINE):
 				if (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP):
+					# the report of a native trade ship: the right click jumps to the ship (Ctrl: the Colopedia page, as for the other messages)
+					if not inputClass.isCtrlKeyDown() and self.jumpToMessageShip(inputClass.getData2()):
+						return 1
 					# right click: Colopedia page of the first named thing of the message, Ctrl + right click: of the second one
 					iContact = self.getMessageContact(inputClass.getData2())
 					if iContact >= 0 and not inputClass.isCtrlKeyDown():
@@ -4300,6 +4305,16 @@ class CvMainInterface:
 					aszMessages.append(game.getHudMessageText(i))
 					aiX.append(game.getHudMessageX(i))
 					aiY.append(game.getHudMessageY(i))
+			# the report of a native trade ship: after the marker the ID of the ship (a right click on the line jumps to the ship)
+			self.dMessageShips = {}
+			for i in range(len(aszMessages)):
+				iShip = aszMessages[i].find(self.WTP_HUD_SHIP_MARKER)
+				if iShip >= 0:
+					try:
+						self.dMessageShips[i] = int(aszMessages[i][iShip + len(self.WTP_HUD_SHIP_MARKER):].strip())
+					except:
+						pass
+					aszMessages[i] = aszMessages[i][:iShip]
 			# messages with a tooltip (the quests): the text after the marker is the tooltip, the line shows only the text before it
 			self.dMessageTips = {}
 			for i in range(len(aszMessages)):
@@ -5126,6 +5141,32 @@ class CvMainInterface:
 		except:
 			pass
 
+	# the name of the ship of a native trade report ("" if the line has none or the ship is gone)
+	def getMessageShipName(self, iMessage):
+		try:
+			pUnit = gc.getActivePlayer().getUnit(self.dMessageShips.get(iMessage, -1))
+			if pUnit is not None and not pUnit.isNone():
+				return pUnit.getName()
+		except:
+			pass
+		return u""
+
+	# the ship of a native trade report (the ship is selected and the camera goes to it); False if the line has no ship or the ship is gone
+	def jumpToMessageShip(self, iMessage):
+		try:
+			iShip = self.dMessageShips.get(iMessage, -1)
+			if iShip < 0:
+				return False
+			pUnit = gc.getActivePlayer().getUnit(iShip)
+			if pUnit is None or pUnit.isNone():
+				return False
+			CyInterface().selectUnit(pUnit, True, False, False)
+			CyCamera().JustLookAtPlot(pUnit.plot())
+			return True
+		except:
+			pass # (a ship that cannot be found: the click does nothing)
+		return False
+
 	# the native player a message names (-1: none); right click on such a message talks to the nation
 	def getMessageContact(self, iMessage):
 		try:
@@ -5148,6 +5189,14 @@ class CvMainInterface:
 			szTip = self.dMessageTips.get(iMessage, u"")
 			if szTip != u"":
 				return szTip
+			# the report of a native trade ship: the right click jumps to the ship, Ctrl + right click opens the Colopedia
+			szShipName = self.getMessageShipName(iMessage)
+			if szShipName != u"":
+				szText = localText.getText("TXT_KEY_WTP_MESSAGE_SHIP_HELP", (szShipName,))
+				aShipTargets = self.getMessagePediaTargets(iMessage)
+				if len(aShipTargets) > 0:
+					szText += u"\n" + localText.getText("TXT_KEY_WTP_MESSAGE_PEDIA_HELP2", (aShipTargets[0][0],))
+				return szText
 			iContact = self.getMessageContact(iMessage)
 			if iContact >= 0:
 				pNative = gc.getPlayer(iContact)

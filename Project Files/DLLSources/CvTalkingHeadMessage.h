@@ -11,6 +11,8 @@ static const int WTP_HUD_MESSAGE_LENGTH_BASE = 1000;
 // WTP: a message of the panel can carry a tooltip: text + this marker + tooltip text (the panel cuts it off, the tooltip is shown in the
 // help window beside the panel). Used for the quest messages (title = text, the quest text with the race standings = tooltip).
 #define WTP_HUD_TIP_MARKER L"[[WTPTIP]]"
+// the report of a native trade ship in the message panel: after the marker the ID of the ship (python: a right click on the line jumps to the ship)
+#define WTP_HUD_SHIP_MARKER L"[[WTPSHIP]]"
 
 class CvTalkingHeadMessage
 {
