@@ -68,7 +68,6 @@ except Exception:
 class MapConstants :
     def __init__(self):
         self.mapOptionNames = []
-        self.mapOptionNames.append("colony catchment radius")
         self.mapOptionNames.append("distance")
         self.mapOptionNames.append("border north")
         self.mapOptionNames.append("border south")
@@ -386,9 +385,6 @@ class MapConstants :
         if gameAccess:
             gc = CyGlobalContext()
             mmap = gc.getMap()
-    
-            # set city catchment radius
-            mmap.setCityCatchmentRadiusMapMaker(mmap.getCustomMapOption(mc.getMapOption("colony catchment radius")))
     
             #Distance to Europe
             selectionID = mmap.getCustomMapOption(self.getMapOption("distance"))
@@ -4418,8 +4414,6 @@ def getCustomMapOptionName(argsList):
 			return localText.getText("TXT_KEY_MAP_FAIRE_WEATHER_LAND_ALLOCATION", ())
         elif mc.mapOptionNames[optionID] == "regularity":
 			return localText.getText("TXT_KEY_MAP_CUSTOM_OPTION_LAND_REGULARITY", ())
-        elif mc.mapOptionNames[optionID] == "colony catchment radius":
-             return localText.getText("TXT_KEY_MAP_CUSTOM_OPTION_CITY_CATCHMENT_RADIUS", ())
         elif mc.mapOptionNames[optionID] == "river commonality":
              return localText.getText("TXT_KEY_MAP_CUSTOM_OPTION_LARGE_RIVER_PREVALENCE", ())
         elif mc.mapOptionNames[optionID] == "river length":
@@ -4450,8 +4444,6 @@ def getNumCustomMapOptionValues(argsList):
             return 2
         elif mc.mapOptionNames[optionID] == "regularity":
             return 3
-        elif mc.mapOptionNames[optionID] == "colony catchment radius":
-            return 2
         elif mc.mapOptionNames[optionID] == "river commonality":
             return 3
         elif mc.mapOptionNames[optionID] == "river length":
@@ -4553,12 +4545,6 @@ def getCustomMapOptionDescAt(argsList):
         elif selectionID == 2:
             return localText.getText("TXT_KEY_MAP_CUSTOM_OPTION_LAND_REGULARITY_OPT_2", ())
 
-    elif mc.mapOptionNames[optionID] == "colony catchment radius":
-        if selectionID == 0:
-            return localText.getText("TXT_KEY_MAP_CUSTOM_OPTION_CITY_CATCHMENT_RADIUS_1_PLOT", ())
-        elif selectionID == 1:
-            return localText.getText("TXT_KEY_MAP_CUSTOM_OPTION_CITY_CATCHMENT_RADIUS_2_PLOT", ())
-
     elif mc.mapOptionNames[optionID] == "river commonality":
         if selectionID == 0:
             return localText.getText("TXT_KEY_MAP_CUSTOM_OPTION_LARGE_RIVER_PREVALENCE_OPT_0", ())
@@ -4626,9 +4612,6 @@ def getCustomMapOptionDefault(argsList):
         return 1
     # TAC - Map scripts - koma13 - END
 
-    elif mc.mapOptionNames[optionID] == "colony catchment radius":
-        return CyGlobalContext().getDefaultCityCatchmentRadius()-1
-    
     elif mc.mapOptionNames[optionID] == "river commonality":
         return 1
     
@@ -4662,8 +4645,6 @@ def isRandomCustomMapOption(argsList):
         return True
     elif mc.mapOptionNames[optionID] == "regularity":
         return True
-    elif mc.mapOptionNames[optionID] == "colony catchment radius":
-        return False
     elif mc.mapOptionNames[optionID] == "river commonality":
         return True
     elif mc.mapOptionNames[optionID] == "river length":
