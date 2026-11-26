@@ -4283,6 +4283,18 @@
 		<Russian>Щелчок правой кнопкой: выполнить эту команду</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_AT_WAR</Tag>
+		<English>[COLOR_RED]At war with %s1[COLOR_REVERT]</English>
+		<German>[COLOR_RED]Im Krieg mit %s1[COLOR_REVERT]</German>
+		<Russian>[COLOR_RED]Война с %s1[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_AT_WAR_HELP</Tag>
+		<English>Right click: open the diplomacy with [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
+		<German>Rechtsklick: Diplomatie mit [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] öffnen</German>
+		<Russian>Щелчок правой кнопкой: открыть дипломатию с [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_PROMO_SUM</Tag>
 		<English>[COLOR_CAT_MILITARY]Promotion sum.[COLOR_REVERT]</English>
 		<German>[COLOR_CAT_MILITARY]Bef.-Details[COLOR_REVERT]</German>
@@ -4851,6 +4863,12 @@
 		<English>Net surplus of all your colonies together: production minus the use of the colonies themselves (consumption already deducted, planned use included). Green = more is made than used, red = more is used than made.</English>
 		<German>Netto-Überschuss aller deiner Kolonien zusammen: Produktion abzüglich des Eigenverbrauchs der Kolonien (Verbrauch ist bereits eingerechnet, geplanter Verbrauch inklusive). Grün = es wird mehr hergestellt als verbraucht, rot = es wird mehr verbraucht als hergestellt.</German>
 		<Russian>Чистый избыток всех ваших колоний вместе: производство за вычетом собственного потребления колоний (потребление уже учтено, включая плановый расход). Зелёный — производится больше, чем потребляется, красный — потребляется больше, чем производится.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WTP_TIP_GOODS_BAR_RCLICK</Tag>
+		<English>[COLOR_YELLOW]Right click: import / export settings of this good[COLOR_REVERT]</English>
+		<German>[COLOR_YELLOW]Rechtsklick: Import-/Export-Einstellungen dieser Ware[COLOR_REVERT]</German>
+		<Russian>[COLOR_YELLOW]ПКМ: настройки импорта / экспорта этого товара[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WTP_TIP_TRADERS_NET_NOTRADE</Tag>
