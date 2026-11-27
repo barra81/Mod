@@ -12601,7 +12601,49 @@ class CvMainInterface:
 		except:
 			pass
 
+	# the founding father a message names ("X has been able to enlist the support of Y": the father is the longest father name in the
+	# text), -1 if the message names none
+	def getMessageFather(self, iMessage):
+		try:
+			szText = re.sub(u"<[^>]*>", u"", self.aszMessageTexts[iMessage])
+			iBest = -1
+			iBestLen = 0
+			for iFather in range(gc.getNumFatherInfos()):
+				szName = gc.getFatherInfo(iFather).getDescription()
+				if szName and len(szName) > iBestLen and szText.find(szName) >= 0:
+					iBest = iFather
+					iBestLen = len(szName)
+			return iBest
+		except:
+			return -1
+
+	# a click on a line that names a founding father: the founding fathers screen opens at the tab of the father (trade, exploration ...)
+	# Python 2.4: no conditional expression
+	def openMessageFather(self, iMessage):
+		try:
+			iFather = self.getMessageFather(iMessage)
+			if iFather < 0:
+				return False
+			CvScreensInterface.fatherScreen.interfaceScreen(gc.getFatherInfo(iFather).getFatherCategory())
+			return True
+		except:
+			return False
+
+	# the tooltip of a message line: the hint of a founding father message first, then the hints of getMessagePediaHelpBase
 	def getMessagePediaHelp(self, iMessage):
+		szHelp = self.getMessagePediaHelpBase(iMessage)
+		try:
+			iFather = self.getMessageFather(iMessage)
+			if iFather >= 0 and self.dMessageTips.get(iMessage, u"") == u"":
+				szFatherHelp = localText.getText("TXT_KEY_WTP_MESSAGE_FATHER_HELP", (gc.getFatherCategoryInfo(gc.getFatherInfo(iFather).getFatherCategory()).getDescription(),))
+				if szHelp != u"":
+					return szFatherHelp + u"\n" + szHelp
+				return szFatherHelp
+		except:
+			pass
+		return szHelp
+
+	def getMessagePediaHelpBase(self, iMessage):
 		try:
 			# a quest: the quest text with the race standings
 			szTip = self.dMessageTips.get(iMessage, u"")
@@ -12643,6 +12685,9 @@ class CvMainInterface:
 			return u""
 
 	def clickMessageLine(self, iMessage):
+		# a message that names a founding father: opens the founding fathers screen at his tab
+		if self.openMessageFather(iMessage):
+			return
 		# centers the map on the place of the message
 		try:
 			iX, iY, eContact = self.atMessageTargets[iMessage]

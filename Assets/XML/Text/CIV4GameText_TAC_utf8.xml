@@ -4083,6 +4083,12 @@
 		<Russian>Щелчок левой кнопкой: показать место на карте[NEWLINE]Щелчок правой кнопкой: поговорить с [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</Russian>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_WTP_MESSAGE_FATHER_HELP</Tag>
+		<English>Left click: open the founding fathers ([COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT])</English>
+		<German>Linksklick: Gründerväter öffnen ([COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT])</German>
+		<Russian>Щелчок левой кнопкой: открыть отцов-основателей ([COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT])</Russian>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WTP_MESSAGE_SHIP_HELP</Tag>
 		<English>Left click: show the place on the map[NEWLINE]Right click: jump to the ship [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT]</English>
 		<German>Linksklick: Ort auf der Karte zeigen[NEWLINE]Rechtsklick: zum Schiff [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] springen</German>
