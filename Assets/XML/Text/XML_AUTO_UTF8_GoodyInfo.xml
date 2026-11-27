@@ -134,13 +134,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOODY_ANNOUNCE_EXPERIENCE</Tag>
-		<English>The discovery has given your unit experience!</English>
-		<Portuguese>A descoberta deu experiência à sua unidade!</Portuguese>
-		<French>Cette découverte a conféré de l'expérience à votre unité !</French>
-		<German>Durch diese Entdeckung hat Eure Einheit an Erfahrung gewonnen!</German>
-		<Italian>La scoperta ha fatto crescere l'esperienza dell'unità!</Italian>
-		<Spanish>¡El descubrimiento le ha dado experiencia a la unidad!</Spanish>
-		<Russian>Исследование дало вашему отряду немного опыта!</Russian>
+		<English>The discovery has given your [COLOR_UNIT_TEXT]unit[COLOR_REVERT] [COLOR_POSITIVE_TEXT]experience[COLOR_REVERT]!</English>
+		<Portuguese>A descoberta deu [COLOR_POSITIVE_TEXT]experiência[COLOR_REVERT] à sua [COLOR_UNIT_TEXT]unidade[COLOR_REVERT]!</Portuguese>
+		<French>Cette découverte a conféré de l'[COLOR_POSITIVE_TEXT]expérience[COLOR_REVERT] à votre [COLOR_UNIT_TEXT]unité[COLOR_REVERT] !</French>
+		<German>Durch diese Entdeckung hat Eure [COLOR_UNIT_TEXT]Einheit[COLOR_REVERT] an [COLOR_POSITIVE_TEXT]Erfahrung[COLOR_REVERT] gewonnen!</German>
+		<Italian>La scoperta ha fatto crescere l'[COLOR_POSITIVE_TEXT]esperienza[COLOR_REVERT] dell'[COLOR_UNIT_TEXT]unità[COLOR_REVERT]!</Italian>
+		<Spanish>¡El descubrimiento le ha dado [COLOR_POSITIVE_TEXT]experiencia[COLOR_REVERT] a la [COLOR_UNIT_TEXT]unidad[COLOR_REVERT]!</Spanish>
+		<Russian>Исследование дало вашему [COLOR_UNIT_TEXT]отряду[COLOR_REVERT] немного [COLOR_POSITIVE_TEXT]опыта[COLOR_REVERT]!</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOODY_EXPERIENCE_SEA</Tag>
@@ -154,11 +154,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOODY_ANNOUNCE_EXPERIENCE_SEA</Tag>
-		<English>The crew of your ship has gained some experience!</English>
-		<Portuguese>A tripulação do seu navio ganhou alguma experiência!</Portuguese>
-		<French>L'équipage de votre navire a gagné de l'expérience !</French>
-		<German>Die Crew eures Schiffes hat etwas Erfahrung gewonnen!</German>
-		<Russian>Экипаж вашего корабля получил немного опыта!</Russian>
+		<English>The crew of your [COLOR_UNIT_TEXT]ship[COLOR_REVERT] has gained some [COLOR_POSITIVE_TEXT]experience[COLOR_REVERT]!</English>
+		<Portuguese>A tripulação do seu [COLOR_UNIT_TEXT]navio[COLOR_REVERT] ganhou alguma [COLOR_POSITIVE_TEXT]experiência[COLOR_REVERT]!</Portuguese>
+		<French>L'équipage de votre [COLOR_UNIT_TEXT]navire[COLOR_REVERT] a gagné de l'[COLOR_POSITIVE_TEXT]expérience[COLOR_REVERT] !</French>
+		<German>Die Crew eures [COLOR_UNIT_TEXT]Schiffes[COLOR_REVERT] hat etwas [COLOR_POSITIVE_TEXT]Erfahrung[COLOR_REVERT] gewonnen!</German>
+		<Russian>Экипаж вашего [COLOR_UNIT_TEXT]корабля[COLOR_REVERT] получил немного [COLOR_POSITIVE_TEXT]опыта[COLOR_REVERT]!</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOODY_HEALING</Tag>
@@ -534,13 +534,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOODY_ANNOUNCE_TREASURE</Tag>
-		<English>You have discovered ancient treasure!</English>
-		<Portuguese>Você descobriu um tesouro antigo!</Portuguese>
-		<French>Vous avez découvert un trésor antique !</French>
-		<German>Ihr habt einen antiken Schatz entdeckt!</German>
-		<Italian>Hai scoperto un antico tesoro!</Italian>
-		<Spanish>¡Habéis descubierto un antiguo tesoro!</Spanish>
-		<Russian>Вы обнаружили древнее сокровище!</Russian>
+		<English>You have discovered ancient [COLOR_UNIT_TEXT]treasure[COLOR_REVERT]!</English>
+		<Portuguese>Você descobriu um [COLOR_UNIT_TEXT]tesouro[COLOR_REVERT] antigo!</Portuguese>
+		<French>Vous avez découvert un [COLOR_UNIT_TEXT]trésor[COLOR_REVERT] antique !</French>
+		<German>Ihr habt einen antiken [COLOR_UNIT_TEXT]Schatz[COLOR_REVERT] entdeckt!</German>
+		<Italian>Hai scoperto un antico [COLOR_UNIT_TEXT]tesoro[COLOR_REVERT]!</Italian>
+		<Spanish>¡Habéis descubierto un antiguo [COLOR_UNIT_TEXT]tesoro[COLOR_REVERT]!</Spanish>
+		<Russian>Вы обнаружили древнее [COLOR_UNIT_TEXT]сокровище[COLOR_REVERT]!</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOODY_WAR</Tag>
