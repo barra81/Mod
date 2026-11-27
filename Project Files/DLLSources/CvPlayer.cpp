@@ -14963,8 +14963,21 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 
 		if (!kTriggeredData.m_szGlobalText.empty())
 		{
+			// the start of a trade race (EVENTTRIGGER_EUROPE_TRADE_QUEST_<good>_START): "The race to dominate the market ... has begun" is a top priority
+			// message in the magenta of the events (the colors inside the text, like the gold of the good, stay); the player the trigger fired for
+			// has the text of his popup as tooltip
+			const char* const szTriggerType = kTrigger.getType();
+			const bool bTradeRaceStart = (szTriggerType != NULL && strstr(szTriggerType, "_TRADE_QUEST_") != NULL && strstr(szTriggerType, "_START") != NULL);
 			// (the world news of the pressed village: yellow of the units, top priority)
-			const CvWString szGlobalText = bPressedVillage ? CvWString(L"<color=255,255,0,255>") + kTriggeredData.m_szGlobalText + CvWString(L"</color>") : kTriggeredData.m_szGlobalText;
+			CvWString szGlobalText = kTriggeredData.m_szGlobalText;
+			if (bPressedVillage)
+			{
+				szGlobalText = CvWString(L"<color=255,255,0,255>") + kTriggeredData.m_szGlobalText + CvWString(L"</color>");
+			}
+			else if (bTradeRaceStart)
+			{
+				szGlobalText = CvWString(L"<color=255,64,255,255>") + kTriggeredData.m_szGlobalText + CvWString(L"</color>");
+			}
 			for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
 			{
 				CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iPlayer);
@@ -14986,14 +14999,20 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 							}
 						}
 
-						WtpHudMessages::setPriority(bPressedVillage);
+						WtpHudMessages::setPriority(bPressedVillage || bTradeRaceStart);
+						CvWString szMessageText = szGlobalText;
+						// (only where the message goes to the panel: the tooltip is part of the text, the game's own message area would show it)
+						if (bTradeRaceStart && (PlayerTypes)iPlayer == getID() && !kTriggeredData.m_szText.empty() && WtpHudMessages::isPanelMessage((PlayerTypes)iPlayer, MESSAGE_TYPE_MINOR_EVENT))
+						{
+							szMessageText += CvWString(WTP_HUD_TIP_MARKER) + kTriggeredData.m_szText;
+						}
 						if (bShowPlot)
 						{
-							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), szGlobalText, msgCoord, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
+							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), szMessageText, msgCoord, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
 						}
 						else
 						{
-							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), szGlobalText, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT);
+							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), szMessageText, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT);
 						}
 						WtpHudMessages::setPriority(false);
 					}
