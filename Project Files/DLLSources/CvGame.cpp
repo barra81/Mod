@@ -306,7 +306,8 @@ void CvGame::setInitialItems(bool bScenario)
 	// the slots of the start screen that are left on "Random" do not all turn into European powers. A native civ is only chosen if it
 	// is not placed yet (and, without random settlement areas, if it fits the region of the map). If no such native civ is left (the
 	// maps with fixed natives already use all of them) the surplus European AI is removed from the game instead (no cities, no units yet).
-	// Human players are never touched.
+	// The king of such a surplus AI (its parent player: King of Sweden, Tsar of Russia ...) is removed with it, otherwise he would stay
+	// in the score list and in the diplomacy of the game without a colony. Human players are never touched.
 	{
 		const int iMaxEuropean = wtpMaxEuropeanAIs();
 		if (iMaxEuropean >= 0)
@@ -322,6 +323,7 @@ void CvGame::setInitialItems(bool bScenario)
 			}
 			int iConverted = 0;
 			int iRemoved = 0;
+			int iKingsRemoved = 0;
 			for (int iPlayer = (int)NUM_PLAYER_TYPES - 1; iPlayer >= (int)FIRST_PLAYER && iEuropean > iMaxEuropean; --iPlayer)
 			{
 				const PlayerTypes ePlayer = (PlayerTypes)iPlayer;
@@ -330,6 +332,7 @@ void CvGame::setInitialItems(bool bScenario)
 				{
 					continue;
 				}
+				const PlayerTypes eKing = kPlayer.getParent(); // (read before the player is changed: init() below resets the parent)
 				bool bDone = false;
 				for (CivilizationTypes eCiv = FIRST_CIVILIZATION; eCiv < NUM_CIVILIZATION_TYPES && !bDone; ++eCiv)
 				{
@@ -386,12 +389,35 @@ void CvGame::setInitialItems(bool bScenario)
 					iEuropean--;
 					iRemoved++;
 				}
+				// the king of the surplus AI goes too (no colony of his is left); only if no other living player has him as parent
+				if (eKing != NO_PLAYER && eKing != ePlayer)
+				{
+					CvPlayer& kKing = CvPlayerAI::getPlayer(eKing);
+					if (kKing.isAlive() && kKing.is(CIV_CATEGORY_KING))
+					{
+						bool bOtherChild = false;
+						for (PlayerTypes eChild = FIRST_PLAYER; eChild < NUM_PLAYER_TYPES; ++eChild)
+						{
+							const CvPlayer& kChild = CvPlayerAI::getPlayer(eChild);
+							if (eChild != ePlayer && kChild.isAlive() && kChild.getParent() == eKing)
+							{
+								bOtherChild = true;
+								break;
+							}
+						}
+						if (!bOtherChild)
+						{
+							kKing.setAlive(false); // no message
+							iKingsRemoved++;
+						}
+					}
+				}
 			}
 			// log: what the option did (same file as the settlement brake)
 			FILE* f = fopen((std::string(gDLL->getModName()) + "WTP_AiBrake.txt").c_str(), "a");
 			if (f != NULL)
 			{
-				fprintf(f, "max European AIs=%d | European AIs left=%d | converted to natives=%d | removed=%d\n", iMaxEuropean, iEuropean, iConverted, iRemoved);
+				fprintf(f, "max European AIs=%d | European AIs left=%d | converted to natives=%d | removed=%d | kings removed=%d\n", iMaxEuropean, iEuropean, iConverted, iRemoved, iKingsRemoved);
 				fclose(f);
 			}
 		}

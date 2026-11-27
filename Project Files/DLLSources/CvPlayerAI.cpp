@@ -12907,7 +12907,7 @@ static FILE* wtpOpenBrakeLog()
 		fputs("# Code: CvPlayerAI.cpp: AI_desiredCityCount (the wish for more cities, the brake is applied there), AI_getCityBrakeLimit (the soft limit), wtpBrakeStep / wtpBrakeLeaderPct / wtpBrakeFalloff (difficulty scaling),\n", f);
 		fputs("#   wtpLogBrakeMap (map lines), wtpBrakeNoteWish (turn lines). WtpTiming.h: readSettings / setBrakeLevelDefaults (values from WTP_Settings.txt, one pair per difficulty level).\n", f);
 		fputs("#   CvGame.cpp: CvGame::setInitialItems (the 'max European AIs' line). City events: CvPlayer::found (founded), CvPlayer::acquireCity (gained), CvCity::kill (lost).\n", f);
-		fputs("# 'max European AIs=A | European AIs left=B | converted to natives=C | removed=D': at the start of the game: the chosen maximum, the European AIs that remain, those turned into free native tribes, those removed.\n", f);
+		fputs("# 'max European AIs=A | European AIs left=B | converted to natives=C | removed=D | kings removed=K': at the start of the game: the chosen maximum, the European AIs that remain, those turned into free native tribes, those removed, and the kings of the removed (and converted) AIs that were removed with them.\n", f);
 		fputs("# 'map | ...': once per map and difficulty: script, fixed (world builder file) or random, size, plots, land plots, colonial powers (humans), game speed, difficulty (step from Conquistador, see below),\n", f);
 		fputs("#   and the values of the brake that are used: floor, plotsPerCity, humanPct, humanWeight, leaderPct, falloff.\n", f);
 		fputs("# 'turn T | player P | cities C | limit L (map M, speed S%, human max H, other AIs N with K cities) | ...': every 25 turns (and at the first use) per colonial AI. cities = its city count now, limit = the soft limit,\n", f);
