@@ -31,6 +31,7 @@ class CvFoundingFatherScreen:
 		self.iCivSelected = 0
 
 		self.TypeSelection = 0
+		self.iHighlightFather = -1 # the father with a frame (see interfaceScreen)
 
 		self.TopPanelHeight = 55
 
@@ -214,6 +215,16 @@ class CvFoundingFatherScreen:
 				szBarTitle = localText.changeTextColor(szBarTitle, ColorTypes.COLOR_FONT_GOLD)
 				screen.setLabelAt("TopBarTitle" + str(iCategory), "TopAcumulationBar" + str(iCategory), "<font=3>" + szBarTitle + "</font>", CvUtil.FONT_LEFT_JUSTIFY, 20, self.BarAreaHeight / 4, -0.1, FontTypes.SMALL_FONT,  WidgetTypes.WIDGET_GENERAL, -1, -1)
 				
+	# WTP: the frame of the father the message panel pointed to: four thin strips around his box in the color of WtpColors.IMPORT (the same
+	# one-pixel texture as the import frames of the trade route screen). It is drawn right after the box and before the portrait and the flag,
+	# so these two are in front of it.
+	def drawFatherFrame(self, screen, szPanel, iX, iY, iW, iH):
+		iThick = 4
+		szArt = "Art/Interface/Screens/TradeRoutes/WTPFrameImp.dds"
+		aStrips = [(iX - iThick, iY - iThick, iW + 2 * iThick, iThick), (iX - iThick, iY + iH, iW + 2 * iThick, iThick), (iX - iThick, iY, iThick, iH), (iX + iW, iY, iThick, iH)]
+		for iStrip in range(4):
+			screen.addDDSGFCAt("FatherFrame" + str(iStrip), szPanel, szArt, aStrips[iStrip][0], aStrips[iStrip][1], aStrips[iStrip][2], aStrips[iStrip][3], WidgetTypes.WIDGET_GENERAL, -1, -1, False)
+
 	def placeFathers (self):
 
 		# Get the screen
@@ -243,6 +254,8 @@ class CvFoundingFatherScreen:
 			TextBoxName = "FatherTextBox" + str(i)
 			if (index % 2 == 0):
 				screen.addDDSGFCAt(BoxName, ScrollPanel, ArtFileMgr.getInterfaceArtInfo("FATHER_LEFT_BOX").getPath(), (self.FatherRecordWidth * (j+ 1)) - (self.FatherRecordWidth / 2), self.BarAreaHeight + self.FatherRecordHeight + (self.FatherRecordHeight / 6) + 5 + (self.TopPanelHeight * 3 / 4), self.FatherRecordWidth + (self.FatherRecordWidth / 2), (self.FatherRecordHeight / 2), WidgetTypes.WIDGET_GENERAL, -1, -1, False )
+				if i == self.iHighlightFather:
+					self.drawFatherFrame(screen, ScrollPanel, (self.FatherRecordWidth * (j+ 1)) - (self.FatherRecordWidth / 2), self.BarAreaHeight + self.FatherRecordHeight + (self.FatherRecordHeight / 6) + 5 + (self.TopPanelHeight * 3 / 4), self.FatherRecordWidth + (self.FatherRecordWidth / 2), (self.FatherRecordHeight / 2))
 				screen.addDDSGFCAt("Portrait" + str(i), ScrollPanel, gc.getFatherInfo(i).getPortrait(), (self.FatherRecordWidth * (j+ 1)) - (self.FatherRecordHeight * 6 / 7), self.BarAreaHeight + self.FatherRecordHeight - 30 + (self.FatherRecordWidth / 5), self.FatherRecordHeight * 9 / 10, self.FatherRecordHeight * 9 / 10, WidgetTypes.WIDGET_PEDIA_JUMP_TO_FATHER, i, -1, False)
 				screen.setImageShape("Portrait" + str(i), ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 				screen.setHitMargins("Portrait" + str(i), self.FatherRecordHeight / 5, 0);
@@ -282,6 +295,8 @@ class CvFoundingFatherScreen:
 							break
 			else:				
 				screen.addDDSGFCAt(BoxName, ScrollPanel, ArtFileMgr.getInterfaceArtInfo("FATHER_RIGHT_BOX").getPath(), (self.FatherRecordWidth * (j - 1)), self.TopPanelHeight, self.FatherRecordWidth + (self.FatherRecordWidth / 2), (self.FatherRecordHeight / 2), WidgetTypes.WIDGET_GENERAL, -1, -1, False )
+				if i == self.iHighlightFather:
+					self.drawFatherFrame(screen, ScrollPanel, (self.FatherRecordWidth * (j - 1)), self.TopPanelHeight, self.FatherRecordWidth + (self.FatherRecordWidth / 2), (self.FatherRecordHeight / 2))
 				screen.addDDSGFCAt("Portrait" + str(i), ScrollPanel, gc.getFatherInfo(i).getPortrait(), (self.FatherRecordWidth * (j - 1)) + self.FatherRecordWidth, self.TopPanelHeight / 4, self.FatherRecordHeight * 9 / 10, self.FatherRecordHeight * 9 / 10, WidgetTypes.WIDGET_PEDIA_JUMP_TO_FATHER, i, -1, False)
 				screen.setImageShape("Portrait" + str(i), ImageShapes.IMAGE_SHAPE_ELLIPSE, -1)
 				screen.setHitMargins("Portrait" + str(i), self.FatherRecordHeight / 5, 0);
@@ -320,36 +335,6 @@ class CvFoundingFatherScreen:
 								screen.addDDSGFCAt("Flag Icon" + str(i), ScrollPanel, ArtFileMgr.getMiscArtInfo("LEADERHEAD_RANDOM").getPath(), (self.FatherRecordWidth * (j - 1)) + self.FatherRecordWidth + (self.FatherRecordHeight / 20), self.TopPanelHeight + (self.FatherRecordHeight / 2) - (self.FatherRecordHeight / 12), (self.FatherRecordHeight / 5), (self.FatherRecordHeight / 5), WidgetTypes.WIDGET_GENERAL, -1, -1, False )
 							break
 				
-
-			# WTP: the frame of the father the message panel pointed to: four thin strips in the color of WtpColors.IMPORT (the same one-pixel
-			# texture as the import frames of the trade route screen). The portrait is on the right of the box in the upper row and on the left
-			# in the lower row, the flag of the owner (or the cross of a refused father) sits next to the portrait. The frame goes from the side
-			# of the box opposite to the portrait up to the start of the flag; a father without flag: the whole box.
-			if i == getattr(self, "iHighlightFather", -1):
-				iFrameW = self.FatherRecordWidth + (self.FatherRecordWidth / 2)
-				iFrameH = self.FatherRecordHeight / 2
-				bFlag = (gc.getGame().getFatherTeam(i) != TeamTypes.NO_TEAM or activeTeam.isFatherIgnore(i))
-				iFlagSize = self.FatherRecordHeight / 5
-				if (index % 2 == 0):
-					# lower row: portrait left, flag right of it; the frame goes from the right edge of the box to the right edge of the flag
-					iFrameX = (self.FatherRecordWidth * (j + 1)) - (self.FatherRecordWidth / 2)
-					iFrameY = self.BarAreaHeight + self.FatherRecordHeight + (self.FatherRecordHeight / 6) + 5 + (self.TopPanelHeight * 3 / 4)
-					if bFlag:
-						iFlagX = (self.FatherRecordWidth * (j + 1)) - (self.FatherRecordHeight * 6 / 7) + (self.FatherRecordHeight * 9 / 10) - (self.FatherRecordHeight / 5)
-						iFrameW = iFrameX + iFrameW - (iFlagX + iFlagSize)
-						iFrameX = iFlagX + iFlagSize
-				else:
-					# upper row: portrait right, flag left of it; the frame goes from the left edge of the box to the left edge of the flag
-					iFrameX = self.FatherRecordWidth * (j - 1)
-					iFrameY = self.TopPanelHeight
-					if bFlag:
-						iFrameW = (self.FatherRecordWidth * (j - 1)) + self.FatherRecordWidth + (self.FatherRecordHeight / 20) - iFrameX
-				iThick = 4
-				szFrameArt = "Art/Interface/Screens/TradeRoutes/WTPFrameImp.dds"
-				aStrips = [(iFrameX - iThick, iFrameY - iThick, iFrameW + 2 * iThick, iThick), (iFrameX - iThick, iFrameY + iFrameH, iFrameW + 2 * iThick, iThick), (iFrameX - iThick, iFrameY, iThick, iFrameH), (iFrameX + iFrameW, iFrameY, iThick, iFrameH)]
-				for iStrip in range(4):
-					screen.addDDSGFCAt("FatherFrame" + str(iStrip), ScrollPanel, szFrameArt, aStrips[iStrip][0], aStrips[iStrip][1], aStrips[iStrip][2], aStrips[iStrip][3], WidgetTypes.WIDGET_GENERAL, -1, -1, False)
-					screen.moveToFront("FatherFrame" + str(iStrip))
 
 			#reset so that it offsets from the father record's panel			
 			for iFatherPointType in range(gc.getNumFatherPointInfos()):
