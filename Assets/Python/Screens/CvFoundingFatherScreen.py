@@ -321,16 +321,29 @@ class CvFoundingFatherScreen:
 							break
 				
 
-			# WTP: the frame of the father the message panel pointed to: four thin strips around his box, in the color of WtpColors.IMPORT
-			# (the same one-pixel texture as the import frames of the trade route screen)
+			# WTP: the frame of the father the message panel pointed to: four thin strips in the color of WtpColors.IMPORT (the same one-pixel
+			# texture as the import frames of the trade route screen). The portrait is on the right of the box in the upper row and on the left
+			# in the lower row, the flag of the owner (or the cross of a refused father) sits next to the portrait. The frame goes from the side
+			# of the box opposite to the portrait up to the start of the flag; a father without flag: the whole box.
 			if i == getattr(self, "iHighlightFather", -1):
-				iFrameX = self.FatherRecordWidth * (j - 1)
-				iFrameY = self.TopPanelHeight
-				if (index % 2 == 0):
-					iFrameX = (self.FatherRecordWidth * (j + 1)) - (self.FatherRecordWidth / 2)
-					iFrameY = self.BarAreaHeight + self.FatherRecordHeight + (self.FatherRecordHeight / 6) + 5 + (self.TopPanelHeight * 3 / 4)
 				iFrameW = self.FatherRecordWidth + (self.FatherRecordWidth / 2)
 				iFrameH = self.FatherRecordHeight / 2
+				bFlag = (gc.getGame().getFatherTeam(i) != TeamTypes.NO_TEAM or activeTeam.isFatherIgnore(i))
+				iFlagSize = self.FatherRecordHeight / 5
+				if (index % 2 == 0):
+					# lower row: portrait left, flag right of it; the frame goes from the right edge of the box to the right edge of the flag
+					iFrameX = (self.FatherRecordWidth * (j + 1)) - (self.FatherRecordWidth / 2)
+					iFrameY = self.BarAreaHeight + self.FatherRecordHeight + (self.FatherRecordHeight / 6) + 5 + (self.TopPanelHeight * 3 / 4)
+					if bFlag:
+						iFlagX = (self.FatherRecordWidth * (j + 1)) - (self.FatherRecordHeight * 6 / 7) + (self.FatherRecordHeight * 9 / 10) - (self.FatherRecordHeight / 5)
+						iFrameW = iFrameX + iFrameW - (iFlagX + iFlagSize)
+						iFrameX = iFlagX + iFlagSize
+				else:
+					# upper row: portrait right, flag left of it; the frame goes from the left edge of the box to the left edge of the flag
+					iFrameX = self.FatherRecordWidth * (j - 1)
+					iFrameY = self.TopPanelHeight
+					if bFlag:
+						iFrameW = (self.FatherRecordWidth * (j - 1)) + self.FatherRecordWidth + (self.FatherRecordHeight / 20) - iFrameX
 				iThick = 4
 				szFrameArt = "Art/Interface/Screens/TradeRoutes/WTPFrameImp.dds"
 				aStrips = [(iFrameX - iThick, iFrameY - iThick, iFrameW + 2 * iThick, iThick), (iFrameX - iThick, iFrameY + iFrameH, iFrameW + 2 * iThick, iThick), (iFrameX - iThick, iFrameY, iThick, iFrameH), (iFrameX + iFrameW, iFrameY, iThick, iFrameH)]
