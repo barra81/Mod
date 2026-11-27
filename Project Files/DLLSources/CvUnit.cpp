@@ -4023,12 +4023,28 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 	}
 
 	// WTP, ray, Canal - START
-	// in Canals, which are actually on land plots, we do not want to have any Ships bigger than Coastal Ships or GatherBoats
-	// WTP: ships that cannot sail to Europe count as coastal ships (since coastal ships may enter the ocean, Unit Travel
-	// Restrictions, the ocean terrain no longer told them apart and no ship but the fishing boat could enter a canal)
-	if (getUnitInfo().getDomainType() == DOMAIN_SEA && !kPlot.isWater() && getUnitInfo().canSailToEurope() && !(getUnitInfo().isGatherBoat() && getUnitInfo().getHarbourSpaceNeeded() == 1) && kPlot.getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(kPlot.getImprovementType()).isCanal())
+	// Canal ship filtering: regular canals allow coastal ships + gather boats; deep canals allow lake-capable ships
+	if (getUnitInfo().getDomainType() == DOMAIN_SEA && !kPlot.isWater() && kPlot.isCanal())
 	{
-		return false;
+		if (kPlot.isDeepCanal())
+		{
+			// Deep canal: block ships that cannot traverse lakes
+			if (getUnitInfo().getTerrainImpassable(TERRAIN_LAKE))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			// Regular canal: only coastal ships and fishing boats pass. WTP: ships that cannot sail to Europe count as coastal ships
+			// (since coastal ships may enter the ocean, Unit Travel Restrictions, the ocean terrain no longer tells them apart from the ships
+			// that sail to Europe); the fishing boat (gather boat with harbour space 1) passes as well
+			if (getUnitInfo().canSailToEurope()
+				&& !(getUnitInfo().isGatherBoat() && getUnitInfo().getHarbourSpaceNeeded() == 1))
+			{
+				return false;
+			}
+		}
 	}
 	// WTP, ray, Canal - END
 
@@ -4265,7 +4281,7 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 	case DOMAIN_SEA:
 		if (!kPlot.isWater() && !m_pUnitInfo->isCanMoveAllTerrain())
 		{
-			if (!kPlot.isFriendlyCity(*this, true) || !kPlot.isCoastalLand())
+			if (!kPlot.isCanal() && (!kPlot.isFriendlyCity(*this, true) || !kPlot.isCoastalLand()))
 			{
 				return false;
 			}

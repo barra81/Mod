@@ -2306,12 +2306,33 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 	// WTP, ray, small adjustment for Goodies spwawning hostile Units - END
 
 	// WTP, ray, Canal - START
-	if (GC.getImprovementInfo(eImprovement).isCanal())
+	// Deep canal: must be built on an existing regular canal tile
+	if (GC.getImprovementInfo(eImprovement).isDeepCanal())
 	{
-		// we do not want to allow endless long canals, only next to Water Plots
+		if (isCanal() && !isDeepCanal())
+		{
+			bValid = true;
+		}
+	}
+	// Enhanced canals: allow building adjacent to water OR adjacent to an existing canal (chain rule)
+	else if (GC.getImprovementInfo(eImprovement).isCanal())
+	{
 		if (isCoastalLand())
 		{
 			bValid = true;
+		}
+		else
+		{
+			// Canal chains: allow building adjacent to an existing canal
+			for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+			{
+				const CvPlot* pAdjacentPlot = plotDirection(getX_INLINE(), getY_INLINE(), ((DirectionTypes)iI));
+				if (pAdjacentPlot != NULL && pAdjacentPlot->isCanal())
+				{
+					bValid = true;
+					break;
+				}
+			}
 		}
 	}
 	// WTP, ray, Canal - END
@@ -2491,11 +2512,19 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 
 			// Super Forts begin *AI_worker* - prevent forts from being built over when outside culture range
 			// WTP, ray, Canal -- also adjust here to prevent canals destroying other Improvements
+			// Exception: allow upgrading a regular canal to a deep canal
 			if (GC.getImprovementInfo(getImprovementType()).isActsAsCity() || GC.getImprovementInfo(getImprovementType()).isCanal())
 			{
-				if (!isWithinCultureRange(ePlayer) && !(getCultureRangeForts(ePlayer) > 1))
+				bool bIsDeepCanalUpgrade = (GC.getImprovementInfo(getImprovementType()).isCanal()
+					&& !GC.getImprovementInfo(getImprovementType()).isDeepCanal()
+					&& GC.getImprovementInfo(eImprovement).isDeepCanal());
+
+				if (!bIsDeepCanalUpgrade)
 				{
-					return false;
+					if (!isWithinCultureRange(ePlayer) && !(getCultureRangeForts(ePlayer) > 1))
+					{
+						return false;
+					}
 				}
 			}
 			// Super Forts end
@@ -2765,7 +2794,7 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 
 		// make sure the terrain in question can have the wanted feature
 		// ray, RaR, we additionally check for "needs River" here
-		if (!GC.getFeatureInfo(eResultFeature).isTerrain(getTerrainType()) || (GC.getFeatureInfo(eResultFeature).isRequiresRiver() && !isRiver()))
+		if (!GC.getFeatureInfo(eResultFeature).isTerrain(getTerrainType()) || (GC.getFeatureInfo(eResultFeature).isRequiresRiver() && !isRiver() && !isAdjacentToFreshwaterCanal()))
 		{
 			return false;
 		}
@@ -2792,6 +2821,18 @@ int CvPlot::getBuildTime(BuildTypes eBuild) const
 
 	iTime *= std::max(0, (GC.getTerrainInfo(getTerrainType()).getBuildModifier() + 100));
 	iTime /= 100;
+
+	// Canal chain cost escalation: each additional tile in the chain doubles the build time (capped at 4x)
+	if (GC.getBuildInfo(eBuild).getImprovement() != NO_IMPROVEMENT
+		&& GC.getImprovementInfo((ImprovementTypes)GC.getBuildInfo(eBuild).getImprovement()).isCanal())
+	{
+		int iChainSize = countAdjacentConnectedCanals();
+		int iMultiplier = std::min(iChainSize, 2);
+		for (int i = 0; i < iMultiplier; ++i)
+		{
+			iTime *= 2;
+		}
+	}
 
 	iTime *= GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getGrowthPercent();
 	iTime /= 100;
@@ -4682,6 +4723,136 @@ bool CvPlot::isCanal() const
 
 	return false;
 }
+
+bool CvPlot::isDeepCanal() const
+{
+	if (getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(getImprovementType()).isDeepCanal())
+	{
+		return true;
+	}
+
+	return false;
+}
+
+int CvPlot::countAdjacentConnectedCanals() const
+{
+	// BFS through adjacent canal chain, bounded
+	static const int MAX_CANAL_CHAIN = 20;
+	const CvPlot* queue[MAX_CANAL_CHAIN];
+	int iHead = 0;
+	int iTail = 0;
+
+	// Seed with adjacent canals (not self - self may not be a canal yet)
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		const CvPlot* pAdj = plotDirection(getX_INLINE(), getY_INLINE(), ((DirectionTypes)iI));
+		if (pAdj != NULL && pAdj->isCanal() && iTail < MAX_CANAL_CHAIN)
+		{
+			queue[iTail++] = pAdj;
+		}
+	}
+
+	// Expand BFS
+	while (iHead < iTail)
+	{
+		const CvPlot* pCurrent = queue[iHead++];
+		for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+		{
+			const CvPlot* pAdj = plotDirection(pCurrent->getX_INLINE(), pCurrent->getY_INLINE(), ((DirectionTypes)iI));
+			if (pAdj == NULL || pAdj == this || !pAdj->isCanal() || iTail >= MAX_CANAL_CHAIN)
+			{
+				continue;
+			}
+			bool bSeen = false;
+			for (int j = 0; j < iTail; ++j)
+			{
+				if (queue[j] == pAdj) { bSeen = true; break; }
+			}
+			if (!bSeen)
+			{
+				queue[iTail++] = pAdj;
+			}
+		}
+	}
+	return iTail; // total connected canals (not counting self)
+}
+bool CvPlot::isAdjacentToCanal() const
+{
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		CvPlot* pAdjacentPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		if (pAdjacentPlot != NULL && pAdjacentPlot->isCanal())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CvPlot::isAdjacentToFreshwaterCanal() const
+{
+	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	{
+		CvPlot* pAdjacentPlot = plotDirection(getX_INLINE(), getY_INLINE(), (DirectionTypes)iI);
+		if (pAdjacentPlot != NULL && pAdjacentPlot->isCanal() && pAdjacentPlot->isCanalChainConnectedToFreshwater())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CvPlot::isCanalChainConnectedToFreshwater() const
+{
+	static const int MAX_CANAL_CHAIN = 20;
+	const CvPlot* queue[MAX_CANAL_CHAIN];
+	int iHead = 0;
+	int iTail = 0;
+
+	// Seed: this plot itself (must be a canal)
+	if (!isCanal())
+	{
+		return false;
+	}
+	queue[iTail++] = this;
+
+	// BFS through canal chain
+	while (iHead < iTail)
+	{
+		const CvPlot* pCurrent = queue[iHead++];
+
+		// Check all neighbors of current canal for freshwater or more canals
+		for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+		{
+			const CvPlot* pAdj = plotDirection(pCurrent->getX_INLINE(), pCurrent->getY_INLINE(), (DirectionTypes)iI);
+			if (pAdj == NULL)
+			{
+				continue;
+			}
+
+			// Freshwater found?
+			if (pAdj->isLake() || pAdj->getTerrainType() == TERRAIN_LARGE_RIVERS || pAdj->isRiver())
+			{
+				return true;
+			}
+
+			// Expand BFS to connected canals
+			if (pAdj->isCanal() && iTail < MAX_CANAL_CHAIN)
+			{
+				bool bSeen = false;
+				for (int j = 0; j < iTail; ++j)
+				{
+					if (queue[j] == pAdj) { bSeen = true; break; }
+				}
+				if (!bSeen)
+				{
+					queue[iTail++] = pAdj;
+				}
+			}
+		}
+	}
+	return false;
+}
 // R&R, ray, Monasteries and Forts - END
 
 
@@ -4864,7 +5035,7 @@ bool CvPlot::canHaveFeature(FeatureTypes eFeature) const
 		}
 	}
 
-	if (GC.getFeatureInfo(eFeature).isRequiresRiver() && !isRiver())
+	if (GC.getFeatureInfo(eFeature).isRequiresRiver() && !isRiver() && !isAdjacentToFreshwaterCanal())
 	{
 		return false;
 	}
@@ -4926,11 +5097,22 @@ bool CvPlot::isValidDomainForAction(UnitTypes eUnit) const
 	case DOMAIN_SEA:
 
 		// WTP, ray, Canal - START
-		// in Canals, which are actually on land plots, we do not want to have any Ships bigger than Coastal Ships or Fishing Boats
-		// WTP: ships that cannot sail to Europe count as coastal ships (see CvUnit::canMoveInto)
-		if (!isWater() && kUnitInfo.canSailToEurope() && !(kUnitInfo.isGatherBoat() && kUnitInfo.getHarbourSpaceNeeded() == 1) && getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(getImprovementType()).isCanal())
+		// Canal ship filtering: regular canals allow coastal ships + gather boats; deep canals allow lake-capable ships
+		if (!isWater() && isCanal())
 		{
-			return false;
+			if (isDeepCanal())
+			{
+				// Deep canal: block ships that cannot traverse lakes
+				return !kUnitInfo.getTerrainImpassable(TERRAIN_LAKE);
+			}
+			else
+			{
+				// Regular canal: only coastal ships and fishing boats pass. WTP: ships that cannot sail to Europe count as coastal ships
+				// (since coastal ships may enter the ocean, Unit Travel Restrictions, the ocean terrain no longer tells them apart from the ships
+				// that sail to Europe); the fishing boat (gather boat with harbour space 1) passes as well
+				return (!kUnitInfo.canSailToEurope()
+					|| (kUnitInfo.isGatherBoat() && kUnitInfo.getHarbourSpaceNeeded() == 1));
+			}
 		}
 		// WTP, ray, Canal - END
 
@@ -5249,10 +5431,11 @@ CvArea* CvPlot::getAdjacentSeaArea() const
 	CvMap& kMap = GC.getMap();
 	const int iPlotX = getX_INLINE();
 	const int iPlotY = getY_INLINE();
-	int iRange = 1;
 
 	CvArea* pArea = area();
+	CvArea* pLakeArea = NULL;
 
+	// Fast path: check directly adjacent plots for water
 	LOOP_ADJACENT_PLOTS(iPlotX, iPlotY, 1)
 	{
 		CvPlot* pLoopPlot = kMap.plotINLINE(iLoopX, iLoopY);
@@ -5263,6 +5446,81 @@ CvArea* CvPlot::getAdjacentSeaArea() const
 			{
 				return pArea;
 			}
+			if (pLakeArea == NULL)
+			{
+				pLakeArea = pArea;
+			}
+		}
+	}
+
+	if (pLakeArea != NULL)
+	{
+		return pLakeArea;
+	}
+
+	// Canal BFS: if this is a canal with no adjacent water, follow canal chain to find reachable water
+	if (isCanal())
+	{
+		static const int MAX_CANAL_BFS = 20;
+		const CvPlot* queue[MAX_CANAL_BFS];
+		int iHead = 0;
+		int iTail = 0;
+
+		// Seed with adjacent canals
+		for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+		{
+			const CvPlot* pAdj = plotDirection(iPlotX, iPlotY, ((DirectionTypes)iI));
+			if (pAdj != NULL && pAdj->isCanal() && iTail < MAX_CANAL_BFS)
+			{
+				queue[iTail++] = pAdj;
+			}
+		}
+
+		CvArea* pBfsLakeArea = NULL;
+
+		while (iHead < iTail)
+		{
+			const CvPlot* pCurrent = queue[iHead++];
+
+			// Check this canal's adjacent plots for water
+			for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+			{
+				const CvPlot* pAdj = plotDirection(pCurrent->getX_INLINE(), pCurrent->getY_INLINE(), ((DirectionTypes)iI));
+				if (pAdj == NULL)
+				{
+					continue;
+				}
+				if (pAdj->isWater())
+				{
+					CvArea* pWaterArea = pAdj->area();
+					if (!pWaterArea->isLake())
+					{
+						return pWaterArea; // ocean - best result
+					}
+					if (pBfsLakeArea == NULL)
+					{
+						pBfsLakeArea = pWaterArea;
+					}
+				}
+				else if (pAdj->isCanal() && pAdj != this && iTail < MAX_CANAL_BFS)
+				{
+					// Enqueue unseen canals
+					bool bSeen = false;
+					for (int j = 0; j < iTail; ++j)
+					{
+						if (queue[j] == pAdj) { bSeen = true; break; }
+					}
+					if (!bSeen)
+					{
+						queue[iTail++] = pAdj;
+					}
+				}
+			}
+		}
+
+		if (pBfsLakeArea != NULL)
+		{
+			return pBfsLakeArea;
 		}
 	}
 
@@ -6743,6 +7001,18 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue)
 		// CvPlot::hasYield cache - start - Nightinggale
 		setYieldCache();
 		// CvPlot::hasYield cache - end - Nightinggale
+
+		// Rebuild water area bridge graph when deep canals change (skip during load)
+		if (GC.getGameINLINE().isFinalInitialized())
+		{
+			bool bOldDeepCanal = (eOldImprovement != NO_IMPROVEMENT && GC.getImprovementInfo(eOldImprovement).isDeepCanal());
+			bool bNewDeepCanal = (eNewValue != NO_IMPROVEMENT && GC.getImprovementInfo(eNewValue).isDeepCanal());
+			if (bOldDeepCanal != bNewDeepCanal)
+			{
+				GC.getMap().rebuildWaterAreaBridges();
+			}
+		}
+
 	}
 }
 

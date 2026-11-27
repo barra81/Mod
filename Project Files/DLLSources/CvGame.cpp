@@ -561,6 +561,9 @@ void CvGame::regenerateMap()
 	GC.getMap().calculateCanalAndChokePoints();
 	// Super Forts end
 
+	// Build deep canal water area bridge graph
+	GC.getMap().rebuildWaterAreaBridges();
+
 	initScoreCalculation();
 	setFinalInitialized(true);
 
@@ -4936,6 +4939,9 @@ void CvGame::setFinalInitialized(bool bNewValue)
 			/// PlotGroup - start - Nightinggale
 			postLoadGameFixes();
 			/// PlotGroup - end - Nightinggale
+
+			// Rebuild deep canal water area bridges after load
+			GC.getMap().rebuildWaterAreaBridges();
 		}
 	}
 }

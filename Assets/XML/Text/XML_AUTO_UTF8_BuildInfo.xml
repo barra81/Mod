@@ -134,7 +134,24 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUILD_CANAL_HELP</Tag>
-		<English>????</English>
+		<English>Builds a canal for coastal ships and fishing boats to cross land</English>
+		<French>Construit un canal pour les navires côtiers et bateaux de pêche</French>
+		<German>Baut einen Kanal für Küstenschiffe und Fischerboote</German>
+		<Russian>Строит канал, по которому прибрежные суда и рыбацкие лодки пересекают сушу</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILD_DEEP_CANAL</Tag>
+		<English>Upgrade to [LINK=IMPROVEMENT_DEEP_CANAL]deep canal[\LINK]</English>
+		<French>Améliorer en [LINK=IMPROVEMENT_DEEP_CANAL]canal profond[\LINK]</French>
+		<German>Zu [LINK=IMPROVEMENT_DEEP_CANAL]tiefem Kanal[\LINK] ausbauen</German>
+		<Russian>Улучшить до [LINK=IMPROVEMENT_DEEP_CANAL]глубокого канала[\LINK]</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILD_DEEP_CANAL_HELP</Tag>
+		<English>Upgrades a canal to allow lake-capable ships (sloops, schooners, etc.) to pass through</English>
+		<French>Améliore un canal pour permettre le passage de navires lacustres (sloops, goélettes, etc.)</French>
+		<German>Baut einen Kanal aus, um seefähige Schiffe (Schaluppen, Schoner, etc.) durchfahren zu lassen</German>
+		<Russian>Улучшает канал, чтобы пропускать озёрные суда (шлюпы, шхуны и др.)</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUILD_FORT</Tag>
