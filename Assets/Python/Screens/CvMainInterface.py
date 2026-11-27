@@ -12110,8 +12110,16 @@ class CvMainInterface:
 			for szLine in aszLines:
 				iLongest = max(iLongest, len(re.sub(u"<[^>]*>", u"", szLine)))
 			iWidth = max(120, min(iMaxWidth, int(iLongest * iChar) + 2 * iPad + 8))
-			iHeight = len(aszLines) * iLine + 2 * iPad
 			(iPX, iPY, iPW, iPH) = self.tMsgPanelRect
+			# the window never goes beyond the height of the panel: it stays between the top of the panel and the bottom of the fully expanded panel
+			# (80 percent of the screen height, the same limit as in updateMessagePanel); a longer text is cut and ends with "..."
+			iBottomLimit = int(yRes * 0.80)
+			if self.iMsgMoveY != 0:
+				iBottomLimit = yRes - 10
+			iMaxLines = max(3, int((iBottomLimit - iPY - 2 * iPad) / iLine))
+			if len(aszLines) > iMaxLines:
+				aszLines = aszLines[:iMaxLines - 1] + [u"..."]
+			iHeight = len(aszLines) * iLine + 2 * iPad
 			# beside the panel (right of it, left if there is no room) at the height of the cursor
 			iX = iPX + iPW + 12
 			if bPreferLeft and iPX - 12 - iWidth >= 4:
@@ -12119,7 +12127,7 @@ class CvMainInterface:
 			elif iX + iWidth > xRes - 4:
 				iX = iPX - 12 - iWidth
 			iX = max(4, iX)
-			iY = max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2))
+			iY = max(iPY, min(iBottomLimit - iHeight, iCursorY - iHeight / 2))
 			screen.addPanel("HudMsgPickBack1", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			screen.addPanel("HudMsgPickBack2", u"", u"", True, False, iX, iY, iWidth, iHeight, PanelStyles.PANEL_STYLE_HUD_HELP, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			self.iMsgPickLines = len(aszLines)
