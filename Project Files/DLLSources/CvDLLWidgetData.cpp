@@ -1453,10 +1453,52 @@ void CvDLLWidgetData::doAction(const CvWidgetDataStruct &widgetDataStruct)
 	GC.getGameINLINE().handleActionEx(widgetDataStruct.m_iData1, true);
 }
 
+// WTP: the camera goes to the place of a player: his capital if the active team has seen it, otherwise his settlement (that the active team has seen)
+// that is nearest to the primary city of the active player. Nothing happens if there is no such place (a king has no cities, nothing seen yet).
+static void wtpLookAtPlayerPlace(PlayerTypes ePlayer)
+{
+	if (ePlayer < 0 || ePlayer >= MAX_PLAYERS)
+	{
+		return;
+	}
+	const CvPlayer& kTarget = GET_PLAYER(ePlayer);
+	const TeamTypes eActiveTeam = GC.getGameINLINE().getActiveTeam();
+	const CvCity* pBest = kTarget.getCapitalCity();
+	if (pBest != NULL && !pBest->plot()->isRevealed(eActiveTeam, false))
+	{
+		pBest = NULL;
+	}
+	if (pBest == NULL)
+	{
+		const CvCity* pOwnCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getPrimaryCity();
+		int iBestDistance = MAX_INT;
+		int iLoop;
+		for (CvCity* pLoopCity = kTarget.firstCity(&iLoop); pLoopCity != NULL; pLoopCity = kTarget.nextCity(&iLoop))
+		{
+			if (!pLoopCity->plot()->isRevealed(eActiveTeam, false))
+			{
+				continue;
+			}
+			const int iDistance = (pOwnCity != NULL) ? plotDistance(pOwnCity->getX_INLINE(), pOwnCity->getY_INLINE(), pLoopCity->getX_INLINE(), pLoopCity->getY_INLINE()) : 0;
+			if (iDistance < iBestDistance)
+			{
+				iBestDistance = iDistance;
+				pBest = pLoopCity;
+			}
+		}
+	}
+	if (pBest != NULL)
+	{
+		gDLL->getInterfaceIFace()->lookAt(pBest->plot()->getPoint(), CAMERALOOKAT_NORMAL);
+	}
+}
+
 void CvDLLWidgetData::doContactCiv(const CvWidgetDataStruct &widgetDataStruct)
 {
 	if (gDLL->isDiplomacy() || gDLL->isMPDiplomacyScreenUp())
 	{
+		// WTP: a click on the portrait (or the name) of the partner in the diplomacy screen shows his capital or nearest settlement on the map
+		wtpLookAtPlayerPlace((PlayerTypes)widgetDataStruct.m_iData1);
 		return;
 	}
 
