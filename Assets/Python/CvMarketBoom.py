@@ -128,18 +128,30 @@ def _showBoom(iPlayer, king, booms):
     popupInfo.addPopup(iPlayer)
 
     # the message is not sent now: onGameStart comes before the options of the players (e.g. "New message panel") are known to the DLL,
-    # so the message would go to the game's own message area (and overlap the panel). It is sent a few frames into the game by the main interface (CvMainInterface.update, active player), for the other players when their turn begins
-    g_pendingMessages[iPlayer] = localText.getText("TXT_KEY_MARKET_BOOM_MESSAGE", (szNames[0], szNames[1], szNames[2]))
+    # so the message would go to the game's own message area (and overlap the panel). The main interface sends it as soon as the option is known
+    # (CvMainInterface.updatePendingGameMessages, active player), for the other players (hotseat) it is sent when their turn begins. The text of the
+    # popup is the tooltip of the line in the message panel
+    g_pendingMessages[iPlayer] = (localText.getText("TXT_KEY_MARKET_BOOM_MESSAGE", (szNames[0], szNames[1], szNames[2])), szText)
 
 
-# the messages of the market boom that wait for the first frames of the game / the turn of their player (player id -> text)
+# the messages of the market boom that wait for the first frames of the game / the turn of their player (player id -> (message, text of the popup))
 g_pendingMessages = {}
 
 
 def showPendingMessage(iPlayer):
-    "Called from the main interface (a few frames into the game, the active player) and from onBeginPlayerTurn (the others, e.g. in hotseat): sends the message of the market boom to the player (once)"
-    szText = g_pendingMessages.pop(iPlayer, None)
-    if szText is not None:
-        # (CyGame().addMessage of the message panel goes through the DLL, so the panel gets the message; CyInterface goes to the exe directly)
-        addMessage = getattr(CyGame(), "addMessage", None) or CyInterface().addMessage
-        addMessage(iPlayer, True, 10, szText, "", 0, "", ColorTypes(8), -1, -1, False, False)
+    "Sends the message of the market boom to the player (once): the active player gets it as a message of the mod (message panel with the popup text as tooltip), the others as a game message"
+    tMessage = g_pendingMessages.pop(iPlayer, None)
+    if tMessage is None:
+        return
+    szMessage, szPopup = tMessage
+    if iPlayer == gc.getGame().getActivePlayer():
+        try:
+            import CvScreensInterface
+            # (the popup text has the line breaks of a popup: "\n")
+            CvScreensInterface.mainInterface.showModMessage(szMessage, None, None, szPopup)
+            return
+        except:
+            pass
+    # (CyGame().addMessage of the message panel goes through the DLL, so the panel gets the message; CyInterface goes to the exe directly)
+    addMessage = getattr(CyGame(), "addMessage", None) or CyInterface().addMessage
+    addMessage(iPlayer, True, 10, szMessage, "", 0, "", ColorTypes(8), -1, -1, False, False)

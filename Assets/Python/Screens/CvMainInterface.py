@@ -5550,11 +5550,32 @@ class CvMainInterface:
 			aLand = aWp
 		self.saveAllWaypoints(aLand, aSea, iNext, ePlayer)
 
+	# WTP: messages that wait for the first frames of the game (the market boom): sent here for the active player, so they are in the message panel at the
+	# first turn (onBeginPlayerTurn only comes with the turn change at the end of the first turn). The option "New message panel" of the player is known a
+	# bit later than the first frames, so the message waits for it (at most 5 s, then it goes the way a message goes without the panel)
+	iPendingSince = -1
+	def updatePendingGameMessages( self ):
+		try:
+			import CvMarketBoom
+			if not CvMarketBoom.g_pendingMessages:
+				return
+			iActive = gc.getGame().getActivePlayer()
+			if not CvMarketBoom.g_pendingMessages.has_key(iActive):
+				return
+			iNow = self.getTipNow()
+			if self.iPendingSince < 0:
+				self.iPendingSince = iNow
+			if self.isMessagePanelOption() or iNow - self.iPendingSince > 5000:
+				CvMarketBoom.showPendingMessage(iActive)
+		except:
+			pass
+
 	# a message of the mod (a warning, a note of the tooltips): in the message panel (if it is installed and on) as a message at the top, all in the
 	# yellow of the units; otherwise as the game shows its messages
 	# tPlot = (x, y): the place of the message (a click on its line in the message panel shows it on the map; the panel gets no place from the
 	# game for the messages of the mod, so the text is remembered with its place, see getMessageTargets)
-	def showModMessage( self, szText, szSound = None, tPlot = None ):
+	# szTip: a tooltip for the line in the panel (the help window beside the panel, see WTP_HUD_TIP_MARKER); without the panel it is not shown
+	def showModMessage( self, szText, szSound = None, tPlot = None, szTip = None ):
 		if szSound is None:
 			szSound = self.szModMessageSound
 		if tPlot is not None:
@@ -5563,7 +5584,10 @@ class CvMainInterface:
 		bPanel = False
 		try:
 			if self.isMessagePanelOption():
-				gc.getGame().addHudMessage(szYellow, True)
+				if szTip is not None:
+					gc.getGame().addHudMessage(szYellow + self.WTP_HUD_TIP_MARKER + szTip, True)
+				else:
+					gc.getGame().addHudMessage(szYellow, True)
 				bPanel = True
 		except:
 			pass
@@ -12837,15 +12861,7 @@ class CvMainInterface:
 		self.updateCityJump()
 		self.updateMessageMove()
 		self.updateMessageHover()
-		# WTP: messages that wait for the first frames of the game (market boom): sent here for the active player, so they are in the message panel
-		# at the first turn (the turn change that would send them from onBeginPlayerTurn only comes at the end of the first turn)
-		if self.iTick >= 20:
-			try:
-				import CvMarketBoom
-				if CvMarketBoom.g_pendingMessages:
-					CvMarketBoom.showPendingMessage(gc.getGame().getActivePlayer())
-			except:
-				pass
+		self.updatePendingGameMessages()
 		try:
 			self.updateMessageScroll()
 		except:
