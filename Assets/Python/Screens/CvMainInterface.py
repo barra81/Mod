@@ -5575,12 +5575,15 @@ class CvMainInterface:
 	# tPlot = (x, y): the place of the message (a click on its line in the message panel shows it on the map; the panel gets no place from the
 	# game for the messages of the mod, so the text is remembered with its place, see getMessageTargets)
 	# szTip: a tooltip for the line in the panel (the help window beside the panel, see WTP_HUD_TIP_MARKER); without the panel it is not shown
-	def showModMessage( self, szText, szSound = None, tPlot = None, szTip = None ):
+	# szColor: the color tag of the whole message, default is the yellow of the units (the market boom is magenta)
+	def showModMessage( self, szText, szSound = None, tPlot = None, szTip = None, szColor = None ):
 		if szSound is None:
 			szSound = self.szModMessageSound
 		if tPlot is not None:
 			self.dModMessagePlot[re.sub(u"<[^>]*>", u"", szText).strip()] = tPlot
-		szYellow = u"<color=255,255,0,255>" + re.sub(u"<color=[^>]*>|</color>", u"", szText) + u"</color>"
+		if szColor is None:
+			szColor = u"<color=255,255,0,255>"
+		szYellow = szColor + re.sub(u"<color=[^>]*>|</color>", u"", szText) + u"</color>"
 		bPanel = False
 		try:
 			if self.isMessagePanelOption():

@@ -139,7 +139,7 @@ g_pendingMessages = {}
 
 
 def showPendingMessage(iPlayer):
-    "Sends the message of the market boom to the player (once): the active player gets it as a message of the mod (message panel with the popup text as tooltip), the others as a game message"
+    "Sends the message of the market boom to the player (once): the active player gets it as a message of the mod (message panel, magenta, with the popup text as tooltip), the others as a game message"
     tMessage = g_pendingMessages.pop(iPlayer, None)
     if tMessage is None:
         return
@@ -148,7 +148,7 @@ def showPendingMessage(iPlayer):
         try:
             import CvScreensInterface
             # (the popup text has the line breaks of a popup: "\n")
-            CvScreensInterface.mainInterface.showModMessage(szMessage, None, None, szPopup)
+            CvScreensInterface.mainInterface.showModMessage(szMessage, None, None, szPopup, u"<color=255,0,255,255>")
             return
         except:
             pass
