@@ -5335,6 +5335,18 @@ class CvMainInterface:
 					return (max(4, xRes / 2 - 175 - 12 - iWidth), max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2)))
 			except:
 				pass
+			# the choices of an event popup (1440p only; the popup is about 400 pixels wide and stands in the middle of the screen): the tooltip stands
+			# right beside it, on its left (if there is no room: on its right), at the height of the cursor. The game tooltip of these choices is
+			# emptied by the DLL (CvDLLWidgetData::parseHelp), so only this one is shown
+			try:
+				if yRes == 1440 and self.iLastWidgetType == int(WidgetTypes.WIDGET_CHOOSE_EVENT):
+					iPopupHalf = 200
+					iEventX = xRes / 2 - iPopupHalf - 12 - iWidth
+					if iEventX < 4:
+						iEventX = xRes / 2 + iPopupHalf + 12
+					return (iEventX, max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2)))
+			except:
+				pass
 			# (the popup stands in the middle of the screen, about half of its width: the left edge is free)
 			return (max(4, int(xRes * 0.01)), max(4, min(yRes - iHeight - 4, iCursorY - iHeight / 2)))
 		iGap = max(48, int(yRes * 0.04))
@@ -9620,7 +9632,7 @@ class CvMainInterface:
 	# the popup is above all screens of python, so the tooltip stands beside it (the left edge of the screen) and cannot be frozen (the keys go to the popup)
 	def isPopupWidgetTip( self ):
 		try:
-			return self.bHudHover and not CyInterface().isCityScreenUp() and self.iLastWidgetType in (int(WidgetTypes.WIDGET_TRAIN), int(WidgetTypes.WIDGET_CONSTRUCT), int(WidgetTypes.WIDGET_CONVINCE))
+			return self.bHudHover and not CyInterface().isCityScreenUp() and self.iLastWidgetType in (int(WidgetTypes.WIDGET_TRAIN), int(WidgetTypes.WIDGET_CONSTRUCT), int(WidgetTypes.WIDGET_CONVINCE), int(WidgetTypes.WIDGET_CHOOSE_EVENT))
 		except:
 			return False
 

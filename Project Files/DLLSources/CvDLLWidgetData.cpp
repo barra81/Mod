@@ -258,10 +258,11 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, const CvWidgetDataStr
 	{
 		szBuffer.clear();
 	}
-	// WTP: the list of the game popup of a colony (what to build): the own tooltip of the main interface shows the help (beside the popup),
-	// the game gets an empty text. Not in the city screen: there the list is not covered by the popup and the game tooltip stays
+	// WTP: the list of the game popup of a colony (what to build) and the choices of an event popup: the own tooltip of the main interface shows
+	// the help (beside the popup), the game gets an empty text. Not in the city screen: there the list is not covered by the popup and the game
+	// tooltip stays
 	else if (g_bWtpHideGameHelp && !g_bWtpInternalHelp && gDLL->getInterfaceIFace()->isPopupUp() && !gDLL->getInterfaceIFace()->isCityScreenUp()
-		&& (widgetDataStruct.m_eWidgetType == WIDGET_TRAIN || widgetDataStruct.m_eWidgetType == WIDGET_CONSTRUCT || widgetDataStruct.m_eWidgetType == WIDGET_CONVINCE))
+		&& (widgetDataStruct.m_eWidgetType == WIDGET_TRAIN || widgetDataStruct.m_eWidgetType == WIDGET_CONSTRUCT || widgetDataStruct.m_eWidgetType == WIDGET_CONVINCE || widgetDataStruct.m_eWidgetType == WIDGET_CHOOSE_EVENT))
 	{
 		szBuffer.clear();
 	}
