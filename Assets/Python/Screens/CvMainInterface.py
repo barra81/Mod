@@ -12617,14 +12617,15 @@ class CvMainInterface:
 		except:
 			return -1
 
-	# a click on a line that names a founding father: the founding fathers screen opens at the tab of the father (trade, exploration ...)
+	# a click on a line that names a founding father: the founding fathers screen opens at the tab of the father (trade, exploration ...) and
+	# the father has a frame (the screen cannot be scrolled from python)
 	# Python 2.4: no conditional expression
 	def openMessageFather(self, iMessage):
 		try:
 			iFather = self.getMessageFather(iMessage)
 			if iFather < 0:
 				return False
-			CvScreensInterface.fatherScreen.interfaceScreen(gc.getFatherInfo(iFather).getFatherCategory())
+			CvScreensInterface.fatherScreen.interfaceScreen(gc.getFatherInfo(iFather).getFatherCategory(), iFather)
 			return True
 		except:
 			return False

@@ -38,7 +38,9 @@ class CvFoundingFatherScreen:
 		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.FATHER_SCREEN)
 
 	# Screen construction function
-	def interfaceScreen (self, iCategory):
+	# iHighlightFather: a father who gets a frame in the yellow of the import (WTP: the click on a message of the message panel that names him;
+	# -1 = no frame, the call of the game)
+	def interfaceScreen (self, iCategory, iHighlightFather = -1):
 		
 		screen = self.getScreen()
 
@@ -47,6 +49,8 @@ class CvFoundingFatherScreen:
 
 		if screen.isActive():
 			return
+
+		self.iHighlightFather = iHighlightFather
 			
 		if (iCategory != -1):
 			self.TypeSelection = iCategory
@@ -316,6 +320,23 @@ class CvFoundingFatherScreen:
 								screen.addDDSGFCAt("Flag Icon" + str(i), ScrollPanel, ArtFileMgr.getMiscArtInfo("LEADERHEAD_RANDOM").getPath(), (self.FatherRecordWidth * (j - 1)) + self.FatherRecordWidth + (self.FatherRecordHeight / 20), self.TopPanelHeight + (self.FatherRecordHeight / 2) - (self.FatherRecordHeight / 12), (self.FatherRecordHeight / 5), (self.FatherRecordHeight / 5), WidgetTypes.WIDGET_GENERAL, -1, -1, False )
 							break
 				
+
+			# WTP: the frame of the father the message panel pointed to: four thin strips around his box, in the color of WtpColors.IMPORT
+			# (the same one-pixel texture as the import frames of the trade route screen)
+			if i == getattr(self, "iHighlightFather", -1):
+				iFrameX = self.FatherRecordWidth * (j - 1)
+				iFrameY = self.TopPanelHeight
+				if (index % 2 == 0):
+					iFrameX = (self.FatherRecordWidth * (j + 1)) - (self.FatherRecordWidth / 2)
+					iFrameY = self.BarAreaHeight + self.FatherRecordHeight + (self.FatherRecordHeight / 6) + 5 + (self.TopPanelHeight * 3 / 4)
+				iFrameW = self.FatherRecordWidth + (self.FatherRecordWidth / 2)
+				iFrameH = self.FatherRecordHeight / 2
+				iThick = 4
+				szFrameArt = "Art/Interface/Screens/TradeRoutes/WTPFrameImp.dds"
+				aStrips = [(iFrameX - iThick, iFrameY - iThick, iFrameW + 2 * iThick, iThick), (iFrameX - iThick, iFrameY + iFrameH, iFrameW + 2 * iThick, iThick), (iFrameX - iThick, iFrameY, iThick, iFrameH), (iFrameX + iFrameW, iFrameY, iThick, iFrameH)]
+				for iStrip in range(4):
+					screen.addDDSGFCAt("FatherFrame" + str(iStrip), ScrollPanel, szFrameArt, aStrips[iStrip][0], aStrips[iStrip][1], aStrips[iStrip][2], aStrips[iStrip][3], WidgetTypes.WIDGET_GENERAL, -1, -1, False)
+					screen.moveToFront("FatherFrame" + str(iStrip))
 
 			#reset so that it offsets from the father record's panel			
 			for iFatherPointType in range(gc.getNumFatherPointInfos()):
