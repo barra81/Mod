@@ -14944,8 +14944,27 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 	{
 		CvPlot* pPlot = coord.plot();
 
+		// WTP: the report that a native village is pressed by European neighbours (EVENTTRIGGER_PRESSED_NATIVE_VILLAGE): a click on its line in
+		// the message panel shows the village, not the city of the player the event was started from (that city is the plot of the event), and the
+		// world news of it are top priority messages in the yellow of the units
+		static const EventTriggerTypes ePressedVillageTrigger = (EventTriggerTypes)GC.getInfoTypeForString("EVENTTRIGGER_PRESSED_NATIVE_VILLAGE", true);
+		const bool bPressedVillage = (ePressedVillageTrigger != NO_EVENTTRIGGER && kTriggeredData.m_eTrigger == ePressedVillageTrigger);
+		Coordinates msgCoord = coord;
+		CvPlot* pMsgPlot = pPlot;
+		if (bPressedVillage && kTriggeredData.m_eOtherPlayer != NO_PLAYER && kTriggeredData.m_iOtherPlayerCityId >= 0)
+		{
+			const CvCity* pVillage = GET_PLAYER(kTriggeredData.m_eOtherPlayer).getCity(kTriggeredData.m_iOtherPlayerCityId);
+			if (pVillage != NULL)
+			{
+				msgCoord = pVillage->coord();
+				pMsgPlot = msgCoord.plot();
+			}
+		}
+
 		if (!kTriggeredData.m_szGlobalText.empty())
 		{
+			// (the world news of the pressed village: yellow of the units, top priority)
+			const CvWString szGlobalText = bPressedVillage ? CvWString(L"<color=255,255,0,255>") + kTriggeredData.m_szGlobalText + CvWString(L"</color>") : kTriggeredData.m_szGlobalText;
 			for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
 			{
 				CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iPlayer);
@@ -14960,26 +14979,28 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 						{
 							if (kLoopPlayer.getTeam() != getTeam())
 							{
-								if (NULL == pPlot || !pPlot->isRevealed(kLoopPlayer.getTeam(), false))
+								if (NULL == pMsgPlot || !pMsgPlot->isRevealed(kLoopPlayer.getTeam(), false))
 								{
 									bShowPlot = false;
 								}
 							}
 						}
 
+						WtpHudMessages::setPriority(bPressedVillage);
 						if (bShowPlot)
 						{
-							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), kTriggeredData.m_szGlobalText, coord, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
+							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), szGlobalText, msgCoord, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
 						}
 						else
 						{
-							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), kTriggeredData.m_szGlobalText, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT);
+							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), szGlobalText, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT);
 						}
+						WtpHudMessages::setPriority(false);
 					}
 				}
 			}
 
-			GC.getGameINLINE().addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, getID(), kTriggeredData.m_szGlobalText, coord.x(), coord.y(), COLOR_HIGHLIGHT_TEXT);
+			GC.getGameINLINE().addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, getID(), kTriggeredData.m_szGlobalText, msgCoord.x(), msgCoord.y(), COLOR_HIGHLIGHT_TEXT);
 		}
 		else if (!kTriggeredData.m_szText.empty())
 		{
