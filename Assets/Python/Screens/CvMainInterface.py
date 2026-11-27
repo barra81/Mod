@@ -12837,6 +12837,15 @@ class CvMainInterface:
 		self.updateCityJump()
 		self.updateMessageMove()
 		self.updateMessageHover()
+		# WTP: messages that wait for the first frames of the game (market boom): sent here for the active player, so they are in the message panel
+		# at the first turn (the turn change that would send them from onBeginPlayerTurn only comes at the end of the first turn)
+		if self.iTick >= 20:
+			try:
+				import CvMarketBoom
+				if CvMarketBoom.g_pendingMessages:
+					CvMarketBoom.showPendingMessage(gc.getGame().getActivePlayer())
+			except:
+				pass
 		try:
 			self.updateMessageScroll()
 		except:
