@@ -4060,14 +4060,14 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_RECEIVED_GOLD</Tag>
-		<English>[SPACE]You have received [COLOR_POSITIVE_TEXT]%d1_Num[COLOR_REVERT][ICON_GOLD]!</English>
-		<Portuguese>[SPACE]Você recebeu [COLOR_POSITIVE_TEXT]%d1_Num[COLOR_REVERT][ICON_GOLD]!</Portuguese>
-		<French>[SPACE]Vous avez reçu [COLOR_POSITIVE_TEXT]%d1_Num[COLOR_REVERT][ICON_GOLD] !</French>
-		<German>[SPACE]Ihr habt [COLOR_POSITIVE_TEXT]%d1_Num[COLOR_REVERT][ICON_GOLD] erhalten!</German>
-		<Italian>[SPACE]Hai ricevuto [COLOR_POSITIVE_TEXT]%d1_Num[COLOR_REVERT][ICON_GOLD]!</Italian>
-		<Spanish>[SPACE]Habéis recibido [COLOR_POSITIVE_TEXT]%d1_Num[COLOR_REVERT][ICON_GOLD].</Spanish>
-		<Russian>[SPACE]Вы получили [COLOR_POSITIVE_TEXT]%d1_Num[COLOR_REVERT][ICON_GOLD]!</Russian>
-		<Hungarian>[SPACE]Szert tettél [COLOR_POSITIVE_TEXT]%d1_Num[COLOR_REVERT] [ICON_GOLD]-ra!</Hungarian>
+		<English>[SPACE]You have [COLOR_POSITIVE_TEXT]received[COLOR_REVERT] %d1_Num[ICON_GOLD]!</English>
+		<Portuguese>[SPACE]Você [COLOR_POSITIVE_TEXT]recebeu[COLOR_REVERT] %d1_Num[ICON_GOLD]!</Portuguese>
+		<French>[SPACE]Vous avez [COLOR_POSITIVE_TEXT]reçu[COLOR_REVERT] %d1_Num[ICON_GOLD] !</French>
+		<German>[SPACE]Ihr habt %d1_Num[ICON_GOLD] [COLOR_POSITIVE_TEXT]erhalten[COLOR_REVERT]!</German>
+		<Italian>[SPACE]Hai [COLOR_POSITIVE_TEXT]ricevuto[COLOR_REVERT] %d1_Num[ICON_GOLD]!</Italian>
+		<Spanish>[SPACE]Habéis [COLOR_POSITIVE_TEXT]recibido[COLOR_REVERT] %d1_Num[ICON_GOLD].</Spanish>
+		<Russian>[SPACE]Вы [COLOR_POSITIVE_TEXT]получили[COLOR_REVERT] %d1_Num[ICON_GOLD]!</Russian>
+		<Hungarian>[SPACE][COLOR_POSITIVE_TEXT]Szert tettél[COLOR_REVERT] %d1_Num [ICON_GOLD]-ra!</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_PLAYER_ADOPTED_CIVIC</Tag>
