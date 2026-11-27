@@ -14964,8 +14964,8 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 		if (!kTriggeredData.m_szGlobalText.empty())
 		{
 			// the start of a trade race (EVENTTRIGGER_EUROPE_TRADE_QUEST_<good>_START): "The race to dominate the market ... has begun" is a top priority
-			// message in the magenta of the events (the colors inside the text, like the gold of the good, stay); the player the trigger fired for
-			// has the text of his popup as tooltip
+			// message (the words "race to dominate the market" are magenta in the texts themselves: COLOR_WTP_EVENT, the gold of the good stays); the
+			// player the trigger fired for has the text of his popup as tooltip
 			const char* const szTriggerType = kTrigger.getType();
 			const bool bTradeRaceStart = (szTriggerType != NULL && strstr(szTriggerType, "_TRADE_QUEST_") != NULL && strstr(szTriggerType, "_START") != NULL);
 			// (the world news of the pressed village: yellow of the units, top priority)
@@ -14974,10 +14974,7 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 			{
 				szGlobalText = CvWString(L"<color=255,255,0,255>") + kTriggeredData.m_szGlobalText + CvWString(L"</color>");
 			}
-			else if (bTradeRaceStart)
-			{
-				szGlobalText = CvWString(L"<color=255,64,255,255>") + kTriggeredData.m_szGlobalText + CvWString(L"</color>");
-			}
+
 			for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
 			{
 				CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iPlayer);

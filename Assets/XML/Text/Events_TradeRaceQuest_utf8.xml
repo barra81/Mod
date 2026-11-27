@@ -2,12 +2,12 @@
 <Civ4GameText>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_SUGAR_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]sugar[COLOR_REVERT] market in Europe is under way.</English>
-		<Portuguese>A corrida para dominar o mercado do [COLOR_FONT_GOLD]açúcar[COLOR_REVERT] na Europa está em andamento.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]sucre[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Zucker[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]сахара[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]cukor[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]sugar[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe is under way.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] do [COLOR_FONT_GOLD]açúcar[COLOR_REVERT] na Europa está em andamento.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]sucre[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Zucker[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]сахара[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]cukor[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_SUGAR_START</Tag>
@@ -47,12 +47,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_TOBACCO_START</Tag>
-		<English>The race to dominate the European market for [COLOR_FONT_GOLD]tobacco[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para dominar o mercado europeu de [COLOR_FONT_GOLD]tabaco[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européeen du [COLOR_FONT_GOLD]tabac[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Tabak[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]табака[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]dohány[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the European market[COLOR_REVERT] for [COLOR_FONT_GOLD]tobacco[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]tabaco[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européeen[COLOR_REVERT] du [COLOR_FONT_GOLD]tabac[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Tabak[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]табака[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]dohány[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_TOBACCO_START</Tag>
@@ -92,12 +92,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FOOD_START</Tag>
-		<English>The race to dominate the European [COLOR_FONT_GOLD]food[COLOR_REVERT] trade has started.</English>
-		<Portuguese>A corrida para dominar o comércio europeu de [COLOR_FONT_GOLD]alimentos[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché de la [COLOR_FONT_GOLD]nourriture[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Nahrung[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]еды[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]élelem[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the European[COLOR_REVERT] [COLOR_FONT_GOLD]food[COLOR_REVERT][COLOR_WTP_EVENT] trade[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o comércio europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]alimentos[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché[COLOR_REVERT] de la [COLOR_FONT_GOLD]nourriture[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Nahrung[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]еды[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]élelem[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_FOOD_START</Tag>
@@ -138,12 +138,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_LUMBER_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]lumber[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]madeira[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]bois de construction[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Holz[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]пиломатериалов[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]épületfa[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]lumber[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]madeira[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]bois de construction[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Holz[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]пиломатериалов[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]épületfa[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_LUMBER_START</Tag>
@@ -184,12 +184,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_ORE_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]ore[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]minério[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]minerai de fer[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Eisenerz[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]руды[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]érc[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]ore[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]minério[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]minerai de fer[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Eisenerz[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]руды[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]érc[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_ORE_START</Tag>
@@ -229,12 +229,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_STONE_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]stone[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]pedras[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen de la  [COLOR_FONT_GOLD]pierre[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Steine[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]камня[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]kő[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]stone[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]pedras[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de la  [COLOR_FONT_GOLD]pierre[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Steine[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]камня[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kő[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_STONE_START</Tag>
@@ -274,12 +274,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HEMP_START</Tag>
-		<English>The race to dominate the market in Europe for [COLOR_FONT_GOLD]hemp[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para dominar o mercado europeu de [COLOR_FONT_GOLD]cânhamo[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]chanvre[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Hanf[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]конопли[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]kender[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in Europe for [COLOR_FONT_GOLD]hemp[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]cânhamo[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]chanvre[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Hanf[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]конопли[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kender[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_HEMP_START</Tag>
@@ -319,12 +319,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_SHEEP_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]sheep[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]ovinos[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]mouton[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Schafe[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]овец[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]juh[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]sheep[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]ovinos[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]mouton[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schafe[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]овец[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]juh[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_SHEEP_START</Tag>
@@ -364,12 +364,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CATTLE_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]cattle[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]gado[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]boeuf[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Rinder[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]коров[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]marha[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]cattle[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]gado[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]boeuf[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Rinder[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]коров[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]marha[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_CATTLE_START</Tag>
@@ -409,12 +409,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HORSES_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]horse[COLOR_REVERT] trade in Europe has started.</English>
-		<Portuguese>A corrida para dominar o comércio de [COLOR_FONT_GOLD]cavalos[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]chevaux[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Pferde[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]лошадей[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]ló[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]horse[COLOR_REVERT][COLOR_WTP_EVENT] trade[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o comércio[COLOR_REVERT] de [COLOR_FONT_GOLD]cavalos[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]chevaux[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Pferde[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]лошадей[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]ló[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_HORSES_START</Tag>
@@ -454,12 +454,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COCOA_FRUITS_START</Tag>
-		<English>The race to dominate the European market for [COLOR_FONT_GOLD]cocoa pods[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para dominar o mercado europeu de [COLOR_FONT_GOLD]vagens de cacau[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen de la [COLOR_FONT_GOLD]cabosse de cacao[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Kakaofrüchte[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]плодов какао[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]kakaóbab[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the European market[COLOR_REVERT] for [COLOR_FONT_GOLD]cocoa pods[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]vagens de cacau[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de la [COLOR_FONT_GOLD]cabosse de cacao[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Kakaofrüchte[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]плодов какао[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kakaóbab[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_COCOA_FRUITS_START</Tag>
@@ -490,13 +490,13 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COCA_LEAVES_START</Tag>
-		<English>The race to dominate the European trade in [COLOR_FONT_GOLD]coca leaves[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para dominar o comércio europeu de [COLOR_FONT_GOLD]folhas de coca[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen de la  [COLOR_FONT_GOLD]feuille de coca[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Coca-Blätter[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]листьев коки[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]kokalevél[COLOR_REVERT] piac uralmáért.</Hungarian>
-		<Hungarian>Őfelsége és alattvalói örömmel fogadták az első gyarmatokról származó [COLOR_FONT_GOLD]kokalevél[COLOR_REVERT] szállítmányokat. Őfelsége ezt követően megbíz téged azzal, hogy válj a piac vezetőjévé.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the European trade[COLOR_REVERT] in [COLOR_FONT_GOLD]coca leaves[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o comércio europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]folhas de coca[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de la  [COLOR_FONT_GOLD]feuille de coca[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Coca-Blätter[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]листьев коки[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kokalevél[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<Hungarian>[COLOR_WTP_EVENT]Őfelsége és alattvalói örömmel fogadták az első gyarmatokról származó[COLOR_REVERT] [COLOR_FONT_GOLD]kokalevél[COLOR_REVERT] szállítmányokat. Őfelsége ezt követően megbíz téged azzal, hogy válj a piac vezetőjévé.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_COCA_LEAVES_START</Tag>
@@ -536,12 +536,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FUR_START</Tag>
-		<English>The race to dominate the European market for [COLOR_FONT_GOLD]furs[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para dominar o mercado europeu de [COLOR_FONT_GOLD]peles[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen de la  [COLOR_FONT_GOLD]fourrure[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Felle[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]меха[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]prém[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the European market[COLOR_REVERT] for [COLOR_FONT_GOLD]furs[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]peles[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de la  [COLOR_FONT_GOLD]fourrure[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Felle[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]меха[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]prém[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_FUR_START</Tag>
@@ -581,12 +581,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COFFEE_BERRIES_START</Tag>
-		<English>The race to dominate the European trade in [COLOR_FONT_GOLD]coffee berries[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para dominar o comércio europeu de [COLOR_FONT_GOLD]bagas de café[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]baies de café[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Kaffeebeeren[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]кофейных ягод[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]kávébab[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the European trade[COLOR_REVERT] in [COLOR_FONT_GOLD]coffee berries[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o comércio europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]bagas de café[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]baies de café[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Kaffeebeeren[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]кофейных ягод[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kávébab[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_COFFEE_BERRIES_START</Tag>
@@ -626,12 +626,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_WOOL_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]wool[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]lã[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen de la  [COLOR_FONT_GOLD]laine[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Schafswolle[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]шерсти[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]gyapjú[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]wool[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]lã[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de la  [COLOR_FONT_GOLD]laine[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schafswolle[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]шерсти[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]gyapjú[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_WOOL_START</Tag>
@@ -671,12 +671,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COTTON_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]cotton[COLOR_REVERT] business in Europe has started.</English>
-		<Portuguese>A corrida para dominar o negócio do [COLOR_FONT_GOLD]algodão[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]coton[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Baumwolle[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]хлопка[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]gyapot[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]cotton[COLOR_REVERT][COLOR_WTP_EVENT] business[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o negócio[COLOR_REVERT] do [COLOR_FONT_GOLD]algodão[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]coton[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Baumwolle[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]хлопка[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]gyapot[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_COTTON_START</Tag>
@@ -716,12 +716,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_INDIGO_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]indigo[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado [COLOR_FONT_GOLD]índigo[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen de l' [COLOR_FONT_GOLD]indigo[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Indigo[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]индиго[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]indigó[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]indigo[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] [COLOR_FONT_GOLD]índigo[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de l' [COLOR_FONT_GOLD]indigo[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Indigo[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]индиго[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]indigó[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_INDIGO_START</Tag>
@@ -761,12 +761,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HIDES_START</Tag>
-		<English>The race for the European market in [COLOR_FONT_GOLD]cowhides[COLOR_REVERT] has begun.</English>
-		<Portuguese>A corrida pelo mercado europeu de [COLOR_FONT_GOLD]couro bovino[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]peaux de vache[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Rindshäute[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]коровьих шкур[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]marhabőr[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race for the European market[COLOR_REVERT] in [COLOR_FONT_GOLD]cowhides[COLOR_REVERT] has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida pelo mercado europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]couro bovino[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]peaux de vache[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Rindshäute[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]коровьих шкур[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]marhabőr[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_HIDES_START</Tag>
@@ -806,12 +806,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PREMIUM_FUR_START</Tag>
-		<English>The race to dominate the European market for [COLOR_FONT_GOLD]premium furs[COLOR_REVERT] is under way.</English>
-		<Portuguese>A corrida para dominar o mercado europeu de [COLOR_FONT_GOLD]peles de luxo[COLOR_REVERT] está em andamento.</Portuguese>
-		<French>La course pour dominer le marché européen de la [COLOR_FONT_GOLD]fourrure de qualité[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Hochwertige Pelze[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]премиального меха[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]bunda[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the European market[COLOR_REVERT] for [COLOR_FONT_GOLD]premium furs[COLOR_REVERT] is under way.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado europeu[COLOR_REVERT] de [COLOR_FONT_GOLD]peles de luxo[COLOR_REVERT] está em andamento.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de la [COLOR_FONT_GOLD]fourrure de qualité[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Hochwertige Pelze[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]премиального меха[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]bunda[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_PREMIUM_FUR_START</Tag>
@@ -851,12 +851,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RAW_SALT_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]rock salt[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]sal-gema[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]sel brut[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Steinsalz[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]каменной соли[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]kősó[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]rock salt[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]sal-gema[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]sel brut[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Steinsalz[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]каменной соли[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kősó[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_RAW_SALT_START</Tag>
@@ -896,12 +896,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RED_PEPPER_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]red pepper[COLOR_REVERT] market in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]pimenta vermelha[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]piment rouge[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Roten Pfeffer[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]красного перца[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]chilipaprika[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]red pepper[COLOR_REVERT][COLOR_WTP_EVENT] market[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]pimenta vermelha[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]piment rouge[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Roten Pfeffer[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]красного перца[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]chilipaprika[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_RED_PEPPER_START</Tag>
@@ -941,12 +941,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_BARLEY_START</Tag>
-		<English>The race to dominate the [COLOR_FONT_GOLD]barley[COLOR_REVERT] exchange in Europe has started.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]cevada[COLOR_REVERT] na Europa já começou.</Portuguese>
-		<French>La course pour dominer le marché européen de l'[COLOR_FONT_GOLD]orge[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Gerste[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]ячменя[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az európai [COLOR_FONT_GOLD]árpa[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the[COLOR_REVERT] [COLOR_FONT_GOLD]barley[COLOR_REVERT][COLOR_WTP_EVENT] exchange[COLOR_REVERT] in Europe has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]cevada[COLOR_REVERT] na Europa já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de l'[COLOR_FONT_GOLD]orge[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Gerste[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]ячменя[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny az európai[COLOR_REVERT] [COLOR_FONT_GOLD]árpa[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_BARLEY_START</Tag>
@@ -986,12 +986,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GRAPES_START</Tag>
-		<English>The race to be the market leader for [COLOR_FONT_GOLD]grapes[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]uvas[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]raisin[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Weintrauben[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]винограда[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]szőlő[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]grapes[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]uvas[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]raisin[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Weintrauben[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]винограда[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]szőlő[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_GRAPES_START</Tag>
@@ -1031,12 +1031,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_WHALE_BLUBBER_START</Tag>
-		<English>The race to be the market leader for [COLOR_FONT_GOLD]whale fat[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]gordura de baleia[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]gras de baleine[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Walspeck[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]китового жира[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]bálnazsír[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]whale fat[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]gordura de baleia[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]gras de baleine[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Walspeck[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]китового жира[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]bálnazsír[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_WHALE_BLUBBER_START</Tag>
@@ -1076,12 +1076,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_VALUABLE_WOOD_START</Tag>
-		<English>The race to be the market leader for [COLOR_FONT_GOLD]exotic wood[COLOR_REVERT] has started.</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]madeiras exóticas[COLOR_REVERT] já começou.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]bois précieux[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Edelholz[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]ценной древесины[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]bútorfa[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]exotic wood[COLOR_REVERT] has started.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]madeiras exóticas[COLOR_REVERT] já começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]bois précieux[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Edelholz[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]ценной древесины[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]bútorfa[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_VALUABLE_WOOD_START</Tag>
@@ -1121,12 +1121,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_TRADE_GOODS_START</Tag>
-		<English>The race is on to be the market leader handling [COLOR_FONT_GOLD]trade goods[COLOR_REVERT] in the colonies.</English>
-		<Portuguese>A corrida para ser o líder de mercado lidando com [COLOR_FONT_GOLD]produtos comerciais[COLOR_REVERT] nas colônias.</Portuguese>
-		<French>La course pour dominer le marché européen du [COLOR_FONT_GOLD]marchandises[COLOR_REVERT] dans les colonies.</French>
-		<German>Das Rennen zur Beherrschung des Markt in den Kolonien für [COLOR_FONT_GOLD]Handelsgüter[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]мануфактуры[COLOR_REVERT] в Новом Свете.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]dísztárgy[COLOR_REVERT] piac uralmáért a gyarmatokon.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] handling [COLOR_FONT_GOLD]trade goods[COLOR_REVERT] in the colonies.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser o líder de mercado lidando[COLOR_REVERT] com [COLOR_FONT_GOLD]produtos comerciais[COLOR_REVERT] nas colônias.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] du [COLOR_FONT_GOLD]marchandises[COLOR_REVERT] dans les colonies.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Markt[COLOR_REVERT] in den Kolonien für [COLOR_FONT_GOLD]Handelsgüter[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]мануфактуры[COLOR_REVERT] в Новом Свете.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]dísztárgy[COLOR_REVERT] piac uralmáért a gyarmatokon.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_TRADE_GOODS_START</Tag>
@@ -1166,12 +1166,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_SAILCLOTH_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]sailcloth[COLOR_REVERT].</English>
-		<Portuguese>A corrida é para ser líder de mercado em [COLOR_FONT_GOLD]velas de vela[COLOR_REVERT].</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]voiles[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Segeltuch[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]парусины[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]vitorlavászon[COLOR_REVERT] piac vezető szerepéért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]sailcloth[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida é para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]velas de vela[COLOR_REVERT].</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]voiles[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Segeltuch[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]парусины[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]vitorlavászon[COLOR_REVERT] piac vezető szerepéért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_SAILCLOTH_START</Tag>
@@ -1211,12 +1211,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_TOOLS_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]tools[COLOR_REVERT].</English>
-		<Portuguese>Começou a corrida para ser líder de mercado em [COLOR_FONT_GOLD]ferramentas[COLOR_REVERT].</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]outils[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Eisenwaren[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]инструментов[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]szerszám[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]tools[COLOR_REVERT].</English>
+		<Portuguese>[COLOR_WTP_EVENT]Começou a corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]ferramentas[COLOR_REVERT].</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]outils[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Eisenwaren[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]инструментов[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]szerszám[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_TOOLS_START</Tag>
@@ -1256,12 +1256,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_BLADES_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]blades[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]lâminas[COLOR_REVERT] começou.</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]lames[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Klingenwaffen[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]клинков[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]kard[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]blades[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]lâminas[COLOR_REVERT] começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]lames[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Klingenwaffen[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]клинков[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]kard[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_BLADES_START</Tag>
@@ -1301,12 +1301,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_MUSKETS_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]guns[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]armas[COLOR_REVERT] começou.</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]armes à feu[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Schusswaffen[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]мушкетов[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]puska[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]guns[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]armas[COLOR_REVERT] começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]armes à feu[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schusswaffen[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]мушкетов[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]puska[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_MUSKETS_START</Tag>
@@ -1346,12 +1346,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CANNONS_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]cannons[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]canhões[COLOR_REVERT] começou.</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]canons[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Kanonen[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]пушек[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az [COLOR_FONT_GOLD]ágyu[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]cannons[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]canhões[COLOR_REVERT] começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]canons[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Kanonen[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]пушек[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] az [COLOR_FONT_GOLD]ágyu[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_CANNONS_START</Tag>
@@ -1391,12 +1391,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_ROPE_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]ropes[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]cordas[COLOR_REVERT] começou.</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]cordes[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des europäischen Marktes für [COLOR_FONT_GOLD]Seile[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]канатов[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]kötél[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]ropes[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]cordas[COLOR_REVERT] começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]cordes[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des europäischen Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Seile[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]канатов[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]kötél[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_ROPE_START</Tag>
@@ -1436,12 +1436,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_SILVER_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]silver[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]prata[COLOR_REVERT] começou.</Portuguese>
-		<French>La course pour dominer le marché européen de l'[COLOR_FONT_GOLD]argent[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Silber[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]серебра[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az [COLOR_FONT_GOLD]ezüst[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]silver[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]prata[COLOR_REVERT] começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de l'[COLOR_FONT_GOLD]argent[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Silber[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]серебра[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] az [COLOR_FONT_GOLD]ezüst[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_SILVER_START</Tag>
@@ -1481,12 +1481,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GOLD_START</Tag>
-		<English>The race is on to become the market leader for [COLOR_FONT_GOLD]gold[COLOR_REVERT].</English>
-		<Portuguese>Começou a corrida para se tornar líder de mercado em [COLOR_FONT_GOLD]ouro[COLOR_REVERT].</Portuguese>
-		<French>La course pour dominer le marché européen de l'[COLOR_FONT_GOLD]or[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Gold[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]золота[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny az [COLOR_FONT_GOLD]ezüst[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to become the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]gold[COLOR_REVERT].</English>
+		<Portuguese>[COLOR_WTP_EVENT]Começou a corrida para se tornar líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]ouro[COLOR_REVERT].</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] de l'[COLOR_FONT_GOLD]or[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Gold[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]золота[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] az [COLOR_FONT_GOLD]ezüst[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_GOLD_START</Tag>
@@ -1526,12 +1526,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GEMS_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]gems[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]joias[COLOR_REVERT] começou.</Portuguese>
-		<French>La course pour dominer le marché européen des [COLOR_FONT_GOLD]pierres précieuses[COLOR_REVERT] a été lancée.</French>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Edelsteine[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]драгоценных камней[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]drágakő[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]gems[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]joias[COLOR_REVERT] começou.</Portuguese>
+		<French>La [COLOR_WTP_EVENT]course pour dominer le marché européen[COLOR_REVERT] des [COLOR_FONT_GOLD]pierres précieuses[COLOR_REVERT] a été lancée.</French>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Edelsteine[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]драгоценных камней[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]drágakő[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_GEMS_START</Tag>
@@ -1579,11 +1579,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COCOA_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]cocoa[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado de [COLOR_FONT_GOLD]cacau[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Kakao[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]какао[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]kakaó[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]cocoa[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]cacau[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Kakao[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]какао[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]kakaó[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_COCOA_START</Tag>
@@ -1619,11 +1619,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COFFEE_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]coffee[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]café[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Kaffee[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]кофе[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]kávé[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]coffee[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]café[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Kaffee[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]кофе[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]kávé[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_COFFEE_START</Tag>
@@ -1659,11 +1659,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CIGARS_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]cigars[COLOR_REVERT].</English>
-		<Portuguese>Começou a corrida para ser líder de mercado em [COLOR_FONT_GOLD]charutos[COLOR_REVERT].</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Zigarren[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]сигар[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]szivar[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]cigars[COLOR_REVERT].</English>
+		<Portuguese>[COLOR_WTP_EVENT]Começou a corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]charutos[COLOR_REVERT].</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Zigarren[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]сигар[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]szivar[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_CIGARS_START</Tag>
@@ -1699,11 +1699,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_WOOL_CLOTH_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]wool cloth[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]tecidos de lã[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Wollstoffe[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]шерстяной ткани[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]gyapjúkelme[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]wool cloth[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]tecidos de lã[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Wollstoffe[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]шерстяной ткани[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]gyapjúkelme[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_WOOL_CLOTH_START</Tag>
@@ -1739,11 +1739,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CLOTH_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]cloth[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]tecidos[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Stoffe[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]ткани[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]kelme[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]cloth[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]tecidos[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Stoffe[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]ткани[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]kelme[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_CLOTH_START</Tag>
@@ -1779,11 +1779,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COLOURED_CLOTH_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]coloured cloth[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]tecidos coloridos[COLOR_REVERT] está aberta.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Gefärbte Stoffe[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]цветной ткани[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]festett kelme[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]coloured cloth[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]tecidos coloridos[COLOR_REVERT] está aberta.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Gefärbte Stoffe[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]цветной ткани[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]festett kelme[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_COLOURED_CLOTH_START</Tag>
@@ -1819,11 +1819,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_LEATHER_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]leather[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]couro[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Lederwaren[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]выделанной кожи[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]bőráru[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]leather[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]couro[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Lederwaren[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]выделанной кожи[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]bőráru[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_LEATHER_START</Tag>
@@ -1859,11 +1859,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COATS_START</Tag>
-		<English>The race is on to be the top supplier of [COLOR_FONT_GOLD]coats[COLOR_REVERT].</English>
-		<Portuguese>Começou a corrida para ser o principal fornecedor de [COLOR_FONT_GOLD]casacos[COLOR_REVERT].</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Pelzwaren[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]пальто[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]kabát[COLOR_REVERT] piacának vezető kereskedője címért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the top supplier[COLOR_REVERT] of [COLOR_FONT_GOLD]coats[COLOR_REVERT].</English>
+		<Portuguese>[COLOR_WTP_EVENT]Começou a corrida para ser o principal fornecedor[COLOR_REVERT] de [COLOR_FONT_GOLD]casacos[COLOR_REVERT].</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Pelzwaren[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]пальто[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]kabát[COLOR_REVERT] piacának vezető kereskedője címért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_COATS_START</Tag>
@@ -1899,11 +1899,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PREMIUM_COATS_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]premium coats[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]casacos de luxo[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Teure Pelzkleidung[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]премиумных шуб[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]bunda[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]premium coats[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]casacos de luxo[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Teure Pelzkleidung[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]премиумных шуб[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]bunda[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_PREMIUM_COATS_START</Tag>
@@ -1939,11 +1939,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_SPICES_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]spices[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]especiarias[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Gewürze[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]специй[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]fűszer[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]spices[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]especiarias[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Gewürze[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]специй[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]fűszer[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_SPICES_START</Tag>
@@ -1979,11 +1979,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_SALT_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]salt[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado de [COLOR_FONT_GOLD]sal[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Salz[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]соли[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]só[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]salt[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]sal[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Salz[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]соли[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]só[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_SALT_START</Tag>
@@ -2019,11 +2019,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FURNITURE_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]furniture[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]móveis[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Möbel[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]мебели[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]bútor[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]furniture[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]móveis[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Möbel[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]мебели[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]bútor[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_FURNITURE_START</Tag>
@@ -2059,11 +2059,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_WHALE_OIL_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]train oil[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]óleo de baleia[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Tran[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]ворвани[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]bálnaolaj[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]train oil[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]óleo de baleia[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Tran[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]ворвани[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]bálnaolaj[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_WHALE_OIL_START</Tag>
@@ -2099,11 +2099,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_WINE_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]wine[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]vinho[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Wein[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]вина[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]bor[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]wine[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]vinho[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Wein[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]вина[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]bor[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_WINE_START</Tag>
@@ -2139,11 +2139,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_BEER_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]beer[COLOR_REVERT].</English>
-		<Portuguese>A corrida para ser líder de mercado em [COLOR_FONT_GOLD]cerveja[COLOR_REVERT] começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in Europa für [COLOR_FONT_GOLD]Bier[COLOR_REVERT] hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]пива[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]sör[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]beer[COLOR_REVERT].</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] em [COLOR_FONT_GOLD]cerveja[COLOR_REVERT] começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in Europa für [COLOR_FONT_GOLD]Bier[COLOR_REVERT] hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]пива[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]sör[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_BEER_START</Tag>
@@ -2179,11 +2179,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_LUXURY_GOODS_START</Tag>
-		<English>The race is on to be the market leader for [COLOR_FONT_GOLD]luxury goods[COLOR_REVERT] in the colonies.</English>
-		<Portuguese>A corrida para ser líder de mercado de [COLOR_FONT_GOLD]bens de luxo[COLOR_REVERT] nas colônias está em andamento.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes in den Kolonien für [COLOR_FONT_GOLD]Luxusgüter[COLOR_REVERT] aus Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]предметов роскоши[COLOR_REVERT] в Новом Свете.</Russian>
-		<Hungarian>Megkezdődött a verseny a [COLOR_FONT_GOLD]luxuscikk[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race is on to be the market leader[COLOR_REVERT] for [COLOR_FONT_GOLD]luxury goods[COLOR_REVERT] in the colonies.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para ser líder de mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]bens de luxo[COLOR_REVERT] nas colônias está em andamento.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] in den Kolonien für [COLOR_FONT_GOLD]Luxusgüter[COLOR_REVERT] aus Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]предметов роскоши[COLOR_REVERT] в Новом Свете.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny[COLOR_REVERT] a [COLOR_FONT_GOLD]luxuscikk[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_EVENT_TRIGGER_EUROPE_TRADE_QUEST_LUXURY_GOODS_START</Tag>
@@ -2219,11 +2219,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CLAY_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]clay[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]argila[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Lehm[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]глины[COLOR_REVERT].</Russian>
-		<Hungarian>Uram, mi vagyunk a vezetők az [COLOR_FONT_GOLD]agyag[COLOR_REVERT] európai piacán.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]clay[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]argila[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Lehm[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]глины[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Uram, mi vagyunk a vezetők[COLOR_REVERT] az [COLOR_FONT_GOLD]agyag[COLOR_REVERT] európai piacán.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CLAY_DONE</Tag>
@@ -2259,11 +2259,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PEAT_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]peat[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]turfa[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Torf[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке [COLOR_FONT_GOLD]торфа[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]tőzeg[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]peat[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]turfa[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Torf[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке[COLOR_REVERT] [COLOR_FONT_GOLD]торфа[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]tőzeg[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PEAT_DONE</Tag>
@@ -2299,11 +2299,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RICE_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]rice[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]arroz[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Reis[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]риса[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]rizs[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]rice[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]arroz[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Reis[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]риса[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]rizs[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RICE_DONE</Tag>
@@ -2339,11 +2339,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CASSAVA_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]cassava[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]mandioca[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Maniok[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]маниоки[COLOR_REVERT] в Европе.</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]manióka[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]cassava[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]mandioca[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Maniok[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]маниоки[COLOR_REVERT] в Европе.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]manióka[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CASSAVA_DONE</Tag>
@@ -2379,11 +2379,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HARDWOOD_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]hardwood[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]madeiras nobres[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Hartholz[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]твёрдой древесины[COLOR_REVERT] в Европу.</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]keményfa[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]hardwood[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]madeiras nobres[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Hartholz[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]твёрдой древесины[COLOR_REVERT] в Европу.</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]keményfa[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HARDWOOD_DONE</Tag>
@@ -2419,11 +2419,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FLAX_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]flax[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]linho[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Flachs[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]льна[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]len[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]flax[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]linho[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Flachs[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]льна[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]len[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FLAX_DONE</Tag>
@@ -2459,11 +2459,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PEANUTS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]peanuts[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]amendoins[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Erdnüsse[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]арахиса[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]mogyoró[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]peanuts[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]amendoins[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Erdnüsse[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]арахиса[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]mogyoró[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PEANUTS_DONE</Tag>
@@ -2499,11 +2499,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FRUITS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]fruit[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]frutas[COLOR_REVERT] nas colônias com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Früchte[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]фруктов[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]gyümölcs[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]fruit[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]frutas[COLOR_REVERT] nas colônias com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Früchte[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]фруктов[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]gyümölcs[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FRUITS_DONE</Tag>
@@ -2539,11 +2539,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_YERBA_LEAVES_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]yerba leaves[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]folhas de erva[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Mate-Blättern[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]чайных листьев[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]tealevél[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]yerba leaves[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]folhas de erva[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Mate-Blättern[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]чайных листьев[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]tealevél[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_YERBA_LEAVES_DONE</Tag>
@@ -2579,11 +2579,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_LOGWOOD_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]logwood[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]pau-campeche[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Blauholz[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]кампеша[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]kékfa[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]logwood[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]pau-campeche[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Blauholz[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]кампеша[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kékfa[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_LOGWOOD_DONE</Tag>
@@ -2619,11 +2619,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COCHINEAL_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]cochineal[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]cochonilha[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Cochenille-Schildläuse[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]кошенили[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]bíbortetű[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]cochineal[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]cochonilha[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Cochenille-Schildläuse[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]кошенили[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]bíbortetű[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COCHINEAL_DONE</Tag>
@@ -2659,11 +2659,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_VANILLA_PODS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]green vanilla pods[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]baunilha[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]grüne Vanilleschoten[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]стручков ванили[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]zöld vaníliabab[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]green vanilla pods[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]baunilha[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]grüne Vanilleschoten[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]стручков ванили[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]zöld vaníliabab[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_VANILLA_PODS_DONE</Tag>
@@ -2699,11 +2699,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_MAPLE_SIRUP_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]maple syrup[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]xarope de bordo[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Ahornsirup[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]кленового сиропа[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]juharszirup[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]maple syrup[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]xarope de bordo[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Ahornsirup[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]кленового сиропа[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]juharszirup[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_MAPLE_SIRUP_DONE</Tag>
@@ -2739,11 +2739,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_KAUTSCHUK_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]rubber[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]borracha[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Kautschuk[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]каучука[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]kaucsuk[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]rubber[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]borracha[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Kautschuk[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]каучука[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kaucsuk[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_KAUTSCHUK_DONE</Tag>
@@ -2779,11 +2779,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COAL_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]coal[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]carvão[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Kohle[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]угля[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]szén[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]coal[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]carvão[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Kohle[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]угля[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]szén[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COAL_DONE</Tag>
@@ -2819,11 +2819,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CHAR_COAL_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]charcoal[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]carvão[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Holzkohle[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]древесного угля[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]faszén[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]charcoal[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]carvão[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Holzkohle[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]древесного угля[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]faszén[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CHAR_COAL_DONE</Tag>
@@ -2859,11 +2859,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_BAKERY_GOODS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]provisions[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]produtos de panificação[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Proviant[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]провианта[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]ellátmány[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]provisions[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]produtos de panificação[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Proviant[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]провианта[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]ellátmány[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_BAKERY_GOODS_DONE</Tag>
@@ -2899,11 +2899,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_BLACK_POWDER_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]gunpowder[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]pólvora[COLOR_REVERT] nas colônias com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Schwarzpulver[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]пороха[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]puskapor[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]gunpowder[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]pólvora[COLOR_REVERT] nas colônias com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schwarzpulver[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]пороха[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]puskapor[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_BLACK_POWDER_DONE</Tag>
@@ -2939,11 +2939,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GEESE_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]geese[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]gansos[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Gänse[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]гусей[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]lúd[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]geese[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]gansos[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Gänse[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]гусей[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]lúd[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GEESE_DONE</Tag>
@@ -2979,11 +2979,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CHICKEN_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]chickens[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]frango[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Hühner[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]курицы[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]csirke[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]chickens[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]frango[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Hühner[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]курицы[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]csirke[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CHICKEN_DONE</Tag>
@@ -3019,11 +3019,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PIGS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]pigs[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]suínos[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Schweine[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]свиней[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]disznó[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]pigs[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]suínos[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schweine[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]свиней[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]disznó[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PIGS_DONE</Tag>
@@ -3059,11 +3059,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GOATS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]goats[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]cabras[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Ziegen[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]коз[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]kecske[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]goats[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]cabras[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Ziegen[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]коз[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kecske[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GOATS_DONE</Tag>
@@ -3099,11 +3099,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_OLIVES_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]olives[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]azeitonas[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Oliven[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]оливок[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]olajbogyó[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]olives[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]azeitonas[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Oliven[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]оливок[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]olajbogyó[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_OLIVES_DONE</Tag>
@@ -3139,11 +3139,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RAPE_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]rapeseed[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]canola[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Raps[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]рапса[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]repce[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]rapeseed[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]canola[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Raps[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]рапса[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]repce[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RAPE_DONE</Tag>
@@ -3179,11 +3179,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_WILD_FEATHERS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]wild bird feathers[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]penas de aves selvagens[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Vogelfedern[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]перьев диких птиц[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]vadmadár toll[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]wild bird feathers[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]penas de aves selvagens[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Vogelfedern[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]перьев диких птиц[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]vadmadár toll[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_WILD_FEATHERS_DONE</Tag>
@@ -3219,11 +3219,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_MILK_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]milk[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]leite[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Milch[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]молока[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]tej[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]milk[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]leite[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Milch[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]молока[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]tej[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_MILK_DONE</Tag>
@@ -3259,11 +3259,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GOAT_HIDES_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]goatskins[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]peles de cabra[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Ziegenfelle[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]козьих шкур[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]kecskebőr[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]goatskins[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]peles de cabra[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Ziegenfelle[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]козьих шкур[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kecskebőr[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GOAT_HIDES_DONE</Tag>
@@ -3299,11 +3299,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PIG_SKIN_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]pigskins[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]peles de porco[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Schweinehäute[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]свиной кожи[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]disznóbőr[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]pigskins[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]peles de porco[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schweinehäute[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]свиной кожи[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]disznóbőr[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PIG_SKIN_DONE</Tag>
@@ -3339,11 +3339,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_DOWNS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]down[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias [COLOR_FONT_GOLD]abaixo[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Daunen[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на рынке поставок [COLOR_FONT_GOLD]пуха[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]pehelytoll[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]down[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias [COLOR_FONT_GOLD]abaixo[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Daunen[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на рынке поставок[COLOR_REVERT] [COLOR_FONT_GOLD]пуха[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]pehelytoll[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_DOWNS_DONE</Tag>
@@ -3379,11 +3379,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_ROASTED_PEANUTS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]roasted peanuts[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]amendoins torrados[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]geröstete Erdnüsse[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]жаренного арахиса[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]pörkölt mogyoró[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]roasted peanuts[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]amendoins torrados[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]geröstete Erdnüsse[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]жаренного арахиса[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]pörkölt mogyoró[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_ROASTED_PEANUTS_DONE</Tag>
@@ -3419,11 +3419,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CHEESE_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]cheese[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]queijo[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Käse[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]сыра[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]sajt[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]cheese[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]queijo[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Käse[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]сыра[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]sajt[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CHEESE_DONE</Tag>
@@ -3459,11 +3459,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_YERBA_TEA_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]yerba maté[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado de [COLOR_FONT_GOLD]erva-mate[COLOR_REVERT] nas colônias com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Mate-Tee[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]чая[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]tea[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]yerba maté[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] de [COLOR_FONT_GOLD]erva-mate[COLOR_REVERT] nas colônias com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Mate-Tee[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]чая[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]tea[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_YERBA_TEA_DONE</Tag>
@@ -3499,11 +3499,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CHOCOLATE_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]chocolate[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]chocolate[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Schokolade[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]шоколада[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]csokoládé[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]chocolate[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]chocolate[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schokolade[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]шоколада[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]csokoládé[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_CHOCOLATE_DONE</Tag>
@@ -3539,11 +3539,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RUM_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]rum[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]rum[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Rum[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]рома[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]rum[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]rum[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]rum[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Rum[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]рома[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]rum[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RUM_DONE</Tag>
@@ -3579,11 +3579,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HOOCH_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]fruit brandy[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]conhaque de frutas[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Schnaps[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]фруктового бренди[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]gyümölcspárlat[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]fruit brandy[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]conhaque de frutas[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schnaps[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]фруктового бренди[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]gyümölcspárlat[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HOOCH_DONE</Tag>
@@ -3619,11 +3619,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_OLIVE_OIL_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]olive oil[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]azeite[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Olivenöl[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]оливкового масла[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]olivaolaj[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]olive oil[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]azeite[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Olivenöl[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]оливкового масла[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]olivaolaj[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_OLIVE_OIL_DONE</Tag>
@@ -3659,11 +3659,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RAPE_OIL_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]rapeseed oil[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]óleo de canola[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Rapsöl[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]рапсового масла[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]repceolaj[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]rapeseed oil[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]óleo de canola[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Rapsöl[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]рапсового масла[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]repceolaj[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_RAPE_OIL_DONE</Tag>
@@ -3699,11 +3699,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_EVERYDAY_CLOTHES_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]everyday clothes[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]roupas de uso diário[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Alltagskleidung[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]повседневной одежды[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]hétköznapi ruha[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]everyday clothes[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]roupas de uso diário[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Alltagskleidung[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]повседневной одежды[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]hétköznapi ruha[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_EVERYDAY_CLOTHES_DONE</Tag>
@@ -3739,11 +3739,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FESTIVE_CLOTHES_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]festive clothes[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]roupas festivas[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]elegante Kleider[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]праздничной одежды[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]ünnepi ruha[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]festive clothes[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]roupas festivas[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]elegante Kleider[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]праздничной одежды[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]ünnepi ruha[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FESTIVE_CLOTHES_DONE</Tag>
@@ -3779,11 +3779,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COLOURED_WOOL_CLOTH_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]coloured wool cloth[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]tecidos de lã coloridos[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]gefärbten Wollstoff[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]цветной шерстяной ткани[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]festett gyapjúkelme[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]coloured wool cloth[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]tecidos de lã coloridos[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]gefärbten Wollstoff[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]цветной шерстяной ткани[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]festett gyapjúkelme[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_COLOURED_WOOL_CLOTH_DONE</Tag>
@@ -3819,11 +3819,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GOAT_HIDE_BOOTS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]goathide boots[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]botas de couro[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Ziegenlederstiefel[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]сапогов из козьих шкур[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]kecskebőr csizma[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]goathide boots[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]botas de couro[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Ziegenlederstiefel[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]сапогов из козьих шкур[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kecskebőr csizma[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_GOAT_HIDE_BOOTS_DONE</Tag>
@@ -3859,11 +3859,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PIG_LEATHER_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]pig leather aprons[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]aventais de couro de porco[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Schweinslederschürzen[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]фартуков из свиной кожи[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]disznóbőr kötény[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]pig leather aprons[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]aventais de couro de porco[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Schweinslederschürzen[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]фартуков из свиной кожи[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]disznóbőr kötény[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PIG_LEATHER_DONE</Tag>
@@ -3899,10 +3899,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PADDED_LEATHER_COATS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]lined leather coats[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]casacos de couro forrados[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]gefütterte Ledermäntel[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]утеплённых курток[COLOR_REVERT].</Russian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]lined leather coats[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]casacos de couro forrados[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]gefütterte Ledermäntel[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]утеплённых курток[COLOR_REVERT].</Russian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PADDED_LEATHER_COATS_DONE</Tag>
@@ -3938,11 +3938,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_VANILLA_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]vanilla[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]baunilha[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Vanille[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]ванили[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]vanília[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]vanilla[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]baunilha[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Vanille[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]ванили[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]vanília[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_VANILLA_DONE</Tag>
@@ -3978,11 +3978,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_POTTERY_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]pottery[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]cerâmica[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Töpferwaren[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]керамики[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]kerámia[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]pottery[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]cerâmica[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Töpferwaren[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]керамики[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kerámia[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_POTTERY_DONE</Tag>
@@ -4018,11 +4018,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PADDED_FURNITURE_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]upholstered furniture[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]móveis estofados[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Polstermöbel[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]мягкой мебели[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]kárpitozott bútor[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]upholstered furniture[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]móveis estofados[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Polstermöbel[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]мягкой мебели[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]kárpitozott bútor[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_PADDED_FURNITURE_DONE</Tag>
@@ -4058,11 +4058,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FIELD_WORKER_TOOLS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]fieldworker tools[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]ferramentas de trabalho de campo[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Feldarbeiterwerkzeuge[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]товаров для полевых работ[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]mezőgazdasági szerszám[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]fieldworker tools[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]ferramentas de trabalho de campo[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Feldarbeiterwerkzeuge[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]товаров для полевых работ[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]mezőgazdasági szerszám[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_FIELD_WORKER_TOOLS_DONE</Tag>
@@ -4098,11 +4098,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HOUSEHOLD_GOODS_START</Tag>
-		<English>The race to dominate the market in the colonies for [COLOR_FONT_GOLD]household goods[COLOR_REVERT] with Europe has begun.</English>
-		<Portuguese>A corrida para dominar o mercado nas colônias de [COLOR_FONT_GOLD]bens domésticos[COLOR_REVERT] com a Europa já começou.</Portuguese>
-		<German>Das Rennen zur Beherrschung des Marktes für [COLOR_FONT_GOLD]Haushaltswaren[COLOR_REVERT] mit Europa hat begonnen.</German>
-		<Russian>Началось состязание за доминирование на европейском рынке [COLOR_FONT_GOLD]товаров для домашнего хозяйства[COLOR_REVERT].</Russian>
-		<Hungarian>Megkezdődött a verseny a gyarmatokon az európai [COLOR_FONT_GOLD]háztartási áru[COLOR_REVERT] piac uralmáért.</Hungarian>
+		<English>The [COLOR_WTP_EVENT]race to dominate the market[COLOR_REVERT] in the colonies for [COLOR_FONT_GOLD]household goods[COLOR_REVERT] with Europe has begun.</English>
+		<Portuguese>A [COLOR_WTP_EVENT]corrida para dominar o mercado[COLOR_REVERT] nas colônias de [COLOR_FONT_GOLD]bens domésticos[COLOR_REVERT] com a Europa já começou.</Portuguese>
+		<German>Das [COLOR_WTP_EVENT]Rennen zur Beherrschung des Marktes[COLOR_REVERT] für [COLOR_FONT_GOLD]Haushaltswaren[COLOR_REVERT] mit Europa hat begonnen.</German>
+		<Russian>[COLOR_WTP_EVENT]Началось состязание за доминирование на европейском рынке[COLOR_REVERT] [COLOR_FONT_GOLD]товаров для домашнего хозяйства[COLOR_REVERT].</Russian>
+		<Hungarian>[COLOR_WTP_EVENT]Megkezdődött a verseny a gyarmatokon az európai[COLOR_REVERT] [COLOR_FONT_GOLD]háztartási áru[COLOR_REVERT] piac uralmáért.</Hungarian>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_WORLD_EVENTTRIGGER_EUROPE_TRADE_QUEST_HOUSEHOLD_GOODS_DONE</Tag>

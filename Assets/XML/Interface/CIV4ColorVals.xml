@@ -1217,5 +1217,12 @@
 			<fBlue>0.306</fBlue>
 			<fAlpha>1.000</fAlpha>
 		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_WTP_EVENT</Type>
+			<fRed>1.000</fRed>
+			<fGreen>0.251</fGreen>
+			<fBlue>1.000</fBlue>
+			<fAlpha>1.000</fAlpha>
+		</ColorVal>
 	</ColorVals>
 </Civ4ColorVals>
