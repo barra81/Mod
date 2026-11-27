@@ -14728,6 +14728,22 @@ bool CvPlayer::isTriggerFired(EventTriggerTypes eEventTrigger) const
 	return (std::find(m_triggersFired.begin(), m_triggersFired.end(), eEventTrigger) != m_triggersFired.end());
 }
 
+// WTP: the player who wins a trade race (his event "..._DONE_x" is applied), as long as the quests of the other players are cleared by it:
+// their message "another colonial nation was the first ..." (expireEvent) then knows whose capital a click on it shows
+static PlayerTypes s_eTradeRaceWinner = NO_PLAYER;
+
+// WTP: is the type string one of a trade race (EVENTTRIGGER_/EVENT_<EUROPE|AFRICA|PORTROYAL>_TRADE_QUEST_<good>_<szEnd>)?
+static bool isTradeRaceType(const char* szType, const char* szEnd)
+{
+	if (szType == NULL || strstr(szType, "_TRADE_QUEST_") == NULL)
+	{
+		return false;
+	}
+	const size_t iLen = strlen(szType);
+	const size_t iEnd = strlen(szEnd);
+	return (iLen >= iEnd && strncmp(szType + iLen - iEnd, szEnd, iEnd) == 0);
+}
+
 void CvPlayer::resetEventOccured(EventTypes eEvent, bool bAnnounce)
 {
 	FAssert(eEvent >= 0 && eEvent < GC.getNumEventInfos());
@@ -14966,8 +14982,19 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 			// the start of a trade race (EVENTTRIGGER_EUROPE_TRADE_QUEST_<good>_START): "The race to dominate the market ... has begun" is a top priority
 			// message (the words "race to dominate the market" are magenta in the texts themselves: COLOR_WTP_EVENT, the gold of the good stays); the
 			// player the trigger fired for has the text of his popup as tooltip
-			const char* const szTriggerType = kTrigger.getType();
-			const bool bTradeRaceStart = (szTriggerType != NULL && strstr(szTriggerType, "_TRADE_QUEST_") != NULL && strstr(szTriggerType, "_START") != NULL);
+			// and the end of it ("... we're now the top trader ..."): top priority as well; the other players get the capital of the winner (this player)
+			// as place of the message if their team has seen it
+			const bool bTradeRaceStart = isTradeRaceType(kTrigger.getType(), "_START");
+			const bool bTradeRaceDone = isTradeRaceType(kTrigger.getType(), "_DONE");
+			CvCity* pWinnerCapital = NULL;
+			if (bTradeRaceDone)
+			{
+				pWinnerCapital = getCapitalCity();
+				if (pWinnerCapital == NULL)
+				{
+					pWinnerCapital = getPrimaryCity();
+				}
+			}
 			// (the world news of the pressed village: yellow of the units, top priority)
 			CvWString szGlobalText = kTriggeredData.m_szGlobalText;
 			if (bPressedVillage)
@@ -14984,19 +15011,27 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 					if (GET_TEAM(kLoopPlayer.getTeam()).isHasMet(getTeam()) && (NO_PLAYER == kTriggeredData.m_eOtherPlayer || GET_TEAM(GET_PLAYER(kTriggeredData.m_eOtherPlayer).getTeam()).isHasMet(getTeam())))
 					{
 						bool bShowPlot = kTrigger.isShowPlot();
+						Coordinates loopCoord = msgCoord;
+						CvPlot* pLoopPlot = pMsgPlot;
+						if (pWinnerCapital != NULL && kLoopPlayer.getTeam() != getTeam() && pWinnerCapital->plot()->isRevealed(kLoopPlayer.getTeam(), false))
+						{
+							loopCoord = pWinnerCapital->coord();
+							pLoopPlot = pWinnerCapital->plot();
+							bShowPlot = true;
+						}
 
 						if (bShowPlot)
 						{
 							if (kLoopPlayer.getTeam() != getTeam())
 							{
-								if (NULL == pMsgPlot || !pMsgPlot->isRevealed(kLoopPlayer.getTeam(), false))
+								if (NULL == pLoopPlot || !pLoopPlot->isRevealed(kLoopPlayer.getTeam(), false))
 								{
 									bShowPlot = false;
 								}
 							}
 						}
 
-						WtpHudMessages::setPriority(bPressedVillage || bTradeRaceStart);
+						WtpHudMessages::setPriority(bPressedVillage || bTradeRaceStart || bTradeRaceDone);
 						CvWString szMessageText = szGlobalText;
 						// (only where the message goes to the panel: the tooltip is part of the text, the game's own message area would show it)
 						if (bTradeRaceStart && (PlayerTypes)iPlayer == getID() && !kTriggeredData.m_szText.empty() && WtpHudMessages::isPanelMessage((PlayerTypes)iPlayer, MESSAGE_TYPE_MINOR_EVENT))
@@ -15005,7 +15040,7 @@ void CvPlayer::setTriggerFired(const EventTriggeredData& kTriggeredData, bool bO
 						}
 						if (bShowPlot)
 						{
-							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), szMessageText, msgCoord, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
+							gDLL->UI().addPlayerMessage((PlayerTypes)iPlayer, false, GC.getEVENT_MESSAGE_TIME(), szMessageText, loopCoord, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_WHITE, true, true);
 						}
 						else
 						{
@@ -15983,10 +16018,12 @@ void CvPlayer::applyEvent(EventTypes eEvent, const EventTriggeredData& kTriggere
 			{
 				if (kEvent.isGlobal())
 				{
+					s_eTradeRaceWinner = getID();
 					for (int j = 0; j < MAX_PLAYERS; j++)
 					{
 						GET_PLAYER((PlayerTypes)j).resetEventOccured((EventTypes)iEvent, j != getID());
 					}
+					s_eTradeRaceWinner = NO_PLAYER;
 				}
 				else if (kEvent.isTeam())
 				{
@@ -16683,7 +16720,35 @@ void CvPlayer::expireEvent(EventTypes eEvent, const EventTriggeredData& kTrigger
 
 		if (bFail)
 		{
-			gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), gDLL->getText(GC.getEventInfo(eEvent).getQuestFailTextKey()), "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_RED);
+			const CvWString szFailText = gDLL->getText(GC.getEventInfo(eEvent).getQuestFailTextKey());
+			if (isTradeRaceType(GC.getEventInfo(eEvent).getType(), "_START"))
+			{
+				// WTP: lost trade race: top priority message; a click on it shows the capital of the winner (if this team has seen it)
+				const PlayerTypes eWinner = s_eTradeRaceWinner;
+				const CvCity* pWinnerCapital = NULL;
+				if (eWinner != NO_PLAYER && eWinner != getID())
+				{
+					pWinnerCapital = GET_PLAYER(eWinner).getCapitalCity();
+					if (pWinnerCapital == NULL)
+					{
+						pWinnerCapital = GET_PLAYER(eWinner).getPrimaryCity();
+					}
+				}
+				WtpHudMessages::setPriority(true);
+				if (pWinnerCapital != NULL && pWinnerCapital->plot()->isRevealed(getTeam(), false))
+				{
+					gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szFailText, pWinnerCapital->coord(), "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_RED, true, true);
+				}
+				else
+				{
+					gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szFailText, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_RED);
+				}
+				WtpHudMessages::setPriority(false);
+			}
+			else
+			{
+				gDLL->UI().addPlayerMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szFailText, "AS2D_CIVIC_ADOPT", MESSAGE_TYPE_MINOR_EVENT, NULL, COLOR_RED);
+			}
 		}
 	}
 }
