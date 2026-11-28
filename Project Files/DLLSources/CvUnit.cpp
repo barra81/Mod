@@ -13504,10 +13504,19 @@ void CvUnit::doTransportStats()
 	m_aiTransportStat[TS_DELIVERED_VALUE] += std::max(0, m_aiTransportStat[TS_PREV_VALUE] - iValue);
 	m_aiTransportStat[TS_PREV_SLOTS] = iSlots;
 	m_aiTransportStat[TS_PREV_VALUE] = iValue;
-	// standing still: the same place as at the last turn change (off the map, in Europe: x = -1)
-	const int iX = isOnMap_() ? getX_INLINE() : -1;
-	const int iY = isOnMap_() ? getY_INLINE() : -1;
-	if (m_aiTransportStat[TS_LAST_X] == iX + 2 && m_aiTransportStat[TS_LAST_Y] == iY + 2)
+	// standing still: the same place as at the last turn change (off the map, in Europe: x = -1). The crossing to Europe, Africa or Port Royal is not
+	// standing still, although the ship is off the map and at the "same place" for these turns: it gets its own place (-2), so that the first turn
+	// in the port after the crossing does not count either
+	const UnitTravelStates eTravelState = getUnitTravelState();
+	const bool bOnTheWay = (!isOnMap_() && (eTravelState == UNIT_TRAVEL_STATE_TO_EUROPE || eTravelState == UNIT_TRAVEL_STATE_TO_AFRICA || eTravelState == UNIT_TRAVEL_STATE_TO_PORT_ROYAL));
+	int iX = isOnMap_() ? getX_INLINE() : -1;
+	int iY = isOnMap_() ? getY_INLINE() : -1;
+	if (bOnTheWay)
+	{
+		iX = -2;
+		iY = -2;
+	}
+	if (!bOnTheWay && m_aiTransportStat[TS_LAST_X] == iX + 2 && m_aiTransportStat[TS_LAST_Y] == iY + 2)
 	{
 		++m_aiTransportStat[TS_IDLE];
 	}
