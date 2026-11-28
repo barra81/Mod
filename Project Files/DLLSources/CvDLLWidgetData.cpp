@@ -246,34 +246,8 @@ static bool g_bWtpHideYieldHelp = false;
 void wtpSetHideYieldHelp(bool b) { g_bWtpHideYieldHelp = b; }
 bool wtpIsDiplomacyUp() { return gDLL->isDiplomacy() || gDLL->isMPDiplomacyScreenUp(); }
 
-// WTP: probe for the diplomacy screen (to find out which widget the portrait and the name of the partner are): while the diplomacy screen is up,
-// every hover (parseHelp) and every click (executeAction / executeAltAction) is written to WTP_DiploProbe.txt: kind, widget type, data1, data2, option.
-// Equal lines in a row are written once.
-static void wtpProbeDiplomacy(const char* szKind, const CvWidgetDataStruct &widgetDataStruct)
-{
-	if (!gDLL->isDiplomacy() && !gDLL->isMPDiplomacyScreenUp())
-	{
-		return;
-	}
-	static char szLast[160] = "";
-	char szLine[160];
-	sprintf(szLine, "%s | widget type %d | data1 %d | data2 %d | option %d\n", szKind, (int)widgetDataStruct.m_eWidgetType, widgetDataStruct.m_iData1, widgetDataStruct.m_iData2, widgetDataStruct.m_bOption ? 1 : 0);
-	if (strcmp(szLine, szLast) == 0)
-	{
-		return;
-	}
-	strcpy(szLast, szLine);
-	FILE* f = fopen((std::string(gDLL->getModName()) + "WTP_DiploProbe.txt").c_str(), "a");
-	if (f != NULL)
-	{
-		fputs(szLine, f);
-		fclose(f);
-	}
-}
-
 void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, const CvWidgetDataStruct &widgetDataStruct)
 {
-	wtpProbeDiplomacy("hover", widgetDataStruct);
 	parseHelpInner(szBuffer, widgetDataStruct);
 	g_szWtpWidgetHelp = szBuffer.getCString();
 	g_iWtpWidgetHelpType = (int)widgetDataStruct.m_eWidgetType;
@@ -696,7 +670,6 @@ void CvDLLWidgetData::parseHelpInner(CvWStringBuffer &szBuffer, const CvWidgetDa
 // Protected Functions...
 bool CvDLLWidgetData::executeAction(const CvWidgetDataStruct &widgetDataStruct)
 {
-	wtpProbeDiplomacy("click", widgetDataStruct);
 	CxDesyncMonitor StartAsyncExecution;
 
 	WidgetData* data = WidgetData::getNew(widgetDataStruct);
@@ -976,7 +949,6 @@ bool CvDLLWidgetData::executeAction(const CvWidgetDataStruct &widgetDataStruct)
 //	right clicking action
 bool CvDLLWidgetData::executeAltAction(const CvWidgetDataStruct &widgetDataStruct)
 {
-	wtpProbeDiplomacy("right click", widgetDataStruct);
 	CxDesyncMonitor StartAsyncExecution;
 
 	WidgetData* data = WidgetData::getNew(widgetDataStruct);
@@ -1481,52 +1453,10 @@ void CvDLLWidgetData::doAction(const CvWidgetDataStruct &widgetDataStruct)
 	GC.getGameINLINE().handleActionEx(widgetDataStruct.m_iData1, true);
 }
 
-// WTP: the camera goes to the place of a player: his capital if the active team has seen it, otherwise his settlement (that the active team has seen)
-// that is nearest to the primary city of the active player. Nothing happens if there is no such place (a king has no cities, nothing seen yet).
-static void wtpLookAtPlayerPlace(PlayerTypes ePlayer)
-{
-	if (ePlayer < 0 || ePlayer >= MAX_PLAYERS)
-	{
-		return;
-	}
-	const CvPlayer& kTarget = GET_PLAYER(ePlayer);
-	const TeamTypes eActiveTeam = GC.getGameINLINE().getActiveTeam();
-	const CvCity* pBest = kTarget.getCapitalCity();
-	if (pBest != NULL && !pBest->plot()->isRevealed(eActiveTeam, false))
-	{
-		pBest = NULL;
-	}
-	if (pBest == NULL)
-	{
-		const CvCity* pOwnCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getPrimaryCity();
-		int iBestDistance = MAX_INT;
-		int iLoop;
-		for (CvCity* pLoopCity = kTarget.firstCity(&iLoop); pLoopCity != NULL; pLoopCity = kTarget.nextCity(&iLoop))
-		{
-			if (!pLoopCity->plot()->isRevealed(eActiveTeam, false))
-			{
-				continue;
-			}
-			const int iDistance = (pOwnCity != NULL) ? plotDistance(pOwnCity->getX_INLINE(), pOwnCity->getY_INLINE(), pLoopCity->getX_INLINE(), pLoopCity->getY_INLINE()) : 0;
-			if (iDistance < iBestDistance)
-			{
-				iBestDistance = iDistance;
-				pBest = pLoopCity;
-			}
-		}
-	}
-	if (pBest != NULL)
-	{
-		gDLL->getInterfaceIFace()->lookAt(pBest->plot()->getPoint(), CAMERALOOKAT_NORMAL);
-	}
-}
-
 void CvDLLWidgetData::doContactCiv(const CvWidgetDataStruct &widgetDataStruct)
 {
 	if (gDLL->isDiplomacy() || gDLL->isMPDiplomacyScreenUp())
 	{
-		// WTP: a click on the portrait (or the name) of the partner in the diplomacy screen shows his capital or nearest settlement on the map
-		wtpLookAtPlayerPlace((PlayerTypes)widgetDataStruct.m_iData1);
 		return;
 	}
 

@@ -1719,7 +1719,7 @@ void CvPlayerAI::AI_doPeace()
 																pDiplo->setAIContact(true);
 																pDiplo->setOurOfferList(theirList);
 																pDiplo->setTheirOfferList(ourList);
-																gDLL->beginDiplomacy(pDiplo, (PlayerTypes)iI);
+																wtpBeginDiplomacy(pDiplo, (PlayerTypes)iI);
 																abContacted[GET_PLAYER((PlayerTypes)iI).getTeam()] = true;
 															}
 														}
@@ -9151,7 +9151,7 @@ bool CvPlayerAI::AI_doDiploCancelDeals(PlayerTypes ePlayer)
 							pDiplo->setAIContact(true);
 							pDiplo->setOurOfferList(theirList);
 							pDiplo->setTheirOfferList(ourList);
-							gDLL->beginDiplomacy(pDiplo, ePlayer);
+							wtpBeginDiplomacy(pDiplo, ePlayer);
 						}
 					}
 
@@ -9342,7 +9342,7 @@ bool CvPlayerAI::AI_doDiploOfferCity(PlayerTypes ePlayer)
 							pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString("AI_DIPLOCOMMENT_OFFER_CITY"));
 							pDiplo->setAIContact(true);
 							pDiplo->setTheirOfferList(ourList);
-							gDLL->beginDiplomacy(pDiplo, ePlayer);
+							wtpBeginDiplomacy(pDiplo, ePlayer);
 						}
 						else
 						{
@@ -9405,7 +9405,7 @@ bool CvPlayerAI::AI_doDiploOfferAlliance(PlayerTypes ePlayer)
 			pDiplo->setAIContact(true);
 			pDiplo->setOurOfferList(theirList);
 			pDiplo->setTheirOfferList(ourList);
-			gDLL->beginDiplomacy(pDiplo, ePlayer);
+			wtpBeginDiplomacy(pDiplo, ePlayer);
 		}
 		else
 		{
@@ -9484,7 +9484,7 @@ bool CvPlayerAI::AI_doDiploAskJoinWar(PlayerTypes ePlayer)
 	pDiplo->addDiploCommentVariable(GET_PLAYER(GET_TEAM(eBestTeam).getLeaderID()).getCivilizationAdjectiveKey());
 	pDiplo->setAIContact(true);
 	pDiplo->setData(eBestTeam);
-	gDLL->beginDiplomacy(pDiplo, ePlayer);
+	wtpBeginDiplomacy(pDiplo, ePlayer);
 
 	return true;
 }
@@ -9543,7 +9543,7 @@ bool CvPlayerAI::AI_doDiploAskStopTrading(PlayerTypes ePlayer)
 	pDiplo->addDiploCommentVariable(GET_PLAYER(GET_TEAM(eBestTeam).getLeaderID()).getCivilizationAdjectiveKey());
 	pDiplo->setAIContact(true);
 	pDiplo->setData(eBestTeam);
-	gDLL->beginDiplomacy(pDiplo, ePlayer);
+	wtpBeginDiplomacy(pDiplo, ePlayer);
 
 	return true;
 }
@@ -9608,7 +9608,7 @@ bool CvPlayerAI::AI_doDiploGiveHelp(PlayerTypes ePlayer)
 	pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString("AI_DIPLOCOMMENT_GIVE_HELP"));
 	pDiplo->setTheirOfferList(ourList);
 	pDiplo->setAIContact(true);
-	gDLL->beginDiplomacy(pDiplo, ePlayer);
+	wtpBeginDiplomacy(pDiplo, ePlayer);
 
 	return true;
 }
@@ -9664,7 +9664,7 @@ bool CvPlayerAI::AI_doDiploAskForHelp(PlayerTypes ePlayer)
 	pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString("AI_DIPLOCOMMENT_ASK_FOR_HELP"));
 	pDiplo->setOurOfferList(theirList);
 	pDiplo->setAIContact(true);
-	gDLL->beginDiplomacy(pDiplo, ePlayer);
+	wtpBeginDiplomacy(pDiplo, ePlayer);
 
 	return true;
 }
@@ -9739,7 +9739,7 @@ bool CvPlayerAI::AI_doDiploDemandTribute(PlayerTypes ePlayer)
 	pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString("AI_DIPLOCOMMENT_DEMAND_TRIBUTE"));
 	pDiplo->setAIContact(true);
 	pDiplo->setOurOfferList(theirList);
-	gDLL->beginDiplomacy(pDiplo, ePlayer);
+	wtpBeginDiplomacy(pDiplo, ePlayer);
 
 	return true;
 }
@@ -9863,7 +9863,7 @@ bool CvPlayerAI::AI_doDiploKissPinky(PlayerTypes ePlayer)
 	pDiplo->addDiploCommentVariable(iReceiveGold);
 	pDiplo->setData(iReceiveGold);
 	pDiplo->setAIContact(true);
-	gDLL->beginDiplomacy(pDiplo, ePlayer);
+	wtpBeginDiplomacy(pDiplo, ePlayer);
 
 	return true;
 }
@@ -9918,7 +9918,7 @@ bool CvPlayerAI::AI_doDiploOpenBorders(PlayerTypes ePlayer)
 		pDiplo->setAIContact(true);
 		pDiplo->setOurOfferList(theirList);
 		pDiplo->setTheirOfferList(ourList);
-		gDLL->beginDiplomacy(pDiplo, ePlayer);
+		wtpBeginDiplomacy(pDiplo, ePlayer);
 	}
 	else
 	{
@@ -9978,7 +9978,7 @@ bool CvPlayerAI::AI_doDiploDefensivePact(PlayerTypes ePlayer)
 		pDiplo->setAIContact(true);
 		pDiplo->setOurOfferList(theirList);
 		pDiplo->setTheirOfferList(ourList);
-		gDLL->beginDiplomacy(pDiplo, ePlayer);
+		wtpBeginDiplomacy(pDiplo, ePlayer);
 	}
 	else
 	{
@@ -10033,7 +10033,7 @@ bool CvPlayerAI::AI_doDiploTradeMap(PlayerTypes ePlayer)
 		pDiplo->setAIContact(true);
 		pDiplo->setOurOfferList(theirList);
 		pDiplo->setTheirOfferList(ourList);
-		gDLL->beginDiplomacy(pDiplo, ePlayer);
+		wtpBeginDiplomacy(pDiplo, ePlayer);
 	}
 	else
 	{
@@ -10725,7 +10725,7 @@ void CvPlayerAI::AI_nativeYieldGift(CvUnit* pUnit)
 				pDiplo->addDiploCommentVariable(GC.getYieldInfo(eBestYield).getChar());
 				pDiplo->addDiploCommentVariable(pOtherCity->getNameKey());
 				pDiplo->setAIContact(true);
-				gDLL->beginDiplomacy(pDiplo, kOtherPlayer.getID());
+				wtpBeginDiplomacy(pDiplo, kOtherPlayer.getID());
 			}
 		}
 	}
@@ -10824,7 +10824,7 @@ void CvPlayerAI::AI_nativeTrade(CvUnit* pUnit)
 				pUnit->setAmountForNativeTrade(iYieldAmount);
 
 				pDiplo->setAIContact(true);
-				gDLL->beginDiplomacy(pDiplo, kOtherPlayer.getID());
+				wtpBeginDiplomacy(pDiplo, kOtherPlayer.getID());
 			}
 		}
 	}

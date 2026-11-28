@@ -1416,4 +1416,8 @@ inline bool CvPlayer::is(CivCategoryTypes eCivCategory) const
 	return getCivCategoryTypes() == eCivCategory;
 }
 
+// WTP: AI contact: camera to the nation that speaks, then the diplomacy screen (see CvPlayer.cpp)
+void wtpLookAtPlayerPlace(PlayerTypes ePlayer);
+void wtpBeginDiplomacy(CvDiploParameters* pDiplo, PlayerTypes eTo);
+
 #endif

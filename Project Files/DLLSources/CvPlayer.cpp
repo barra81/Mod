@@ -2680,7 +2680,7 @@ void CvPlayer::doTurnUnits()
 						pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString("AI_DIPLOCOMMENT_KING_GIFT_SHIP"));
 						pDiplo->addDiploCommentVariable(iNewTaxRate);
 						pDiplo->setAIContact(true);
-						gDLL->beginDiplomacy(pDiplo, getID());
+						wtpBeginDiplomacy(pDiplo, getID());
 					}
 				}
 			}
@@ -3172,7 +3172,7 @@ void CvPlayer::contact(PlayerTypes ePlayer) const
 		{
 			pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString("AI_DIPLOCOMMENT_TRADING"));
 		}
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 }
 
@@ -8855,7 +8855,7 @@ void CvPlayer::respawnTaxIncrease()
 		pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString("AI_DIPLOCOMMENT_KING_REVIVE"));
 		pDiplo->addDiploCommentVariable(iNewTaxRate);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 }
 
@@ -21608,7 +21608,7 @@ void CvPlayer::taxIncreaseDiploCall(int iOldTaxRate, int iNewTaxRate, int iChang
 	pDiplo->addDiploCommentVariable(iNewTaxRate);
 	pDiplo->setData(iChange);
 	pDiplo->setAIContact(true);
-	gDLL->beginDiplomacy(pDiplo, getID());
+	wtpBeginDiplomacy(pDiplo, getID());
 }
 
 // R&R, ray, Africa
@@ -23808,7 +23808,7 @@ void CvPlayer::checkForNativeMercs()
 					}
 					pDiplo->setData(totalmercprice);
 					pDiplo->setAIContact(true);
-					gDLL->beginDiplomacy(pDiplo, getID());
+					wtpBeginDiplomacy(pDiplo, getID());
 
 					//break necesarry because otherwise negative accounts possible
 					break;
@@ -23920,7 +23920,7 @@ void CvPlayer::checkForNativeSlaves()
 					}
 					pDiplo->setData(totalslaveprice);
 					pDiplo->setAIContact(true);
-					gDLL->beginDiplomacy(pDiplo, getID());
+					wtpBeginDiplomacy(pDiplo, getID());
 
 					//break necesarry because otherwise negative accounts possible
 					break;
@@ -24035,7 +24035,7 @@ void CvPlayer::checkForAfricanSlaves()
 		pDiplo->addDiploCommentVariable(totalslavesprice);
 		pDiplo->setData(numSlavesOffered);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 
 	}
 	return;
@@ -24143,7 +24143,7 @@ void CvPlayer::checkForPrisonsCrowded()
 		pDiplo->addDiploCommentVariable(totalprisonersprice);
 		pDiplo->setData(numPrisonersOffered);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 
 	}
 	return;
@@ -24246,7 +24246,7 @@ void CvPlayer::checkForRevolutionaryNoble()
 		pDiplo->addDiploCommentVariable(pricetopay);
 		pDiplo->setData(pricetopay);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 	return;
 }
@@ -24363,7 +24363,7 @@ void CvPlayer::checkForBishop()
 		pDiplo->addDiploCommentVariable(pricetopay);
 		pDiplo->setData(pricetopay);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 	return;
 }
@@ -24471,7 +24471,7 @@ void CvPlayer::checkForRevolutionSupport()
 						pDiplo->addDiploCommentVariable(GC.getLeaderHeadInfo(GET_PLAYER(potentialRevSupporter.getParent()).getLeaderType()).getDescription());
 
 						pDiplo->setAIContact(true);
-						gDLL->beginDiplomacy(pDiplo, getID());
+						wtpBeginDiplomacy(pDiplo, getID());
 					}
 				}
 			}
@@ -24584,7 +24584,7 @@ void CvPlayer::checkForEuropeanWars()
 		//setting ID of Enemy as Data
 		pDiplo->setData(potentialEnemy.getID());
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 	return;
 }
@@ -24620,7 +24620,7 @@ bool CvPlayer::triggerEuropeanWarDemand(PlayerTypes eEnemyPlayer) const
 	pDiplo->setData(kEnemyPlayer.getID());
 	pDiplo->setAIContact(true);
 
-	gDLL->beginDiplomacy(pDiplo, getID());
+	wtpBeginDiplomacy(pDiplo, getID());
 
 	return true;
 }
@@ -24736,7 +24736,7 @@ void CvPlayer::checkForStealingImmigrant()
 		pDiplo->setData(potentialVictim.getID());
 
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 
 	return;
@@ -24838,7 +24838,7 @@ void CvPlayer::checkForSmugglers()
 		pDiplo->addDiploCommentVariable(pricetopay);
 		pDiplo->setData(pricetopay);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 	return;
 }
@@ -24931,7 +24931,7 @@ void CvPlayer::checkForRangers()
 		pDiplo->addDiploCommentVariable(pricetopay);
 		pDiplo->setData(pricetopay);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 	return;
 }
@@ -25054,7 +25054,7 @@ void CvPlayer::checkForConquistadors()
 		pDiplo->addDiploCommentVariable(pricetopay);
 		pDiplo->setData(pricetopay);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 	return;
 }
@@ -25187,7 +25187,7 @@ void CvPlayer::checkForPirates()
 		pDiplo->addDiploCommentVariable(pricetopay);
 		pDiplo->setData(pricetopay);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 	return;
 }
@@ -25294,7 +25294,7 @@ void CvPlayer::checkForEuropeanPeace()
 		//setting ID of Enemy as Data
 		pDiplo->setData(potentialEnemyToMakePeace.getID());
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 	return;
 }
@@ -25406,7 +25406,7 @@ void CvPlayer::checkForRoyalIntervention()
 			//setting ID of Enemy as Data
 			pDiplo->setData(eColonialAtWarWith);
 			pDiplo->setAIContact(true);
-			gDLL->beginDiplomacy(pDiplo, getID());
+			wtpBeginDiplomacy(pDiplo, getID());
 		}
 	}
 
@@ -25516,7 +25516,7 @@ void CvPlayer::checkForPrivateersAccusation()
 		pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString("AI_DIPLOCOMMENT_PRIVATEERS_ACCUSSATION"));
 		pDiplo->setData(eColonialPlayer);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 
 	return;
@@ -25852,7 +25852,7 @@ void CvPlayer::checkForContinentalGuard()
 		pDiplo->addDiploCommentVariable(pricetopay);
 		pDiplo->setData(pricetopay);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 		m_iTimerContinentalGuard = GC.getTIMER_CONTINENTAL_GUARD()*gamespeedMod/100;
 	}
 
@@ -25969,7 +25969,7 @@ void CvPlayer::checkForMortar()
 		pDiplo->addDiploCommentVariable(pricetopay);
 		pDiplo->setData(pricetopay);
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 		m_iTimerMortar = GC.getTIMER_MORTAR()*gamespeedMod/100;
 	}
 
@@ -26168,7 +26168,7 @@ void CvPlayer::checkForChurchContact()
 			pDiplo->addDiploCommentVariable(pricetopay);
 			pDiplo->setData(pricetopay);
 			pDiplo->setAIContact(true);
-			gDLL->beginDiplomacy(pDiplo, getID());
+			wtpBeginDiplomacy(pDiplo, getID());
 		}
 	}
 	return;
@@ -26949,7 +26949,7 @@ void CvPlayer::checkForChurchWar()
 		//setting ID of Enemy as Data
 		pDiplo->setData(potentialNativeEnemy.getID());
 		pDiplo->setAIContact(true);
-		gDLL->beginDiplomacy(pDiplo, getID());
+		wtpBeginDiplomacy(pDiplo, getID());
 	}
 
 	return;
@@ -27057,7 +27057,7 @@ void CvPlayer::checkForColonialInterventionInNativeWar()
 	//setting ID of Enemy as Data
 	pDiplo->setData(kNativeAtWarWith.getID());
 	pDiplo->setAIContact(true);
-	gDLL->beginDiplomacy(pDiplo, getID());
+	wtpBeginDiplomacy(pDiplo, getID());
 
 	return;
 }
@@ -27245,7 +27245,7 @@ void CvPlayer::checkForColonialAndNativeAlliesWar()
 
 	// letus then start the dialogue
 	pDiplo->setAIContact(true);
-	gDLL->beginDiplomacy(pDiplo, getID());
+	wtpBeginDiplomacy(pDiplo, getID());
 
 	return;
 }
@@ -28088,3 +28088,54 @@ int CvPlayer::calculateEuropeTravelTime(EuropeTypes eEurope) const
 }
 
 
+
+// WTP: the camera goes to the place of a player (used when an AI nation contacts the active player): his capital if the active team has seen it, otherwise his settlement (that the active team has seen)
+// that is nearest to the primary city of the active player. Nothing happens if there is no such place (a king has no cities, nothing seen yet).
+void wtpLookAtPlayerPlace(PlayerTypes ePlayer)
+{
+	if (ePlayer < 0 || ePlayer >= MAX_PLAYERS)
+	{
+		return;
+	}
+	const CvPlayer& kTarget = GET_PLAYER(ePlayer);
+	const TeamTypes eActiveTeam = GC.getGameINLINE().getActiveTeam();
+	const CvCity* pBest = kTarget.getCapitalCity();
+	if (pBest != NULL && !pBest->plot()->isRevealed(eActiveTeam, false))
+	{
+		pBest = NULL;
+	}
+	if (pBest == NULL)
+	{
+		const CvCity* pOwnCity = GET_PLAYER(GC.getGameINLINE().getActivePlayer()).getPrimaryCity();
+		int iBestDistance = MAX_INT;
+		int iLoop;
+		for (CvCity* pLoopCity = kTarget.firstCity(&iLoop); pLoopCity != NULL; pLoopCity = kTarget.nextCity(&iLoop))
+		{
+			if (!pLoopCity->plot()->isRevealed(eActiveTeam, false))
+			{
+				continue;
+			}
+			const int iDistance = (pOwnCity != NULL) ? plotDistance(pOwnCity->getX_INLINE(), pOwnCity->getY_INLINE(), pLoopCity->getX_INLINE(), pLoopCity->getY_INLINE()) : 0;
+			if (iDistance < iBestDistance)
+			{
+				iBestDistance = iDistance;
+				pBest = pLoopCity;
+			}
+		}
+	}
+	if (pBest != NULL)
+	{
+		gDLL->getInterfaceIFace()->lookAt(pBest->plot()->getPoint(), CAMERALOOKAT_NORMAL);
+	}
+}
+
+// WTP: replaces gDLL->beginDiplomacy: when an AI nation speaks to the active human player on its own (AIContact), the camera first goes to
+// his capital or the nearest settlement. A contact the player starts himself does not move the camera. Only the local view changes (no game state).
+void wtpBeginDiplomacy(CvDiploParameters* pDiplo, PlayerTypes eTo)
+{
+	if (pDiplo != NULL && pDiplo->getAIContact() && eTo == GC.getGameINLINE().getActivePlayer() && GET_PLAYER(eTo).isHuman())
+	{
+		wtpLookAtPlayerPlace(pDiplo->getWhoTalkingTo());
+	}
+	wtpBeginDiplomacy(pDiplo, eTo);
+}
