@@ -767,8 +767,10 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit, 
 			}
 			// (the statistics come above the line of the cargo space: the cargo line is appended after them)
 
-			// WTP: statistics of a transport of the active player (a line, the rows marked with \x00AB become its child window in the Python tooltip)
-			if (pUnit->getTeam() == GC.getGameINLINE().getActiveTeam() && pUnit->isHuman() && !pUnit->isCargo() && pUnit->getTransportStat(CvUnit::TS_TURNS) > 0)
+			// WTP: statistics of a transport of the active player (a line, the rows marked with \x00AB become its child window in the Python tooltip);
+			// not in the city screen: the ships in a city (and in the harbour) only show the classic tooltip there
+			if (pUnit->getTeam() == GC.getGameINLINE().getActiveTeam() && pUnit->isHuman() && !pUnit->isCargo() && pUnit->getTransportStat(CvUnit::TS_TURNS) > 0
+				&& !gDLL->getInterfaceIFace()->isCityScreenUp())
 			{
 				const int iTurns = pUnit->getTransportStat(CvUnit::TS_TURNS);
 				const int iSlotSum = pUnit->getTransportStat(CvUnit::TS_SLOT_SUM);
