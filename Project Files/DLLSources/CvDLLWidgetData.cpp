@@ -246,8 +246,34 @@ static bool g_bWtpHideYieldHelp = false;
 void wtpSetHideYieldHelp(bool b) { g_bWtpHideYieldHelp = b; }
 bool wtpIsDiplomacyUp() { return gDLL->isDiplomacy() || gDLL->isMPDiplomacyScreenUp(); }
 
+// WTP: probe for the diplomacy screen (to find out which widget the portrait and the name of the partner are): while the diplomacy screen is up,
+// every hover (parseHelp) and every click (executeAction / executeAltAction) is written to WTP_DiploProbe.txt: kind, widget type, data1, data2, option.
+// Equal lines in a row are written once.
+static void wtpProbeDiplomacy(const char* szKind, const CvWidgetDataStruct &widgetDataStruct)
+{
+	if (!gDLL->isDiplomacy() && !gDLL->isMPDiplomacyScreenUp())
+	{
+		return;
+	}
+	static char szLast[160] = "";
+	char szLine[160];
+	sprintf(szLine, "%s | widget type %d | data1 %d | data2 %d | option %d\n", szKind, (int)widgetDataStruct.m_eWidgetType, widgetDataStruct.m_iData1, widgetDataStruct.m_iData2, widgetDataStruct.m_bOption ? 1 : 0);
+	if (strcmp(szLine, szLast) == 0)
+	{
+		return;
+	}
+	strcpy(szLast, szLine);
+	FILE* f = fopen((std::string(gDLL->getModName()) + "WTP_DiploProbe.txt").c_str(), "a");
+	if (f != NULL)
+	{
+		fputs(szLine, f);
+		fclose(f);
+	}
+}
+
 void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, const CvWidgetDataStruct &widgetDataStruct)
 {
+	wtpProbeDiplomacy("hover", widgetDataStruct);
 	parseHelpInner(szBuffer, widgetDataStruct);
 	g_szWtpWidgetHelp = szBuffer.getCString();
 	g_iWtpWidgetHelpType = (int)widgetDataStruct.m_eWidgetType;
@@ -670,6 +696,7 @@ void CvDLLWidgetData::parseHelpInner(CvWStringBuffer &szBuffer, const CvWidgetDa
 // Protected Functions...
 bool CvDLLWidgetData::executeAction(const CvWidgetDataStruct &widgetDataStruct)
 {
+	wtpProbeDiplomacy("click", widgetDataStruct);
 	CxDesyncMonitor StartAsyncExecution;
 
 	WidgetData* data = WidgetData::getNew(widgetDataStruct);
@@ -949,6 +976,7 @@ bool CvDLLWidgetData::executeAction(const CvWidgetDataStruct &widgetDataStruct)
 //	right clicking action
 bool CvDLLWidgetData::executeAltAction(const CvWidgetDataStruct &widgetDataStruct)
 {
+	wtpProbeDiplomacy("right click", widgetDataStruct);
 	CxDesyncMonitor StartAsyncExecution;
 
 	WidgetData* data = WidgetData::getNew(widgetDataStruct);
