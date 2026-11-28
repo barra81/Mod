@@ -215,12 +215,12 @@ class CvFoundingFatherScreen:
 				szBarTitle = localText.changeTextColor(szBarTitle, ColorTypes.COLOR_FONT_GOLD)
 				screen.setLabelAt("TopBarTitle" + str(iCategory), "TopAcumulationBar" + str(iCategory), "<font=3>" + szBarTitle + "</font>", CvUtil.FONT_LEFT_JUSTIFY, 20, self.BarAreaHeight / 4, -0.1, FontTypes.SMALL_FONT,  WidgetTypes.WIDGET_GENERAL, -1, -1)
 				
-	# WTP: the frame of the father the message panel pointed to: four thin strips around his box in the color of WtpColors.IMPORT (the same
-	# one-pixel texture as the import frames of the trade route screen). It is drawn right after the box and before the portrait and the flag,
+	# WTP: the frame of the father the message panel pointed to: four thin strips around his box in the color of WtpColors.EXPORT, the golden yellow (the same
+	# one-pixel texture as the export frames of the trade route screen). It is drawn right after the box and before the portrait and the flag,
 	# so these two are in front of it.
 	def drawFatherFrame(self, screen, szPanel, iX, iY, iW, iH):
 		iThick = 4
-		szArt = "Art/Interface/Screens/TradeRoutes/WTPFrameImp.dds"
+		szArt = "Art/Interface/Screens/TradeRoutes/WTPFrameExp.dds"
 		aStrips = [(iX - iThick, iY - iThick, iW + 2 * iThick, iThick), (iX - iThick, iY + iH, iW + 2 * iThick, iThick), (iX - iThick, iY, iThick, iH), (iX + iW, iY, iThick, iH)]
 		for iStrip in range(4):
 			screen.addDDSGFCAt("FatherFrame" + str(iStrip), szPanel, szArt, aStrips[iStrip][0], aStrips[iStrip][1], aStrips[iStrip][2], aStrips[iStrip][3], WidgetTypes.WIDGET_GENERAL, -1, -1, False)
