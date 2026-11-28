@@ -28091,6 +28091,11 @@ int CvPlayer::calculateEuropeTravelTime(EuropeTypes eEurope) const
 
 // WTP: the camera goes to the place of a player (used when an AI nation contacts the active player): his capital if the active team has seen it, otherwise his settlement (that the active team has seen)
 // that is nearest to the primary city of the active player. Nothing happens if there is no such place (a king has no cities, nothing seen yet).
+// WTP: camera position before the camera went to the speaking nation, restored when the diplomacy screen is closed (wtpDiplomacyCameraUpdate)
+static bool s_bWtpCamSaved = false;
+static bool s_bWtpCamDiploSeen = false;
+static NiPoint3 s_ptWtpCamBefore;
+
 void wtpLookAtPlayerPlace(PlayerTypes ePlayer)
 {
 	if (ePlayer < 0 || ePlayer >= MAX_PLAYERS)
@@ -28125,7 +28130,37 @@ void wtpLookAtPlayerPlace(PlayerTypes ePlayer)
 	}
 	if (pBest != NULL)
 	{
+		// remember where the camera was (only the first time if several contacts follow each other)
+		if (!s_bWtpCamSaved)
+		{
+			const CvPlot* pLookAt = gDLL->getInterfaceIFace()->getLookAtPlot();
+			if (pLookAt != NULL)
+			{
+				s_ptWtpCamBefore = pLookAt->getPoint();
+				s_bWtpCamSaved = true;
+				s_bWtpCamDiploSeen = false;
+			}
+		}
 		gDLL->getInterfaceIFace()->lookAt(pBest->plot()->getPoint(), CAMERALOOKAT_NORMAL);
+	}
+}
+
+// WTP: called every frame (CvGame::update): when the diplomacy screen that was opened by an AI contact is closed again, the camera goes back
+void wtpDiplomacyCameraUpdate()
+{
+	if (!s_bWtpCamSaved)
+	{
+		return;
+	}
+	if (gDLL->isDiplomacy() || gDLL->isMPDiplomacyScreenUp())
+	{
+		s_bWtpCamDiploSeen = true;
+	}
+	else if (s_bWtpCamDiploSeen)
+	{
+		s_bWtpCamSaved = false;
+		s_bWtpCamDiploSeen = false;
+		gDLL->getInterfaceIFace()->lookAt(s_ptWtpCamBefore, CAMERALOOKAT_NORMAL);
 	}
 }
 

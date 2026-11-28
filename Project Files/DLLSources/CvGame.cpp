@@ -1496,6 +1496,7 @@ void CvGame::update()
 		wtpCrashLogSelfTest();
 	}
 	doCloseCityScreenOnMiddleMouse();
+	wtpDiplomacyCameraUpdate(); // WTP: camera back after a diplomacy screen opened by an AI contact
 
 	if (!gDLL->GetWorldBuilderMode() || isInAdvancedStart())
 	{
